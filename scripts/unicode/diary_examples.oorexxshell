@@ -667,7 +667,7 @@ Examples
 
 
 /*
-Add .RexxUnicode~unescape(string, buffer=.nil)
+Add .RexxUnicode~stringUnescape(string, buffer=.nil)
     Returns a string in which escape sequences are replaced with their corresponding values.
     If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
 
@@ -691,7 +691,7 @@ Add .RexxUnicode~unescape(string, buffer=.nil)
         \x{X..X}            Arbitrary number of hex digits
         \xXX                One byte, exactly 2 hex digits
 
-Add .RexxUnicode~escape(string, buffer=.nil)
+Add .RexxUnicode~stringEscape(string, buffer=.nil)
     Escapes characters that are not printable:
     - Invalid byte sequences are represented by escaped hexadecimal byte sequences: \x{XX..XX}.
     - Non-printable codepoints are represented using the standard escape sequences (\a, \b, \t, \n, \v, \f, \r) when applicable;
@@ -701,72 +701,72 @@ Add .RexxUnicode~escape(string, buffer=.nil)
 Examples
 */
 
-    .RexxUnicode~unescape("")=                      -- ''
-    .RexxUnicode~unescape("no escape character")=   -- 'no escape character'
+    .RexxUnicode~stringUnescape("")=                      -- ''
+    .RexxUnicode~stringUnescape("no escape character")=   -- 'no escape character'
 
-    .RexxUnicode~unescape("", .MutableBuffer~new)=                      -- M''
-    .RexxUnicode~unescape("no escape character", .MutableBuffer~new)=   -- M'no escape character'
+    .RexxUnicode~stringUnescape("", .MutableBuffer~new)=                      -- M''
+    .RexxUnicode~stringUnescape("no escape character", .MutableBuffer~new)=   -- M'no escape character'
 
-    .RexxUnicode~unescape("\")=         -- Invalid escape character '\' at position 1.
-    .RexxUnicode~unescape(" \ ")=       -- Invalid escape character '\ ' at position 2.
-    .RexxUnicode~unescape(" \  ")=      -- Invalid escape character '\ ' at position 2.
+    .RexxUnicode~stringUnescape("\")=         -- Invalid escape character '\' at position 1.
+    .RexxUnicode~stringUnescape(" \ ")=       -- Invalid escape character '\ ' at position 2.
+    .RexxUnicode~stringUnescape(" \  ")=      -- Invalid escape character '\ ' at position 2.
 
-    .RexxUnicode~unescape("\z")=        -- Invalid escape character '\z' at position 1.
-    .RexxUnicode~unescape(" \z ")=      -- Invalid escape character '\z' at position 2
-    .RexxUnicode~unescape(" \z  ")=     -- Invalid escape character '\z' at position 2..
+    .RexxUnicode~stringUnescape("\z")=        -- Invalid escape character '\z' at position 1.
+    .RexxUnicode~stringUnescape(" \z ")=      -- Invalid escape character '\z' at position 2
+    .RexxUnicode~stringUnescape(" \z  ")=     -- Invalid escape character '\z' at position 2..
 
-    .RexxUnicode~unescape("\\")=            -- '\'
-    .RexxUnicode~unescape("a\\")=           -- 'a\'
-    .RexxUnicode~unescape("\\b")=           -- '\b'
-    .RexxUnicode~unescape("a\\b")=          -- 'a\b'
-    .RexxUnicode~unescape("a\\b, a\\b")=    -- 'a\b, a\b'
+    .RexxUnicode~stringUnescape("\\")=            -- '\'
+    .RexxUnicode~stringUnescape("a\\")=           -- 'a\'
+    .RexxUnicode~stringUnescape("\\b")=           -- '\b'
+    .RexxUnicode~stringUnescape("a\\b")=          -- 'a\b'
+    .RexxUnicode~stringUnescape("a\\b, a\\b")=    -- 'a\b, a\b'
 
-    .RexxUnicode~unescape("\\", .MutableBuffer~new)=            -- M'\'
-    .RexxUnicode~unescape("a\\", .MutableBuffer~new)=           -- M'a\'
-    .RexxUnicode~unescape("\\b", .MutableBuffer~new)=           -- M'\b'
-    .RexxUnicode~unescape("a\\b", .MutableBuffer~new)=          -- M'a\b'
-    .RexxUnicode~unescape("a\\b, a\\b", .MutableBuffer~new)=    -- M'a\b, a\b'
+    .RexxUnicode~stringUnescape("\\", .MutableBuffer~new)=            -- M'\'
+    .RexxUnicode~stringUnescape("a\\", .MutableBuffer~new)=           -- M'a\'
+    .RexxUnicode~stringUnescape("\\b", .MutableBuffer~new)=           -- M'\b'
+    .RexxUnicode~stringUnescape("a\\b", .MutableBuffer~new)=          -- M'a\b'
+    .RexxUnicode~stringUnescape("a\\b, a\\b", .MutableBuffer~new)=    -- M'a\b, a\b'
 
-    .RexxUnicode~unescape("\a")~c2x=    -- 07
-    .RexxUnicode~unescape("\b")~c2x=    -- 08
-    .RexxUnicode~unescape("\f")~c2x=    -- '0C'
-    .RexxUnicode~unescape("\n")~c2x=    -- '0A'
-    .RexxUnicode~unescape("\r")~c2x=    -- '0D'
-    .RexxUnicode~unescape("\t")~c2x=    -- 09
-    .RexxUnicode~unescape("\v")~c2x=    -- '0B'
+    .RexxUnicode~stringUnescape("\a")~c2x=    -- 07
+    .RexxUnicode~stringUnescape("\b")~c2x=    -- 08
+    .RexxUnicode~stringUnescape("\f")~c2x=    -- '0C'
+    .RexxUnicode~stringUnescape("\n")~c2x=    -- '0A'
+    .RexxUnicode~stringUnescape("\r")~c2x=    -- '0D'
+    .RexxUnicode~stringUnescape("\t")~c2x=    -- 09
+    .RexxUnicode~stringUnescape("\v")~c2x=    -- '0B'
 
-    .RexxUnicode~unescape("\N")=        -- Expected {a Unicode character name} after \N at position 1..
-    .RexxUnicode~unescape("\N{")=       -- Expected {a Unicode character name} after \N at position 1.
-    .RexxUnicode~unescape("\N{}")=      -- Expected {a Unicode character name} after \N at position 1.
-    .RexxUnicode~unescape("\N{a")=      -- Expected {a Unicode character name} after \N at position 1.
-    .RexxUnicode~unescape("\N{a}")=     -- Name "a" at position 1 not found.
+    .RexxUnicode~stringUnescape("\N")=        -- Expected {a Unicode character name} after \N at position 1..
+    .RexxUnicode~stringUnescape("\N{")=       -- Expected {a Unicode character name} after \N at position 1.
+    .RexxUnicode~stringUnescape("\N{}")=      -- Expected {a Unicode character name} after \N at position 1.
+    .RexxUnicode~stringUnescape("\N{a")=      -- Expected {a Unicode character name} after \N at position 1.
+    .RexxUnicode~stringUnescape("\N{a}")=     -- Name "a" at position 1 not found.
 
-    .RexxUnicode~unescape("\N{OCR DASH}")=                  -- '⑈'
-    .RexxUnicode~unescape("\N{MICR ON US SYMBOL}")=         -- '⑈'
-    .RexxUnicode~unescape("\N{<control-0000>}")=            -- '[00]'
-    .RexxUnicode~unescape("\N{<lead surrogate-D800>}")~c2x= -- 'EDA080' (use ~c2x to not display an invalid byte sequence)
+    .RexxUnicode~stringUnescape("\N{OCR DASH}")=                  -- '⑈'
+    .RexxUnicode~stringUnescape("\N{MICR ON US SYMBOL}")=         -- '⑈'
+    .RexxUnicode~stringUnescape("\N{<control-0000>}")=            -- '[00]'
+    .RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}")~c2x= -- 'EDA080' (use ~c2x to not display an invalid byte sequence)
 
-    .RexxUnicode~unescape("\u")=            -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
-    .RexxUnicode~unescape("\u0")=           -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
-    .RexxUnicode~unescape("\u{")=           -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
-    .RexxUnicode~unescape("\u{}")=          -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
-    .RexxUnicode~unescape("\u{1D4_D0}")=    -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
+    .RexxUnicode~stringUnescape("\u")=            -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
+    .RexxUnicode~stringUnescape("\u0")=           -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
+    .RexxUnicode~stringUnescape("\u{")=           -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
+    .RexxUnicode~stringUnescape("\u{}")=          -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
+    .RexxUnicode~stringUnescape("\u{1D4_D0}")=    -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
 
-    .RexxUnicode~unescape("\U")=            -- Expected 8 hex digits after \U at position 1.
-    .RexxUnicode~unescape("\U0")=           -- Expected 8 hex digits after \U at position 1.
-    .RexxUnicode~unescape("\U0000_0000")=   -- Expected 8 hex digits after \U at position 1.
+    .RexxUnicode~stringUnescape("\U")=            -- Expected 8 hex digits after \U at position 1.
+    .RexxUnicode~stringUnescape("\U0")=           -- Expected 8 hex digits after \U at position 1.
+    .RexxUnicode~stringUnescape("\U0000_0000")=   -- Expected 8 hex digits after \U at position 1.
 
-    .RexxUnicode~unescape("\x")=            -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1..
-    .RexxUnicode~unescape("\x0")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
-    .RexxUnicode~unescape("\x{")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
-    .RexxUnicode~unescape("\x{}")=          -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
-    .RexxUnicode~unescape("\x{1D4_D0}")=    -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+    .RexxUnicode~stringUnescape("\x")=            -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1..
+    .RexxUnicode~stringUnescape("\x0")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+    .RexxUnicode~stringUnescape("\x{")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+    .RexxUnicode~stringUnescape("\x{}")=          -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+    .RexxUnicode~stringUnescape("\x{1D4_D0}")=    -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 
-    .RexxUnicode~unescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
+    .RexxUnicode~stringUnescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
 
-    .RexxUnicode~escape(xrange("00"x, "FF"x))=          -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'
+    .RexxUnicode~stringEscape(xrange("00"x, "FF"x))=          -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'
 
-    .RexxUnicode~escape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF'
+    .RexxUnicode~stringEscape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF'
 
 /*
     A lead surrogate is invalid in a UTF-8 string (would be valid in a WTF-8 string).
@@ -781,7 +781,7 @@ Examples
         3 : '\x{80}'
     Escaping U+D800 is '\x{ED}\x{A0}\x{80}' because \x{EDA080} can't be decoded as U+D800.
 */
-    .RexxUnicode~escape(.RexxUnicode~unescape("\N{<lead surrogate-D800>}"))=    -- '\x{ED}\x{A0}\x{80}'
+    .RexxUnicode~stringEscape(.RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}"))=    -- '\x{ED}\x{A0}\x{80}'
 
 
 -- ===============================================================================

@@ -34,8 +34,8 @@ library embedded in ooRexx.
 > with byte strings and to allow users to adapt their code accordingly
 > (typically by requesting a `.String` from their TUTOR objects).
 > 
-> See the examples at the end of `rxunicode.cls` showing the internal errors that
-> can occur when mixing graphemes and bytes.
+> See the [examples][examples_internal_errors] at the end of `rxunicode.cls`
+> showing the internal errors that can occur when mixing graphemes and bytes.
 
 **Note on terminology:** This documentation and the code comments use the term "codepoint"
 instead of "code point", except when quoting definitions from the Unicode Standard.
@@ -584,7 +584,7 @@ Strips the characters whose category is Cn Unassigned.
 
 ```rexx
 string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n"
-string = .RexxUnicode~unescape(string)
+string = .RexxUnicode~stringUnescape(string)
 
 .RexxUnicodeCodepointSupplier~new(string, , .RexxUnicodeCharacter)==
     /*
@@ -933,7 +933,7 @@ Returns `.true` if the codepoint is printable.
 - Codepoints having a display width of 0 are considered non-printable.
 - Unassigned (Cn) and private-use (Co) codepoints are considered non-printable,
   even though they have a display width of 1.
-- Other codepoints are considered as printable.
+- Other codepoints are considered printable.
 
 ```rexx
 .RexxUnicode~codepointIsPrintable(0)=             -- 0
@@ -941,7 +941,7 @@ Returns `.true` if the codepoint is printable.
 .RexxUnicode~codepointIsPrintable("D800"~x2d)=    -- 0
 
 -- The special codepoint -1 is not printable
-.RexxUnicode~codepointIsPrintable(-1)=              -- 0
+.RexxUnicode~codepointIsPrintable(-1)=            -- 0
 ```
 
 #### codepointPrintableString
@@ -969,12 +969,16 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 
     .RexxUnicode~codepointUnicodeEscapeNotation(codepoint, buffer=.nil)
 
-Returns the Unicode escape notation \uXXXX or \UXXXXXXXX.
+Returns the Unicode escape notation \uXXXX or \UXXXXXXXX for the given codepoin.
 
 If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
 
 ```rexx
 .RexxUnicode~codepointUnicodeEscapeNotation("D800"~x2d)=    -- '\uD800'
+.RexxUnicode~codepointUnicodeEscapeNotation("1F385"~x2d)=   -- '\U0001F385'
+.RexxUnicode~codepointUnicodeEscapeNotation(-1)=            -- '\UFFFFFFFF'
+
+.RexxUnicode~codepointUnicodeEscapeNotation("D800"~x2d, .MutableBuffer~new)=    -- M'\uD800'
 ```
 
 
@@ -982,7 +986,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 
     .RexxUnicode~codepointUTF8Encoding(codepoint, buffer=.nil)
 
-Returns the UTF-8 encoding of this codepoint.
+Returns the UTF-8 encoding for the given codepoint.
 
 If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
 
@@ -1022,7 +1026,7 @@ The special codepoint -1 is represented using U+FFFFFF, even though the resultin
 
 #### escape
 
-    .RexxUnicode~escape(string, buffer=.nil)
+    .RexxUnicode~stringEscape(string, buffer=.nil)
 
 Returns a string in which non-printable codepoints and invalid byte sequences are replaced with escape sequences.
 
@@ -1033,11 +1037,11 @@ Returns a string in which non-printable codepoints and invalid byte sequences ar
 If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
 
 ```rexx
-.RexxUnicode~escape(xrange("00"x, "FF"x))=          -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'
+.RexxUnicode~stringEscape(xrange("00"x, "FF"x))=          -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'
 
-.RexxUnicode~escape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF'
+.RexxUnicode~stringEscape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF'
 
-.RexxUnicode~escape(.RexxUnicode~unescape("\N{<lead surrogate-D800>}"))=    -- '\x{ED}\x{A0}\x{80}'
+.RexxUnicode~stringEscape(.RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}"))=    -- '\x{ED}\x{A0}\x{80}'
 /*
 A lead surrogate is invalid in a UTF-8 string (would be valid in a WTF-8 string).
 (<?> \x{EDA080} U+D800 Cs Surrogate "<lead surrogate-D800>")
@@ -1278,7 +1282,7 @@ Otherwise, returns -1 or, if requested, raises an error.
 
 #### unescape
 
-    .RexxUnicode~unescape(string, buffer=.nil)
+    .RexxUnicode~stringUnescape(string, buffer=.nil)
 
 Returns a string in which escape sequences are replaced with their corresponding values.
 
@@ -1308,30 +1312,30 @@ This method handles them at run time instead.
 ##### Examples
 
 ```rexx
-.RexxUnicode~unescape("\\")=            -- '\'
-.RexxUnicode~unescape("a\\")=           -- 'a\'
-.RexxUnicode~unescape("\\b")=           -- '\b'
-.RexxUnicode~unescape("a\\b")=          -- 'a\b'
+.RexxUnicode~stringUnescape("\\")=            -- '\'
+.RexxUnicode~stringUnescape("a\\")=           -- 'a\'
+.RexxUnicode~stringUnescape("\\b")=           -- '\b'
+.RexxUnicode~stringUnescape("a\\b")=          -- 'a\b'
 
-.RexxUnicode~unescape("\\", .MutableBuffer~new)=            -- M'\'
-.RexxUnicode~unescape("a\\", .MutableBuffer~new)=           -- M'a\'
-.RexxUnicode~unescape("\\b", .MutableBuffer~new)=           -- M'\b'
-.RexxUnicode~unescape("a\\b", .MutableBuffer~new)=          -- M'a\b'
+.RexxUnicode~stringUnescape("\\", .MutableBuffer~new)=            -- M'\'
+.RexxUnicode~stringUnescape("a\\", .MutableBuffer~new)=           -- M'a\'
+.RexxUnicode~stringUnescape("\\b", .MutableBuffer~new)=           -- M'\b'
+.RexxUnicode~stringUnescape("a\\b", .MutableBuffer~new)=          -- M'a\b'
 
-.RexxUnicode~unescape("\a")~c2x=    -- 07
-.RexxUnicode~unescape("\b")~c2x=    -- 08
-.RexxUnicode~unescape("\f")~c2x=    -- '0C'
-.RexxUnicode~unescape("\n")~c2x=    -- '0A'
-.RexxUnicode~unescape("\r")~c2x=    -- '0D'
-.RexxUnicode~unescape("\t")~c2x=    -- 09
-.RexxUnicode~unescape("\v")~c2x=    -- '0B'
+.RexxUnicode~stringUnescape("\a")~c2x=    -- 07
+.RexxUnicode~stringUnescape("\b")~c2x=    -- 08
+.RexxUnicode~stringUnescape("\f")~c2x=    -- '0C'
+.RexxUnicode~stringUnescape("\n")~c2x=    -- '0A'
+.RexxUnicode~stringUnescape("\r")~c2x=    -- '0D'
+.RexxUnicode~stringUnescape("\t")~c2x=    -- 09
+.RexxUnicode~stringUnescape("\v")~c2x=    -- '0B'
 
-.RexxUnicode~unescape("\N{OCR DASH}")=                  -- '⑈'
-.RexxUnicode~unescape("\N{MICR ON US SYMBOL}")=         -- '⑈'
-.RexxUnicode~unescape("\N{<control-0000>}")=            -- '[00]'
-.RexxUnicode~unescape("\N{<lead surrogate-D800>}")~c2x= -- 'EDA080' (use ~c2x to not display an invalid byte sequence)
+.RexxUnicode~stringUnescape("\N{OCR DASH}")=                  -- '⑈'
+.RexxUnicode~stringUnescape("\N{MICR ON US SYMBOL}")=         -- '⑈'
+.RexxUnicode~stringUnescape("\N{<control-0000>}")=            -- '[00]'
+.RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}")~c2x= -- 'EDA080' (use ~c2x to not display an invalid byte sequence)
 
-.RexxUnicode~unescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
+.RexxUnicode~stringUnescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
 ```
 
 
@@ -1794,3 +1798,4 @@ The special codepoint -1 can be represented using a RexxUnicodeCharacter.
 
 
 
+[examples_internal_errors]: https://github.com/jlfaucher/executor5-bulk/blob/82f9531bb7b6d4be62f33b201ba62e53a74be640/main/trunk/extensions/unicode/rxunicode.cls#L1725-L1769 "Examples of internal errors"

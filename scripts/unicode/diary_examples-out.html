@@ -37,11 +37,13 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for jdor.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for oorexxshell_queries_std.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for pipeline/pipe_std.cls
+</span><span style="font-weight:bold;color:green;">loadPackage OK for Rexx.Parser.cls
+</span><span style="font-weight:bold;color:green;">loadPackage OK for Unicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
-</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 14 Jun 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S16bfcQ600000d7c900
+</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 13 Jun 2026
+</span><span style="font-weight:bold;color:green;">Input queue name: S7028Q600003a00180
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
@@ -292,7 +294,7 @@ a StringTable (19 items)
 </span><span style="font-weight:bold;color:blue;">- the .RexxUnicode~graphemeAtIndexC method was removed, replaced by .RexxUnicodeStringIndexer~graphemeAtIndexG (yes, G).
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">
-</span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~stringInfo(string)
+</span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~stringInfo(string [, &gt;indexer])
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~stringIsASCII(string)
 </span><span style="font-weight:bold;color:blue;">    Returns .true if the string contains only characters &lt;= &quot;7F&quot;x
@@ -307,12 +309,13 @@ a StringTable (19 items)
 </span><span style="font-weight:bold;color:blue;">    Returns the string normalized to NFKC, with optional transformations applied.
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~stringToNFKC_CF(string, lump= .false, nlf = 0, stripCC = .false, stripMark = .false, stripNA = .false)
-</span><span style="font-weight:bold;color:blue;">    NFKC_CF applies Unicode case-folding rules to map all characters to a case-insensitive form.
+</span><span style="font-weight:bold;color:blue;">    NFKC preserves the original case of letters (e.g., 'A' remains 'A').
+</span><span style="font-weight:bold;color:blue;">    In contrast, NFKC_CF applies Unicode case-folding rules to map all characters to a case-insensitive form.
+</span><span style="font-weight:bold;color:blue;">        Example: The German sharp s (ß) remains ß in NFKC but maps to ss in NFKC_CF.
+</span><span style="font-weight:bold;color:blue;">        Example: The Greek final sigma (ς) maps to the standard sigma (σ) in NFKC_CF, whereas NFKC leaves it unchanged.
 </span><span style="font-weight:bold;color:blue;">    NFKC_CF is specifically optimized for identifier matching.
 </span><span style="font-weight:bold;color:blue;">    As part of the &quot;Default Case Folding&quot; algorithm, it removes ignorable characters (such as certain formatting marks or zero-width spaces).
-</span><span style="font-weight:bold;color:blue;">    Examples:
-</span><span style="font-weight:bold;color:blue;">    The German sharp s (ß) remains ß in NFKC but maps to ss in NFKC_CF.
-</span><span style="font-weight:bold;color:blue;">    The Greek final sigma (ς) maps to the standard sigma (σ) in NFKC_CF, whereas NFKC leaves it unchanged.
+</span><span style="font-weight:bold;color:blue;">    NFKC retains these characters.
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~stringToNFKD(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)
 </span><span style="font-weight:bold;color:blue;">    Returns the string normalized to NFKD, with optional transformations applied.
@@ -334,6 +337,25 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringI
 ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringInfo(&quot;👨‍👩‍👧&quot;)=    </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'</span>
 '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
 
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- Invalid string</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringInfo(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x, &gt;indexer)=    </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'</span>
+'(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    indexer~errors==</span>
+an Array (shape [4], 4 items)
+ 1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
+ 2 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
+ 3 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
+ 4 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">        an Array (shape [4], 4 items)
+</span><span style="font-weight:bold;color:blue;">         1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
+</span><span style="font-weight:bold;color:blue;">         2 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
+</span><span style="font-weight:bold;color:blue;">         3 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
+</span><span style="font-weight:bold;color:blue;">         4 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringIsASCII(&quot;Noel&quot;)=     </span><span style="font-weight:bold;color:blue;">-- 1</span>
  1
 ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringIsASCII(&quot;Noël&quot;)=     </span><span style="font-weight:bold;color:blue;">-- 0</span>
@@ -996,28 +1018,31 @@ a RexxUnicodeGraphemeSupplier
 </span>
 
 <span style="font-weight:bold;color:blue;">/*
-</span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~unescape(string, buffer=.nil)
-</span><span style="font-weight:bold;color:blue;">    Escape characters are normally handled in string literals at parse time.
+</span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~stringUnescape(string, buffer=.nil)
+</span><span style="font-weight:bold;color:blue;">    Returns a string in which escape sequences are replaced with their corresponding values.
+</span><span style="font-weight:bold;color:blue;">    If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">    Escape sequences are normally handled in string literals at parse time.
 </span><span style="font-weight:bold;color:blue;">    This method handles them at run time instead.
 </span><span style="font-weight:bold;color:blue;">
-</span><span style="font-weight:bold;color:blue;">    Supported escape characters:
+</span><span style="font-weight:bold;color:blue;">    Supported escape sequences:
 </span><span style="font-weight:bold;color:blue;">        \\                  &quot;\&quot;
 </span><span style="font-weight:bold;color:blue;">        \a                  &quot;07&quot;x   audible bell (BEL)
 </span><span style="font-weight:bold;color:blue;">        \b                  &quot;08&quot;x   backspace (BS)
 </span><span style="font-weight:bold;color:blue;">        \f                  &quot;0C&quot;x   form feed (FF)
-</span><span style="font-weight:bold;color:blue;">        \n                  &quot;0A&quot;x   linefeed (LF)
+</span><span style="font-weight:bold;color:blue;">        \n                  &quot;0A&quot;x   line feed (LF)
 </span><span style="font-weight:bold;color:blue;">        \r                  &quot;0D&quot;x   carriage return (CR)
 </span><span style="font-weight:bold;color:blue;">        \t                  &quot;09&quot;x   horizontal tab (HT)
 </span><span style="font-weight:bold;color:blue;">        \v                  &quot;0B&quot;x   vertical tab (VT)
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">        \N{Unicode name}    Character name in the Unicode database
-</span><span style="font-weight:bold;color:blue;">        \u{X..X}            Unicode scalar value, 1-8 hex digits
+</span><span style="font-weight:bold;color:blue;">        \u{X..X}            Unicode scalar value, 1 to 8 hex digits
 </span><span style="font-weight:bold;color:blue;">        \uXXXX              Unicode scalar value, exactly 4 hex digits
 </span><span style="font-weight:bold;color:blue;">        \UXXXXXXXX          Unicode scalar value, exactly 8 hex digits
 </span><span style="font-weight:bold;color:blue;">        \x{X..X}            Arbitrary number of hex digits
-</span><span style="font-weight:bold;color:blue;">        \xXX                1 byte, exactly 2 hex digits
+</span><span style="font-weight:bold;color:blue;">        \xXX                One byte, exactly 2 hex digits
 </span><span style="font-weight:bold;color:blue;">
-</span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~escape(string, buffer=.nil)
+</span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~stringEscape(string, buffer=.nil)
 </span><span style="font-weight:bold;color:blue;">    Escapes characters that are not printable:
 </span><span style="font-weight:bold;color:blue;">    - Invalid byte sequences are represented by escaped hexadecimal byte sequences: \x{XX..XX}.
 </span><span style="font-weight:bold;color:blue;">    - Non-printable codepoints are represented using the standard escape sequences (\a, \b, \t, \n, \v, \f, \r) when applicable;
@@ -1027,147 +1052,147 @@ a RexxUnicodeGraphemeSupplier
 </span><span style="font-weight:bold;color:blue;">Examples
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;&quot;)=                      </span><span style="font-weight:bold;color:blue;">-- ''</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;&quot;)=                      </span><span style="font-weight:bold;color:blue;">-- ''</span>
 ''
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;no escape character&quot;)=   </span><span style="font-weight:bold;color:blue;">-- 'no escape character'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;no escape character&quot;)=   </span><span style="font-weight:bold;color:blue;">-- 'no escape character'</span>
 'no escape character'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;&quot;, .MutableBuffer~new)=                      </span><span style="font-weight:bold;color:blue;">-- M''</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;&quot;, .MutableBuffer~new)=                      </span><span style="font-weight:bold;color:blue;">-- M''</span>
 M''
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;no escape character&quot;, .MutableBuffer~new)=   </span><span style="font-weight:bold;color:blue;">-- M'no escape character'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;no escape character&quot;, .MutableBuffer~new)=   </span><span style="font-weight:bold;color:blue;">-- M'no escape character'</span>
 M'no escape character'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\&quot;)=         </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\' at position 1.</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\&quot;)=         </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\' at position 1.</span>
 <span style="font-weight:bold;color:red;">Invalid escape character '\' at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot; \ &quot;)=       </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\ ' at position 2.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot; \ &quot;)=       </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\ ' at position 2.</span>
 <span style="font-weight:bold;color:red;">Invalid escape character '\ ' at position 2.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot; \  &quot;)=      </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\ ' at position 2.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot; \  &quot;)=      </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\ ' at position 2.</span>
 <span style="font-weight:bold;color:red;">Invalid escape character '\ ' at position 2.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\z&quot;)=        </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\z' at position 1.</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\z&quot;)=        </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\z' at position 1.</span>
 <span style="font-weight:bold;color:red;">Invalid escape character '\z' at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot; \z &quot;)=      </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\z' at position 2</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot; \z &quot;)=      </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\z' at position 2</span>
 <span style="font-weight:bold;color:red;">Invalid escape character '\z' at position 2.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot; \z  &quot;)=     </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\z' at position 2..</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot; \z  &quot;)=     </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\z' at position 2..</span>
 <span style="font-weight:bold;color:red;">Invalid escape character '\z' at position 2.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\\&quot;)=            </span><span style="font-weight:bold;color:blue;">-- '\'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\\&quot;)=            </span><span style="font-weight:bold;color:blue;">-- '\'</span>
 '\'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;a\\&quot;)=           </span><span style="font-weight:bold;color:blue;">-- 'a\'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;a\\&quot;)=           </span><span style="font-weight:bold;color:blue;">-- 'a\'</span>
 'a\'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\\b&quot;)=           </span><span style="font-weight:bold;color:blue;">-- '\b'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\\b&quot;)=           </span><span style="font-weight:bold;color:blue;">-- '\b'</span>
 '\b'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;a\\b&quot;)=          </span><span style="font-weight:bold;color:blue;">-- 'a\b'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;a\\b&quot;)=          </span><span style="font-weight:bold;color:blue;">-- 'a\b'</span>
 'a\b'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;a\\b, a\\b&quot;)=    </span><span style="font-weight:bold;color:blue;">-- 'a\b, a\b'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;a\\b, a\\b&quot;)=    </span><span style="font-weight:bold;color:blue;">-- 'a\b, a\b'</span>
 'a\b, a\b'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\\&quot;, .MutableBuffer~new)=            </span><span style="font-weight:bold;color:blue;">-- M'\'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\\&quot;, .MutableBuffer~new)=            </span><span style="font-weight:bold;color:blue;">-- M'\'</span>
 M'\'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;a\\&quot;, .MutableBuffer~new)=           </span><span style="font-weight:bold;color:blue;">-- M'a\'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;a\\&quot;, .MutableBuffer~new)=           </span><span style="font-weight:bold;color:blue;">-- M'a\'</span>
 M'a\'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\\b&quot;, .MutableBuffer~new)=           </span><span style="font-weight:bold;color:blue;">-- M'\b'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\\b&quot;, .MutableBuffer~new)=           </span><span style="font-weight:bold;color:blue;">-- M'\b'</span>
 M'\b'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;a\\b&quot;, .MutableBuffer~new)=          </span><span style="font-weight:bold;color:blue;">-- M'a\b'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;a\\b&quot;, .MutableBuffer~new)=          </span><span style="font-weight:bold;color:blue;">-- M'a\b'</span>
 M'a\b'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;a\\b, a\\b&quot;, .MutableBuffer~new)=    </span><span style="font-weight:bold;color:blue;">-- M'a\b, a\b'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;a\\b, a\\b&quot;, .MutableBuffer~new)=    </span><span style="font-weight:bold;color:blue;">-- M'a\b, a\b'</span>
 M'a\b, a\b'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\a&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 07</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\a&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 07</span>
  07
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\b&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 08</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\b&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 08</span>
  08
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\f&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0C'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\f&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0C'</span>
 '0C'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\n&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0A'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\n&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0A'</span>
 '0A'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\r&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0D'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\r&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0D'</span>
 '0D'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\t&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 09</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\t&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 09</span>
  09
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\v&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0B'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\v&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0B'</span>
 '0B'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\N&quot;)=        </span><span style="font-weight:bold;color:blue;">-- Expected {a Unicode character name} after \N at position 1..</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\N&quot;)=        </span><span style="font-weight:bold;color:blue;">-- Expected {a Unicode character name} after \N at position 1..</span>
 <span style="font-weight:bold;color:red;">Expected {a Unicode character name} after \N at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\N{&quot;)=       </span><span style="font-weight:bold;color:blue;">-- Expected {a Unicode character name} after \N at position 1.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\N{&quot;)=       </span><span style="font-weight:bold;color:blue;">-- Expected {a Unicode character name} after \N at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected {a Unicode character name} after \N at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\N{}&quot;)=      </span><span style="font-weight:bold;color:blue;">-- Expected {a Unicode character name} after \N at position 1.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\N{}&quot;)=      </span><span style="font-weight:bold;color:blue;">-- Expected {a Unicode character name} after \N at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected {a Unicode character name} after \N at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\N{a&quot;)=      </span><span style="font-weight:bold;color:blue;">-- Expected {a Unicode character name} after \N at position 1.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\N{a&quot;)=      </span><span style="font-weight:bold;color:blue;">-- Expected {a Unicode character name} after \N at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected {a Unicode character name} after \N at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\N{a}&quot;)=     </span><span style="font-weight:bold;color:blue;">-- Name &quot;a&quot; at position 1 not found.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\N{a}&quot;)=     </span><span style="font-weight:bold;color:blue;">-- Name &quot;a&quot; at position 1 not found.</span>
 <span style="font-weight:bold;color:red;">Name &quot;a&quot; at position 1 not found.
 </span><span style="font-weight:bold;color:red;">Error code= 98.900
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\N{OCR DASH}&quot;)=                  </span><span style="font-weight:bold;color:blue;">-- '⑈'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\N{OCR DASH}&quot;)=                  </span><span style="font-weight:bold;color:blue;">-- '⑈'</span>
 '⑈'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\N{MICR ON US SYMBOL}&quot;)=         </span><span style="font-weight:bold;color:blue;">-- '⑈'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\N{MICR ON US SYMBOL}&quot;)=         </span><span style="font-weight:bold;color:blue;">-- '⑈'</span>
 '⑈'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\N{&lt;control-0000&gt;}&quot;)=            </span><span style="font-weight:bold;color:blue;">-- '[00]'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\N{&lt;control-0000&gt;}&quot;)=            </span><span style="font-weight:bold;color:blue;">-- '[00]'</span>
 '[00]'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\N{&lt;lead surrogate-D800&gt;}&quot;)~c2x= </span><span style="font-weight:bold;color:blue;">-- 'EDA080' (use ~c2x to not display an invalid byte sequence)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\N{&lt;lead surrogate-D800&gt;}&quot;)~c2x= </span><span style="font-weight:bold;color:blue;">-- 'EDA080' (use ~c2x to not display an invalid byte sequence)</span>
 'EDA080'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\u&quot;)=            </span><span style="font-weight:bold;color:blue;">-- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\u&quot;)=            </span><span style="font-weight:bold;color:blue;">-- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\u0&quot;)=           </span><span style="font-weight:bold;color:blue;">-- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\u0&quot;)=           </span><span style="font-weight:bold;color:blue;">-- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\u{&quot;)=           </span><span style="font-weight:bold;color:blue;">-- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\u{&quot;)=           </span><span style="font-weight:bold;color:blue;">-- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\u{}&quot;)=          </span><span style="font-weight:bold;color:blue;">-- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\u{}&quot;)=          </span><span style="font-weight:bold;color:blue;">-- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\u{1D4_D0}&quot;)=    </span><span style="font-weight:bold;color:blue;">-- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\u{1D4_D0}&quot;)=    </span><span style="font-weight:bold;color:blue;">-- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\U&quot;)=            </span><span style="font-weight:bold;color:blue;">-- Expected 8 hex digits after \U at position 1.</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\U&quot;)=            </span><span style="font-weight:bold;color:blue;">-- Expected 8 hex digits after \U at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected 8 hex digits after \U at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\U0&quot;)=           </span><span style="font-weight:bold;color:blue;">-- Expected 8 hex digits after \U at position 1.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\U0&quot;)=           </span><span style="font-weight:bold;color:blue;">-- Expected 8 hex digits after \U at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected 8 hex digits after \U at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\U0000_0000&quot;)=   </span><span style="font-weight:bold;color:blue;">-- Expected 8 hex digits after \U at position 1.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\U0000_0000&quot;)=   </span><span style="font-weight:bold;color:blue;">-- Expected 8 hex digits after \U at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected 8 hex digits after \U at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\x&quot;)=            </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1..</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\x&quot;)=            </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1..</span>
 <span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\x0&quot;)=           </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\x0&quot;)=           </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\x{&quot;)=           </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\x{&quot;)=           </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\x{}&quot;)=          </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\x{}&quot;)=          </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\x{1D4_D0}&quot;)=    </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\x{1D4_D0}&quot;)=    </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~unescape(&quot;\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94&quot;)=     </span><span style="font-weight:bold;color:blue;">-- '𝓐B𝓒𝓓𝓔'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringUnescape(&quot;\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94&quot;)=     </span><span style="font-weight:bold;color:blue;">-- '𝓐B𝓒𝓓𝓔'</span>
 '𝓐B𝓒𝓓𝓔'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~escape(xrange(&quot;00&quot;x, &quot;FF&quot;x))=          </span><span style="font-weight:bold;color:blue;">-- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !&quot;#$%&amp;''()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringEscape(xrange(&quot;00&quot;x, &quot;FF&quot;x))=          </span><span style="font-weight:bold;color:blue;">-- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !&quot;#$%&amp;''()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'</span>
 '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !&quot;#$%&amp;''()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~escape(.RexxUnicode~U2C(&quot;U+10FFF&quot;))=   </span><span style="font-weight:bold;color:blue;">-- '\U00010FFF'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringEscape(.RexxUnicode~U2C(&quot;U+10FFF&quot;))=   </span><span style="font-weight:bold;color:blue;">-- '\U00010FFF'</span>
 '\U00010FFF'
 
 <span style="font-weight:bold;color:blue;">/*
@@ -1183,7 +1208,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~escape(
 </span><span style="font-weight:bold;color:blue;">        3 : '\x{80}'
 </span><span style="font-weight:bold;color:blue;">    Escaping U+D800 is '\x{ED}\x{A0}\x{80}' because \x{EDA080} can't be decoded as U+D800.
 </span><span style="font-weight:bold;color:blue;">*/
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~escape(.RexxUnicode~unescape(&quot;\N{&lt;lead surrogate-D800&gt;}&quot;))=    </span><span style="font-weight:bold;color:blue;">-- '\x{ED}\x{A0}\x{80}'</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~stringEscape(.RexxUnicode~stringUnescape(&quot;\N{&lt;lead surrogate-D800&gt;}&quot;))=    </span><span style="font-weight:bold;color:blue;">-- '\x{ED}\x{A0}\x{80}'</span>
 '\x{ED}\x{A0}\x{80}'
 
 

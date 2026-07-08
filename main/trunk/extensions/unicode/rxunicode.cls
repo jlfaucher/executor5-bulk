@@ -239,8 +239,8 @@ Additional codepoint services
 
     categoryWidth. (49 items)
     'Cc.0' :  65
-    'Cf.0' :  169       -- 169 Cf codepoints have a 0-width
-    'Cf.1' :  1         --   1 Cf codepoint has a 1-width
+    'Cf.0' :  169       -- 169 Cf codepoints have a width of 0
+    'Cf.1' :  1         --   1 Cf codepoint has a width of 1
     'Cn.1' :  814730
     'Co.1' :  137468
     'Cs.0' :  2048
@@ -298,7 +298,7 @@ Additional codepoint services
     self~codepointCategory(codepoint, >categoryCode)
     if categoryCode == "Cn" | categoryCode == "Co" then return .false
 
-    -- Other codepoints are considered as printable.
+    -- Other codepoints are considered printable.
     return .true
 
 
@@ -365,7 +365,7 @@ Codepoint from identifier
 *******************************************************************************/
 
 -- Gets a codepoint from a character name
--- Private helper for .RexxUnicode~unescape and .RexxUnicode~codepoint
+-- Private helper for .RexxUnicode~stringUnescape and .RexxUnicode~codepoint
 ::method codepointFromName class private
     use strict arg name
     name = requestBaseString(name, "name")
@@ -699,7 +699,7 @@ How other languages are supporting escape characters for Unicode:
 
 -- Escape characters are normally handled in string literals at parse time.
 -- This method handles them at run time instead.
-::method unescape class
+::method StringUnescape class
     use strict arg string, buffer=.nil
     pos = string~pos("\")
     if pos == 0 then do
@@ -862,7 +862,7 @@ How other languages are supporting escape characters for Unicode:
     encoding_1_4_hexdigits_error:       raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character || hexdigits "at position" slashPos)
 
 
-::method escape class
+::method stringEscape class
     use strict arg string, buffer=.nil
 
     returnBuffer = .nil \== buffer
@@ -976,7 +976,7 @@ How other languages are supporting escape characters for Unicode:
         if type == "e" then return error
         if type == "h" then return escapedHexdigits(byteSequence~c2x)
         if type == "u" then return .RexxUnicode~D2U(codepoint)
-        if type == "\" then return .RexxUnicode~escape(byteSequence)
+        if type == "\" then return .RexxUnicode~stringEscape(byteSequence)
         if type~isa(.Class) then return type~new(codepoint)
     end
     -- error
@@ -1166,7 +1166,7 @@ Maybe it can be simplified...
         if type == "g" then return grapheme
         if type == "h" then return escapedHexdigits(.RexxUnicode~C2X(grapheme))
         if type == "u" then return .RexxUnicode~C2U(grapheme)
-        if type == "\" then return .RexxUnicode~escape(grapheme)
+        if type == "\" then return .RexxUnicode~stringEscape(grapheme)
         if type~isa(.Class) then return type~new(grapheme)
     end
     -- error

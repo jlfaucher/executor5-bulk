@@ -13,7 +13,8 @@ ooRexxShellFiles = diary_examples
 scriptsFiles = enums_test \
                incorrect_character \
                RexxUnicode_test \
-               RexxUnicodeServices_test
+               RexxUnicodeServices_test \
+               width_printable_test
 
 NMAKE = nmake /c /f Makefile
 
