@@ -287,7 +287,27 @@ Additional codepoint services
     'Zp.0' :  1
     'Zs.1' :  16
     'Zs.2' :  1
+
+    Categories having codepoints of width 0 that are considered not printable:
+        Cc  Control
+        Cf  Format
+        Cs  Surrogate
+        Zl  Line_Separator          (to avoid line breaks in single-line output)
+        Zp  Paragraph_Separator     (to avoid line breaks in single-line output)
+
+    Categories containing codepoints of width 0 that are nevertheless considered
+    printable because some fonts provide visible glyphs for them:
+        Mc  Spacing_Mark
+        Me  Enclosing_Mark
+        Mn  Nonspacing_Mark
+
     */
+
+    -- Mc, Me and Mn codepoints are considered printable,
+    -- even though they have a display width of 0.
+    -- Some fonts provide visible glyphs for them.
+    self~codepointCategory(codepoint, >categoryCode)
+    if "Mc Me Mn"~contains(categoryCode) then return .true
 
     -- Codepoints having a display width of 0 are considered non-printable
     width = self~codepointCharWidth(codepoint)
@@ -295,8 +315,7 @@ Additional codepoint services
 
     -- Unassigned (Cn) and private-use (Co) codepoints are considered non-printable,
     -- even though they have a display width of 1.
-    self~codepointCategory(codepoint, >categoryCode)
-    if categoryCode == "Cn" | categoryCode == "Co" then return .false
+    if "Cn Co"~contains(categoryCode) then return .false
 
     -- Other codepoints are considered printable.
     return .true

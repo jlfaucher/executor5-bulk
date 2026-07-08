@@ -69,29 +69,29 @@ For portability, use refCode instead.
 -- first column: short name (from PropertyValueAliases.txt and DerivedBidiClass.txt)
 -- second column: long name (from PropertyValueAliases.txt and DerivedBidiClass.txt)
 -- third column: description (from https://www.unicode.org/reports/tr9/#Table_Bidirectional_Character_Types)
-"L",    "Left_To_Right"             -- Left-to-Right
-"LRE",  "Left_To_Right_Embedding"   -- Left-to-Right Embedding
-"LRO",  "Left_To_Right_Override"    -- Left-to-Right Override
-"R",    "Right_To_Left"             -- Right-to-Left
 "AL",   "Arabic_Letter"             -- Right-to-Left Arabic
-"RLE",  "Right_To_Left_Embedding"   -- Right-to-Left Embedding
-"RLO",  "Right_To_Left_Override"    -- Right-to-Left Override
-"PDF",  "Pop_Directional_Format"    -- Pop Directional Format
+"AN",   "Arabic_Number"             -- Arabic Number
+"B",    "Paragraph_Separator"       -- Paragraph Separator
+"BN",   "Boundary_Neutral"          -- Boundary Neutral
+"CS",   "Common_Separator"          -- Common Number Separator
 "EN",   "European_Number"           -- European Number
 "ES",   "European_Separator"        -- European Number Separator
 "ET",   "European_Terminator"       -- European Number Terminator
-"AN",   "Arabic_Number"             -- Arabic Number
-"CS",   "Common_Separator"          -- Common Number Separator
+"FSI",  "First_Strong_Isolate"      -- First Strong Isolate
+"L",    "Left_To_Right"             -- Left-to-Right
+"LRE",  "Left_To_Right_Embedding"   -- Left-to-Right Embedding
+"LRI",  "Left_To_Right_Isolate"     -- Left-to-Right Isolate
+"LRO",  "Left_To_Right_Override"    -- Left-to-Right Override
 "NSM",  "Nonspacing_Mark"           -- Nonspacing Mark
-"BN",   "Boundary_Neutral"          -- Boundary Neutral
-"B",    "Paragraph_Separator"       -- Paragraph Separator
+"ON",   "Other_Neutral"             -- Other Neutrals
+"PDF",  "Pop_Directional_Format"    -- Pop Directional Format
+"PDI",  "Pop_Directional_Isolate"   -- Pop Directional Isolate
+"R",    "Right_To_Left"             -- Right-to-Left
+"RLE",  "Right_To_Left_Embedding"   -- Right-to-Left Embedding
+"RLI",  "Right_To_Left_Isolate"     -- Right-to-Left Isolate
+"RLO",  "Right_To_Left_Override"    -- Right-to-Left Override
 "S",    "Segment_Separator"         -- Segment Separator
 "WS",   "White_Space"               -- Whitespace
-"ON",   "Other_Neutral"             -- Other Neutrals
-"LRI",  "Left_To_Right_Isolate"     -- Left-to-Right Isolate
-"RLI",  "Right_To_Left_Isolate"     -- Right-to-Left Isolate
-"FSI",  "First_Strong_Isolate"      -- First Strong Isolate
-"PDI",  "Pop_Directional_Isolate"   -- Pop Directional Isolate
 ```
 
 
@@ -120,28 +120,28 @@ For portability, use refCode instead.
 -- https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries
 -- first column: short name (from PropertyValueAliases.txt)
 -- second column: long name (from PropertyValueAliases.txt and auxiliary/GraphemeBreakProperty.txt)
-"Start",    "Start"
-"XX",       "Other"
-"CR",       "CR"
-"LF",       "LF"
 "CN",       "Control"
+"CR",       "CR"
 "EX",       "Extend"
 "L",        "L"
-"V",        "V"
-"T",        "T"
+"LF",       "LF"
 "LV",       "LV"
 "LVT",      "LVT"
+"PP",       "Prepend"
 "RI",       "Regional_Indicator"
 "SM",       "SpacingMark"
-"PP",       "Prepend"
+"Start",    "Start"
+"T",        "T"
+"V",        "V"
+"XX",       "Other"
 "ZWJ",      "ZWJ"                   -- Zero Width Joiner
 
 /* the following are no longer used in Unicode 11, but we keep
  the constants here for backward compatibility */
 "EB",       "E_Base"                -- Emoji Base
+"EBG",      "E_Base_GAZ"            -- E_BASE + GLUE_AFTER_ZJW
 "EM",       "E_Modifier"            -- Emoji Modifier
 "GAZ",      "Glue_After_Zwj"
-"EBG",      "E_Base_GAZ"            -- E_BASE + GLUE_AFTER_ZJW
 
 /* the Extended_Pictographic property is used in the Unicode 11
  grapheme-boundary rules */
@@ -166,36 +166,36 @@ For portability, use refCode instead.
 -- // https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-4/#G124142
 -- first column: short name
 -- second column: long name
+"Cc", "Control"
+"Cf", "Format"
 "Cn", "Unassigned"
-"Lu", "Uppercase_Letter"
+"Co", "Private_Use"
+"Cs", "Surrogate"
 "Ll", "Lowercase_Letter"
-"Lt", "Titlecase_Letter"
 "Lm", "Modifier_Letter"
 "Lo", "Other_Letter"
-"Mn", "Nonspacing_Mark"
+"Lt", "Titlecase_Letter"
+"Lu", "Uppercase_Letter"
 "Mc", "Spacing_Mark"
 "Me", "Enclosing_Mark"
+"Mn", "Nonspacing_Mark"
 "Nd", "Decimal_Number"
 "Nl", "Letter_Number"
 "No", "Other_Number"
 "Pc", "Connector_Punctuation"
 "Pd", "Dash_Punctuation"
-"Ps", "Open_Punctuation"
 "Pe", "Close_Punctuation"
-"Pi", "Initial_Punctuation"
 "Pf", "Final_Punctuation"
+"Pi", "Initial_Punctuation"
 "Po", "Other_Punctuation"
-"Sm", "Math_Symbol"
+"Ps", "Open_Punctuation"
 "Sc", "Currency_Symbol"
 "Sk", "Modifier_Symbol"
+"Sm", "Math_Symbol"
 "So", "Other_Symbol"
-"Zs", "Space_Separator"
 "Zl", "Line_Separator"
 "Zp", "Paragraph_Separator"
-"Cc", "Control"
-"Cf", "Format"
-"Cs", "Surrogate"
-"Co", "Private_Use"
+"Zs", "Space_Separator"
 ```
 
 
@@ -930,7 +930,10 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
 
 Returns `.true` if the codepoint is printable.
 
+Rules:
 - Codepoints having a display width of 0 are considered non-printable.
+- Mc, Me and Mn codepoints are considered printable, even though they have
+  a display width of 0, because some fonts provide visible glyphs for them.
 - Unassigned (Cn) and private-use (Co) codepoints are considered non-printable,
   even though they have a display width of 1.
 - Other codepoints are considered printable.

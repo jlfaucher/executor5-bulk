@@ -26,6 +26,40 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 [Unicode]
 
+Refine the rules for determining whether a codepoint is printable.
+
+    Categories having codepoints of width 0 that are considered not printable:
+        Cc  Control
+        Cf  Format
+        Cs  Surrogate
+        Zl  Line_Separator          (to avoid line breaks in single-line output)
+        Zp  Paragraph_Separator     (to avoid line breaks in single-line output)
+
+    Categories containing codepoints of width 0 that are nevertheless considered
+    printable, because some fonts provide visible glyphs for them:
+        Mc  Spacing_Mark
+        Me  Enclosing_Mark
+        Mn  Nonspacing_Mark
+
+Rules:
+- Codepoints having a display width of 0 are considered non-printable.
+- Mc, Me and Mn codepoints are considered printable, even though they have
+  a display width of 0, because some fonts provide visible glyphs for them.
+- Unassigned (Cn) and private-use (Co) codepoints are considered non-printable,
+  even though they have a display width of 1.
+- Other codepoints are considered printable.
+
+Even with these rules, some single-line output is still affected:
+1 0      "߽" \x{DFBD} U+07FD Mn Nonspacing_Mark "NKO DANTAYALAN"
+1 0      "ࢗ" \x{E0A297} U+0897 Mn Nonspacing_Mark "ARABIC PEPET"
+In some editors, the lines above are displayed right-to-left.
+
+
+===============================================================================
+2026 July 08
+
+[Unicode]
+
 Rename .RexxUnicode~escape to .RexxUnicode~stringEscape
 Rename .RexxUnicode~unescape to .RexxUnicode~stringUnescape
 
