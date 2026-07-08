@@ -41,7 +41,7 @@ library embedded in ooRexx.
 instead of "code point", except when quoting definitions from the Unicode Standard.
 
 
-## RexxUnicodeServices Class
+## 1.   RexxUnicodeServices Class
 
 The `RexxUnicodeServices` class cannot be instantiated.  
 Its services are provided through class methods.
@@ -51,9 +51,9 @@ This native class is always available; there is no need to load `rxunicode.cls`.
 In the examples, you can replace `RexxUnicodeServices` by `RexxUnicode` if you loaded `rxunicode.cls`.
 
 
-### Class methods
+### 1.1.   Class methods
 
-#### codepointBidiClass
+#### 1.1.1.   codepointBidiClass
 
     .RexxUnicodeServices~codepointBidiClass(codepoint [, [>refCode] [, >refLabel]])
 
@@ -104,7 +104,7 @@ For portability, use refCode instead.
 .RexxUnicodeServices~codepointBidiClass(-1, >code, >label)=; code=; label=              --  0; '?'; 'Code point not explicitly listed for Bidi_Class'
 ```
 
-#### codepointBidiMirrored
+#### 1.1.2.   codepointBidiMirrored
 
     .RexxUnicodeServices~codepointBidiMirrored(codepoint)
 
@@ -113,7 +113,7 @@ Returns `.true` if the `Bidi_Mirrored` property value of `codepoint` is `Yes`.
 [https://unicode.org/reports/tr9/#Mirroring](https://unicode.org/reports/tr9/#Mirroring)
 
 
-#### codepointBoundClass
+#### 1.1.3.   codepointBoundClass
 
     .RexxUnicodeServices~codepointBoundClass(codepoint [, [>refCode] [, >refLabel]])
 
@@ -169,7 +169,7 @@ For portability, use refCode instead.
 ```
 
 
-#### codepointCategory
+#### 1.1.4.   codepointCategory
 
     .RexxUnicodeServices~codepointCategory(codepoint [, [>refCode] [, >refLabel]])
 
@@ -228,7 +228,7 @@ For portability, use refCode instead.
 ```
 
 
-#### codepointCharWidth
+#### 1.1.5.   codepointCharWidth
 
     .RexxUnicodeServices~codepointCharWidth(codepoint)
 
@@ -237,7 +237,7 @@ except that a width of 0 is returned for non-printable codepoints
 instead of -1 as in `wcwidth`.
 
 
-#### codepointCombiningClass
+#### 1.1.6.   codepointCombiningClass
 
     .RexxUnicodeServices~codepointCombiningClass(codepoint [, [>refCode] [, >refLabel]])
 
@@ -342,7 +342,7 @@ Some values have neither a `refCode` nor a `refLabel`.
 ```
 
 
-#### codepointControlBoundary
+#### 1.1.7.   codepointControlBoundary
 
     .RexxUnicodeServices~codepointControlBoundary(codepoint)
 
@@ -357,7 +357,7 @@ Returns `.true` if `codepoint` belongs to the `Zl`, `Zp`, `Cc`, or `Cf` category
 > Therefore, this method is likely to be deprecated unless a use case is identified.
 
 
-#### codepointDecompositionType
+#### 1.1.8.   codepointDecompositionType
 
     .RexxUnicodeServices~codepointDecompositionType(codepoint [, [>refCode] [, >refLabel]])
 
@@ -404,14 +404,14 @@ For portability, use refCode instead.
 ```
 
 
-#### codepointIgnorable
+#### 1.1.9.   codepointIgnorable
 
     .RexxUnicodeServices~codepointIgnorable(codepoint)
 
 Returns the `Default_Ignorable_Code_Point` property value of `codepoint` (boolean value).
 
 
-#### codepointIsLower
+#### 1.1.10.   codepointIsLower
 
     .RexxUnicodeServices~codepointIsLower(codepoint)
 
@@ -420,7 +420,7 @@ and `.false` otherwise.
 
 
 
-#### codepointIsUpper
+#### 1.1.11.   codepointIsUpper
 
     .RexxUnicodeServices~codepointIsUpper(codepoint)
 
@@ -428,7 +428,7 @@ Returns `.true` if the codepoint corresponds to an upper-case character
 and `.false` otherwise.
 
 
-#### codepointToLower
+#### 1.1.12.   codepointToLower
 
     .RexxUnicodeServices~codepointToLower(codepoint)
 
@@ -439,7 +439,7 @@ This method uses the simple case mappings defined in `UnicodeData.txt`
 and always returns a single codepoint.
 
 
-#### codepointToTitle
+#### 1.1.13.   codepointToTitle
 
     .RexxUnicodeServices~codepointToTitle(codepoint)
 
@@ -450,7 +450,7 @@ This method uses the simple case mappings defined in `UnicodeData.txt`
 and always returns a single codepoint.
 
 
-#### codepointToUpper
+#### 1.1.14.   codepointToUpper
 
     .RexxUnicodeServices~codepointToUpper(codepoint)
 
@@ -461,7 +461,7 @@ This method uses the simple case mappings defined in `UnicodeData.txt`
 and always returns a single codepoint.
 
 
-#### graphemeBreak
+#### 1.1.15.   graphemeBreak
 
     .RexxUnicodeServices~graphemeBreak(array)
 
@@ -476,19 +476,19 @@ array = (previousCodepoint, currentCodepoint, state)
 break = .RexxUnicodeServices~graphemeBreak(array) -- true or false
 ```
 
-#### new
+#### 1.1.16.   new
 
 This method raises an error because `RexxUnicodeServices` has no instance.
 
 
-#### systemIsLittleEndian
+#### 1.1.17.   systemIsLittleEndian
 
     .RexxUnicodeServices~systemIsLittleEndian
 
 Returns `.true` if the system is little-endian.
 
 
-#### unicodeVersion
+#### 1.1.18.   unicodeVersion
 
     RexxString *unicodeVersion();
 
@@ -504,7 +504,7 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 ```
 
 
-#### utf8DecodeCodepoint
+#### 1.1.19.   utf8DecodeCodepoint
 
 ```
 utf8DecodeCodepoint(
@@ -577,7 +577,7 @@ to follow the U+FFFD Substitution of Maximal Subparts.
 ```
 
 
-#### utf8EncodeCodepoint
+#### 1.1.20.   utf8EncodeCodepoint
 
 ```
 utf8EncodeCodepoint(
@@ -618,7 +618,7 @@ Append the UTF-8 encoding of 1114112 to mb: size = 0 mb = oë€🎅
 ```
 
 
-#### utf8procVersion
+#### 1.1.21.   utf8procVersion
 
     RexxString *utf8procVersion();
     
@@ -634,7 +634,7 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 ```
 
 
-#### utf8Transform
+#### 1.1.22.   utf8Transform
 
 ```
 utf8Transform(
@@ -654,13 +654,13 @@ utf8Transform(
 
 Returns the transformed string.
 
-##### caseFold
+##### 1.1.22.1.   caseFold
 
 Performs unicode case folding, to be able to do a case-insensitive
 string comparison.
 
 
-##### lump
+##### 1.1.22.2.   lump
 
 Maps certain characters to a common representative (i.e., several distinct characters produce the same output character).  
 All the concerned characters become the same character, but still remain distinct characters.
@@ -702,7 +702,7 @@ Mapping rules:
     U+007E  ~   <-- tilde operator U+223C
 
 
-##### nlf
+##### 1.1.22.3.   nlf
 
 [https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213](https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213)
 
@@ -729,7 +729,7 @@ NLF-sequences (LF, CRLF, CR, NEL) are representing a paragraph break,
 and should be converted to the codepoint for paragraph separation (PS).
 
 
-##### normalization
+##### 1.1.22.4.   normalization
 
 ```rexx
 -- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).
@@ -744,7 +744,7 @@ and should be converted to the codepoint for paragraph separation (PS).
 If `normalization` is not `0`, apply the requested normalization.
 
 
-##### stripCC
+##### 1.1.22.5.   stripCC
 
 Strips and/or converts control characters.
 
@@ -755,13 +755,13 @@ are treated as a NLF-sequence in this case.
 All other control characters are simply removed.
 
 
-##### stripIgnorable
+##### 1.1.22.6.   stripIgnorable
 
 Strips the characters whose property `Default_Ignorable_Code_Point` is true,
 such as `SOFT-HYPHEN` or `ZERO-WIDTH-SPACE`.
 
 
-##### stripMark
+##### 1.1.22.7.   stripMark
 
 Strips all character markings.
 
@@ -774,12 +774,12 @@ This includes non-spacing, spacing and enclosing (i.e. accents) categories:
 This option works only with a normalization applied.
 
 
-##### stripNA
+##### 1.1.22.8.   stripNA
 
 Strips the characters whose category is Cn Unassigned.
 
 
-##### Examples of transformations
+##### 1.1.22.9.   Examples of transformations
 
 ```rexx
 string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n"
@@ -902,12 +902,12 @@ tstring=; .RexxUnicode~C2U(tstring)=
 ```
 
 
-### Instance methods
+### 1.2.   Instance methods
 
 The `RexxUnicodeServices` class defines no instance methods of its own.
 
 
-## RexxUnicode Class
+## 2.   RexxUnicode Class
 
 The `RexxUnicode` class cannot be instantiated.  
 Its services are provided through class methods.
@@ -915,26 +915,26 @@ Its services are provided through class methods.
 `::requires "rxunicode.cls"`
 
 
-### Methods inherited from the `ICU4ooRexxInterface` class
+### 2.1.   Methods inherited from the `ICU4ooRexxInterface` class
 
 See the `ICU4ooRexxInterface` class.
 
 
-### Methods inherited from the `RexxUnicodeServices` class
+### 2.2.   Methods inherited from the `RexxUnicodeServices` class
 
 See the `RexxUnicodeServices` class.
 
 
-### Constants
+### 2.3.   Constants
 
-#### maxCodepoint
+#### 2.3.1.   maxCodepoint
 
 ```rexx
 ::constant maxCodepoint 1114111
 ```
 
 
-#### NFC, NFD, NFKC, NFKD
+#### 2.3.2.   NFC, NFD, NFKC, NFKD
 
 ```rexx
 -- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization):
@@ -945,7 +945,7 @@ See the `RexxUnicodeServices` class.
 ```
 
 
-#### NLF2LF, NLF2LS, NLF2PS
+#### 2.3.3.   NLF2LF, NLF2LS, NLF2PS
 
 ```rexx
 -- Value to pass as the `nlf` argument to utf8Transform (default: 0 no transformation).
@@ -955,9 +955,9 @@ See the `RexxUnicodeServices` class.
 ::constant NLF2PS 3
 ```
 
-### Class methods
+### 2.4.   Class methods
 
-#### C2U
+#### 2.4.1.   C2U
 
     .RexxUnicode~C2U(string, buffer=.nil)
 
@@ -982,7 +982,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 ```
 
 
-#### C2X
+#### 2.4.2.   C2X
 
     .RexxUnicode~C2X(string, buffer=.nil)
 
@@ -999,7 +999,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 ```
 
 
-#### character
+#### 2.4.3.   character
 
     .RexxUnicode~character(identifier)
 
@@ -1032,7 +1032,7 @@ See the `codepoint` method for a definition of "codepoint identifier".
 ```
 
 
-#### checkCodepoint
+#### 2.4.4.   checkCodepoint
 
     .RexxUnicode~checkCodepoint(codepoint, minusOneAllowed=.false)
 
@@ -1041,7 +1041,7 @@ The range U+D800-U+DFFF is allowed (surrogates).
 If `minusOneAllowed` is true then -1 is allowed (special value used in case of error).
 
 
-#### codepoint
+#### 2.4.5.   codepoint
 
     .RexxUnicode~codepoint(identifier)
 
@@ -1080,7 +1080,7 @@ A codepoint identifier may be:
 ```
 
 
-#### codepointCharName
+#### 2.4.6.   codepointCharName
 
     .RexxUnicode~codepointCharName(codepoint, raiseError=.false)
 
@@ -1097,7 +1097,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
 .RexxUnicode~codepointCharName(-1)=             -- ''
  ```
 
-#### codepointCharNameAlias
+#### 2.4.7.   codepointCharNameAlias
 
     .RexxUnicode~codepointCharNameAlias(codepoint, raiseError=.false)
 
@@ -1115,7 +1115,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
  ```
 
 
-#### codepointExtendedCharName
+#### 2.4.8.   codepointExtendedCharName
 
     .RexxUnicode~codepointExtendedCharName(codepoint, raiseError=.false)
 
@@ -1136,7 +1136,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
 ```
 
 
-#### codepointIsPrintable
+#### 2.4.9.   codepointIsPrintable
 
     .RexxUnicode~codepointIsPrintable(codepoint)
 
@@ -1162,7 +1162,7 @@ Rules:
 .RexxUnicode~codepointIsPrintable(-1)=            -- 0
 ```
 
-#### codepointPrintableString
+#### 2.4.10.   codepointPrintableString
 
     .RexxUnicode~codepointPrintableString( codepoint, buffer=.nil)
 
@@ -1185,7 +1185,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 ```
 
 
-#### codepointUnicodeEscapeNotation
+#### 2.4.11.   codepointUnicodeEscapeNotation
 
     .RexxUnicode~codepointUnicodeEscapeNotation(codepoint, buffer=.nil)
 
@@ -1204,7 +1204,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 ```
 
 
-#### codepointUTF8Encoding
+#### 2.4.12.   codepointUTF8Encoding
 
     .RexxUnicode~codepointUTF8Encoding(codepoint, buffer=.nil)
 
@@ -1224,7 +1224,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 ```
 
 
-#### D2U
+#### 2.4.13.   D2U
 
     .RexxUnicode~D2U(codepoint, buffer=.nil)
 
@@ -1250,7 +1250,7 @@ The special value -1 is represented using `U+FFFFFF`, even though the resulting 
 ```
 
 
-#### h_UAX44_LM2
+#### 2.4.14.   h_UAX44_LM2
 
     .RexxUnicode~h_UAX44_LM2(name)
 
@@ -1267,7 +1267,7 @@ or to .RexxUnicode~UAX44_LM2 (slower, but always available).
 ```
 
 
-#### info
+#### 2.4.15.   info
 
     .RexxUnicode~info
 
@@ -1288,7 +1288,7 @@ Returns a `StringTable` containing information about the Unicode environment.
 ```
 
 
-#### stringEscape
+#### 2.4.16.   stringEscape
 
     .RexxUnicode~stringEscape(string, buffer=.nil)
 
@@ -1324,7 +1324,7 @@ Escaping U+D800 is '\x{ED}\x{A0}\x{80}' because \x{EDA080} can't be UTF-8 decode
 ```
 
 
-#### stringInfo
+#### 2.4.17.   stringInfo
 
     .RexxUnicode~stringInfo(string [, >indexer])
 
@@ -1363,7 +1363,7 @@ indexer~errors==
 ```
 
 
-#### stringIsASCII
+#### 2.4.18.   stringIsASCII
 
     .RexxUnicode~stringIsASCII(string)
 
@@ -1377,7 +1377,7 @@ Returns `.true` if the given string contains only characters <= "7F"x
 ```
 
 
-#### stringToNFC
+#### 2.4.19.   stringToNFC
 
     .RexxUnicode~stringToNFC(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)
 
@@ -1393,7 +1393,7 @@ See the `utf8Transform` method for a description of the optional transformation 
 ```
 
 
-#### stringToNFD
+#### 2.4.20.   stringToNFD
 
     .RexxUnicode~stringToNFD(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)
 
@@ -1409,7 +1409,7 @@ See the `utf8Transform` method for a description of the optional transformation 
 ```
 
 
-#### stringToNFKC
+#### 2.4.21.   stringToNFKC
 
     .RexxUnicode~stringToNFKC(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)
 
@@ -1425,7 +1425,7 @@ See the `utf8Transform` method for a description of the optional transformation 
 ```
 
 
-#### stringToNFKC_CF
+#### 2.4.22.   stringToNFKC_CF
 
     .RexxUnicode~stringToNFKC_CF(string, lump= .false, nlf = 0, stripCC = .false, stripMark = .false, stripNA = .false)
 
@@ -1451,7 +1451,7 @@ See the `utf8Transform` method for a description of the optional transformation 
 ```
 
 
-#### stringToNFKD
+#### 2.4.23.   stringToNFKD
 
     .RexxUnicode~stringToNFKD(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)
 
@@ -1467,7 +1467,7 @@ See the `utf8Transform` method for a description of the optional transformation 
 ```
 
 
-#### stringUnescape
+#### 2.4.24.   stringUnescape
 
     .RexxUnicode~stringUnescape(string, buffer=.nil)
 
@@ -1526,7 +1526,7 @@ This method handles them at run time instead.
 ```
 
 
-#### U2C
+#### 2.4.25.   U2C
 
     .RexxUnicode~U2C(UPlusCodepoints, buffer=.nil)
 
@@ -1556,7 +1556,7 @@ b=                                                      -- M'🤶 '
 ```
 
 
-#### U2D
+#### 2.4.26.   U2D
 
     .RexxUnicode~U2D(UPlusCodepoint, start=1, raiseError=.false [, >refLength]
 
@@ -1583,7 +1583,7 @@ Otherwise, returns -1 or, if requested, raises an error.
 ```
 
 
-#### UAX44_LM2
+#### 2.4.27.   UAX44_LM2
 
     .RexxUnicode~UAX44_LM2(string)
 
@@ -1601,7 +1601,7 @@ are removed.
 ```
 
 
-#### UAX44_LM3
+#### 2.4.28.   UAX44_LM3
 
     .RexxUnicode~UAX44_LM3(string)
 
@@ -1621,12 +1621,12 @@ are removed.
 ```
 
 
-### Instance methods
+### 2.5.   Instance methods
 
 The `RexxUnicode` class defines no instance methods of its own.
 
 
-## RexxUnicodeCodepointSupplier Class
+## 3.   RexxUnicodeCodepointSupplier Class
 
 A `RexxUnicodeCodepointSupplier` instance is an iterator created from a 
 UTF-8 string and allows enumeration of the string's codepoints.
@@ -1743,27 +1743,27 @@ UTF-8 string and allows enumeration of the string's codepoints.
 
 ```
 
-### Class methods
+### 3.1.   Class methods
 
 
-### Instance methods
+### 3.2.   Instance methods
 
-#### AVAILABLE
-
-
-#### INDEX
+#### 3.2.1.   AVAILABLE
 
 
-#### INIT
+#### 3.2.2.   INDEX
 
 
-#### ITEM
+#### 3.2.3.   INIT
 
 
-#### NEXT
+#### 3.2.4.   ITEM
 
 
-## RexxUnicodeGraphemeSupplier Class
+#### 3.2.5.   NEXT
+
+
+## 4.   RexxUnicodeGraphemeSupplier Class
 
 A `RexxUnicodeGraphemeSupplier` instance is an iterator created from a 
 UTF-8 string and allows enumeration of the string's graphemes.
@@ -1858,27 +1858,27 @@ UTF-8 string and allows enumeration of the string's graphemes.
 ```
 
 
-### Class methods
+### 4.1.   Class methods
 
 
-### Instance methods
+### 4.2.   Instance methods
 
-#### AVAILABLE
-
-
-#### INDEX
+#### 4.2.1.   AVAILABLE
 
 
-#### INIT
+#### 4.2.2.   INDEX
 
 
-#### ITEM
+#### 4.2.3.   INIT
 
 
-#### NEXT
+#### 4.2.4.   ITEM
 
 
-## RexxUnicodeStringIndexer Class
+#### 4.2.5.   NEXT
+
+
+## 5.   RexxUnicodeStringIndexer Class
 
 `::requires "rxunicode.cls"`
 
@@ -1916,39 +1916,39 @@ indexer~graphemeAtIndexG(3)~c2x=    -- 92 (use ~c2x to not display an invalid by
 ```
 
 
-### Class methods
+### 5.1.   Class methods
 
 
-### Instance methods
+### 5.2.   Instance methods
 
-#### CODEPOINTATINDEXC
-
-
-#### CODEPOINTINDEXB
+#### 5.2.1.   CODEPOINTATINDEXC
 
 
-#### CODEPOINTINDEXES
+#### 5.2.2.   CODEPOINTINDEXB
 
 
-#### ERRORS
+#### 5.2.3.   CODEPOINTINDEXES
 
 
-#### GRAPHEMEATINDEXG
+#### 5.2.4.   ERRORS
 
 
-#### GRAPHEMEINDEXB
+#### 5.2.5.   GRAPHEMEATINDEXG
 
 
-#### GRAPHEMEINDEXES
+#### 5.2.6.   GRAPHEMEINDEXB
 
 
-#### INIT
+#### 5.2.7.   GRAPHEMEINDEXES
 
 
-#### STRING
+#### 5.2.8.   INIT
 
 
-## RexxUnicodeCharacter Class
+#### 5.2.9.   STRING
+
+
+## 6.   RexxUnicodeCharacter Class
 
 A RexxUnicodeCharacter instance is created from a codepoint and provides access 
 to the properties of the corresponding Unicode character.
@@ -1958,130 +1958,130 @@ The special value -1 can be represented using a RexxUnicodeCharacter.
 `::requires "rxunicode.cls"`
 
 
-### Class methods
+### 6.1.   Class methods
 
-#### PROPERTIES
+#### 6.1.1.   PROPERTIES
 
 
-### Instance methods
+### 6.2.   Instance methods
 
-#### BIDICLASS
+#### 6.2.1.   BIDICLASS
 
 
-#### BIDICLASSNAME
+#### 6.2.2.   BIDICLASSNAME
 
 
-#### BIDIMIRRORED
+#### 6.2.3.   BIDIMIRRORED
 
 
-#### BOUNDCLASS
+#### 6.2.4.   BOUNDCLASS
 
 
-#### BOUNDCLASSNAME
+#### 6.2.5.   BOUNDCLASSNAME
 
 
-#### CATEGORY
+#### 6.2.6.   CATEGORY
 
 
-#### CATEGORYNAME
+#### 6.2.7.   CATEGORYNAME
 
 
-#### CHARWIDTH
+#### 6.2.8.   CHARWIDTH
 
 
-#### CODEPOINT
+#### 6.2.9.   CODEPOINT
 
 
-#### COMBININGCLASS
+#### 6.2.10.   COMBININGCLASS
 
 
-#### COMBININGCLASSNAME
+#### 6.2.11.   COMBININGCLASSNAME
 
 
-#### COMPARETO
+#### 6.2.12.   COMPARETO
 
 
-#### CONTROLBOUNDARY
+#### 6.2.13.   CONTROLBOUNDARY
 
 
-#### DECOMPOSITIONTYPE
+#### 6.2.14.   DECOMPOSITIONTYPE
 
 
-#### DECOMPOSITIONTYPENAME
+#### 6.2.15.   DECOMPOSITIONTYPENAME
 
 
-#### EXTENDEDNAME
+#### 6.2.16.   EXTENDEDNAME
 
 
-#### IGNORABLE
+#### 6.2.17.   IGNORABLE
 
 
-#### INFO
+#### 6.2.18.   INFO
 
 
-#### INIT
+#### 6.2.19.   INIT
 
 
-#### ISLOWER
+#### 6.2.20.   ISLOWER
 
 
-#### ISUPPER
+#### 6.2.21.   ISUPPER
 
 
-#### NAME
+#### 6.2.22.   NAME
 
 
-#### NAMEALIAS
+#### 6.2.23.   NAMEALIAS
 
 
-#### STRING
+#### 6.2.24.   STRING
 
 
-#### TOLOWER
+#### 6.2.25.   TOLOWER
 
 
-#### TOLOWERFULL
+#### 6.2.26.   TOLOWERFULL
 
 
-#### TOTITLE
+#### 6.2.27.   TOTITLE
 
 
-#### TOTITLEFULL
+#### 6.2.28.   TOTITLEFULL
 
 
-#### TOUPPER
+#### 6.2.29.   TOUPPER
 
 
-#### TOUPPERFULL
+#### 6.2.30.   TOUPPERFULL
 
 
-#### UNAME
+#### 6.2.31.   UNAME
 
 
-#### UTF8
+#### 6.2.32.   UTF8
 
-## ICU4ooRexxInterface Class
+## 7.   ICU4ooRexxInterface Class
 
 `::requires "rxunicode.cls"`
 
-### Class methods
+### 7.1.   Class methods
 
-#### ACTIVATE
-
-
-#### ASSERTICU4OOREXXISREGISTERED
+#### 7.1.1.   ACTIVATE
 
 
-#### ICU4OOREXXISREGISTERED
+#### 7.1.2.   ASSERTICU4OOREXXISREGISTERED
 
 
-#### ICU4OOREXXPACKAGE
+#### 7.1.3.   ICU4OOREXXISREGISTERED
 
 
-#### REGISTERICU4OOREXX
+#### 7.1.4.   ICU4OOREXXPACKAGE
 
 
-### Instance methods
+#### 7.1.5.   REGISTERICU4OOREXX
+
+
+### 7.2.   Instance methods
 
 
 

@@ -67,7 +67,7 @@ when mixing graphemes and bytes.</p>
 <p><strong>Note on terminology:</strong> This documentation and the code
 comments use the term "codepoint" instead of "code point", except when
 quoting definitions from the Unicode Standard.</p>
-<h2 id="rexxunicodeservices-class">RexxUnicodeServices Class</h2>
+<h2 id="rexxunicodeservices-class">1.   RexxUnicodeServices Class</h2>
 <p>The <code>RexxUnicodeServices</code> class cannot be
 instantiated.<br />
 Its services are provided through class methods.</p>
@@ -75,8 +75,8 @@ Its services are provided through class methods.</p>
 <code>rxunicode.cls</code>.</p>
 <p>In the examples, you can replace <code>RexxUnicodeServices</code> by
 <code>RexxUnicode</code> if you loaded <code>rxunicode.cls</code>.</p>
-<h3 id="class-methods">Class methods</h3>
-<h4 id="codepointbidiclass">codepointBidiClass</h4>
+<h3 id="class-methods">1.1.   Class methods</h3>
+<h4 id="codepointbidiclass">1.1.1.   codepointBidiClass</h4>
 <pre><code>.RexxUnicodeServices~codepointBidiClass(codepoint [, [&gt;refCode] [, &gt;refLabel]])</code></pre>
 <p>Returns the bidirectional character type of <code>codepoint</code> as
 an enumeration value.</p>
@@ -125,13 +125,13 @@ For portability, use refCode instead.</p>
 <code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointBidiClass</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">              </span><span class="rx-lncm">--  0; '?'; 'Code point not explicitly listed for Bidi_Class'</span>
 </code></pre>
 </div>
-<h4 id="codepointbidimirrored">codepointBidiMirrored</h4>
+<h4 id="codepointbidimirrored">1.1.2.   codepointBidiMirrored</h4>
 <pre><code>.RexxUnicodeServices~codepointBidiMirrored(codepoint)</code></pre>
 <p>Returns <code>.true</code> if the <code>Bidi_Mirrored</code> property
 value of <code>codepoint</code> is <code>Yes</code>.</p>
 <p><a
 href="https://unicode.org/reports/tr9/#Mirroring">https://unicode.org/reports/tr9/#Mirroring</a></p>
-<h4 id="codepointboundclass">codepointBoundClass</h4>
+<h4 id="codepointboundclass">1.1.3.   codepointBoundClass</h4>
 <pre><code>.RexxUnicodeServices~codepointBoundClass(codepoint [, [&gt;refCode] [, &gt;refLabel]])</code></pre>
 <p>Returns the <code>Grapheme_Cluster_Break</code> property value of
 <code>codepoint</code> as an enumeration value.</p>
@@ -182,7 +182,7 @@ For portability, use refCode instead.</p>
 <code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointBoundClass</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">              </span><span class="rx-lncm">--  1; 'XX'; 'Other'</span>
 </code></pre>
 </div>
-<h4 id="codepointcategory">codepointCategory</h4>
+<h4 id="codepointcategory">1.1.4.   codepointCategory</h4>
 <pre><code>.RexxUnicodeServices~codepointCategory(codepoint [, [&gt;refCode] [, &gt;refLabel]])</code></pre>
 <p>Returns the <code>General_Category</code> property value of
 <code>codepoint</code> as an enumeration value.</p>
@@ -236,13 +236,13 @@ For portability, use refCode instead.</p>
 <code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointCategory</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">              </span><span class="rx-lncm">--  0; 'Cn'; 'Unassigned'</span>
 </code></pre>
 </div>
-<h4 id="codepointcharwidth">codepointCharWidth</h4>
+<h4 id="codepointcharwidth">1.1.5.   codepointCharWidth</h4>
 <pre><code>.RexxUnicodeServices~codepointCharWidth(codepoint)</code></pre>
 <p>Given a codepoint, returns a character width analogous to
 <code>wcwidth(codepoint)</code>, except that a width of 0 is returned
 for non-printable codepoints instead of -1 as in
 <code>wcwidth</code>.</p>
-<h4 id="codepointcombiningclass">codepointCombiningClass</h4>
+<h4 id="codepointcombiningclass">1.1.6.   codepointCombiningClass</h4>
 <pre><code>.RexxUnicodeServices~codepointCombiningClass(codepoint [, [&gt;refCode] [, &gt;refLabel]])</code></pre>
 <p>Returns the <code>Canonical_Combining_Class</code> property value of
 <code>codepoint</code>.</p>
@@ -346,7 +346,7 @@ Some values have neither a <code>refCode</code> nor a
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointCombiningClass</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">             </span><span class="rx-lncm">--  0; 'NR'; 'Not_Reordered'</span>
 </code></pre>
 </div>
-<h4 id="codepointcontrolboundary">codepointControlBoundary</h4>
+<h4 id="codepointcontrolboundary">1.1.7.   codepointControlBoundary</h4>
 <pre><code>.RexxUnicodeServices~codepointControlBoundary(codepoint)</code></pre>
 <p>Returns <code>.true</code> if <code>codepoint</code> belongs to the
 <code>Zl</code>, <code>Zp</code>, <code>Cc</code>, or <code>Cf</code>
@@ -361,7 +361,8 @@ title="Standard Annex #29">Unicode Standard Annex #29</a>. Therefore,
 this method is likely to be deprecated unless a use case is
 identified.</p>
 </blockquote>
-<h4 id="codepointdecompositiontype">codepointDecompositionType</h4>
+<h4
+id="codepointdecompositiontype">1.1.8.   codepointDecompositionType</h4>
 <pre><code>.RexxUnicodeServices~codepointDecompositionType(codepoint [, [&gt;refCode] [, &gt;refLabel]])</code></pre>
 <p>Returns the <code>Decomposition_Type</code> property value of
 <code>codepoint</code> as an enumeration value.</p>
@@ -405,19 +406,19 @@ For portability, use refCode instead.</p>
 <code lineno="5"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointDecompositionType</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">              </span><span class="rx-lncm">--  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'</span>
 </code></pre>
 </div>
-<h4 id="codepointignorable">codepointIgnorable</h4>
+<h4 id="codepointignorable">1.1.9.   codepointIgnorable</h4>
 <pre><code>.RexxUnicodeServices~codepointIgnorable(codepoint)</code></pre>
 <p>Returns the <code>Default_Ignorable_Code_Point</code> property value
 of <code>codepoint</code> (boolean value).</p>
-<h4 id="codepointislower">codepointIsLower</h4>
+<h4 id="codepointislower">1.1.10.   codepointIsLower</h4>
 <pre><code>.RexxUnicodeServices~codepointIsLower(codepoint)</code></pre>
 <p>Returns <code>.true</code> if the codepoint corresponds to a
 lower-case character and <code>.false</code> otherwise.</p>
-<h4 id="codepointisupper">codepointIsUpper</h4>
+<h4 id="codepointisupper">1.1.11.   codepointIsUpper</h4>
 <pre><code>.RexxUnicodeServices~codepointIsUpper(codepoint)</code></pre>
 <p>Returns <code>.true</code> if the codepoint corresponds to an
 upper-case character and <code>.false</code> otherwise.</p>
-<h4 id="codepointtolower">codepointToLower</h4>
+<h4 id="codepointtolower">1.1.12.   codepointToLower</h4>
 <pre><code>.RexxUnicodeServices~codepointToLower(codepoint)</code></pre>
 <p>Returns the codepoint of the corresponding lower-case
 character.<br />
@@ -425,7 +426,7 @@ If <code>codepoint</code> has no lower-case mapping, returns
 <code>codepoint</code>.</p>
 <p>This method uses the simple case mappings defined in
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
-<h4 id="codepointtotitle">codepointToTitle</h4>
+<h4 id="codepointtotitle">1.1.13.   codepointToTitle</h4>
 <pre><code>.RexxUnicodeServices~codepointToTitle(codepoint)</code></pre>
 <p>Returns the codepoint of the corresponding title-case
 character.<br />
@@ -433,7 +434,7 @@ If <code>codepoint</code> has no title-case mapping, returns
 <code>codepoint</code>.</p>
 <p>This method uses the simple case mappings defined in
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
-<h4 id="codepointtoupper">codepointToUpper</h4>
+<h4 id="codepointtoupper">1.1.14.   codepointToUpper</h4>
 <pre><code>.RexxUnicodeServices~codepointToUpper(codepoint)</code></pre>
 <p>Returns the codepoint of the corresponding upper-case
 character.<br />
@@ -441,7 +442,7 @@ If <code>codepoint</code> has no upper-case mapping, returns
 <code>codepoint</code>.</p>
 <p>This method uses the simple case mappings defined in
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
-<h4 id="graphemebreak">graphemeBreak</h4>
+<h4 id="graphemebreak">1.1.15.   graphemeBreak</h4>
 <pre><code>.RexxUnicodeServices~graphemeBreak(array)</code></pre>
 <p>Returns .true if there is a grapheme break between the two
 consecutive codepoints passed in <code>array</code>.</p>
@@ -453,13 +454,13 @@ consecutive codepoints passed in <code>array</code>.</p>
 <code lineno="4"><span class="rx-var">break</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeBreak</span><span class="rx-spe">(</span><span class="rx-var">array</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-lncm">-- true or false</span>
 </code></pre>
 </div>
-<h4 id="new">new</h4>
+<h4 id="new">1.1.16.   new</h4>
 <p>This method raises an error because <code>RexxUnicodeServices</code>
 has no instance.</p>
-<h4 id="systemislittleendian">systemIsLittleEndian</h4>
+<h4 id="systemislittleendian">1.1.17.   systemIsLittleEndian</h4>
 <pre><code>.RexxUnicodeServices~systemIsLittleEndian</code></pre>
 <p>Returns <code>.true</code> if the system is little-endian.</p>
-<h4 id="unicodeversion">unicodeVersion</h4>
+<h4 id="unicodeversion">1.1.18.   unicodeVersion</h4>
 <pre><code>RexxString *unicodeVersion();
 
 .RexxUnicodeServices~unicodeVersion</code></pre>
@@ -471,7 +472,7 @@ library.</p>
 <code lineno="2">
 </code></pre>
 </div>
-<h4 id="utf8decodecodepoint">utf8DecodeCodepoint</h4>
+<h4 id="utf8decodecodepoint">1.1.19.   utf8DecodeCodepoint</h4>
 <pre><code>utf8DecodeCodepoint(
     string,         -- (in)             A UTF-8 string.
     indexB,         -- (in)             The byte index (1-based) of the encoded codepoint in string.
@@ -536,7 +537,7 @@ detailed description of the error.</p>
 <code lineno="18"><span class="rx-ws">    </span><span class="rx-kw">end</span>
 </code></pre>
 </div>
-<h4 id="utf8encodecodepoint">utf8EncodeCodepoint</h4>
+<h4 id="utf8encodecodepoint">1.1.20.   utf8EncodeCodepoint</h4>
 <pre><code>utf8EncodeCodepoint(
     codepoint,      -- (in)             The codepoint to encode (an integer).
     destination,    -- (in-out)         The mutable buffer to update.
@@ -570,7 +571,7 @@ byte sequence (0..4).</p>
 <code lineno="14"><span class="rx-cm">*/</span>
 </code></pre>
 </div>
-<h4 id="utf8procversion">utf8procVersion</h4>
+<h4 id="utf8procversion">1.1.21.   utf8procVersion</h4>
 <pre><code>RexxString *utf8procVersion();
 
 .RexxUnicodeServices~utf8procVersion</code></pre>
@@ -581,7 +582,7 @@ byte sequence (0..4).</p>
 <code lineno="2">
 </code></pre>
 </div>
-<h4 id="utf8transform">utf8Transform</h4>
+<h4 id="utf8transform">1.1.22.   utf8Transform</h4>
 <pre><code>utf8Transform(
     string,                 -- The UTF-8 string to transform
     casefold = .false,      -- Unicode case folding
@@ -596,10 +597,10 @@ byte sequence (0..4).</p>
 
 .RexxUnicodeServices~utf8Transform(string [, casefold = .false [, lump= .false [, nlf = 0 [, normalization = 0 [, stripCC = .false [, stripIgnorable= .false [, stripMark = .false [, stripNA = .false]]]]]]]])</code></pre>
 <p>Returns the transformed string.</p>
-<h5 id="casefold">caseFold</h5>
+<h5 id="casefold">1.1.22.1.   caseFold</h5>
 <p>Performs unicode case folding, to be able to do a case-insensitive
 string comparison.</p>
-<h5 id="lump">lump</h5>
+<h5 id="lump">1.1.22.2.   lump</h5>
 <p>Maps certain characters to a common representative (i.e., several
 distinct characters produce the same output character).<br />
 All the concerned characters become the same character, but still remain
@@ -639,7 +640,7 @@ U+005F  _   &lt;-- all connector characters (general category Pc),
 U+0060  `   &lt;-- modifier letter grave accent U+02CB
 U+007C  |   &lt;-- divides U+2223
 U+007E  ~   &lt;-- tilde operator U+223C</code></pre>
-<h5 id="nlf">nlf</h5>
+<h5 id="nlf">1.1.22.3.   nlf</h5>
 <p><a
 href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213">https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213</a></p>
 <div class="highlight-rexx-vim-light-zellner">
@@ -662,7 +663,7 @@ Converts LF, CRLF, CR and NEL into PS.<br />
 NLF-sequences (LF, CRLF, CR, NEL) are representing a paragraph break,
 and should be converted to the codepoint for paragraph separation
 (PS).</p>
-<h5 id="normalization">normalization</h5>
+<h5 id="normalization">1.1.22.4.   normalization</h5>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).</span></code>
 <code lineno="2"><span class="rx-lncm">-- These constants are declared in the RexxUnicode class.</span></code>
@@ -675,17 +676,17 @@ and should be converted to the codepoint for paragraph separation
 </div>
 <p>If <code>normalization</code> is not <code>0</code>, apply the
 requested normalization.</p>
-<h5 id="stripcc">stripCC</h5>
+<h5 id="stripcc">1.1.22.5.   stripCC</h5>
 <p>Strips and/or converts control characters.</p>
 <p>NLF-sequences are transformed into space, except if one of the
 NLF2LS/PS/LF options is given. HorizontalTab (HT) and FormFeed (FF) are
 treated as a NLF-sequence in this case.</p>
 <p>All other control characters are simply removed.</p>
-<h5 id="stripignorable">stripIgnorable</h5>
+<h5 id="stripignorable">1.1.22.6.   stripIgnorable</h5>
 <p>Strips the characters whose property
 <code>Default_Ignorable_Code_Point</code> is true, such as
 <code>SOFT-HYPHEN</code> or <code>ZERO-WIDTH-SPACE</code>.</p>
-<h5 id="stripmark">stripMark</h5>
+<h5 id="stripmark">1.1.22.7.   stripMark</h5>
 <p>Strips all character markings.</p>
 <p>This includes non-spacing, spacing and enclosing (i.e. accents)
 categories:</p>
@@ -695,9 +696,10 @@ categories:</p>
 <li>Mn Nonspacing Mark</li>
 </ul>
 <p>This option works only with a normalization applied.</p>
-<h5 id="stripna">stripNA</h5>
+<h5 id="stripna">1.1.22.8.   stripNA</h5>
 <p>Strips the characters whose category is Cn Unassigned.</p>
-<h5 id="examples-of-transformations">Examples of transformations</h5>
+<h5 id="examples-of-transformations">1.1.22.9.   Examples of
+transformations</h5>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;control-0007&gt;}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n</span><span class="rx-str rx-cquo">"</span></code>
 <code lineno="2"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">)</span></code>
@@ -818,26 +820,28 @@ categories:</p>
 <code lineno="117"><span class="rx-ws">    </span>
 </code></pre>
 </div>
-<h3 id="instance-methods">Instance methods</h3>
+<h3 id="instance-methods">1.2.   Instance methods</h3>
 <p>The <code>RexxUnicodeServices</code> class defines no instance
 methods of its own.</p>
-<h2 id="rexxunicode-class">RexxUnicode Class</h2>
+<h2 id="rexxunicode-class">2.   RexxUnicode Class</h2>
 <p>The <code>RexxUnicode</code> class cannot be instantiated.<br />
 Its services are provided through class methods.</p>
 <p><code>::requires "rxunicode.cls"</code></p>
-<h3 id="methods-inherited-from-the-icu4oorexxinterface-class">Methods
+<h3
+id="methods-inherited-from-the-icu4oorexxinterface-class">2.1.   Methods
 inherited from the <code>ICU4ooRexxInterface</code> class</h3>
 <p>See the <code>ICU4ooRexxInterface</code> class.</p>
-<h3 id="methods-inherited-from-the-rexxunicodeservices-class">Methods
+<h3
+id="methods-inherited-from-the-rexxunicodeservices-class">2.2.   Methods
 inherited from the <code>RexxUnicodeServices</code> class</h3>
 <p>See the <code>RexxUnicodeServices</code> class.</p>
-<h3 id="constants">Constants</h3>
-<h4 id="maxcodepoint">maxCodepoint</h4>
+<h3 id="constants">2.3.   Constants</h3>
+<h4 id="maxcodepoint">2.3.1.   maxCodepoint</h4>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-dir">::</span><span class="rx-dkw">constant</span><span class="rx-ws"> </span><span class="rx-const rx-method">maxCodepoint</span><span class="rx-ws"> </span><span class="rx-const rx-constant-value">1114111</span>
 </code></pre>
 </div>
-<h4 id="nfc-nfd-nfkc-nfkd">NFC, NFD, NFKC, NFKD</h4>
+<h4 id="nfc-nfd-nfkc-nfkd">2.3.2.   NFC, NFD, NFKC, NFKD</h4>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization):</span></code>
 <code lineno="2"><span class="rx-dir">::</span><span class="rx-dkw">constant</span><span class="rx-ws"> </span><span class="rx-const rx-method">NFC</span><span class="rx-ws"> </span><span class="rx-const rx-constant-value">1</span></code>
@@ -846,7 +850,7 @@ inherited from the <code>RexxUnicodeServices</code> class</h3>
 <code lineno="5"><span class="rx-dir">::</span><span class="rx-dkw">constant</span><span class="rx-ws"> </span><span class="rx-const rx-method">NFKD</span><span class="rx-ws"> </span><span class="rx-const rx-constant-value">4</span>
 </code></pre>
 </div>
-<h4 id="nlf2lf-nlf2ls-nlf2ps">NLF2LF, NLF2LS, NLF2PS</h4>
+<h4 id="nlf2lf-nlf2ls-nlf2ps">2.3.3.   NLF2LF, NLF2LS, NLF2PS</h4>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- Value to pass as the `nlf` argument to utf8Transform (default: 0 no transformation).</span></code>
 <code lineno="2"><span class="rx-lncm">-- See the documentation of utf8Transform for a description of these values.</span></code>
@@ -855,8 +859,8 @@ inherited from the <code>RexxUnicodeServices</code> class</h3>
 <code lineno="5"><span class="rx-dir">::</span><span class="rx-dkw">constant</span><span class="rx-ws"> </span><span class="rx-const rx-method">NLF2PS</span><span class="rx-ws"> </span><span class="rx-const rx-constant-value">3</span>
 </code></pre>
 </div>
-<h3 id="class-methods-1">Class methods</h3>
-<h4 id="c2u">C2U</h4>
+<h3 id="class-methods-1">2.4.   Class methods</h3>
+<h4 id="c2u">2.4.1.   C2U</h4>
 <pre><code>.RexxUnicode~C2U(string, buffer=.nil)</code></pre>
 <p>Returns an ASCII string containing a sequence of U+XXXX (4 to 6 hex
 digits).</p>
@@ -877,7 +881,7 @@ appended to the buffer, and the buffer is returned.</p>
 <code lineno="11"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2X</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 'E180 E2 F09192 F1BF 41'</span>
 </code></pre>
 </div>
-<h4 id="c2x">C2X</h4>
+<h4 id="c2x">2.4.2.   C2X</h4>
 <pre><code>.RexxUnicode~C2X(string, buffer=.nil)</code></pre>
 <p>Returns a string representing the encoded codepoints of
 <code>string</code> in hexadecimal.<br />
@@ -890,7 +894,7 @@ appended to the buffer, and the buffer is returned.</p>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2X</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Noël 🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- M'4E 6F C3AB 6C 20 F09F8E85'</span>
 </code></pre>
 </div>
-<h4 id="character">character</h4>
+<h4 id="character">2.4.3.   character</h4>
 <pre><code>.RexxUnicode~character(identifier)</code></pre>
 <p>Gets a RexxUnicodeCharacter from a codepoint identifier.<br />
 See the <code>codepoint</code> method for a definition of "codepoint
@@ -919,14 +923,14 @@ identifier".</p>
 <code lineno="20"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">character</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                     </span><span class="rx-lncm">-- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).</span>
 </code></pre>
 </div>
-<h4 id="checkcodepoint">checkCodepoint</h4>
+<h4 id="checkcodepoint">2.4.4.   checkCodepoint</h4>
 <pre><code>.RexxUnicode~checkCodepoint(codepoint, minusOneAllowed=.false)</code></pre>
 <p>Returns <code>.true</code> if <code>codepoint</code> is in the range
 0...RexxUnicode~maxCodepoint.<br />
 The range U+D800-U+DFFF is allowed (surrogates).<br />
 If <code>minusOneAllowed</code> is true then -1 is allowed (special
 value used in case of error).</p>
-<h4 id="codepoint">codepoint</h4>
+<h4 id="codepoint">2.4.5.   codepoint</h4>
 <pre><code>.RexxUnicode~codepoint(identifier)</code></pre>
 <p>Gets a codepoint from a codepoint identifier.</p>
 <p>A codepoint identifier may be:</p>
@@ -960,7 +964,7 @@ value used in case of error).</p>
 <code lineno="20"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepoint</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                     </span><span class="rx-lncm">-- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).</span>
 </code></pre>
 </div>
-<h4 id="codepointcharname">codepointCharName</h4>
+<h4 id="codepointcharname">2.4.6.   codepointCharName</h4>
 <pre><code>.RexxUnicode~codepointCharName(codepoint, raiseError=.false)</code></pre>
 <p>Returns the Unicode standard name for the given codepoint, or an
 empty string if not available.</p>
@@ -972,7 +976,7 @@ error.</p>
 
 -- The special value -1 has no name
 .RexxUnicode~codepointCharName(-1)=             -- &#39;&#39;</code></pre>
-<h4 id="codepointcharnamealias">codepointCharNameAlias</h4>
+<h4 id="codepointcharnamealias">2.4.7.   codepointCharNameAlias</h4>
 <pre><code>.RexxUnicode~codepointCharNameAlias(codepoint, raiseError=.false)</code></pre>
 <p>Returns the Unicode name alias for the given codepoint, or an empty
 string if not available.</p>
@@ -984,7 +988,8 @@ error.</p>
 
 -- The special value -1 has no name alias
 .RexxUnicode~codepointCharNameAlias(-1)=             -- &#39;&#39;</code></pre>
-<h4 id="codepointextendedcharname">codepointExtendedCharName</h4>
+<h4
+id="codepointextendedcharname">2.4.8.   codepointExtendedCharName</h4>
 <pre><code>.RexxUnicode~codepointExtendedCharName(codepoint, raiseError=.false)</code></pre>
 <p>Returns the Unicode extended name alias for the given codepoint, or
 an empty string if not available.</p>
@@ -1002,7 +1007,7 @@ error.</p>
 <code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointExtendedCharName</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- ''</span>
 </code></pre>
 </div>
-<h4 id="codepointisprintable">codepointIsPrintable</h4>
+<h4 id="codepointisprintable">2.4.9.   codepointIsPrintable</h4>
 <pre><code>.RexxUnicode~codepointIsPrintable(codepoint)</code></pre>
 <p>Returns <code>.true</code> if the codepoint is printable.</p>
 <p>Rules:</p>
@@ -1027,7 +1032,8 @@ width of 1.</li>
 <code lineno="6"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIsPrintable</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- 0</span>
 </code></pre>
 </div>
-<h4 id="codepointprintablestring">codepointPrintableString</h4>
+<h4
+id="codepointprintablestring">2.4.10.   codepointPrintableString</h4>
 <pre><code>.RexxUnicode~codepointPrintableString( codepoint, buffer=.nil)</code></pre>
 <p>Returns a printable string representation for the given
 codepoint.</p>
@@ -1047,7 +1053,7 @@ appended to the buffer, and the buffer is returned.</p>
 </code></pre>
 </div>
 <h4
-id="codepointunicodeescapenotation">codepointUnicodeEscapeNotation</h4>
+id="codepointunicodeescapenotation">2.4.11.   codepointUnicodeEscapeNotation</h4>
 <pre><code>.RexxUnicode~codepointUnicodeEscapeNotation(codepoint, buffer=.nil)</code></pre>
 <p>Returns the Unicode escape notation <code>\uXXXX</code> or
 <code>\UXXXXXXXX</code> for the given codepoin.</p>
@@ -1062,7 +1068,7 @@ appended to the buffer, and the buffer is returned.</p>
 <code lineno="5"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUnicodeEscapeNotation</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- M'\uD800'</span>
 </code></pre>
 </div>
-<h4 id="codepointutf8encoding">codepointUTF8Encoding</h4>
+<h4 id="codepointutf8encoding">2.4.12.   codepointUTF8Encoding</h4>
 <pre><code>.RexxUnicode~codepointUTF8Encoding(codepoint, buffer=.nil)</code></pre>
 <p>Returns the UTF-8 encoding for the given codepoint.</p>
 <p>If a buffer is passed as an argument, the resulting string is
@@ -1077,7 +1083,7 @@ appended to the buffer, and the buffer is returned.</p>
 <code lineno="6"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUTF8Encoding</span><span class="rx-spe">(</span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">maxCodepoint</span><span class="rx-ws"> </span><span class="rx-op">+</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">  </span><span class="rx-lncm">-- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).</span>
 </code></pre>
 </div>
-<h4 id="d2u">D2U</h4>
+<h4 id="d2u">2.4.13.   D2U</h4>
 <pre><code>.RexxUnicode~D2U(codepoint, buffer=.nil)</code></pre>
 <p>Returns a <code>U+XXXX</code> string (4 to 6 hex digits) representing
 the codepoint passed as a decimal value.</p>
@@ -1099,7 +1105,7 @@ href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083
 <code lineno="8"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">D2U</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                               </span><span class="rx-lncm">-- 'U+FFFFFF'</span>
 </code></pre>
 </div>
-<h4 id="h_uax44_lm2">h_UAX44_LM2</h4>
+<h4 id="h_uax44_lm2">2.4.14.   h_UAX44_LM2</h4>
 <pre><code>.RexxUnicode~h_UAX44_LM2(name)</code></pre>
 <p>h_UAX44_LM2 delegates either to ICU4ooRexx, if registered, or to
 .RexxUnicode~UAX44_LM2 (slower, but always available).</p>
@@ -1111,7 +1117,7 @@ href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083
 <code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">h_UAX44_LM2</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Père Noël</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">              </span><span class="rx-lncm">-- Name must be an ASCII string; found "Père Noël".</span>
 </code></pre>
 </div>
-<h4 id="info">info</h4>
+<h4 id="info">2.4.15.   info</h4>
 <pre><code>.RexxUnicode~info</code></pre>
 <p>Returns a <code>StringTable</code> containing information about the
 Unicode environment.</p>
@@ -1128,7 +1134,7 @@ Unicode environment.</p>
 <code lineno="9"><span class="rx-cm">    */</span>
 </code></pre>
 </div>
-<h4 id="stringescape">stringEscape</h4>
+<h4 id="stringescape">2.4.16.   stringEscape</h4>
 <pre><code>.RexxUnicode~stringEscape(string, buffer=.nil)</code></pre>
 <p>Returns a string in which non-printable codepoints and invalid byte
 sequences are replaced with escape sequences.</p>
@@ -1166,7 +1172,7 @@ appended to the buffer, and the buffer is returned.</p>
 <code lineno="18"><span class="rx-cm">*/</span>
 </code></pre>
 </div>
-<h4 id="stringinfo">stringInfo</h4>
+<h4 id="stringinfo">2.4.17.   stringInfo</h4>
 <pre><code>.RexxUnicode~stringInfo(string [, &gt;indexer])</code></pre>
 <p>Returns a string providing information about the given string:</p>
 <ul>
@@ -1201,7 +1207,7 @@ appended to the buffer, and the buffer is returned.</p>
 <code lineno="19"><span class="rx-cm">    */</span>
 </code></pre>
 </div>
-<h4 id="stringisascii">stringIsASCII</h4>
+<h4 id="stringisascii">2.4.18.   stringIsASCII</h4>
 <pre><code>.RexxUnicode~stringIsASCII(string)</code></pre>
 <p>Returns <code>.true</code> if the given string contains only
 characters &lt;= "7F"x</p>
@@ -1211,7 +1217,7 @@ characters &lt;= "7F"x</p>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringIsASCII</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Noël</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 0</span>
 </code></pre>
 </div>
-<h4 id="stringtonfc">stringToNFC</h4>
+<h4 id="stringtonfc">2.4.19.   stringToNFC</h4>
 <pre><code>.RexxUnicode~stringToNFC(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)</code></pre>
 <p>Returns the input string normalized to NFC, with optional
 transformations applied.</p>
@@ -1223,7 +1229,7 @@ optional transformation parameters.</p>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2X</span><span class="rx-spe">(</span><span class="rx-var">result</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                                  </span><span class="rx-lncm">-- 'C3A4 C3B6 C3BC 20 C3A4 C3B6 C3BC 20 78 CC82 20 CF94 20 EFB7BA 20 62 61 EFAC84 65 20 C39F 20 CF82'</span>
 </code></pre>
 </div>
-<h4 id="stringtonfd">stringToNFD</h4>
+<h4 id="stringtonfd">2.4.20.   stringToNFD</h4>
 <pre><code>.RexxUnicode~stringToNFD(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)</code></pre>
 <p>Returns the input string normalized to NFD, with optional
 transformations applied.</p>
@@ -1235,7 +1241,7 @@ optional transformation parameters.</p>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2X</span><span class="rx-spe">(</span><span class="rx-var">result</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                                   </span><span class="rx-lncm">-- '61 CC88 6F CC88 75 CC88 20 61 CC88 6F CC88 75 CC88 20 78 CC82 20 CF92 CC88 20 EFB7BA 20 62 61 EFAC84 65 20 C39F 20 CF82'</span>
 </code></pre>
 </div>
-<h4 id="stringtonfkc">stringToNFKC</h4>
+<h4 id="stringtonfkc">2.4.21.   stringToNFKC</h4>
 <pre><code>.RexxUnicode~stringToNFKC(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)</code></pre>
 <p>Returns the input string normalized to NFKC, with optional
 transformations applied.</p>
@@ -1247,7 +1253,7 @@ optional transformation parameters.</p>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2X</span><span class="rx-spe">(</span><span class="rx-var">result</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                                   </span><span class="rx-lncm">-- 'C3A4 C3B6 C3BC 20 C3A4 C3B6 C3BC 20 78 CC82 20 CEAB 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 C39F 20 CF82'</span>
 </code></pre>
 </div>
-<h4 id="stringtonfkc_cf">stringToNFKC_CF</h4>
+<h4 id="stringtonfkc_cf">2.4.22.   stringToNFKC_CF</h4>
 <pre><code>.RexxUnicode~stringToNFKC_CF(string, lump= .false, nlf = 0, stripCC = .false, stripMark = .false, stripNA = .false)</code></pre>
 <p>Returns the input string normalized to NFKC_CF, with optional
 transformations applied.</p>
@@ -1274,7 +1280,7 @@ optional transformation parameters.</p>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2X</span><span class="rx-spe">(</span><span class="rx-var">result</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                                       </span><span class="rx-lncm">-- 'C3A4 C3B6 C3BC 20 C3A4 C3B6 C3BC 20 78 CC82 20 CF8B 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 73 73 20 CF83'</span>
 </code></pre>
 </div>
-<h4 id="stringtonfkd">stringToNFKD</h4>
+<h4 id="stringtonfkd">2.4.23.   stringToNFKD</h4>
 <pre><code>.RexxUnicode~stringToNFKD(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)</code></pre>
 <p>Returns the input string normalized to NFKD, with optional
 transformations applied.</p>
@@ -1286,7 +1292,7 @@ optional transformation parameters.</p>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2X</span><span class="rx-spe">(</span><span class="rx-var">result</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                                   </span><span class="rx-lncm">-- '61 CC88 6F CC88 75 CC88 20 61 CC88 6F CC88 75 CC88 20 78 CC82 20 CEA5 CC88 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 C39F 20 CF82'</span>
 </code></pre>
 </div>
-<h4 id="stringunescape">stringUnescape</h4>
+<h4 id="stringunescape">2.4.24.   stringUnescape</h4>
 <pre><code>.RexxUnicode~stringUnescape(string, buffer=.nil)</code></pre>
 <p>Returns a string in which escape sequences are replaced with their
 corresponding values.</p>
@@ -1338,7 +1344,7 @@ time. This method handles them at run time instead.</p>
 <code lineno="24"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- '𝓐B𝓒𝓓𝓔'</span>
 </code></pre>
 </div>
-<h4 id="u2c">U2C</h4>
+<h4 id="u2c">2.4.25.   U2C</h4>
 <pre><code>.RexxUnicode~U2C(UPlusCodepoints, buffer=.nil)</code></pre>
 <p>Encodes an ASCII string of the form
 <code>"U+XXXX.. U+XXXX.. ..."</code> into a UTF-8 string.</p>
@@ -1364,7 +1370,7 @@ discarded.</p>
 <code lineno="10"><span class="rx-var">b</span><span class="rx-spe">=</span><span class="rx-ws">                                                      </span><span class="rx-lncm">-- M'🤶 '</span>
 </code></pre>
 </div>
-<h4 id="u2d">U2D</h4>
+<h4 id="u2d">2.4.26.   U2D</h4>
 <pre><code>.RexxUnicode~U2D(UPlusCodepoint, start=1, raiseError=.false [, &gt;refLength]</code></pre>
 <p>Converts <code>"U+XXXX.."</code> to a decimal value.</p>
 <p>If <code>refLength</code> is provided by the caller, extra characters
@@ -1386,7 +1392,7 @@ Otherwise, returns -1 or, if requested, raises an error.</p>
 <code lineno="7"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2D</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+0020 U+1F385 </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*start*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">8</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*raiseError*/</span><span class="rx-ws"> </span><span class="rx-env">.true</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">length</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">length</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- 127877; 7</span>
 </code></pre>
 </div>
-<h4 id="uax44_lm2">UAX44_LM2</h4>
+<h4 id="uax44_lm2">2.4.27.   UAX44_LM2</h4>
 <pre><code>.RexxUnicode~UAX44_LM2(string)</code></pre>
 <p>Returns a string ready for comparison using the <a
 href="https://unicode.org/reports/tr44/#UAX44-LM2"
@@ -1401,7 +1407,7 @@ the hyphen in U+1180 HANGUL JUNGSEONG O-E are removed.</p>
 <code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">UAX44_LM2</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Père Noël</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                </span><span class="rx-lncm">-- Name must be an ASCII string; found "Père Noël".</span>
 </code></pre>
 </div>
-<h4 id="uax44_lm3">UAX44_LM3</h4>
+<h4 id="uax44_lm3">2.4.28.   UAX44_LM3</h4>
 <pre><code>.RexxUnicode~UAX44_LM3(string)</code></pre>
 <p>Returns a string ready for comparison using the <a
 href="https://unicode.org/reports/tr44/#UAX44-LM3"
@@ -1418,10 +1424,11 @@ prefix string "is" are removed.</p>
 <code lineno="6"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">UAX44_LM3</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Is Père Noël</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">             </span><span class="rx-lncm">-- Name must be an ASCII string; found "Is Père Noël".</span>
 </code></pre>
 </div>
-<h3 id="instance-methods-1">Instance methods</h3>
+<h3 id="instance-methods-1">2.5.   Instance methods</h3>
 <p>The <code>RexxUnicode</code> class defines no instance methods of its
 own.</p>
-<h2 id="rexxunicodecodepointsupplier-class">RexxUnicodeCodepointSupplier
+<h2
+id="rexxunicodecodepointsupplier-class">3.   RexxUnicodeCodepointSupplier
 Class</h2>
 <p>A <code>RexxUnicodeCodepointSupplier</code> instance is an iterator
 created from a UTF-8 string and allows enumeration of the string's
@@ -1536,14 +1543,15 @@ codepoints.</p>
 <code lineno="10">
 </code></pre>
 </div>
-<h3 id="class-methods-2">Class methods</h3>
-<h3 id="instance-methods-2">Instance methods</h3>
-<h4 id="available">AVAILABLE</h4>
-<h4 id="index">INDEX</h4>
-<h4 id="init">INIT</h4>
-<h4 id="item">ITEM</h4>
-<h4 id="next">NEXT</h4>
-<h2 id="rexxunicodegraphemesupplier-class">RexxUnicodeGraphemeSupplier
+<h3 id="class-methods-2">3.1.   Class methods</h3>
+<h3 id="instance-methods-2">3.2.   Instance methods</h3>
+<h4 id="available">3.2.1.   AVAILABLE</h4>
+<h4 id="index">3.2.2.   INDEX</h4>
+<h4 id="init">3.2.3.   INIT</h4>
+<h4 id="item">3.2.4.   ITEM</h4>
+<h4 id="next">3.2.5.   NEXT</h4>
+<h2
+id="rexxunicodegraphemesupplier-class">4.   RexxUnicodeGraphemeSupplier
 Class</h2>
 <p>A <code>RexxUnicodeGraphemeSupplier</code> instance is an iterator
 created from a UTF-8 string and allows enumeration of the string's
@@ -1635,14 +1643,14 @@ graphemes.</p>
 <code lineno="11">
 </code></pre>
 </div>
-<h3 id="class-methods-3">Class methods</h3>
-<h3 id="instance-methods-3">Instance methods</h3>
-<h4 id="available-1">AVAILABLE</h4>
-<h4 id="index-1">INDEX</h4>
-<h4 id="init-1">INIT</h4>
-<h4 id="item-1">ITEM</h4>
-<h4 id="next-1">NEXT</h4>
-<h2 id="rexxunicodestringindexer-class">RexxUnicodeStringIndexer
+<h3 id="class-methods-3">4.1.   Class methods</h3>
+<h3 id="instance-methods-3">4.2.   Instance methods</h3>
+<h4 id="available-1">4.2.1.   AVAILABLE</h4>
+<h4 id="index-1">4.2.2.   INDEX</h4>
+<h4 id="init-1">4.2.3.   INIT</h4>
+<h4 id="item-1">4.2.4.   ITEM</h4>
+<h4 id="next-1">4.2.5.   NEXT</h4>
+<h2 id="rexxunicodestringindexer-class">5.   RexxUnicodeStringIndexer
 Class</h2>
 <p><code>::requires "rxunicode.cls"</code></p>
 <p><strong>Examples:</strong></p>
@@ -1677,68 +1685,69 @@ Class</h2>
 <code lineno="28"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeAtIndexG</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">3</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 92 (use ~c2x to not display an invalid byte sequence)</span>
 </code></pre>
 </div>
-<h3 id="class-methods-4">Class methods</h3>
-<h3 id="instance-methods-4">Instance methods</h3>
-<h4 id="codepointatindexc">CODEPOINTATINDEXC</h4>
-<h4 id="codepointindexb">CODEPOINTINDEXB</h4>
-<h4 id="codepointindexes">CODEPOINTINDEXES</h4>
-<h4 id="errors">ERRORS</h4>
-<h4 id="graphemeatindexg">GRAPHEMEATINDEXG</h4>
-<h4 id="graphemeindexb">GRAPHEMEINDEXB</h4>
-<h4 id="graphemeindexes">GRAPHEMEINDEXES</h4>
-<h4 id="init-2">INIT</h4>
-<h4 id="string">STRING</h4>
-<h2 id="rexxunicodecharacter-class">RexxUnicodeCharacter Class</h2>
+<h3 id="class-methods-4">5.1.   Class methods</h3>
+<h3 id="instance-methods-4">5.2.   Instance methods</h3>
+<h4 id="codepointatindexc">5.2.1.   CODEPOINTATINDEXC</h4>
+<h4 id="codepointindexb">5.2.2.   CODEPOINTINDEXB</h4>
+<h4 id="codepointindexes">5.2.3.   CODEPOINTINDEXES</h4>
+<h4 id="errors">5.2.4.   ERRORS</h4>
+<h4 id="graphemeatindexg">5.2.5.   GRAPHEMEATINDEXG</h4>
+<h4 id="graphemeindexb">5.2.6.   GRAPHEMEINDEXB</h4>
+<h4 id="graphemeindexes">5.2.7.   GRAPHEMEINDEXES</h4>
+<h4 id="init-2">5.2.8.   INIT</h4>
+<h4 id="string">5.2.9.   STRING</h4>
+<h2 id="rexxunicodecharacter-class">6.   RexxUnicodeCharacter Class</h2>
 <p>A RexxUnicodeCharacter instance is created from a codepoint and
 provides access to the properties of the corresponding Unicode
 character.</p>
 <p>The special value -1 can be represented using a
 RexxUnicodeCharacter.</p>
 <p><code>::requires "rxunicode.cls"</code></p>
-<h3 id="class-methods-5">Class methods</h3>
-<h4 id="properties">PROPERTIES</h4>
-<h3 id="instance-methods-5">Instance methods</h3>
-<h4 id="bidiclass">BIDICLASS</h4>
-<h4 id="bidiclassname">BIDICLASSNAME</h4>
-<h4 id="bidimirrored">BIDIMIRRORED</h4>
-<h4 id="boundclass">BOUNDCLASS</h4>
-<h4 id="boundclassname">BOUNDCLASSNAME</h4>
-<h4 id="category">CATEGORY</h4>
-<h4 id="categoryname">CATEGORYNAME</h4>
-<h4 id="charwidth">CHARWIDTH</h4>
-<h4 id="codepoint-1">CODEPOINT</h4>
-<h4 id="combiningclass">COMBININGCLASS</h4>
-<h4 id="combiningclassname">COMBININGCLASSNAME</h4>
-<h4 id="compareto">COMPARETO</h4>
-<h4 id="controlboundary">CONTROLBOUNDARY</h4>
-<h4 id="decompositiontype">DECOMPOSITIONTYPE</h4>
-<h4 id="decompositiontypename">DECOMPOSITIONTYPENAME</h4>
-<h4 id="extendedname">EXTENDEDNAME</h4>
-<h4 id="ignorable">IGNORABLE</h4>
-<h4 id="info-1">INFO</h4>
-<h4 id="init-3">INIT</h4>
-<h4 id="islower">ISLOWER</h4>
-<h4 id="isupper">ISUPPER</h4>
-<h4 id="name">NAME</h4>
-<h4 id="namealias">NAMEALIAS</h4>
-<h4 id="string-1">STRING</h4>
-<h4 id="tolower">TOLOWER</h4>
-<h4 id="tolowerfull">TOLOWERFULL</h4>
-<h4 id="totitle">TOTITLE</h4>
-<h4 id="totitlefull">TOTITLEFULL</h4>
-<h4 id="toupper">TOUPPER</h4>
-<h4 id="toupperfull">TOUPPERFULL</h4>
-<h4 id="uname">UNAME</h4>
-<h4 id="utf8">UTF8</h4>
-<h2 id="icu4oorexxinterface-class">ICU4ooRexxInterface Class</h2>
+<h3 id="class-methods-5">6.1.   Class methods</h3>
+<h4 id="properties">6.1.1.   PROPERTIES</h4>
+<h3 id="instance-methods-5">6.2.   Instance methods</h3>
+<h4 id="bidiclass">6.2.1.   BIDICLASS</h4>
+<h4 id="bidiclassname">6.2.2.   BIDICLASSNAME</h4>
+<h4 id="bidimirrored">6.2.3.   BIDIMIRRORED</h4>
+<h4 id="boundclass">6.2.4.   BOUNDCLASS</h4>
+<h4 id="boundclassname">6.2.5.   BOUNDCLASSNAME</h4>
+<h4 id="category">6.2.6.   CATEGORY</h4>
+<h4 id="categoryname">6.2.7.   CATEGORYNAME</h4>
+<h4 id="charwidth">6.2.8.   CHARWIDTH</h4>
+<h4 id="codepoint-1">6.2.9.   CODEPOINT</h4>
+<h4 id="combiningclass">6.2.10.   COMBININGCLASS</h4>
+<h4 id="combiningclassname">6.2.11.   COMBININGCLASSNAME</h4>
+<h4 id="compareto">6.2.12.   COMPARETO</h4>
+<h4 id="controlboundary">6.2.13.   CONTROLBOUNDARY</h4>
+<h4 id="decompositiontype">6.2.14.   DECOMPOSITIONTYPE</h4>
+<h4 id="decompositiontypename">6.2.15.   DECOMPOSITIONTYPENAME</h4>
+<h4 id="extendedname">6.2.16.   EXTENDEDNAME</h4>
+<h4 id="ignorable">6.2.17.   IGNORABLE</h4>
+<h4 id="info-1">6.2.18.   INFO</h4>
+<h4 id="init-3">6.2.19.   INIT</h4>
+<h4 id="islower">6.2.20.   ISLOWER</h4>
+<h4 id="isupper">6.2.21.   ISUPPER</h4>
+<h4 id="name">6.2.22.   NAME</h4>
+<h4 id="namealias">6.2.23.   NAMEALIAS</h4>
+<h4 id="string-1">6.2.24.   STRING</h4>
+<h4 id="tolower">6.2.25.   TOLOWER</h4>
+<h4 id="tolowerfull">6.2.26.   TOLOWERFULL</h4>
+<h4 id="totitle">6.2.27.   TOTITLE</h4>
+<h4 id="totitlefull">6.2.28.   TOTITLEFULL</h4>
+<h4 id="toupper">6.2.29.   TOUPPER</h4>
+<h4 id="toupperfull">6.2.30.   TOUPPERFULL</h4>
+<h4 id="uname">6.2.31.   UNAME</h4>
+<h4 id="utf8">6.2.32.   UTF8</h4>
+<h2 id="icu4oorexxinterface-class">7.   ICU4ooRexxInterface Class</h2>
 <p><code>::requires "rxunicode.cls"</code></p>
-<h3 id="class-methods-6">Class methods</h3>
-<h4 id="activate">ACTIVATE</h4>
-<h4 id="asserticu4oorexxisregistered">ASSERTICU4OOREXXISREGISTERED</h4>
-<h4 id="icu4oorexxisregistered">ICU4OOREXXISREGISTERED</h4>
-<h4 id="icu4oorexxpackage">ICU4OOREXXPACKAGE</h4>
-<h4 id="registericu4oorexx">REGISTERICU4OOREXX</h4>
-<h3 id="instance-methods-6">Instance methods</h3>
+<h3 id="class-methods-6">7.1.   Class methods</h3>
+<h4 id="activate">7.1.1.   ACTIVATE</h4>
+<h4
+id="asserticu4oorexxisregistered">7.1.2.   ASSERTICU4OOREXXISREGISTERED</h4>
+<h4 id="icu4oorexxisregistered">7.1.3.   ICU4OOREXXISREGISTERED</h4>
+<h4 id="icu4oorexxpackage">7.1.4.   ICU4OOREXXPACKAGE</h4>
+<h4 id="registericu4oorexx">7.1.5.   REGISTERICU4OOREXX</h4>
+<h3 id="instance-methods-6">7.2.   Instance methods</h3>
           </div>
         </div>
         <div class="resize-handle"></div>
