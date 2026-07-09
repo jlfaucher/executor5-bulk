@@ -919,10 +919,26 @@ How other languages are supporting escape characters for Unicode:
 
 -- Codepoint supplier for UTF-8 strings without pre-indexing
 
+::method getIndexType class private
+    use strict arg type
+    if type~caselessMatchChar(1, "BC") then return type~left(1)~lower
+    raise syntax 88.900 array ("Expected an index type starting with 'B' or 'C'. Found" quoted(type))
+
+
+::method getItemType class private
+    use strict arg type
+    if type~isa(.Class) then return type
+    if type~caselessMatchChar(1, "BCEHU\") then return type~left(1)~lower
+    raise syntax 88.900 array ("Expected an item type starting with 'B', 'C', 'E', 'H', 'U', or '\', or a Class object. Found" quoted(type))
+
+
 ::method init
     expose string indexB indexC defaultIndexType defaultItemType
     use strict arg string, defaultIndexType="c", defaultItemType="c"
     string = requestBaseString(string, "string")
+    defaultIndexType = self~class~getIndexType(defaultIndexType)
+    defaultItemType = self~class~getItemType(defaultItemType)
+
     empty = .array~new(0) -- No need to create a copy, the string is immutable
     self~init:super(empty, empty)
     indexB = 1
@@ -958,14 +974,13 @@ How other languages are supporting escape characters for Unicode:
 ::method index
     expose indexB indexC defaultIndexType
     /*
-    type is a helper for validation.
-
-    Possible values:
-    -"b" to return the byte index (can be negative)
-    - "c" to return the codepoint index (default option)
+    Different index types can be returned:
+    - If `type` is `"b"`, the byte index is returned (it is negative if the byte sequence is invalid).
+    - If `type`is `"c"`, the codepoint index is returned (the default index type).
     */
     use strict arg type=(defaultIndexType)
     if self~available then do
+        type = self~class~getIndexType(type)
         if type == "b" then return indexB -- can be negative
         if type == "c" then return indexC
     end
@@ -986,10 +1001,11 @@ How other languages are supporting escape characters for Unicode:
     - "h" to return the codepoint byte sequence as hexadecimal digits
     - "u" to return the codepoint in U+ notation
     - "\" to return the codepoint byte sequence as an escaped string
-    - a class to return an instance of that class, initialized with item("c")
+    - a class to return a new instance of that class, initialized with the result of item("c")
     */
     use strict arg type=(defaultItemType)
     if self~available then do
+        type = self~class~getItemType(type)
         if type == "b" then return byteSequence -- YES! ALWAYS return the raw byte sequence
         if type == "c" then return codepoint
         if type == "e" then return error
@@ -1019,13 +1035,30 @@ How other languages are supporting escape characters for Unicode:
 
 -- Grapheme supplier for UTF-8 strings without pre-indexing
 
+::method getIndexType class private
+    use strict arg type
+    if type~caselessMatchChar(1, "BG") then return type~left(1)~lower
+    raise syntax 88.900 array ("Expected an index type starting with 'B' or 'G'. Found" quoted(type))
+
+
+::method getItemType class private
+    use strict arg type
+    if type~isa(.Class) then return type
+    if type~caselessMatchChar(1, "BEGHU\") then return type~left(1)~lower
+    raise syntax 88.900 array ("Expected an item type starting with 'B', 'E', 'G', 'H', 'U', or '\', or a Class object. Found" quoted(type))
+
+
 ::method init
     expose string indexB indexG defaultIndexType defaultItemType -
            /* coroutine internal state */ decodeNextStep
     use strict arg string, defaultIndexType="g", defaultItemType="g"
     string = requestBaseString(string, "string")
+    defaultIndexType = self~class~getIndexType(defaultIndexType)
+    defaultItemType = self~class~getItemType(defaultItemType)
+
     empty = .array~new(0) -- No need to create a copy, the string is immutable
     self~init:super(empty, empty)
+
     indexB = 1
     indexG = 1
     decodeNextStep = "START"
@@ -1042,10 +1075,11 @@ I keep the logic of .RexxUnicodeStringIndexer~init, but with several entry/exit.
 Maybe it can be simplified...
 */
 ::method decode private
-    expose string indexB grapheme graphemeIndexB nextGraphemeIndexB error -
+    expose string indexB grapheme graphemeIndexB nextGraphemeIndexB error nextError -
            /* coroutine internal state */ -
            decodeNextStep previousCodepoint graphemeBreakArgs -
-           codepoint sizeB errorCode errorMsg
+           codepoint sizeB errorCode errorMsg -
+           debug
     use strict arg -- none
     debug = .false -- keep it for the moment
 
@@ -1058,12 +1092,16 @@ Maybe it can be simplified...
     nextGraphemeIndexB = .nil
     previousCodepoint = -1
     graphemeBreakArgs = (-1, -1, 0) -- codepoint1, codepoint2, state. Will use the same array at each iteration.
+    error = ""
+    nextError = ""
 
     forever:
         if debug then say "    forever:"
         if debug then say "        indexB ==" indexB
         if debug then say "        graphemeIndexB ==" graphemeIndexB
         if debug then say "        nextGraphemeIndexB ==" nextGraphemeIndexB
+        if debug then say "        error ==" error
+        if debug then say "        nextError ==" nextError
         if .nil \== nextGraphemeIndexB then do
             grapheme = string~substr(abs(graphemeIndexB), abs(nextGraphemeIndexB) - abs(graphemeIndexB))
             if debug then say "    grapheme =" grapheme
@@ -1073,11 +1111,13 @@ Maybe it can be simplified...
         end
 
         NEXT_CODEPOINT:
+        -- here, nextGraphemeIndexB is necessarily .nil
         if debug then say "    NEXT_CODEPOINT:"
         if debug then say "        indexB ==" indexB
         if debug then say "        graphemeIndexB ==" graphemeIndexB
         if debug then say "        nextGraphemeIndexB ==" nextGraphemeIndexB
-        error = ""
+        if debug then say "        error ==" error
+        if debug then say "        nextError ==" nextError
         codepoint = .RexxUnicode~utf8DecodeCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
         if sizeB == 0 then signal end_of_string
         if sizeB < 0 then signal error
@@ -1095,11 +1135,12 @@ Maybe it can be simplified...
     END_OF_STRING:
         -- here, nextGraphemeIndexB is necessarily .nil
         -- but graphemeIndexB can be not .nil or .nil
-        -- error is ""
         if debug then say "    END_OF_STRING:"
         if debug then say "        indexB ==" indexB
         if debug then say "        graphemeIndexB ==" graphemeIndexB
         if debug then say "        nextGraphemeIndexB ==" nextGraphemeIndexB
+        if debug then say "        error ==" error
+        if debug then say "        nextError ==" nextError
         if .nil \== graphemeIndexB then grapheme = string~substr(abs(graphemeIndexB))
         else grapheme = .nil -- ~next will no longer reenter because ~available will return .false
         if debug then say "    grapheme =" grapheme
@@ -1108,34 +1149,58 @@ Maybe it can be simplified...
         -- on reentry from ~next, graphemeIndexB == .nil and nextGraphemeIndexB == .nil
 
     error:
+        -- here, nextGraphemeIndexB is necessarily .nil
         if debug then say "    error:"
-        if debug then say "        indexB ==" indexB
-        if debug then say "        graphemeIndexB ==" graphemeIndexB
-        if debug then say "        nextGraphemeIndexB ==" nextGraphemeIndexB
-        error = "start byte-position" indexB ":" errorMsg
-        call appendGraphemeIndex -indexB -- a negative index means "error"
+        if debug then say "        on entry:"
+        if debug then say "            indexB ==" indexB
+        if debug then say "            previousCodepoint ==" previousCodepoint
+        if debug then say "            codepoint ==" codepoint
+        errorMsg = "start byte-position" indexB ":" errorMsg
+        call appendGraphemeIndex -indexB, errorMsg -- a negative index means "error"
         graphemeBreakArgs[3] = 0 -- reset the extended grapheme state
         previousCodepoint = codepoint
         indexB += abs(sizeB) -- skip the invalid bytes
-        if debug then say "        indexB =" indexB
+        if debug then say "    error:"
+        if debug then say "        on exit:"
+        if debug then say "            indexB =" indexB
+        if debug then say "            previousCodepoint ==" previousCodepoint
+        if debug then say "            codepoint ==" codepoint
         signal forever
 
     appendGraphemeIndex:
+        use strict arg newIndex, newError=""
         if debug then say "    appendGraphemeIndex:"
-        use arg newIndex
-        if debug then say "        newIndex ==" newIndex
-        if debug then say "        indexB ==" indexB
-        if debug then say "        graphemeIndexB ==" graphemeIndexB
-        if debug then say "        nextGraphemeIndexB ==" nextGraphemeIndexB
-        if graphemeIndexB~isNil then graphemeIndexB = newIndex
-        else if nextGraphemeIndexB~isNil then nextGraphemeIndexB = newIndex
+        if debug then say "        on entry:"
+        if debug then say "            newIndex ==" newIndex
+        if debug then say "            newError ==" newError
+        if debug then say "            indexB ==" indexB
+        if debug then say "            graphemeIndexB ==" graphemeIndexB
+        if debug then say "            nextGraphemeIndexB ==" nextGraphemeIndexB
+        if debug then say "            error ==" error
+        if debug then say "            nextError ==" nextError
+
+        if graphemeIndexB~isNil then do
+            graphemeIndexB = newIndex
+            error = newError
+        end
+        else if nextGraphemeIndexB~isNil then do
+            nextGraphemeIndexB = newIndex
+            nextError = newError
+        end
         else do
             -- shift
             graphemeIndexB = nextGraphemeIndexB
             nextGraphemeIndexB = newIndex
+            error = nextError
+            nextError = newError
         end
-        if debug then say "        graphemeIndexB =" graphemeIndexB
-        if debug then say "        nextGraphemeIndexB =" nextGraphemeIndexB
+
+        if debug then say "    appendGraphemeIndex:"
+        if debug then say "        on exit:"
+        if debug then say "            graphemeIndexB =" graphemeIndexB
+        if debug then say "            nextGraphemeIndexB =" nextGraphemeIndexB
+        if debug then say "            error ==" error
+        if debug then say "            nextError ==" nextError
         return
 
 
@@ -1148,14 +1213,13 @@ Maybe it can be simplified...
 ::method index
     expose graphemeIndexB indexG defaultIndexType
     /*
-    type is a helper for validation.
-
-    Possible values:
-    - "b" to return the byte index (can be negative)
-    - "g" to return the grapheme index (default option)
+    Different index types can be returned:
+    - If `type` is `"b"`, the byte index is returned (it is negative if the byte sequence is invalid).
+    - If `type`is `"g"`, the grapheme index is returned (the default index type).
     */
     use strict arg type=(defaultIndexType)
     if self~available then do
+        type = self~class~getIndexType(type)
         if type == "b" then return graphemeIndexB -- (can be negative)
         if type == "g" then return indexG
     end
@@ -1176,10 +1240,11 @@ Maybe it can be simplified...
     - "h" to return the grapheme byte sequence as hexadecimal digits
     - "u" to return the grapheme codepoints in U+ notation
     - "\" to return the grapheme byte sequence as an escaped string
-    - a class to return an instance of that class, initialized with item("g")
+    - a class to return a new instance of that class, initialized with the result of item("g")
     */
     use strict arg type=(defaultItemType)
     if self~available then do
+        type = self~class~getItemType(type)
         if type == "b" then return grapheme -- YES! ALWAYS return the raw byte sequence
         if type == "e" then return error
         if type == "g" then return grapheme
@@ -1192,21 +1257,29 @@ Maybe it can be simplified...
 
 
 ::method next
-    expose indexB indexG grapheme graphemeIndexB nextGraphemeIndexB
+    expose indexG graphemeIndexB nextGraphemeIndexB -
+           debug error nextError indexB - -- for debug
     use strict arg -- none
-    debug = .false -- keep it for the moment
     if debug then say "    method next"
-    if debug then say "        indexB ==" indexB
-    if debug then say "        graphemeIndexB ==" graphemeIndexB
-    if debug then say "        nextGraphemeIndexB ==" nextGraphemeIndexB
+    if debug then say "        on entry:"
+    if debug then say "            indexB ==" indexB
+    if debug then say "            graphemeIndexB ==" graphemeIndexB
+    if debug then say "            nextGraphemeIndexB ==" nextGraphemeIndexB
+    if debug then say "            error ==" error
+    if debug then say "            nextError ==" nextError
     if self~available then do
-        -- indexB += grapheme~length
         indexG += 1
         graphemeIndexB = nextGraphemeIndexB
         nextGraphemeIndexB = .nil
-        if debug then say "        indexB =" indexB
-        if debug then say "        graphemeIndexB =" graphemeIndexB
-        if debug then say "        nextGraphemeIndexB =" nextGraphemeIndexB
+        error = nextError
+        nextError = ""
+        if debug then say "    method next"
+        if debug then say "        on exit:"
+        if debug then say "            indexB =" indexB
+        if debug then say "            graphemeIndexB =" graphemeIndexB
+        if debug then say "            nextGraphemeIndexB =" nextGraphemeIndexB
+        if debug then say "            error ==" error
+        if debug then say "            nextError ==" nextError
         self~decode
     end
     -- error
