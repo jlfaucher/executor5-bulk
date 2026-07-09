@@ -465,7 +465,7 @@ and always returns a single codepoint.
 
     .RexxUnicodeServices~graphemeBreak(array)
 
-Returns .true if there is a grapheme break between the two consecutive codepoints passed in `array`.
+Returns `.true` if there is a grapheme break between the two consecutive codepoints passed in `array`.
 
 **Example:**
 
@@ -489,8 +489,6 @@ Returns `.true` if the system is little-endian.
 
 
 #### 1.1.18.   unicodeVersion
-
-    RexxString *unicodeVersion();
 
     .RexxUnicodeServices~unicodeVersion
 
@@ -620,8 +618,6 @@ Append the UTF-8 encoding of 1114112 to mb: size = 0 mb = oë€🎅
 
 #### 1.1.21.   utf8procVersion
 
-    RexxString *utf8procVersion();
-    
     .RexxUnicodeServices~utf8procVersion
 
 Returns the version of the `utf8proc` library.
@@ -654,13 +650,13 @@ utf8Transform(
 
 Returns the transformed string.
 
-##### 1.1.22.1.   caseFold
+##### 1.1.22.1.   'caseFold' argument
 
 Performs unicode case folding, to be able to do a case-insensitive
 string comparison.
 
 
-##### 1.1.22.2.   lump
+##### 1.1.22.2.   'lump' argument
 
 Maps certain characters to a common representative (i.e., several distinct characters produce the same output character).  
 All the concerned characters become the same character, but still remain distinct characters.
@@ -702,7 +698,7 @@ Mapping rules:
     U+007E  ~   <-- tilde operator U+223C
 
 
-##### 1.1.22.3.   nlf
+##### 1.1.22.3.   'nlf' argument
 
 [https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213](https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213)
 
@@ -715,21 +711,21 @@ Mapping rules:
 ::constant NLF2PS 3
 ```
 
-NLF2LF  
+`NLF2LF`  
 convert LF, CRLF, CR and NEL into LF.
 
-NLF2LS  
+`NLF2LS`  
 Converts LF, CRLF, CR and NEL into LS.  
 NLF-sequences (LF, CRLF, CR, NEL) are representing a line break,
 and should be converted to the codepoint for line separation (LS).
 
-NLF2PS  
+`NLF2PS`  
 Converts LF, CRLF, CR and NEL into PS.  
 NLF-sequences (LF, CRLF, CR, NEL) are representing a paragraph break,
 and should be converted to the codepoint for paragraph separation (PS).
 
 
-##### 1.1.22.4.   normalization
+##### 1.1.22.4.   'normalization' argument
 
 ```rexx
 -- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).
@@ -744,7 +740,7 @@ and should be converted to the codepoint for paragraph separation (PS).
 If `normalization` is not `0`, apply the requested normalization.
 
 
-##### 1.1.22.5.   stripCC
+##### 1.1.22.5.   'stripCC' argument
 
 Strips and/or converts control characters.
 
@@ -755,13 +751,13 @@ are treated as a NLF-sequence in this case.
 All other control characters are simply removed.
 
 
-##### 1.1.22.6.   stripIgnorable
+##### 1.1.22.6.   'stripIgnorable' argument
 
 Strips the characters whose property `Default_Ignorable_Code_Point` is true,
 such as `SOFT-HYPHEN` or `ZERO-WIDTH-SPACE`.
 
 
-##### 1.1.22.7.   stripMark
+##### 1.1.22.7.   'stripMark' argument
 
 Strips all character markings.
 
@@ -774,7 +770,7 @@ This includes non-spacing, spacing and enclosing (i.e. accents) categories:
 This option works only with a normalization applied.
 
 
-##### 1.1.22.8.   stripNA
+##### 1.1.22.8.   'stripNA' argument
 
 Strips the characters whose category is Cn Unassigned.
 
@@ -1629,7 +1625,7 @@ The `RexxUnicode` class defines no instance methods of its own.
 ## 3.   RexxUnicodeCodepointSupplier Class
 
 A `RexxUnicodeCodepointSupplier` instance is an iterator created from a 
-UTF-8 string and allows enumeration of the string's codepoints.
+UTF-8 string and allows enumeration of the string's codepoints without indexer.
 
 `::requires "rxunicode.cls"`
 
@@ -1638,135 +1634,224 @@ UTF-8 string and allows enumeration of the string's codepoints.
 ```rexx
 -- the default index type is the codepoint index
 -- the default item type is the codepoint as an integer
-.RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅")==
-    a RexxUnicodeCodepointSupplier
+.RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅")==
+    /*
+    a RexxUnicodeCodepointSupplier 
      1  :  110
      2  :  111
      3  :  235
      4  :  108
-     5  :  128105
+     5  :  128104
      6  :  8205
-     7  :  128104
+     7  :  128105
      8  :  8205
-     9  :  128105
-     10 :  8205
-     11 :  128103
-     12 :  127877
+     9  :  128103
+     10 :  127877
+    */
 
 ```
 
 ```rexx
 -- It's possible to get other types of index and item
 -- Here, we request the byte index and the codepoint byte sequence as hex digits
-.RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", "b", "h")==
-    a RexxUnicodeCodepointSupplier
+.RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", "b", "h")==
+    /*
+    a RexxUnicodeCodepointSupplier 
      1  : '\x{6E}'
      2  : '\x{6F}'
      3  : '\x{C3AB}'
      5  : '\x{6C}'
-     6  : '\x{F09F91A9}'
+     6  : '\x{F09F91A8}'
      10 : '\x{E2808D}'
-     13 : '\x{F09F91A8}'
+     13 : '\x{F09F91A9}'
      17 : '\x{E2808D}'
-     20 : '\x{F09F91A9}'
-     24 : '\x{E2808D}'
-     27 : '\x{F09F91A7}'
-     31 : '\x{F09F8E85}'
+     20 : '\x{F09F91A7}'
+     24 : '\x{F09F8E85}'
+    */
 
 ```
 
 ```rexx
 -- Codepoint supplier providing the default index and the codepoint escaped string
-.RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", , "\")==
-    a RexxUnicodeCodepointSupplier
+.RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , "\")==
+    /*
+    a RexxUnicodeCodepointSupplier 
      1  : 'n'
      2  : 'o'
      3  : 'ë'
      4  : 'l'
-     5  : '👩'
+     5  : '👨'
      6  : '\u200D'
-     7  : '👨'
+     7  : '👩'
      8  : '\u200D'
-     9  : '👩'
-     10 : '\u200D'
-     11 : '👧'
-     12 : '🎅'
+     9  : '👧'
+     10 : '🎅'
+    */
 
 ```
 
 ```rexx
 -- Codepoint supplier providing the default index and the codepoint in U+ notation
-.RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", , "u")==
-    a RexxUnicodeCodepointSupplier
+.RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , "u")==
+    /*
+    a RexxUnicodeCodepointSupplier 
      1  : 'U+006E'
      2  : 'U+006F'
      3  : 'U+00EB'
      4  : 'U+006C'
-     5  : 'U+1F469'
+     5  : 'U+1F468'
      6  : 'U+200D'
-     7  : 'U+1F468'
+     7  : 'U+1F469'
      8  : 'U+200D'
-     9  : 'U+1F469'
-     10 : 'U+200D'
-     11 : 'U+1F467'
-     12 : 'U+1F385'
+     9  : 'U+1F467'
+     10 : 'U+1F385'
+    */
 
 ```
 
 ```rexx
--- Invalid string - U+FFFD Substitution of Maximal Subparts
--- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
-.RexxUnicodeCodepointSupplier~new("F4 91 92 93 FF 41 80 BF 42"x)==
-    a RexxUnicodeCodepointSupplier
-     1 :  65533
-     2 :  65533
-     3 :  65533
-     4 :  65533
-     5 :  65533
-     6 :  65
-     7 :  65533
-     8 :  65533
-     9 :  66
+-- Codepoint supplier providing the default index and the codepoint as a RexxUnicodeCharacter
+.RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , .RexxUnicodeCharacter)==
+    /*
+    a RexxUnicodeCodepointSupplier 
+     1  : ("n" \x{6E} U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
+     2  : ("o" \x{6F} U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
+     3  : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")
+     4  : ("l" \x{6C} U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+     5  : ("👨" \x{F09F91A8} U+1F468 So Other_Symbol "MAN")
+     6  : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+     7  : ("👩" \x{F09F91A9} U+1F469 So Other_Symbol "WOMAN")
+     8  : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+     9  : ("👧" \x{F09F91A7} U+1F467 So Other_Symbol "GIRL")
+     10 : ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+    */
 
 ```
 
 ```rexx
 -- Invalid string - U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+
+-- Codepoint supplier providing the codepoint index and the codepoint as an integer
 .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x)==
+    /*
     a RexxUnicodeCodepointSupplier
      1 :  65533
      2 :  65533
      3 :  65533
      4 :  65533
      5 :  65
+    */
+
+```
+
+```rexx
+-- Codepoint supplier providing the byte index and the codepoint escaped string
+-- A negative byte index indicates an invalid byte sequence
+.RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
+    /*
+    a RexxUnicodeCodepointSupplier 
+    -1 : '\x{E180}'
+    -3 : '\x{E2}'
+    -4 : '\x{F09192}'
+    -7 : '\x{F1BF}'
+     9 : 'A'
+    */
+
+```
+
+```rexx
+-- Codepoint supplier providing the byte index and the error message
+.RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
+    /*
+    a RexxUnicodeCodepointSupplier 
+    -1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
+    -3 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
+    -4 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
+    -7 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'
+     9 : ''
+    */
 
 ```
 
 ### 3.1.   Class methods
 
+The `RexxUnicodeCodepointSupplier` class defines no class methods of its own.
+
 
 ### 3.2.   Instance methods
 
-#### 3.2.1.   AVAILABLE
+#### 3.2.1.   available
+
+    .RexxUnicodeCodepointSupplier~available
+
+Returns `.true` if a codepoint is available from the supplier (that is, if the `item` method would return a value).  
+Returns `.false` if the supplier has already enumerated all codepoints.
 
 
-#### 3.2.2.   INDEX
+#### 3.2.2.   index
+
+    .RexxUnicodeCodepointSupplier~index(type=defaultIndexType)
+
+Returns the index of the current codepoint in the string.  
+If no codepoint is available, that is, if `available` would return `.false`, the supplier raises an error.
+
+The following index types are supported:
+
+- If `type` is `"b"`, the byte index is returned (it is negative if the byte sequence is invalid).
+- If `type`is `"c"`, the codepoint index is returned (the default index type).
+
+The default index type is specified when the supplier is created.
 
 
-#### 3.2.3.   INIT
+#### 3.2.3.   init
+
+    .RexxUnicodeCodepointSupplier~init(string, defaultIndexType="c", defaultItemType="c")
+
+Initializes a `RexxUnicodeCodepointSupplier` instance for the UTF-8 string `string`.
+
+If specified, `defaultIndexType` defines the default index type returned by the `index` method.  
+The default is `"c"` (codepoint index).  
+See the `index` method for the list of possible values.
+
+If specified, `defaultItemType` defines the default item type returned by the `item` method.  
+The default value is `"c"` (codepoint as an integer).  
+See the `item` method for the list of possible values.
 
 
-#### 3.2.4.   ITEM
+#### 3.2.4.   item
+
+    .RexxUnicodeCodepointSupplier~item(type=defaultItemType)
+
+Returns the current codepoint in the string.  
+If no codepoint is available, that is, if `available` would return `.false`, the supplier raises an error.
+
+The following item types are supported:
+
+- If `type` is `"b"`, the codepoint byte sequence is returned as a string.
+- If `type` is `"c"`, the codepoint is returned as an integer (default).
+- If `type` is `"e"`, the error message is returned (an empty string if there is no error).
+- If `type` is `"h"`, the codepoint byte sequence is returned as hexadecimal digits.
+- If `type` is `"u"`, the codepoint is returned in `U+` notation.
+- If `type` is `"\"`, the codepoint byte sequence is returned as an escaped string.
+- If `type` is a class, a new instance of that class is returned, initialized with the result of `item("c")`.
+
+The default item type is specified when the supplier is created.
 
 
-#### 3.2.5.   NEXT
+#### 3.2.5.   next
+
+    .RexxUnicodeCodepointSupplier~next
+
+Moves to the next codepoint in the string.  
+By repeatedly sending `next` to the supplier (as long as `available` returns `.true`), you can enumerate all codepoints in the string.  
+If no codepoint is available, that is, if `available` would return `.false`, the supplier raises an error.
 
 
 ## 4.   RexxUnicodeGraphemeSupplier Class
 
 A `RexxUnicodeGraphemeSupplier` instance is an iterator created from a 
-UTF-8 string and allows enumeration of the string's graphemes.
+UTF-8 string and allows enumeration of the string's graphemes without indexer.
 
 `::requires "rxunicode.cls"`
 
@@ -1775,107 +1860,181 @@ UTF-8 string and allows enumeration of the string's graphemes.
 ```rexx
 -- the default index type is the grapheme index
 -- the default item type is the grapheme as a string
-.RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅")==
-    a RexxUnicodeGraphemeSupplier
+.RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅")==
+    /*
+    a RexxUnicodeGraphemeSupplier 
      1 : 'n'
      2 : 'o'
      3 : 'ë'
      4 : 'l'
-     5 : '👩‍👨‍👩‍👧'
+     5 : '👨‍👩‍👧'
      6 : '🎅'
+    */
 
 ```
 
 ```rexx
 -- Grapheme supplier providing the byte index and the grapheme byte sequence as hex digits
-.RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", "b", "h")==
-    a RexxUnicodeGraphemeSupplier
+.RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", "b", "h")==
+    /*
+    a RexxUnicodeGraphemeSupplier 
      1  : '\x{6E}'
      2  : '\x{6F}'
      3  : '\x{C3AB}'
      5  : '\x{6C}'
-     6  : '\x{F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
-     31 : '\x{F09F8E85}'
+     6  : '\x{F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
+     24 : '\x{F09F8E85}'
+    */
 
 ```
 
 ```rexx
 -- Grapheme supplier providing the default index and the grapheme escaped string
-.RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", , "\")==
-    a RexxUnicodeGraphemeSupplier
+.RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", , "\")==
+    /*
+    a RexxUnicodeGraphemeSupplier 
      1 : 'n'
      2 : 'o'
      3 : 'ë'
      4 : 'l'
-     5 : '👩\u200D👨\u200D👩\u200D👧'
+     5 : '👨\u200D👩\u200D👧'
      6 : '🎅'
+    */
 
 ```
 
 ```rexx
 -- Grapheme supplier providing the default index and the grapheme codepoints in U+ notation
-.RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", , "u")==
-    a RexxUnicodeGraphemeSupplier
+.RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", , "u")==
+    /*
+    a RexxUnicodeGraphemeSupplier 
      1 : 'U+006E'
      2 : 'U+006F'
      3 : 'U+00EB'
      4 : 'U+006C'
-     5 : 'U+1F469 U+200D U+1F468 U+200D U+1F469 U+200D U+1F467'
+     5 : 'U+1F468 U+200D U+1F469 U+200D U+1F467'
      6 : 'U+1F385'
-
-```
-
-```rexx
--- Invalid string - U+FFFD Substitution of Maximal Subparts
--- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
--- "\" for Grapheme escaped strings
-.RexxUnicodeGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, , "\")==
-    a RexxUnicodeGraphemeSupplier
-     1 : '\x{F4}'
-     2 : '\x{91}'
-     3 : '\x{92}'
-     4 : '\x{93}'
-     5 : '\x{FF}'
-     6 : 'A'
-     7 : '\x{80}'
-     8 : '\x{BF}'
-     9 : 'B'
+    */
 
 ```
 
 ```rexx
 -- Invalid string - U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
--- "\" for Grapheme escaped strings
+
+-- Grapheme supplier providing the grapheme index and the grapheme escaped string
 .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, , "\")==
+    /*
     a RexxUnicodeGraphemeSupplier
      1 : '\x{E180}'
      2 : '\x{E2}'
      3 : '\x{F09192}'
      4 : '\x{F1BF}'
      5 : 'A'
+    */
 
 ```
 
+```rexx
+-- Grapheme supplier providing the byte index and the grapheme escaped string
+-- A negative byte index indicates an invalid byte sequence
+.RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
+    /*
+    a RexxUnicodeGraphemeSupplier 
+    -1 : '\x{E180}'
+    -3 : '\x{E2}'
+    -4 : '\x{F09192}'
+    -7 : '\x{F1BF}'
+     9 : 'A'
+    */
+
+```
+
+```rexx
+-- Grapheme supplier providing the byte index and the error message
+.RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
+    /*
+    a RexxUnicodeGraphemeSupplier 
+    -1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
+    -3 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
+    -4 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
+    -7 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'
+     9 : ''
+    */
+
+```
 
 ### 4.1.   Class methods
+
+The `RexxUnicodeGraphemeSupplier` class defines no class methods of its own.
 
 
 ### 4.2.   Instance methods
 
-#### 4.2.1.   AVAILABLE
+#### 4.2.1.   available
+
+    .RexxUnicodeGraphemeSupplier~available
+
+Returns `.true` if a grapheme is available from the supplier (that is, if the `item` method would return a value).  
+Returns `.false` if the supplier has already enumerated all graphemes.
 
 
-#### 4.2.2.   INDEX
+#### 4.2.2.   index
+
+    .RexxUnicodeGraphemeSupplier~index(type=defaultIndexType)
+
+Returns the index of the current grapheme in the string.  
+If no grapheme is available, that is, if `available` would return `.false`, the supplier raises an error.
+
+The following index types are supported:
+
+- If `type` is `"b"`, the byte index is returned (it is negative if the byte sequence is invalid).
+- If `type`is `"g"`, the grapheme index is returned (the default index type).
+
+The default index type is specified when the supplier is created.
+
+#### 4.2.3.   init
+
+    .RexxUnicodeGraphemeSupplier~init(string, defaultIndexType="g", defaultItemType="g")
+
+Initializes a `RexxUnicodeGraphemeSupplier` instance for the UTF-8 string `string`.
+
+If specified, `defaultIndexType` defines the default index type returned by the `index` method.  
+The default is `"g"` (grapheme index).  
+See the `index` method for the list of possible values.
+
+If specified, `defaultItemType` defines the default item type returned by the `item` method.  
+The default value is `"g"` (grapheme as a string).  
+See the `item` method for the list of possible values.
 
 
-#### 4.2.3.   INIT
+#### 4.2.4.   item
+
+    .RexxUnicodeGraphemeSupplier~item(type=defaultItemType)
+
+Returns the current grapheme in the string.  
+If no grapheme is available, that is, if `available` would return `.false`, the supplier raises an error.
+
+The following item types are supported:
+
+- If `type` is `"b"`, the grapheme byte sequence is returned as a string (same as `"g"`).
+- If `type` is `"e"`, the error message is returned (an empty string if there is no error).
+- If `type` is `"g"`, the grapheme is returned as a string (default).
+- If `type` is `"h"`, the grapheme byte sequence is returned as hexadecimal digits.
+- If `type` is `"u"`, the grapheme is returned in `U+` notation.
+- If `type` is `"\"`, the grapheme byte sequence is returned as an escaped string.
+- If `type` is a class, a new instance of that class is returned, initialized with the result of `item("g")`.
+
+The default item type is specified when the supplier is created.
 
 
-#### 4.2.4.   ITEM
+#### 4.2.5.   next
 
+    .RexxUnicodeGraphemeSupplier~next
 
-#### 4.2.5.   NEXT
+Moves to the next grapheme in the string.  
+By repeatedly sending `next` to the supplier (as long as `available` returns `.true`), you can enumerate all graphemes in the string.  
+If no grapheme is available, that is, if `available` would return `.false`, the supplier raises an error.
 
 
 ## 5.   RexxUnicodeStringIndexer Class

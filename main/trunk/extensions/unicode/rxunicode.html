@@ -444,8 +444,8 @@ If <code>codepoint</code> has no upper-case mapping, returns
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
 <h4 id="graphemebreak">1.1.15.   graphemeBreak</h4>
 <pre><code>.RexxUnicodeServices~graphemeBreak(array)</code></pre>
-<p>Returns .true if there is a grapheme break between the two
-consecutive codepoints passed in <code>array</code>.</p>
+<p>Returns <code>.true</code> if there is a grapheme break between the
+two consecutive codepoints passed in <code>array</code>.</p>
 <p><strong>Example:</strong></p>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- `state` is persistent state. Its initial value must be 0.</span></code>
@@ -461,9 +461,7 @@ has no instance.</p>
 <pre><code>.RexxUnicodeServices~systemIsLittleEndian</code></pre>
 <p>Returns <code>.true</code> if the system is little-endian.</p>
 <h4 id="unicodeversion">1.1.18.   unicodeVersion</h4>
-<pre><code>RexxString *unicodeVersion();
-
-.RexxUnicodeServices~unicodeVersion</code></pre>
+<pre><code>.RexxUnicodeServices~unicodeVersion</code></pre>
 <p>Returns the Unicode version supported by the <code>utf8proc</code>
 library.</p>
 <p><strong>Example:</strong></p>
@@ -572,9 +570,7 @@ byte sequence (0..4).</p>
 </code></pre>
 </div>
 <h4 id="utf8procversion">1.1.21.   utf8procVersion</h4>
-<pre><code>RexxString *utf8procVersion();
-
-.RexxUnicodeServices~utf8procVersion</code></pre>
+<pre><code>.RexxUnicodeServices~utf8procVersion</code></pre>
 <p>Returns the version of the <code>utf8proc</code> library.</p>
 <p><strong>Example:</strong></p>
 <div class="highlight-rexx-vim-light-zellner">
@@ -597,10 +593,10 @@ byte sequence (0..4).</p>
 
 .RexxUnicodeServices~utf8Transform(string [, casefold = .false [, lump= .false [, nlf = 0 [, normalization = 0 [, stripCC = .false [, stripIgnorable= .false [, stripMark = .false [, stripNA = .false]]]]]]]])</code></pre>
 <p>Returns the transformed string.</p>
-<h5 id="casefold">1.1.22.1.   caseFold</h5>
+<h5 id="casefold-argument">1.1.22.1.   'caseFold' argument</h5>
 <p>Performs unicode case folding, to be able to do a case-insensitive
 string comparison.</p>
-<h5 id="lump">1.1.22.2.   lump</h5>
+<h5 id="lump-argument">1.1.22.2.   'lump' argument</h5>
 <p>Maps certain characters to a common representative (i.e., several
 distinct characters produce the same output character).<br />
 All the concerned characters become the same character, but still remain
@@ -640,7 +636,7 @@ U+005F  _   &lt;-- all connector characters (general category Pc),
 U+0060  `   &lt;-- modifier letter grave accent U+02CB
 U+007C  |   &lt;-- divides U+2223
 U+007E  ~   &lt;-- tilde operator U+223C</code></pre>
-<h5 id="nlf">1.1.22.3.   nlf</h5>
+<h5 id="nlf-argument">1.1.22.3.   'nlf' argument</h5>
 <p><a
 href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213">https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213</a></p>
 <div class="highlight-rexx-vim-light-zellner">
@@ -652,18 +648,19 @@ href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213
 <code lineno="6"><span class="rx-dir">::</span><span class="rx-dkw">constant</span><span class="rx-ws"> </span><span class="rx-const rx-method">NLF2PS</span><span class="rx-ws"> </span><span class="rx-const rx-constant-value">3</span>
 </code></pre>
 </div>
-<p>NLF2LF<br />
+<p><code>NLF2LF</code><br />
 convert LF, CRLF, CR and NEL into LF.</p>
-<p>NLF2LS<br />
+<p><code>NLF2LS</code><br />
 Converts LF, CRLF, CR and NEL into LS.<br />
 NLF-sequences (LF, CRLF, CR, NEL) are representing a line break, and
 should be converted to the codepoint for line separation (LS).</p>
-<p>NLF2PS<br />
+<p><code>NLF2PS</code><br />
 Converts LF, CRLF, CR and NEL into PS.<br />
 NLF-sequences (LF, CRLF, CR, NEL) are representing a paragraph break,
 and should be converted to the codepoint for paragraph separation
 (PS).</p>
-<h5 id="normalization">1.1.22.4.   normalization</h5>
+<h5 id="normalization-argument">1.1.22.4.   'normalization'
+argument</h5>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).</span></code>
 <code lineno="2"><span class="rx-lncm">-- These constants are declared in the RexxUnicode class.</span></code>
@@ -676,17 +673,18 @@ and should be converted to the codepoint for paragraph separation
 </div>
 <p>If <code>normalization</code> is not <code>0</code>, apply the
 requested normalization.</p>
-<h5 id="stripcc">1.1.22.5.   stripCC</h5>
+<h5 id="stripcc-argument">1.1.22.5.   'stripCC' argument</h5>
 <p>Strips and/or converts control characters.</p>
 <p>NLF-sequences are transformed into space, except if one of the
 NLF2LS/PS/LF options is given. HorizontalTab (HT) and FormFeed (FF) are
 treated as a NLF-sequence in this case.</p>
 <p>All other control characters are simply removed.</p>
-<h5 id="stripignorable">1.1.22.6.   stripIgnorable</h5>
+<h5 id="stripignorable-argument">1.1.22.6.   'stripIgnorable'
+argument</h5>
 <p>Strips the characters whose property
 <code>Default_Ignorable_Code_Point</code> is true, such as
 <code>SOFT-HYPHEN</code> or <code>ZERO-WIDTH-SPACE</code>.</p>
-<h5 id="stripmark">1.1.22.7.   stripMark</h5>
+<h5 id="stripmark-argument">1.1.22.7.   'stripMark' argument</h5>
 <p>Strips all character markings.</p>
 <p>This includes non-spacing, spacing and enclosing (i.e. accents)
 categories:</p>
@@ -696,7 +694,7 @@ categories:</p>
 <li>Mn Nonspacing Mark</li>
 </ul>
 <p>This option works only with a normalization applied.</p>
-<h5 id="stripna">1.1.22.8.   stripNA</h5>
+<h5 id="stripna-argument">1.1.22.8.   'stripNA' argument</h5>
 <p>Strips the characters whose category is Cn Unassigned.</p>
 <h5 id="examples-of-transformations">1.1.22.9.   Examples of
 transformations</h5>
@@ -1432,224 +1430,401 @@ id="rexxunicodecodepointsupplier-class">3.   RexxUnicodeCodepointSupplier
 Class</h2>
 <p>A <code>RexxUnicodeCodepointSupplier</code> instance is an iterator
 created from a UTF-8 string and allows enumeration of the string's
-codepoints.</p>
+codepoints without indexer.</p>
 <p><code>::requires "rxunicode.cls"</code></p>
 <p><strong>Examples:</strong></p>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- the default index type is the codepoint index</span></code>
 <code lineno="2"><span class="rx-lncm">-- the default item type is the codepoint as an integer</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👩‍👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
-<code lineno="4"><span class="rx-ws">    </span><span class="rx-var">a</span><span class="rx-op"> </span><span class="rx-var">RexxUnicodeCodepointSupplier</span></code>
-<code lineno="5"><span class="rx-ws">     </span><span class="rx-const rx-label">1</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">110</span></code>
-<code lineno="6"><span class="rx-ws">     </span><span class="rx-const rx-label">2</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">111</span></code>
-<code lineno="7"><span class="rx-ws">     </span><span class="rx-const rx-label">3</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">235</span></code>
-<code lineno="8"><span class="rx-ws">     </span><span class="rx-const rx-label">4</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">108</span></code>
-<code lineno="9"><span class="rx-ws">     </span><span class="rx-const rx-label">5</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">128105</span></code>
-<code lineno="10"><span class="rx-ws">     </span><span class="rx-const rx-label">6</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">8205</span></code>
-<code lineno="11"><span class="rx-ws">     </span><span class="rx-const rx-label">7</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">128104</span></code>
-<code lineno="12"><span class="rx-ws">     </span><span class="rx-const rx-label">8</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">8205</span></code>
-<code lineno="13"><span class="rx-ws">     </span><span class="rx-const rx-label">9</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">128105</span></code>
-<code lineno="14"><span class="rx-ws">     </span><span class="rx-const rx-label">10</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">8205</span></code>
-<code lineno="15"><span class="rx-ws">     </span><span class="rx-const rx-label">11</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">128103</span></code>
-<code lineno="16"><span class="rx-ws">     </span><span class="rx-const rx-label">12</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">127877</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="5"><span class="rx-cm">    a RexxUnicodeCodepointSupplier </span></code>
+<code lineno="6"><span class="rx-cm">     1  :  110</span></code>
+<code lineno="7"><span class="rx-cm">     2  :  111</span></code>
+<code lineno="8"><span class="rx-cm">     3  :  235</span></code>
+<code lineno="9"><span class="rx-cm">     4  :  108</span></code>
+<code lineno="10"><span class="rx-cm">     5  :  128104</span></code>
+<code lineno="11"><span class="rx-cm">     6  :  8205</span></code>
+<code lineno="12"><span class="rx-cm">     7  :  128105</span></code>
+<code lineno="13"><span class="rx-cm">     8  :  8205</span></code>
+<code lineno="14"><span class="rx-cm">     9  :  128103</span></code>
+<code lineno="15"><span class="rx-cm">     10 :  127877</span></code>
+<code lineno="16"><span class="rx-cm">    */</span></code>
 <code lineno="17">
 </code></pre>
 </div>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- It's possible to get other types of index and item</span></code>
 <code lineno="2"><span class="rx-lncm">-- Here, we request the byte index and the codepoint byte sequence as hex digits</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👩‍👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">h</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
-<code lineno="4"><span class="rx-ws">    </span><span class="rx-var">a</span><span class="rx-op"> </span><span class="rx-var">RexxUnicodeCodepointSupplier</span></code>
-<code lineno="5"><span class="rx-ws">     </span><span class="rx-const rx-label">1</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{6E}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="6"><span class="rx-ws">     </span><span class="rx-const rx-label">2</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{6F}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="7"><span class="rx-ws">     </span><span class="rx-const rx-label">3</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{C3AB}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="8"><span class="rx-ws">     </span><span class="rx-const rx-label">5</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{6C}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="9"><span class="rx-ws">     </span><span class="rx-const rx-label">6</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{F09F91A9}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="10"><span class="rx-ws">     </span><span class="rx-const rx-label">10</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{E2808D}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="11"><span class="rx-ws">     </span><span class="rx-const rx-label">13</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{F09F91A8}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="12"><span class="rx-ws">     </span><span class="rx-const rx-label">17</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{E2808D}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="13"><span class="rx-ws">     </span><span class="rx-const rx-label">20</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{F09F91A9}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="14"><span class="rx-ws">     </span><span class="rx-const rx-label">24</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{E2808D}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="15"><span class="rx-ws">     </span><span class="rx-const rx-label">27</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{F09F91A7}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="16"><span class="rx-ws">     </span><span class="rx-const rx-label">31</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{F09F8E85}</span><span class="rx-str rx-cquo">'</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">h</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="5"><span class="rx-cm">    a RexxUnicodeCodepointSupplier </span></code>
+<code lineno="6"><span class="rx-cm">     1  : '\x{6E}'</span></code>
+<code lineno="7"><span class="rx-cm">     2  : '\x{6F}'</span></code>
+<code lineno="8"><span class="rx-cm">     3  : '\x{C3AB}'</span></code>
+<code lineno="9"><span class="rx-cm">     5  : '\x{6C}'</span></code>
+<code lineno="10"><span class="rx-cm">     6  : '\x{F09F91A8}'</span></code>
+<code lineno="11"><span class="rx-cm">     10 : '\x{E2808D}'</span></code>
+<code lineno="12"><span class="rx-cm">     13 : '\x{F09F91A9}'</span></code>
+<code lineno="13"><span class="rx-cm">     17 : '\x{E2808D}'</span></code>
+<code lineno="14"><span class="rx-cm">     20 : '\x{F09F91A7}'</span></code>
+<code lineno="15"><span class="rx-cm">     24 : '\x{F09F8E85}'</span></code>
+<code lineno="16"><span class="rx-cm">    */</span></code>
 <code lineno="17">
 </code></pre>
 </div>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- Codepoint supplier providing the default index and the codepoint escaped string</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👩‍👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
-<code lineno="3"><span class="rx-ws">    </span><span class="rx-var">a</span><span class="rx-op"> </span><span class="rx-var">RexxUnicodeCodepointSupplier</span></code>
-<code lineno="4"><span class="rx-ws">     </span><span class="rx-const rx-label">1</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">n</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="5"><span class="rx-ws">     </span><span class="rx-const rx-label">2</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">o</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="6"><span class="rx-ws">     </span><span class="rx-const rx-label">3</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">ë</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="7"><span class="rx-ws">     </span><span class="rx-const rx-label">4</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">l</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="8"><span class="rx-ws">     </span><span class="rx-const rx-label">5</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">👩</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="9"><span class="rx-ws">     </span><span class="rx-const rx-label">6</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\u200D</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="10"><span class="rx-ws">     </span><span class="rx-const rx-label">7</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">👨</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="11"><span class="rx-ws">     </span><span class="rx-const rx-label">8</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\u200D</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="12"><span class="rx-ws">     </span><span class="rx-const rx-label">9</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">👩</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="13"><span class="rx-ws">     </span><span class="rx-const rx-label">10</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\u200D</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="14"><span class="rx-ws">     </span><span class="rx-const rx-label">11</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">👧</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="15"><span class="rx-ws">     </span><span class="rx-const rx-label">12</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">🎅</span><span class="rx-str rx-cquo">'</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="3"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="4"><span class="rx-cm">    a RexxUnicodeCodepointSupplier </span></code>
+<code lineno="5"><span class="rx-cm">     1  : 'n'</span></code>
+<code lineno="6"><span class="rx-cm">     2  : 'o'</span></code>
+<code lineno="7"><span class="rx-cm">     3  : 'ë'</span></code>
+<code lineno="8"><span class="rx-cm">     4  : 'l'</span></code>
+<code lineno="9"><span class="rx-cm">     5  : '👨'</span></code>
+<code lineno="10"><span class="rx-cm">     6  : '\u200D'</span></code>
+<code lineno="11"><span class="rx-cm">     7  : '👩'</span></code>
+<code lineno="12"><span class="rx-cm">     8  : '\u200D'</span></code>
+<code lineno="13"><span class="rx-cm">     9  : '👧'</span></code>
+<code lineno="14"><span class="rx-cm">     10 : '🎅'</span></code>
+<code lineno="15"><span class="rx-cm">    */</span></code>
 <code lineno="16">
 </code></pre>
 </div>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- Codepoint supplier providing the default index and the codepoint in U+ notation</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👩‍👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">u</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
-<code lineno="3"><span class="rx-ws">    </span><span class="rx-var">a</span><span class="rx-op"> </span><span class="rx-var">RexxUnicodeCodepointSupplier</span></code>
-<code lineno="4"><span class="rx-ws">     </span><span class="rx-const rx-label">1</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+006E</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="5"><span class="rx-ws">     </span><span class="rx-const rx-label">2</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+006F</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="6"><span class="rx-ws">     </span><span class="rx-const rx-label">3</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+00EB</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="7"><span class="rx-ws">     </span><span class="rx-const rx-label">4</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+006C</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="8"><span class="rx-ws">     </span><span class="rx-const rx-label">5</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+1F469</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="9"><span class="rx-ws">     </span><span class="rx-const rx-label">6</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+200D</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="10"><span class="rx-ws">     </span><span class="rx-const rx-label">7</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+1F468</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="11"><span class="rx-ws">     </span><span class="rx-const rx-label">8</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+200D</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="12"><span class="rx-ws">     </span><span class="rx-const rx-label">9</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+1F469</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="13"><span class="rx-ws">     </span><span class="rx-const rx-label">10</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+200D</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="14"><span class="rx-ws">     </span><span class="rx-const rx-label">11</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+1F467</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="15"><span class="rx-ws">     </span><span class="rx-const rx-label">12</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+1F385</span><span class="rx-str rx-cquo">'</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">u</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="3"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="4"><span class="rx-cm">    a RexxUnicodeCodepointSupplier </span></code>
+<code lineno="5"><span class="rx-cm">     1  : 'U+006E'</span></code>
+<code lineno="6"><span class="rx-cm">     2  : 'U+006F'</span></code>
+<code lineno="7"><span class="rx-cm">     3  : 'U+00EB'</span></code>
+<code lineno="8"><span class="rx-cm">     4  : 'U+006C'</span></code>
+<code lineno="9"><span class="rx-cm">     5  : 'U+1F468'</span></code>
+<code lineno="10"><span class="rx-cm">     6  : 'U+200D'</span></code>
+<code lineno="11"><span class="rx-cm">     7  : 'U+1F469'</span></code>
+<code lineno="12"><span class="rx-cm">     8  : 'U+200D'</span></code>
+<code lineno="13"><span class="rx-cm">     9  : 'U+1F467'</span></code>
+<code lineno="14"><span class="rx-cm">     10 : 'U+1F385'</span></code>
+<code lineno="15"><span class="rx-cm">    */</span></code>
+<code lineno="16">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner">
+<pre><code lineNo="1"><span class="rx-lncm">-- Codepoint supplier providing the default index and the codepoint as a RexxUnicodeCharacter</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="3"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="4"><span class="rx-cm">    a RexxUnicodeCodepointSupplier </span></code>
+<code lineno="5"><span class="rx-cm">     1  : ("n" \x{6E} U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")</span></code>
+<code lineno="6"><span class="rx-cm">     2  : ("o" \x{6F} U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")</span></code>
+<code lineno="7"><span class="rx-cm">     3  : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")</span></code>
+<code lineno="8"><span class="rx-cm">     4  : ("l" \x{6C} U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")</span></code>
+<code lineno="9"><span class="rx-cm">     5  : ("👨" \x{F09F91A8} U+1F468 So Other_Symbol "MAN")</span></code>
+<code lineno="10"><span class="rx-cm">     6  : (&lt;?&gt; \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")</span></code>
+<code lineno="11"><span class="rx-cm">     7  : ("👩" \x{F09F91A9} U+1F469 So Other_Symbol "WOMAN")</span></code>
+<code lineno="12"><span class="rx-cm">     8  : (&lt;?&gt; \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")</span></code>
+<code lineno="13"><span class="rx-cm">     9  : ("👧" \x{F09F91A7} U+1F467 So Other_Symbol "GIRL")</span></code>
+<code lineno="14"><span class="rx-cm">     10 : ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")</span></code>
+<code lineno="15"><span class="rx-cm">    */</span></code>
 <code lineno="16">
 </code></pre>
 </div>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- Invalid string - U+FFFD Substitution of Maximal Subparts</span></code>
-<code lineno="2"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">F4 91 92 93 FF 41 80 BF 42</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
-<code lineno="4"><span class="rx-ws">    </span><span class="rx-var">a</span><span class="rx-op"> </span><span class="rx-var">RexxUnicodeCodepointSupplier</span></code>
-<code lineno="5"><span class="rx-ws">     </span><span class="rx-const rx-label">1</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">65533</span></code>
-<code lineno="6"><span class="rx-ws">     </span><span class="rx-const rx-label">2</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">65533</span></code>
-<code lineno="7"><span class="rx-ws">     </span><span class="rx-const rx-label">3</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">65533</span></code>
-<code lineno="8"><span class="rx-ws">     </span><span class="rx-const rx-label">4</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">65533</span></code>
-<code lineno="9"><span class="rx-ws">     </span><span class="rx-const rx-label">5</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">65533</span></code>
-<code lineno="10"><span class="rx-ws">     </span><span class="rx-const rx-label">6</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">65</span></code>
-<code lineno="11"><span class="rx-ws">     </span><span class="rx-const rx-label">7</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">65533</span></code>
-<code lineno="12"><span class="rx-ws">     </span><span class="rx-const rx-label">8</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">65533</span></code>
-<code lineno="13"><span class="rx-ws">     </span><span class="rx-const rx-label">9</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">66</span></code>
+<code lineno="2"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202</span></code>
+<code lineno="3"></code>
+<code lineno="4"><span class="rx-lncm">-- Codepoint supplier providing the codepoint index and the codepoint as an integer</span></code>
+<code lineno="5"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="6"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="7"><span class="rx-cm">    a RexxUnicodeCodepointSupplier</span></code>
+<code lineno="8"><span class="rx-cm">     1 :  65533</span></code>
+<code lineno="9"><span class="rx-cm">     2 :  65533</span></code>
+<code lineno="10"><span class="rx-cm">     3 :  65533</span></code>
+<code lineno="11"><span class="rx-cm">     4 :  65533</span></code>
+<code lineno="12"><span class="rx-cm">     5 :  65</span></code>
+<code lineno="13"><span class="rx-cm">    */</span></code>
 <code lineno="14">
 </code></pre>
 </div>
 <div class="highlight-rexx-vim-light-zellner">
-<pre><code lineNo="1"><span class="rx-lncm">-- Invalid string - U+FFFD Substitution of Maximal Subparts</span></code>
-<code lineno="2"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
-<code lineno="4"><span class="rx-ws">    </span><span class="rx-var">a</span><span class="rx-op"> </span><span class="rx-var">RexxUnicodeCodepointSupplier</span></code>
-<code lineno="5"><span class="rx-ws">     </span><span class="rx-const rx-label">1</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">65533</span></code>
-<code lineno="6"><span class="rx-ws">     </span><span class="rx-const rx-label">2</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">65533</span></code>
-<code lineno="7"><span class="rx-ws">     </span><span class="rx-const rx-label">3</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">65533</span></code>
-<code lineno="8"><span class="rx-ws">     </span><span class="rx-const rx-label">4</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">65533</span></code>
-<code lineno="9"><span class="rx-ws">     </span><span class="rx-const rx-label">5</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws">  </span><span class="rx-int rx-ipart">65</span></code>
-<code lineno="10">
+<pre><code lineNo="1"><span class="rx-lncm">-- Codepoint supplier providing the byte index and the codepoint escaped string</span></code>
+<code lineno="2"><span class="rx-lncm">-- A negative byte index indicates an invalid byte sequence</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="5"><span class="rx-cm">    a RexxUnicodeCodepointSupplier </span></code>
+<code lineno="6"><span class="rx-cm">    -1 : '\x{E180}'</span></code>
+<code lineno="7"><span class="rx-cm">    -3 : '\x{E2}'</span></code>
+<code lineno="8"><span class="rx-cm">    -4 : '\x{F09192}'</span></code>
+<code lineno="9"><span class="rx-cm">    -7 : '\x{F1BF}'</span></code>
+<code lineno="10"><span class="rx-cm">     9 : 'A'</span></code>
+<code lineno="11"><span class="rx-cm">    */</span></code>
+<code lineno="12">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner">
+<pre><code lineNo="1"><span class="rx-lncm">-- Codepoint supplier providing the byte index and the error message</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">e</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="3"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="4"><span class="rx-cm">    a RexxUnicodeCodepointSupplier </span></code>
+<code lineno="5"><span class="rx-cm">    -1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'</span></code>
+<code lineno="6"><span class="rx-cm">    -3 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'</span></code>
+<code lineno="7"><span class="rx-cm">    -4 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'</span></code>
+<code lineno="8"><span class="rx-cm">    -7 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'</span></code>
+<code lineno="9"><span class="rx-cm">     9 : ''</span></code>
+<code lineno="10"><span class="rx-cm">    */</span></code>
+<code lineno="11">
 </code></pre>
 </div>
 <h3 id="class-methods-2">3.1.   Class methods</h3>
+<p>The <code>RexxUnicodeCodepointSupplier</code> class defines no class
+methods of its own.</p>
 <h3 id="instance-methods-2">3.2.   Instance methods</h3>
-<h4 id="available">3.2.1.   AVAILABLE</h4>
-<h4 id="index">3.2.2.   INDEX</h4>
-<h4 id="init">3.2.3.   INIT</h4>
-<h4 id="item">3.2.4.   ITEM</h4>
-<h4 id="next">3.2.5.   NEXT</h4>
+<h4 id="available">3.2.1.   available</h4>
+<pre><code>.RexxUnicodeCodepointSupplier~available</code></pre>
+<p>Returns <code>.true</code> if a codepoint is available from the
+supplier (that is, if the <code>item</code> method would return a
+value).<br />
+Returns <code>.false</code> if the supplier has already enumerated all
+codepoints.</p>
+<h4 id="index">3.2.2.   index</h4>
+<pre><code>.RexxUnicodeCodepointSupplier~index(type=defaultIndexType)</code></pre>
+<p>Returns the index of the current codepoint in the string.<br />
+If no codepoint is available, that is, if <code>available</code> would
+return <code>.false</code>, the supplier raises an error.</p>
+<p>The following index types are supported:</p>
+<ul>
+<li>If <code>type</code> is <code>"b"</code>, the byte index is returned
+(it is negative if the byte sequence is invalid).</li>
+<li>If <code>type</code>is <code>"c"</code>, the codepoint index is
+returned (the default index type).</li>
+</ul>
+<p>The default index type is specified when the supplier is created.</p>
+<h4 id="init">3.2.3.   init</h4>
+<pre><code>.RexxUnicodeCodepointSupplier~init(string, defaultIndexType=&quot;c&quot;, defaultItemType=&quot;c&quot;)</code></pre>
+<p>Initializes a <code>RexxUnicodeCodepointSupplier</code> instance for
+the UTF-8 string <code>string</code>.</p>
+<p>If specified, <code>defaultIndexType</code> defines the default index
+type returned by the <code>index</code> method.<br />
+The default is <code>"c"</code> (codepoint index).<br />
+See the <code>index</code> method for the list of possible values.</p>
+<p>If specified, <code>defaultItemType</code> defines the default item
+type returned by the <code>item</code> method.<br />
+The default value is <code>"c"</code> (codepoint as an integer).<br />
+See the <code>item</code> method for the list of possible values.</p>
+<h4 id="item">3.2.4.   item</h4>
+<pre><code>.RexxUnicodeCodepointSupplier~item(type=defaultItemType)</code></pre>
+<p>Returns the current codepoint in the string.<br />
+If no codepoint is available, that is, if <code>available</code> would
+return <code>.false</code>, the supplier raises an error.</p>
+<p>The following item types are supported:</p>
+<ul>
+<li>If <code>type</code> is <code>"b"</code>, the codepoint byte
+sequence is returned as a string.</li>
+<li>If <code>type</code> is <code>"c"</code>, the codepoint is returned
+as an integer (default).</li>
+<li>If <code>type</code> is <code>"e"</code>, the error message is
+returned (an empty string if there is no error).</li>
+<li>If <code>type</code> is <code>"h"</code>, the codepoint byte
+sequence is returned as hexadecimal digits.</li>
+<li>If <code>type</code> is <code>"u"</code>, the codepoint is returned
+in <code>U+</code> notation.</li>
+<li>If <code>type</code> is <code>"\"</code>, the codepoint byte
+sequence is returned as an escaped string.</li>
+<li>If <code>type</code> is a class, a new instance of that class is
+returned, initialized with the result of <code>item("c")</code>.</li>
+</ul>
+<p>The default item type is specified when the supplier is created.</p>
+<h4 id="next">3.2.5.   next</h4>
+<pre><code>.RexxUnicodeCodepointSupplier~next</code></pre>
+<p>Moves to the next codepoint in the string.<br />
+By repeatedly sending <code>next</code> to the supplier (as long as
+<code>available</code> returns <code>.true</code>), you can enumerate
+all codepoints in the string.<br />
+If no codepoint is available, that is, if <code>available</code> would
+return <code>.false</code>, the supplier raises an error.</p>
 <h2
 id="rexxunicodegraphemesupplier-class">4.   RexxUnicodeGraphemeSupplier
 Class</h2>
 <p>A <code>RexxUnicodeGraphemeSupplier</code> instance is an iterator
 created from a UTF-8 string and allows enumeration of the string's
-graphemes.</p>
+graphemes without indexer.</p>
 <p><code>::requires "rxunicode.cls"</code></p>
 <p><strong>Examples:</strong></p>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- the default index type is the grapheme index</span></code>
 <code lineno="2"><span class="rx-lncm">-- the default item type is the grapheme as a string</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👩‍👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
-<code lineno="4"><span class="rx-ws">    </span><span class="rx-var">a</span><span class="rx-op"> </span><span class="rx-var">RexxUnicodeGraphemeSupplier</span></code>
-<code lineno="5"><span class="rx-ws">     </span><span class="rx-const rx-label">1</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">n</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="6"><span class="rx-ws">     </span><span class="rx-const rx-label">2</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">o</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="7"><span class="rx-ws">     </span><span class="rx-const rx-label">3</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">ë</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="8"><span class="rx-ws">     </span><span class="rx-const rx-label">4</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">l</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="9"><span class="rx-ws">     </span><span class="rx-const rx-label">5</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">👩‍👨‍👩‍👧</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="10"><span class="rx-ws">     </span><span class="rx-const rx-label">6</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">🎅</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="11">
+<code lineno="3"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="5"><span class="rx-cm">    a RexxUnicodeGraphemeSupplier </span></code>
+<code lineno="6"><span class="rx-cm">     1 : 'n'</span></code>
+<code lineno="7"><span class="rx-cm">     2 : 'o'</span></code>
+<code lineno="8"><span class="rx-cm">     3 : 'ë'</span></code>
+<code lineno="9"><span class="rx-cm">     4 : 'l'</span></code>
+<code lineno="10"><span class="rx-cm">     5 : '👨‍👩‍👧'</span></code>
+<code lineno="11"><span class="rx-cm">     6 : '🎅'</span></code>
+<code lineno="12"><span class="rx-cm">    */</span></code>
+<code lineno="13">
 </code></pre>
 </div>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- Grapheme supplier providing the byte index and the grapheme byte sequence as hex digits</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👩‍👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">h</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
-<code lineno="3"><span class="rx-ws">    </span><span class="rx-var">a</span><span class="rx-op"> </span><span class="rx-var">RexxUnicodeGraphemeSupplier</span></code>
-<code lineno="4"><span class="rx-ws">     </span><span class="rx-const rx-label">1</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{6E}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="5"><span class="rx-ws">     </span><span class="rx-const rx-label">2</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{6F}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="6"><span class="rx-ws">     </span><span class="rx-const rx-label">3</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{C3AB}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="7"><span class="rx-ws">     </span><span class="rx-const rx-label">5</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{6C}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="8"><span class="rx-ws">     </span><span class="rx-const rx-label">6</span><span class="rx-ws">  </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="9"><span class="rx-ws">     </span><span class="rx-const rx-label">31</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{F09F8E85}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="10">
+<code lineno="2"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">h</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="3"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="4"><span class="rx-cm">    a RexxUnicodeGraphemeSupplier </span></code>
+<code lineno="5"><span class="rx-cm">     1  : '\x{6E}'</span></code>
+<code lineno="6"><span class="rx-cm">     2  : '\x{6F}'</span></code>
+<code lineno="7"><span class="rx-cm">     3  : '\x{C3AB}'</span></code>
+<code lineno="8"><span class="rx-cm">     5  : '\x{6C}'</span></code>
+<code lineno="9"><span class="rx-cm">     6  : '\x{F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'</span></code>
+<code lineno="10"><span class="rx-cm">     24 : '\x{F09F8E85}'</span></code>
+<code lineno="11"><span class="rx-cm">    */</span></code>
+<code lineno="12">
 </code></pre>
 </div>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- Grapheme supplier providing the default index and the grapheme escaped string</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👩‍👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
-<code lineno="3"><span class="rx-ws">    </span><span class="rx-var">a</span><span class="rx-op"> </span><span class="rx-var">RexxUnicodeGraphemeSupplier</span></code>
-<code lineno="4"><span class="rx-ws">     </span><span class="rx-const rx-label">1</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">n</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="5"><span class="rx-ws">     </span><span class="rx-const rx-label">2</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">o</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="6"><span class="rx-ws">     </span><span class="rx-const rx-label">3</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">ë</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="7"><span class="rx-ws">     </span><span class="rx-const rx-label">4</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">l</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="8"><span class="rx-ws">     </span><span class="rx-const rx-label">5</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">👩\u200D👨\u200D👩\u200D👧</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="9"><span class="rx-ws">     </span><span class="rx-const rx-label">6</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">🎅</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="10">
+<code lineno="2"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="3"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="4"><span class="rx-cm">    a RexxUnicodeGraphemeSupplier </span></code>
+<code lineno="5"><span class="rx-cm">     1 : 'n'</span></code>
+<code lineno="6"><span class="rx-cm">     2 : 'o'</span></code>
+<code lineno="7"><span class="rx-cm">     3 : 'ë'</span></code>
+<code lineno="8"><span class="rx-cm">     4 : 'l'</span></code>
+<code lineno="9"><span class="rx-cm">     5 : '👨\u200D👩\u200D👧'</span></code>
+<code lineno="10"><span class="rx-cm">     6 : '🎅'</span></code>
+<code lineno="11"><span class="rx-cm">    */</span></code>
+<code lineno="12">
 </code></pre>
 </div>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- Grapheme supplier providing the default index and the grapheme codepoints in U+ notation</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👩‍👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">u</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
-<code lineno="3"><span class="rx-ws">    </span><span class="rx-var">a</span><span class="rx-op"> </span><span class="rx-var">RexxUnicodeGraphemeSupplier</span></code>
-<code lineno="4"><span class="rx-ws">     </span><span class="rx-const rx-label">1</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+006E</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="5"><span class="rx-ws">     </span><span class="rx-const rx-label">2</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+006F</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="6"><span class="rx-ws">     </span><span class="rx-const rx-label">3</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+00EB</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="7"><span class="rx-ws">     </span><span class="rx-const rx-label">4</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+006C</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="8"><span class="rx-ws">     </span><span class="rx-const rx-label">5</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+1F469 U+200D U+1F468 U+200D U+1F469 U+200D U+1F467</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="9"><span class="rx-ws">     </span><span class="rx-const rx-label">6</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">U+1F385</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="10">
-</code></pre>
-</div>
-<div class="highlight-rexx-vim-light-zellner">
-<pre><code lineNo="1"><span class="rx-lncm">-- Invalid string - U+FFFD Substitution of Maximal Subparts</span></code>
-<code lineno="2"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064</span></code>
-<code lineno="3"><span class="rx-lncm">-- "\" for Grapheme escaped strings</span></code>
-<code lineno="4"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">F4 91 92 93 FF 41 80 BF 42</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
-<code lineno="5"><span class="rx-ws">    </span><span class="rx-var">a</span><span class="rx-op"> </span><span class="rx-var">RexxUnicodeGraphemeSupplier</span></code>
-<code lineno="6"><span class="rx-ws">     </span><span class="rx-const rx-label">1</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{F4}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="7"><span class="rx-ws">     </span><span class="rx-const rx-label">2</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{91}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="8"><span class="rx-ws">     </span><span class="rx-const rx-label">3</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{92}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="9"><span class="rx-ws">     </span><span class="rx-const rx-label">4</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{93}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="10"><span class="rx-ws">     </span><span class="rx-const rx-label">5</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{FF}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="11"><span class="rx-ws">     </span><span class="rx-const rx-label">6</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">A</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="12"><span class="rx-ws">     </span><span class="rx-const rx-label">7</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{80}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="13"><span class="rx-ws">     </span><span class="rx-const rx-label">8</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{BF}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="14"><span class="rx-ws">     </span><span class="rx-const rx-label">9</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">B</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="15">
+<code lineno="2"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">u</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="3"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="4"><span class="rx-cm">    a RexxUnicodeGraphemeSupplier </span></code>
+<code lineno="5"><span class="rx-cm">     1 : 'U+006E'</span></code>
+<code lineno="6"><span class="rx-cm">     2 : 'U+006F'</span></code>
+<code lineno="7"><span class="rx-cm">     3 : 'U+00EB'</span></code>
+<code lineno="8"><span class="rx-cm">     4 : 'U+006C'</span></code>
+<code lineno="9"><span class="rx-cm">     5 : 'U+1F468 U+200D U+1F469 U+200D U+1F467'</span></code>
+<code lineno="10"><span class="rx-cm">     6 : 'U+1F385'</span></code>
+<code lineno="11"><span class="rx-cm">    */</span></code>
+<code lineno="12">
 </code></pre>
 </div>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- Invalid string - U+FFFD Substitution of Maximal Subparts</span></code>
 <code lineno="2"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202</span></code>
-<code lineno="3"><span class="rx-lncm">-- "\" for Grapheme escaped strings</span></code>
-<code lineno="4"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
-<code lineno="5"><span class="rx-ws">    </span><span class="rx-var">a</span><span class="rx-op"> </span><span class="rx-var">RexxUnicodeGraphemeSupplier</span></code>
-<code lineno="6"><span class="rx-ws">     </span><span class="rx-const rx-label">1</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{E180}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="7"><span class="rx-ws">     </span><span class="rx-const rx-label">2</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{E2}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="8"><span class="rx-ws">     </span><span class="rx-const rx-label">3</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{F09192}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="9"><span class="rx-ws">     </span><span class="rx-const rx-label">4</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\x{F1BF}</span><span class="rx-str rx-cquo">'</span></code>
-<code lineno="10"><span class="rx-ws">     </span><span class="rx-const rx-label">5</span><span class="rx-ws"> </span><span class="rx-spe">:</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">A</span><span class="rx-str rx-cquo">'</span></code>
+<code lineno="3"></code>
+<code lineno="4"><span class="rx-lncm">-- Grapheme supplier providing the grapheme index and the grapheme escaped string</span></code>
+<code lineno="5"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="6"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="7"><span class="rx-cm">    a RexxUnicodeGraphemeSupplier</span></code>
+<code lineno="8"><span class="rx-cm">     1 : '\x{E180}'</span></code>
+<code lineno="9"><span class="rx-cm">     2 : '\x{E2}'</span></code>
+<code lineno="10"><span class="rx-cm">     3 : '\x{F09192}'</span></code>
+<code lineno="11"><span class="rx-cm">     4 : '\x{F1BF}'</span></code>
+<code lineno="12"><span class="rx-cm">     5 : 'A'</span></code>
+<code lineno="13"><span class="rx-cm">    */</span></code>
+<code lineno="14">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner">
+<pre><code lineNo="1"><span class="rx-lncm">-- Grapheme supplier providing the byte index and the grapheme escaped string</span></code>
+<code lineno="2"><span class="rx-lncm">-- A negative byte index indicates an invalid byte sequence</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="5"><span class="rx-cm">    a RexxUnicodeGraphemeSupplier </span></code>
+<code lineno="6"><span class="rx-cm">    -1 : '\x{E180}'</span></code>
+<code lineno="7"><span class="rx-cm">    -3 : '\x{E2}'</span></code>
+<code lineno="8"><span class="rx-cm">    -4 : '\x{F09192}'</span></code>
+<code lineno="9"><span class="rx-cm">    -7 : '\x{F1BF}'</span></code>
+<code lineno="10"><span class="rx-cm">     9 : 'A'</span></code>
+<code lineno="11"><span class="rx-cm">    */</span></code>
+<code lineno="12">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner">
+<pre><code lineNo="1"><span class="rx-lncm">-- Grapheme supplier providing the byte index and the error message</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">e</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="3"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="4"><span class="rx-cm">    a RexxUnicodeGraphemeSupplier </span></code>
+<code lineno="5"><span class="rx-cm">    -1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'</span></code>
+<code lineno="6"><span class="rx-cm">    -3 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'</span></code>
+<code lineno="7"><span class="rx-cm">    -4 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'</span></code>
+<code lineno="8"><span class="rx-cm">    -7 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'</span></code>
+<code lineno="9"><span class="rx-cm">     9 : ''</span></code>
+<code lineno="10"><span class="rx-cm">    */</span></code>
 <code lineno="11">
 </code></pre>
 </div>
 <h3 id="class-methods-3">4.1.   Class methods</h3>
+<p>The <code>RexxUnicodeGraphemeSupplier</code> class defines no class
+methods of its own.</p>
 <h3 id="instance-methods-3">4.2.   Instance methods</h3>
-<h4 id="available-1">4.2.1.   AVAILABLE</h4>
-<h4 id="index-1">4.2.2.   INDEX</h4>
-<h4 id="init-1">4.2.3.   INIT</h4>
-<h4 id="item-1">4.2.4.   ITEM</h4>
-<h4 id="next-1">4.2.5.   NEXT</h4>
+<h4 id="available-1">4.2.1.   available</h4>
+<pre><code>.RexxUnicodeGraphemeSupplier~available</code></pre>
+<p>Returns <code>.true</code> if a grapheme is available from the
+supplier (that is, if the <code>item</code> method would return a
+value).<br />
+Returns <code>.false</code> if the supplier has already enumerated all
+graphemes.</p>
+<h4 id="index-1">4.2.2.   index</h4>
+<pre><code>.RexxUnicodeGraphemeSupplier~index(type=defaultIndexType)</code></pre>
+<p>Returns the index of the current grapheme in the string.<br />
+If no grapheme is available, that is, if <code>available</code> would
+return <code>.false</code>, the supplier raises an error.</p>
+<p>The following index types are supported:</p>
+<ul>
+<li>If <code>type</code> is <code>"b"</code>, the byte index is returned
+(it is negative if the byte sequence is invalid).</li>
+<li>If <code>type</code>is <code>"g"</code>, the grapheme index is
+returned (the default index type).</li>
+</ul>
+<p>The default index type is specified when the supplier is created.</p>
+<h4 id="init-1">4.2.3.   init</h4>
+<pre><code>.RexxUnicodeGraphemeSupplier~init(string, defaultIndexType=&quot;g&quot;, defaultItemType=&quot;g&quot;)</code></pre>
+<p>Initializes a <code>RexxUnicodeGraphemeSupplier</code> instance for
+the UTF-8 string <code>string</code>.</p>
+<p>If specified, <code>defaultIndexType</code> defines the default index
+type returned by the <code>index</code> method.<br />
+The default is <code>"g"</code> (grapheme index).<br />
+See the <code>index</code> method for the list of possible values.</p>
+<p>If specified, <code>defaultItemType</code> defines the default item
+type returned by the <code>item</code> method.<br />
+The default value is <code>"g"</code> (grapheme as a string).<br />
+See the <code>item</code> method for the list of possible values.</p>
+<h4 id="item-1">4.2.4.   item</h4>
+<pre><code>.RexxUnicodeGraphemeSupplier~item(type=defaultItemType)</code></pre>
+<p>Returns the current grapheme in the string.<br />
+If no grapheme is available, that is, if <code>available</code> would
+return <code>.false</code>, the supplier raises an error.</p>
+<p>The following item types are supported:</p>
+<ul>
+<li>If <code>type</code> is <code>"b"</code>, the grapheme byte sequence
+is returned as a string (same as <code>"g"</code>).</li>
+<li>If <code>type</code> is <code>"e"</code>, the error message is
+returned (an empty string if there is no error).</li>
+<li>If <code>type</code> is <code>"g"</code>, the grapheme is returned
+as a string (default).</li>
+<li>If <code>type</code> is <code>"h"</code>, the grapheme byte sequence
+is returned as hexadecimal digits.</li>
+<li>If <code>type</code> is <code>"u"</code>, the grapheme is returned
+in <code>U+</code> notation.</li>
+<li>If <code>type</code> is <code>"\"</code>, the grapheme byte sequence
+is returned as an escaped string.</li>
+<li>If <code>type</code> is a class, a new instance of that class is
+returned, initialized with the result of <code>item("g")</code>.</li>
+</ul>
+<p>The default item type is specified when the supplier is created.</p>
+<h4 id="next-1">4.2.5.   next</h4>
+<pre><code>.RexxUnicodeGraphemeSupplier~next</code></pre>
+<p>Moves to the next grapheme in the string.<br />
+By repeatedly sending <code>next</code> to the supplier (as long as
+<code>available</code> returns <code>.true</code>), you can enumerate
+all graphemes in the string.<br />
+If no grapheme is available, that is, if <code>available</code> would
+return <code>.false</code>, the supplier raises an error.</p>
 <h2 id="rexxunicodestringindexer-class">5.   RexxUnicodeStringIndexer
 Class</h2>
 <p><code>::requires "rxunicode.cls"</code></p>
