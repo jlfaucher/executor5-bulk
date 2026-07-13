@@ -6,6 +6,7 @@ library embedded in ooRexx.
 
 
 `rxunicode.cls` is an optional package that defines:
+
 - The `RexxUnicode` class, a subclass of `RexxUnicodeServices`.
 - The `RexxUnicodeCodepointSupplier` class.
 - The `RexxUnicodeGraphemeSupplier` class.
@@ -15,12 +16,13 @@ library embedded in ooRexx.
 
 > [!CAUTION]  
 > Testing these classes from `ooRexxShell` with `TUTOR` enabled showed that a
-> defensive barrier is needed.
+> defensive barrier is needed. This problem is not limited to `TUTOR` classes;
+> it can occur with any `String` subclass that overrides `~length` anord `~substr`.
 >
 > In case of errors like
 >
-> - `Argument <name> class: expected String, found Text.     -- "Any string"`
-> - `Argument <name> class: expected String, found Bytes.    -- "E0 80 80"x`
+> - `Argument <name> class: expected String, found Text.`
+> - `Argument <name> class: expected String, found Bytes.`
 >
 > use `tutor off` for a permanent workaround,  
 > or use `~string` for a temporary workaround.
@@ -32,7 +34,7 @@ library embedded in ooRexx.
 >
 > This check is intended to detect accidental mixing of Unicode-aware objects
 > with byte strings and to allow users to adapt their code accordingly
-> (typically by requesting a `.String` from their TUTOR objects).
+> (typically by requesting a `.String` from their Unicode objects).
 > 
 > See the [examples][examples_internal_errors] at the end of `rxunicode.cls`
 > showing the internal errors that can occur when mixing graphemes and bytes.
@@ -102,6 +104,7 @@ For portability, use refCode instead.
 .RexxUnicodeServices~codepointBidiClass("0608"~x2d, >code, >label)=; code=; label=      --  5; 'AL'; 'Arabic_Letter'
 .RexxUnicodeServices~codepointBidiClass("FFFFFF"~x2d, >code, >label)=; code=; label=    --  0; '?'; 'Code point not explicitly listed for Bidi_Class'
 .RexxUnicodeServices~codepointBidiClass(-1, >code, >label)=; code=; label=              --  0; '?'; 'Code point not explicitly listed for Bidi_Class'
+
 ```
 
 #### 1.1.2.   codepointBidiMirrored
@@ -166,6 +169,7 @@ For portability, use refCode instead.
 .RexxUnicodeServices~codepointBoundClass("AC01"~x2d, >code, >label)=; code=; label=      --  10; 'LVT'; 'LVT'
 .RexxUnicodeServices~codepointBoundClass("FFFFFF"~x2d, >code, >label)=; code=; label=    --  1; 'XX'; 'Other'
 .RexxUnicodeServices~codepointBoundClass(-1, >code, >label)=; code=; label=              --  1; 'XX'; 'Other'
+
 ```
 
 
@@ -225,6 +229,7 @@ For portability, use refCode instead.
 .RexxUnicodeServices~codepointCategory("0903"~x2d, >code, >label)=; code=; label=      --  7; 'Mc'; 'Spacing_Mark'
 .RexxUnicodeServices~codepointCategory("FFFFFF"~x2d, >code, >label)=; code=; label=    --  0; 'Cn'; 'Unassigned'
 .RexxUnicodeServices~codepointCategory(-1, >code, >label)=; code=; label=              --  0; 'Cn'; 'Unassigned'
+
 ```
 
 
@@ -339,6 +344,7 @@ Some values have neither a `refCode` nor a `refLabel`.
 .RexxUnicode~codepointCombiningClass("031B"~x2d, >code, >label)=; code=; label=     --  216; 'ATAR'; 'Attached_Above_Right'
 .RexxUnicode~codepointCombiningClass("FFFFFF"~x2d, >code, >label)=; code=; label=   --  0; 'NR'; 'Not_Reordered'
 .RexxUnicode~codepointCombiningClass(-1, >code, >label)=; code=; label=             --  0; 'NR'; 'Not_Reordered'
+
 ```
 
 
@@ -401,6 +407,7 @@ For portability, use refCode instead.
 .RexxUnicode~codepointDecompositionType("00BC"~x2d, >code, >label)=; code=; label=      --  15; 'Fraction'; 'Vulgar fraction form'
 .RexxUnicode~codepointDecompositionType("FFFFFF"~x2d, >code, >label)=; code=; label=    --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
 .RexxUnicode~codepointDecompositionType(-1, >code, >label)=; code=; label=              --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
+
 ```
 
 
@@ -474,6 +481,7 @@ Returns `.true` if there is a grapheme break between the two consecutive codepoi
 -- `graphemeBreak` updates `state`.
 array = (previousCodepoint, currentCodepoint, state)
 break = .RexxUnicodeServices~graphemeBreak(array) -- true or false
+
 ```
 
 #### 1.1.16.   new
@@ -505,7 +513,9 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 #### 1.1.19.   utf8DecodeCodepoint
 
 ```
-utf8DecodeCodepoint(
+.RexxUnicodeServices~utf8DecodeCodepoint(string, indexB [, [>refSizeB] [, [>refErrorCode] [, >refErrorMsg]]])
+
+.RexxUnicodeServices~utf8DecodeCodepoint(
     string,         -- (in)             A UTF-8 string.
     indexB,         -- (in)             The byte index (1-based) of the encoded codepoint in string.
     >refSizeB,      -- (out, optional)  The number of bytes read to decode the codepoint:
@@ -518,7 +528,6 @@ utf8DecodeCodepoint(
                     --                  or the error message otherwise.
     )
 
-.RexxUnicodeServices~utf8DecodeCodepoint(string, indexB [, [>refSizeB] [, [>refErrorCode] [, >refErrorMsg]]])
 ```
 
 Returns the next codepoint (an integer) at position `indexB` of `string`, or -1 in case of error.
@@ -532,26 +541,17 @@ to follow the U+FFFD Substitution of Maximal Subparts.
 **Error codes and messages:**
 
 ```
-- "CONTINUATION_ERROR_RANGE"  
-  "Invalid continuation byte %i ('%02X'x) at byte-position %zu (codepoint > U+10FFFF)"
-- "CONTINUATION_HIGH_SURROGATE"  
-  "Invalid continuation byte %i ('%02X'x) at byte-position %zu (high surrogate)"
-- "CONTINUATION_LOW_SURROGATE"  
-  "Invalid continuation byte %i ('%02X'x) at byte-position %zu (low surrogate)"
-- "CONTINUATION"  
-  "Invalid continuation byte %i ('%02X'x) at byte-position %zu"
-- "CONTINUATION_NON_SHORTEST_FORM"  
-  "Invalid continuation byte %i ('%02X'x) at byte-position %zu (non-shortest form)"
-- "START_ERROR_RANGE"  
-  "Invalid start byte %i ('%02X'x) (codepoint > U+10FFFF)"
-- "START_NON_SHORTEST_FORM"  
-  "Invalid start byte %i ('%02X'x) (non-shortest form)"
-- "TRUNCATED"  
-  "Truncated, expected %i bytes"
+- "CONTINUATION_ERROR_RANGE"        "Invalid continuation byte %i ('%02X'x) at byte-position %zu (codepoint > U+10FFFF)"
+- "CONTINUATION_HIGH_SURROGATE"     "Invalid continuation byte %i ('%02X'x) at byte-position %zu (high surrogate)"
+- "CONTINUATION_LOW_SURROGATE"      "Invalid continuation byte %i ('%02X'x) at byte-position %zu (low surrogate)"
+- "CONTINUATION"                    "Invalid continuation byte %i ('%02X'x) at byte-position %zu"
+- "CONTINUATION_NON_SHORTEST_FORM"  "Invalid continuation byte %i ('%02X'x) at byte-position %zu (non-shortest form)"
+- "START_ERROR_RANGE"               "Invalid start byte %i ('%02X'x) (codepoint > U+10FFFF)"
+- "START_NON_SHORTEST_FORM"         "Invalid start byte %i ('%02X'x) (non-shortest form)"
+- "TRUNCATED"                       "Truncated, expected %i bytes"
 ```
 
 **Example:**
-
 
 ```rexx
 -- The decoding part of the CodePointSupplier class
@@ -572,20 +572,21 @@ to follow the U+FFFD Substitution of Maximal Subparts.
         end
         byteSequence = string~substr(abs(indexB), abs(sizeB))
     end
+
 ```
 
 
 #### 1.1.20.   utf8EncodeCodepoint
 
 ```
-utf8EncodeCodepoint(
+.RexxUnicodeServices~utf8EncodeCodepoint(codepoint, destination [, >refSizeB])
+
+.RexxUnicodeServices~utf8EncodeCodepoint(
     codepoint,      -- (in)             The codepoint to encode (an integer).
     destination,    -- (in-out)         The mutable buffer to update.
     >refSizeB       -- (out, optional)  The size of the encoded byte sequence (0..4)
                     --                  The size is 0 if the codepoint is not in the range 0..10FFFF.
     )
-
-.RexxUnicodeServices~utf8EncodeCodepoint(codepoint, destination [, >refSizeB])
 ```
 
 Appends a codepoint's UTF-8 encoding into the specified mutable buffer.  
@@ -613,6 +614,7 @@ Append the UTF-8 encoding of 8364 to mb: size = 3 mb = oë€
 Append the UTF-8 encoding of 127877 to mb: size = 4 mb = oë€🎅
 Append the UTF-8 encoding of 1114112 to mb: size = 0 mb = oë€🎅
 */
+
 ```
 
 
@@ -633,7 +635,9 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 #### 1.1.22.   utf8Transform
 
 ```
-utf8Transform(
+.RexxUnicodeServices~utf8Transform(string [, casefold = .false [, lump= .false [, nlf = 0 [, normalization = 0 [, stripCC = .false [, stripIgnorable= .false [, stripMark = .false [, stripNA = .false]]]]]]]])
+
+.RexxUnicodeServices~utf8Transform(
     string,                 -- The UTF-8 string to transform
     casefold = .false,      -- Unicode case folding
     lump= .false,           -- E.g. HYPHEN U+2010 and MINUS U+2212 to ASCII "-"
@@ -644,8 +648,6 @@ utf8Transform(
     stripMark = .false,     -- Strips all character markings (i.e. accents)
     stripNA = .false        -- Strips unassigned codepoints
     )
-
-.RexxUnicodeServices~utf8Transform(string [, casefold = .false [, lump= .false [, nlf = 0 [, normalization = 0 [, stripCC = .false [, stripIgnorable= .false [, stripMark = .false [, stripNA = .false]]]]]]]])
 ```
 
 Returns the transformed string.
@@ -807,53 +809,85 @@ string = .RexxUnicode~stringUnescape(string)
      21 : (<?> \x{0D} U+000D Cc Control "<control-000D>")
      22 : (<?> \x{0A} U+000A Cc Control "<control-000A>")                                   <-- CR+LF replaceable by " " with STRIPCC:.true
     */
-    
+
 string=; .RexxUnicode~C2U(string)=
 -- '[07]Le　 ​Père[09]‐­–—Noël﷐[0D0A]'
 -- 'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+000D U+000A'
 
+```
+
+```rexx
+-- Example 1
 -- Performs unicode case folding, to be able to do a case-insensitive string comparison.
 tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/ .true)
 tstring=; .RexxUnicode~C2U(tstring)=
 -- '[07]le　 ​père[09]‐­–—noël﷐[0D0A]'
 -- 'U+0007 U+006C U+0065 U+3000 U+1680 U+200B U+0070 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+006E U+006F U+00EB U+006C U+FDD0 U+000D U+000A'
 
+```
+
+```rexx
+-- Example 2
 -- Strip "default ignorable characters" such as SOFT-HYPHEN or ZERO-WIDTH-SPACE.
 tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/, /*normalization:*/, /*stripCC*/, /*stripIgnorable:*/.true)
 tstring=; .RexxUnicode~C2U(tstring)=
 -- '[07]Le　 Père[09]‐–—Noël﷐[0D0A]'
 -- 'U+0007 U+004C U+0065 U+3000 U+1680 U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+000D U+000A'
 
+```
+
+```rexx
+-- Example 3
 -- Lumps certain characters together.
 tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/, /*lump:*/ .true)
 tstring=; .RexxUnicode~C2U(tstring)=
 -- '[07]Le  ​Père[09]-­--Noël﷐[0D0A]'
 -- 'U+0007 U+004C U+0065 U+0020 U+0020 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+002D U+00AD U+002D U+002D U+004E U+006F U+00EB U+006C U+FDD0 U+000D U+000A'
 
+```
+
+```rexx
+-- Example 4
 -- NLF2LF: Convert LF, CRLF, CR and NEL into LF.
 tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/ 1)
 tstring=; .RexxUnicode~C2U(tstring)=
 -- '[07]Le　 ​Père[09]‐­–—Noël﷐[0A]'
 -- 'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+000A'
 
+```
+
+```rexx
+-- Example 5
 -- NLF2LS: Convert LF, CRLF, CR and NEL into LS (U+2028 Zl 0 "LINE SEPARATOR").
 tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/ 2)
 tstring=; .RexxUnicode~C2U(tstring)=
 -- '[07]Le　 ​Père[09]‐­–—Noël﷐'
 -- 'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+2028'
 
+```
+
+```rexx
+-- Example 6
 -- NLF2PS: convert LF, CRLF, CR and NEL into PS (U+2029 Zp 0 "PARAGRAPH SEPARATOR").
 tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/ 3)
 tstring=; .RexxUnicode~C2U(tstring)=
 -- '[07]Le　 ​Père[09]‐­–—Noël﷐ '
 -- 'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+2029'
 
+```
+
+```rexx
+-- Example 7
 -- Strips and/or converts control characters.
 tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/, /*normalization:*/, /*stripCC*/ .true)
 tstring=; .RexxUnicode~C2U(tstring)=
 -- 'Le　 ​Père ‐­–—Noël﷐ '
 -- 'U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0020 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+0020'
 
+```
+
+```rexx
+-- Example 8
 -- Strips all character markings.
 -- This includes non-spacing, spacing and enclosing (i.e. accents).
 -- This option works only with normalization.
@@ -862,12 +896,20 @@ tstring=; .RexxUnicode~C2U(tstring)=
 -- '[07]Le　 ​Pere[09]‐­–—Noel﷐[0D0A]'
 -- 'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+0065 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+0065 U+006C U+FDD0 U+000D U+000A'
 
+```
+
+```rexx
+-- Example 9
 -- Strips unassigned codepoints.
 tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/, /*normalization:*/, /*stripCC:*/, /*stripIgnorable:*/, /*stripMark:*/, /*stripNA*/ .true)
 tstring=; .RexxUnicode~C2U(tstring)=
 -- '[07]Le　 ​Père[09]‐­–—Noël[0D0A]'
 -- 'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+000D U+000A'
 
+```
+
+```rexx
+-- Example 10
 -- Application of several options.
 tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/ .true, /*lump:*/ .true, /*nlf:*/, /*normalization:*/ 1, /*stripCC:*/ .true, /*stripIgnorable:*/ .true, /*stripMark:*/ .true, /*stripNA*/ .true)
 tstring=; .RexxUnicode~C2U(tstring)=
@@ -967,6 +1009,9 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 .RexxUnicode~C2U("Noël 🎅")=                        -- 'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
 .RexxUnicode~C2U("Noël 🎅", .MutableBuffer~new)=    -- M'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
 
+```
+
+```rexx
 -- Invalid string
 -- U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
@@ -975,6 +1020,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
 .RexxUnicode~C2U("E1 80 E2 F0 91 92 F1 BF 41"x)=    -- 'U+FFFD U+FFFD U+FFFD U+FFFD U+0041'
 .RexxUnicode~C2X("E1 80 E2 F0 91 92 F1 BF 41"x)=    -- 'E180 E2 F09192 F1BF 41'
+
 ```
 
 
@@ -992,6 +1038,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 ```rexx
 .RexxUnicode~C2X("Noël 🎅")=                        -- '4E 6F C3AB 6C 20 F09F8E85'
 .RexxUnicode~C2X("Noël 🎅", .MutableBuffer~new)=    -- M'4E 6F C3AB 6C 20 F09F8E85'
+
 ```
 
 
@@ -1008,23 +1055,39 @@ See the `codepoint` method for a definition of "codepoint identifier".
 -- Search by decimal value
 .RexxUnicode~character("127877")=               -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
 
+```
+
+```rexx
 -- Search by U+ notation
 .RexxUnicode~character("U+1F385")=              -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
 
+```
+
+```rexx
 -- Search by name
 .RexxUnicode~character("FATHER CHRISTMAS")=     -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
 
+```
+
+```rexx
 -- search by loose name.
 -- https://unicode.org/reports/tr44/#UAX44-LM2
 .RexxUnicode~character(" Father christmas  ")=  -- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
 
+```
+
+```rexx
 -- Search directly a character
 .RexxUnicode~character("🎅")=                   -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
 
+```
+
+```rexx
 -- Only -1 is supported as a special value
 -- All other negative codepoints are invalid
 .RexxUnicode~character(-1)=                     -- (An invalid character)
 .RexxUnicode~character(-2)=                     -- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
+
 ```
 
 
@@ -1056,23 +1119,39 @@ A codepoint identifier may be:
 -- Search by decimal value
 .RexxUnicode~codepoint("127877")=               -- 127877
 
+```
+
+```rexx
 -- Search by U+ notation
 .RexxUnicode~codepoint("U+1F385")=              -- 127877
 
+```
+
+```rexx
 -- Search by name
 .RexxUnicode~codepoint("FATHER CHRISTMAS")=     -- 127877
 
+```
+
+```rexx
 -- search by loose name.
 -- https://unicode.org/reports/tr44/#UAX44-LM2
 .RexxUnicode~codepoint(" Father christmas  ")=  -- 127877
 
+```
+
+```rexx
 -- Search directly a character
 .RexxUnicode~codepoint("🎅")=                   -- 127877
 
+```
+
+```rexx
 -- Only -1 is supported as a special value
 -- All other negative codepoints are invalid
 .RexxUnicode~codepoint(-1)=                     -- -1
 .RexxUnicode~codepoint(-2)=                     -- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
+
 ```
 
 
@@ -1089,9 +1168,14 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
  ```rexx
 .RexxUnicode~codepointCharName(2448~x2d)=       -- 'OCR DASH'
 
+```
+
+```rexx
 -- The special value -1 has no name
 .RexxUnicode~codepointCharName(-1)=             -- ''
- ```
+
+```
+
 
 #### 2.4.7.   codepointCharNameAlias
 
@@ -1106,8 +1190,12 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
  ```rexx
 .RexxUnicode~codepointCharNameAlias(2448~x2d)=       -- 'MICR ON US SYMBOL'
 
+```
+
+```rexx
 -- The special value -1 has no name alias
 .RexxUnicode~codepointCharNameAlias(-1)=             -- ''
+
  ```
 
 
@@ -1127,8 +1215,12 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
 ```rexx
 .RexxUnicode~codepointExtendedCharName(2448~x2d)=   -- 'OCR DASH'
 
+```
+
+```rexx
 -- The special value -1 has no name alias
 .RexxUnicode~codepointExtendedCharName(-1)=         -- ''
+
 ```
 
 
@@ -1154,9 +1246,14 @@ Rules:
 .RexxUnicode~codepointIsPrintable(65)=            -- 1
 .RexxUnicode~codepointIsPrintable("D800"~x2d)=    -- 0
 
+```
+
+```rexx
 -- The special value -1 is not printable
 .RexxUnicode~codepointIsPrintable(-1)=            -- 0
+
 ```
+
 
 #### 2.4.10.   codepointPrintableString
 
@@ -1176,8 +1273,12 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 .RexxUnicode~codepointPrintableString(65)=          -- 'A'
 .RexxUnicode~codepointPrintableString("D800"~x2d)=  -- '\uD800'
 
+```
+
+```rexx
 -- Since the special value -1 is not printable, it is represented using Unicode escape notation.
 .RexxUnicode~codepointPrintableString(-1)=          -- '\UFFFFFFFF'
+
 ```
 
 
@@ -1196,7 +1297,11 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 .RexxUnicode~codepointUnicodeEscapeNotation("1F385"~x2d)=   -- '\U0001F385'
 .RexxUnicode~codepointUnicodeEscapeNotation(-1)=            -- '\UFFFFFFFF'
 
+```
+
+```rexx
 .RexxUnicode~codepointUnicodeEscapeNotation("D800"~x2d, .MutableBuffer~new)=    -- M'\uD800'
+
 ```
 
 
@@ -1217,6 +1322,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 
 .RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint)~c2x=      -- 'F48FBFBF'
 .RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  -- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+
 ```
 
 
@@ -1243,6 +1349,7 @@ The special value -1 is represented using `U+FFFFFF`, even though the resulting 
 .RexxUnicode~D2U(.RexxUnicode~maxCodepoint)=        -- 'U+10FFFF'
 .RexxUnicode~D2U(.RexxUnicode~maxCodepoint + 1)=    -- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).
 .RexxUnicode~D2U(-1)=                               -- 'U+FFFFFF'
+
 ```
 
 
@@ -1258,8 +1365,12 @@ or to .RexxUnicode~UAX44_LM2 (slower, but always available).
 ```rexx
 .RexxUnicode~h_UAX44_LM2(" MICR on US SYMBOL")=     -- 'micronussymbol'
 
+```
+
+```rexx
 -- ASCII name only
 .RexxUnicode~h_UAX44_LM2("Père Noël")=              -- Name must be an ASCII string; found "Père Noël".
+
 ```
 
 
@@ -1281,6 +1392,7 @@ Returns a `StringTable` containing information about the Unicode environment.
     'unicodeVersion'         : '17.0.0'
     'utf8procVersion'        : '2.11.3'
     */
+
 ```
 
 
@@ -1303,6 +1415,9 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 
 .RexxUnicode~stringEscape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF'
 
+```
+
+```rexx
 .RexxUnicode~stringEscape(.RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}"))=    -- '\x{ED}\x{A0}\x{80}'
 /*
 A lead surrogate is invalid in a UTF-8 string (would be valid in a WTF-8 string).
@@ -1317,6 +1432,7 @@ Codepoint byte sequence as hexadecimal digits (option "h):
     3 : '\x{80}'
 Escaping U+D800 is '\x{ED}\x{A0}\x{80}' because \x{EDA080} can't be UTF-8 decoded as U+D800.
 */
+
 ```
 
 
@@ -1344,6 +1460,9 @@ If provided, `indexer` receives a `RexxUnicodeStringIndexer` instance.
 .RexxUnicode~stringInfo("🎅")=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
 .RexxUnicode~stringInfo("👨‍👩‍👧")=          -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
 
+```
+
+```rexx
 -- Invalid string
 -- U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
@@ -1356,6 +1475,7 @@ indexer~errors==
      3 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
      4 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'
     */
+
 ```
 
 
@@ -1370,6 +1490,7 @@ Returns `.true` if the given string contains only characters <= "7F"x
 ```rexx
 .RexxUnicode~stringIsASCII("Noel")=     -- 1
 .RexxUnicode~stringIsASCII("Noël")=     -- 0
+
 ```
 
 
@@ -1386,6 +1507,7 @@ See the `utf8Transform` method for a description of the optional transformation 
 ```rexx
 .RexxUnicode~stringToNFC("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=      -- 'äöü äöü x̂ ϔ ﷺ baﬄe ß ς'
 .RexxUnicode~C2X(result)=                                  -- 'C3A4 C3B6 C3BC 20 C3A4 C3B6 C3BC 20 78 CC82 20 CF94 20 EFB7BA 20 62 61 EFAC84 65 20 C39F 20 CF82'
+
 ```
 
 
@@ -1402,6 +1524,7 @@ See the `utf8Transform` method for a description of the optional transformation 
 ```rexx
 .RexxUnicode~stringToNFD("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=       -- 'äöü äöü x̂ ϔ ﷺ baﬄe ß ς'
 .RexxUnicode~C2X(result)=                                   -- '61 CC88 6F CC88 75 CC88 20 61 CC88 6F CC88 75 CC88 20 78 CC82 20 CF92 CC88 20 EFB7BA 20 62 61 EFAC84 65 20 C39F 20 CF82'
+
 ```
 
 
@@ -1418,6 +1541,7 @@ See the `utf8Transform` method for a description of the optional transformation 
 ```rexx
 .RexxUnicode~stringToNFKC("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=      -- 'äöü äöü x̂ Ϋ صلى الله عليه وسلم baffle ß ς'
 .RexxUnicode~C2X(result)=                                   -- 'C3A4 C3B6 C3BC 20 C3A4 C3B6 C3BC 20 78 CC82 20 CEAB 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 C39F 20 CF82'
+
 ```
 
 
@@ -1444,6 +1568,7 @@ See the `utf8Transform` method for a description of the optional transformation 
 ```rexx
 .RexxUnicode~stringToNFKC_CF("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=       -- 'äöü äöü x̂ ϋ صلى الله عليه وسلم baffle ss σ'
 .RexxUnicode~C2X(result)=                                       -- 'C3A4 C3B6 C3BC 20 C3A4 C3B6 C3BC 20 78 CC82 20 CF8B 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 73 73 20 CF83'
+
 ```
 
 
@@ -1460,6 +1585,7 @@ See the `utf8Transform` method for a description of the optional transformation 
 ```rexx
 .RexxUnicode~stringToNFKD("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=      -- 'äöü äöü x̂ Ϋ صلى الله عليه وسلم baffle ß ς'
 .RexxUnicode~C2X(result)=                                   -- '61 CC88 6F CC88 75 CC88 20 61 CC88 6F CC88 75 CC88 20 78 CC82 20 CEA5 CC88 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 C39F 20 CF82'
+
 ```
 
 
@@ -1500,11 +1626,17 @@ This method handles them at run time instead.
 .RexxUnicode~stringUnescape("\\b")=           -- '\b'
 .RexxUnicode~stringUnescape("a\\b")=          -- 'a\b'
 
+```
+
+```rexx
 .RexxUnicode~stringUnescape("\\", .MutableBuffer~new)=            -- M'\'
 .RexxUnicode~stringUnescape("a\\", .MutableBuffer~new)=           -- M'a\'
 .RexxUnicode~stringUnescape("\\b", .MutableBuffer~new)=           -- M'\b'
 .RexxUnicode~stringUnescape("a\\b", .MutableBuffer~new)=          -- M'a\b'
 
+```
+
+```rexx
 .RexxUnicode~stringUnescape("\a")~c2x=    -- 07
 .RexxUnicode~stringUnescape("\b")~c2x=    -- 08
 .RexxUnicode~stringUnescape("\f")~c2x=    -- '0C'
@@ -1513,12 +1645,19 @@ This method handles them at run time instead.
 .RexxUnicode~stringUnescape("\t")~c2x=    -- 09
 .RexxUnicode~stringUnescape("\v")~c2x=    -- '0B'
 
+```
+
+```rexx
 .RexxUnicode~stringUnescape("\N{OCR DASH}")=                  -- '⑈'
 .RexxUnicode~stringUnescape("\N{MICR ON US SYMBOL}")=         -- '⑈'
 .RexxUnicode~stringUnescape("\N{<control-0000>}")=            -- '[00]'
 .RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}")~c2x= -- 'EDA080' (use ~c2x to not display an invalid byte sequence)
 
+```
+
+```rexx
 .RexxUnicode~stringUnescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
+
 ```
 
 
@@ -1542,13 +1681,20 @@ The result is either a string or the buffer passed as argument.
 .RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385")=                         -- 'Noël 🎅'
 .RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385", .MutableBuffer~new)=     -- M'Noël 🎅'
 
+```
+
+```rexx
 .RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB")=                                      -- Cannot UTF-8 encode codepoint U+FFFFFF.
 
+```
+
+```rexx
 -- The update is atomic when passing a buffer:
 -- either all decoded characters are appended, or the buffer is left unchanged.
 b = .MutableBuffer~new("🤶 ")
 .RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB", b)=   -- Cannot UTF-8 encode codepoint U+FFFFFF.
 b=                                                      -- M'🤶 '
+
 ```
 
 
@@ -1576,6 +1722,7 @@ Otherwise, returns -1 or, if requested, raises an error.
 .RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .false)=                    -- -1
 .RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .true, >length)=; length=   -- Expected U+ or u+ followed by 4..6 hex digits; found " U+1F385 ".
 .RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 8, /*raiseError*/ .true, >length)=; length=   -- 127877; 7
+
 ```
 
 
@@ -1592,8 +1739,12 @@ are removed.
 ```rexx
 .RexxUnicode~UAX44_LM2(" MICR on US SYMBOL")=       -- 'micronussymbol'
 
+```
+
+```rexx
 -- ASCII name only
 .RexxUnicode~UAX44_LM2("Père Noël")=                -- Name must be an ASCII string; found "Père Noël".
+
 ```
 
 
@@ -1612,8 +1763,12 @@ are removed.
 .RexxUnicode~UAX44_LM3(" Is Upper case")=           -- 'uppercase'
 .RexxUnicode~UAX44_LM3("Is Pere Noel")=             -- 'perenoel'
 
+```
+
+```rexx
 -- ASCII name only
 .RexxUnicode~UAX44_LM3("Is Père Noël")=             -- Name must be an ASCII string; found "Is Père Noël".
+
 ```
 
 
@@ -1632,6 +1787,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 **Examples:**
 
 ```rexx
+-- Example 1
 -- the default index type is the codepoint index
 -- the default item type is the codepoint as an integer
 .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅")==
@@ -1652,6 +1808,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 ```
 
 ```rexx
+-- Example 2
 -- It's possible to get other types of index and item
 -- Here, we request the byte index and the codepoint byte sequence as hex digits
 .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", "b", "h")==
@@ -1672,6 +1829,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 ```
 
 ```rexx
+-- Example 3
 -- Codepoint supplier providing the default index and the codepoint escaped string
 .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , "\")==
     /*
@@ -1691,6 +1849,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 ```
 
 ```rexx
+-- Example 4
 -- Codepoint supplier providing the default index and the codepoint in U+ notation
 .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , "u")==
     /*
@@ -1710,6 +1869,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 ```
 
 ```rexx
+-- Example 5
 -- Codepoint supplier providing the default index and the codepoint as a RexxUnicodeCharacter
 .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , .RexxUnicodeCharacter)==
     /*
@@ -1729,6 +1889,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 ```
 
 ```rexx
+-- Example 6
 -- Invalid string - U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
 
@@ -1746,6 +1907,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 ```
 
 ```rexx
+-- Example 7
 -- Codepoint supplier providing the byte index and the codepoint escaped string
 -- A negative byte index indicates an invalid byte sequence
 .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
@@ -1761,6 +1923,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 ```
 
 ```rexx
+-- Example 8
 -- Codepoint supplier providing the byte index and the error message
 .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
     /*
@@ -1789,7 +1952,17 @@ Returns `.true` if a codepoint is available from the supplier (that is, if the `
 Returns `.false` if the supplier has already enumerated all codepoints.
 
 
-#### 3.2.2.   index
+#### 3.2.2.   codepointAtIndexC
+
+    .RexxUnicodeCodepointSupplier~codepointAtIndexC(indexC)
+
+Convenience method.  
+Advances the supplier to codepoint index `indexC` and returns the corresponding codepoint as an integer.  
+If `indexC` is less than the current codepoint index, the supplier raises an error (can only advance).  
+This method does not support negative indexes (indexes from the end of the string).
+
+
+#### 3.2.3.   index
 
     .RexxUnicodeCodepointSupplier~index(type=defaultIndexType)
 
@@ -1804,7 +1977,7 @@ The following index types are supported:
 The default index type is specified when the supplier is created.
 
 
-#### 3.2.3.   init
+#### 3.2.4.   init
 
     .RexxUnicodeCodepointSupplier~init(string, defaultIndexType="c", defaultItemType="c")
 
@@ -1819,7 +1992,7 @@ The default value is `"c"` (codepoint as an integer).
 See the `item` method for the list of possible values.
 
 
-#### 3.2.4.   item
+#### 3.2.5.   item
 
     .RexxUnicodeCodepointSupplier~item(type=defaultItemType)
 
@@ -1839,7 +2012,7 @@ The following item types are supported:
 The default item type is specified when the supplier is created.
 
 
-#### 3.2.5.   next
+#### 3.2.6.   next
 
     .RexxUnicodeCodepointSupplier~next
 
@@ -1858,6 +2031,7 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 **Examples:**
 
 ```rexx
+-- Example 1
 -- the default index type is the grapheme index
 -- the default item type is the grapheme as a string
 .RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅")==
@@ -1874,6 +2048,7 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 ```
 
 ```rexx
+-- Example 2
 -- Grapheme supplier providing the byte index and the grapheme byte sequence as hex digits
 .RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", "b", "h")==
     /*
@@ -1889,6 +2064,7 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 ```
 
 ```rexx
+-- Example 3
 -- Grapheme supplier providing the default index and the grapheme escaped string
 .RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", , "\")==
     /*
@@ -1904,6 +2080,7 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 ```
 
 ```rexx
+-- Example 4
 -- Grapheme supplier providing the default index and the grapheme codepoints in U+ notation
 .RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", , "u")==
     /*
@@ -1919,6 +2096,7 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 ```
 
 ```rexx
+-- Example 5
 -- Invalid string - U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
 
@@ -1936,6 +2114,7 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 ```
 
 ```rexx
+-- Example 6
 -- Grapheme supplier providing the byte index and the grapheme escaped string
 -- A negative byte index indicates an invalid byte sequence
 .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
@@ -1951,6 +2130,7 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 ```
 
 ```rexx
+-- Example 7
 -- Grapheme supplier providing the byte index and the error message
 .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
     /*
@@ -1979,7 +2159,17 @@ Returns `.true` if a grapheme is available from the supplier (that is, if the `i
 Returns `.false` if the supplier has already enumerated all graphemes.
 
 
-#### 4.2.2.   index
+#### 4.2.2.   graphemeAtIndexG
+
+    .RexxUnicodeCodepointSupplier~graphemeAtIndexG(indexG)
+
+Convenience method.  
+Advances the supplier to grapheme index `indexG` and returns the corresponding grapheme as a string.  
+If `indexG` is less than the current grapheme index, the supplier raises an error (can only advance).  
+This method does not support negative indexes (indexes from the end of the string).
+
+
+#### 4.2.3.   index
 
     .RexxUnicodeGraphemeSupplier~index(type=defaultIndexType)
 
@@ -1993,7 +2183,7 @@ The following index types are supported:
 
 The default index type is specified when the supplier is created.
 
-#### 4.2.3.   init
+#### 4.2.4.   init
 
     .RexxUnicodeGraphemeSupplier~init(string, defaultIndexType="g", defaultItemType="g")
 
@@ -2008,7 +2198,7 @@ The default value is `"g"` (grapheme as a string).
 See the `item` method for the list of possible values.
 
 
-#### 4.2.4.   item
+#### 4.2.5.   item
 
     .RexxUnicodeGraphemeSupplier~item(type=defaultItemType)
 
@@ -2028,7 +2218,7 @@ The following item types are supported:
 The default item type is specified when the supplier is created.
 
 
-#### 4.2.5.   next
+#### 4.2.6.   next
 
     .RexxUnicodeGraphemeSupplier~next
 
@@ -2039,11 +2229,16 @@ If no grapheme is available, that is, if `available` would return `.false`, the 
 
 ## 5.   RexxUnicodeStringIndexer Class
 
+A `RexxUnicodeStringIndexer` instance provides direct access to codepoints and graphemes in a string.
+
+This is a temporary implementation that will be replaced by a native indexer.
+
 `::requires "rxunicode.cls"`
 
 **Examples:**
 
 ```rexx
+-- Example 1
 indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
 indexer=                            -- (a👨‍👩‍👧b)
 indexer~codepointIndexes=           -- [ 1, 2, 6, 9, 13, 16, 20]
@@ -2053,6 +2248,10 @@ indexer~codepointAtIndexC(3)=       -- 8205
 .RexxUnicodeCharacter~new(8205)=    -- (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
 indexer~graphemeAtIndexG(3)=        -- 'b'
 
+```
+
+```rexx
+-- Example 2
 -- U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
 indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x)
@@ -2072,10 +2271,13 @@ indexer~errors==
 indexer~codepointAtIndexC(3)=       -- 65533
 .RexxUnicodeCharacter~new(65533)=   -- ("�" \x{EFBFBD} U+FFFD So Other_Symbol "REPLACEMENT CHARACTER")
 indexer~graphemeAtIndexG(3)~c2x=    -- 92 (use ~c2x to not display an invalid byte sequence)
+
 ```
 
 
 ### 5.1.   Class methods
+
+The `RexxUnicodeStringIndexer` class defines no class methods of its own.
 
 
 ### 5.2.   Instance methods
@@ -2083,28 +2285,181 @@ indexer~graphemeAtIndexG(3)~c2x=    -- 92 (use ~c2x to not display an invalid by
 #### 5.2.1.   CODEPOINTATINDEXC
 
 
-#### 5.2.2.   CODEPOINTINDEXB
+#### 5.2.2.   codepointCount
+
+    .RexxUnicodeStringIndexer~codepointCount
+
+Returns the codepoint count calculated during the full scan performed when the indexer was initialized.  
+This result is not impacted by `codepointStorageLimit`.
 
 
-#### 5.2.3.   CODEPOINTINDEXES
+#### 5.2.3.   CODEPOINTINDEXB
 
 
-#### 5.2.4.   ERRORS
+#### 5.2.4.   CODEPOINTINDEXES
 
 
-#### 5.2.5.   GRAPHEMEATINDEXG
+#### 5.2.5.   codepointStorageLimit
 
 
-#### 5.2.6.   GRAPHEMEINDEXB
+#### 5.2.6.   ENDCODEPOINTINDEXES
 
 
-#### 5.2.7.   GRAPHEMEINDEXES
+#### 5.2.7.   ENDCODEPOINTSTORAGESIZE
 
 
-#### 5.2.8.   INIT
+#### 5.2.8.   ENDERRORS
 
 
-#### 5.2.9.   STRING
+#### 5.2.9.   ENDERRORSTORAGESIZE
+
+
+#### 5.2.10.   ENDGRAPHEMEINDEXES
+
+
+#### 5.2.11.   ENDGRAPHEMESTORAGESIZE
+
+
+#### 5.2.12.   errorCount
+
+    .RexxUnicodeStringIndexer~errorCount
+
+Returns the error count calculated during the full scan performed when the indexer was initialized.  
+This result is not impacted by `errorStorageLimit`.
+
+
+#### 5.2.13.   ERRORS
+
+
+#### 5.2.14.   errorStorageLimit
+
+
+#### 5.2.15.   GRAPHEMEATINDEXG
+
+
+#### 5.2.16.   graphemeCount
+
+    .RexxUnicodeStringIndexer~graphemeCount
+
+Returns the grapheme count calculated during the full scan performed when the indexer was initialized.  
+This result is not affected by `graphemeStorageLimit`.
+
+#### 5.2.17.   GRAPHEMEINDEXB
+
+
+#### 5.2.18.   GRAPHEMEINDEXES
+
+
+#### 5.2.19.   graphemeStorageLimit
+
+
+#### 5.2.20.   init
+
+```
+.RexxUnicodeStringIndexer~init(
+    string,
+
+    -- Storage limits
+    codepointStorageLimit = (.RexxInfo~internalMaxNumber),
+    graphemeStorageLimit = (.RexxInfo~internalMaxNumber),
+    errorStorageLimit = (.RexxInfo~internalMaxNumber),
+    
+    -- End storage sizes
+    endCodepointStorageSize = 0,
+    endGraphemeStorageSize = 0,
+    endErrorStorageSize = 0
+    )
+```
+
+Initializes a `RexxUnicodeStringIndexer` instance for the UTF-8 string `string`.
+
+Storage limits can be specified when creating the indexer; by default, no limit is applied:
+
+- `codepointStorageLimit`
+- `graphemeStorageLimit`
+- `errorStorageLimit`
+
+End storage sizes can be specified when creating the indexer; by default, no end storage is allocated (0).
+
+- `endCodepointStorageSize`
+- `endGraphemeStorageSize`
+- `endErrorStorageSize`
+
+The storage limits and end storage sizes allow fine-tuning of memory usage.
+
+There is nothing wrong with specifying an end storage size without specifying the corresponding storage limit, but doing so creates a redundant storage allocation.
+
+**Examples**
+
+```rexx
+-- Example 1
+-- If the identifier is a valid UTF-8 string and is made of just one codepoint then return this codepoint.
+indexer = .RexxUnicodeStringIndexer~new(identifier, /*codepointStorageLimit:*/ 1, /*graphemeStorageLimit:*/ 0, /*errorStorageLimit:*/ 0)
+if indexer~errorCount == 0, indexer~codepointCount == 1 then return indexer~codepointAtIndexC(1)
+
+```
+
+```rexx
+-- Example 2
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x, -
+                                        /*codepointStorageLimit:*/ 4, -
+                                        /*graphemeStorageLimit:*/ 2, -
+                                        /*errorStorageLimit:*/ 1)
+
+-- The specified codepoint storage limit is 4
+indexer~codepointCount=             -- 9
+indexer~codepointStorageLimit=      -- 4
+indexer~codepointIndexes=           -- [-1,-2,-3,-4]
+indexer~codepointAtIndexC(3)=       -- 65533
+indexer~codepointAtIndexC(5)=       -- Invalid code point index: 5 is greater than the storage limit 4.
+
+-- The specified grapheme storage limit is 2
+indexer~graphemeCount=              -- 9
+indexer~graphemeStorageLimit=       -- 2
+indexer~graphemeIndexes=            -- [-1,-2]
+indexer~graphemeAtIndexG(2)~c2x=    -- 91 (use ~c2x to not display an invalid byte sequence)
+indexer~graphemeAtIndexG(3)~c2x=    -- Invalid grapheme index: 3 is greater than the storage limit 2.
+
+-- The specified error storage limit is 1
+indexer~errorCount=                 -- 7
+indexer~errorStorageLimit=          -- 1
+indexer~errors==
+    /*
+    an Array (shape [1], 1 items)
+     1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
+    */
+
+```
+
+```rexx
+-- Example 3
+-- Collect counters, no need to store indexes and errors
+string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
+indexer = .RexxUnicodeStringIndexer~new(string, 0, 0, 0)
+indexer~graphemeCount=      -- 22
+indexer~codepointCount=     -- 26
+indexer~errorCount=         -- 7
+
+```
+
+```rexx
+-- Example 4
+-- Gets the five last grapheme indexes.
+-- In case of error, reports only the first error.
+string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
+indexer = .RexxUnicodeStringIndexer~new(string, /*codepointStorageLimit:*/ 0, /*graphemeStorageLimit:*/ 0, /*errorStorageLimit:*/ 1, /*endCodepointStorageSize:*/ 0, /*endGraphemeStorageSize:*/ 5)
+indexer~errorCount=
+indexer~errors~items=
+indexer~errors[1]=
+indexer~endGraphemeIndexes=
+do index over indexer~endGraphemeIndexes; say index ":" indexer~graphemeAtIndexG(index); end
+
+```
+
+
+#### 5.2.21.   STRING
 
 
 ## 6.   RexxUnicodeCharacter Class
