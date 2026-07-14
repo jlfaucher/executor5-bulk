@@ -42,6 +42,12 @@ library embedded in ooRexx.
 **Note on terminology:** This documentation and the code comments use the term "codepoint"
 instead of "code point", except when quoting definitions from the Unicode Standard.
 
+**Note on examples:** The special syntax `expression=` or `expression==` is a feature of ooRexxShell.
+It is a shortcut for displaying the result of `expression`.
+Collections are displayed either in compact form (when the expression ends with `=`)
+or in expanded form (when it ends with `==`).
+If you are using `rexxtry` or running a script, use `say expression` instead.
+
 
 ## 1.   RexxUnicodeServices Class
 
