@@ -42,7 +42,7 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 13 Jun 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S936bQ600003a2a340
+</span><span style="font-weight:bold;color:green;">Input queue name: S1836cQ600003a01740
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
@@ -782,8 +782,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">codepointSupplier~codepo
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">codepointSupplier~codepointAtIndexC(0)=     </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: 0.</span>
 <span style="font-weight:bold;color:red;">Invalid code point index: 0.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">codepointSupplier~codepointAtIndexC(-1)=    </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: -1.</span>
-<span style="font-weight:bold;color:red;">Negative code point index is not supported; found -1.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">codepointSupplier~codepointAtIndexC(-1)=    </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: -1; negative indexes are not supported.</span>
+<span style="font-weight:bold;color:red;">Invalid code point index: -1; negative indexes are not supported.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;F4 91 92 93 FF 41 80 BF 42&quot;x || &quot;Joyeux Noël 👨‍👩‍👧&quot;</span>
@@ -798,22 +798,22 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">graphemeSupplier~graphem
  80
 ooRexx&gt; <span style="font-weight:bold;color:purple;">graphemeSupplier~graphemeAtIndexG(22)=      </span><span style="font-weight:bold;color:blue;">-- '👨‍👩‍👧'</span>
 '👨‍👩‍👧'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">graphemeSupplier~graphemeAtIndexG(21)=      </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: 21 is less than the current index 22 (the supplier can only advance).</span>
-<span style="font-weight:bold;color:red;">Invalid code point index: 21 is less than the current index 22 (the supplier can only advance).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">graphemeSupplier~graphemeAtIndexG(21)=      </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: 21 is less than the current index 22 (the supplier can only advance).</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: 21 is less than the current index 22 (the supplier can only advance).
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">graphemeSupplier~graphemeAtIndexG(22)=      </span><span style="font-weight:bold;color:blue;">-- '👨‍👩‍👧'</span>
 '👨‍👩‍👧'
 ooRexx&gt; <span style="font-weight:bold;color:purple;">graphemeSupplier~graphemeAtIndexG(23)=      </span><span style="font-weight:bold;color:blue;">-- No more supplier items available.</span>
 <span style="font-weight:bold;color:red;">No more supplier items available.
 </span><span style="font-weight:bold;color:red;">Error code= 93.937
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">graphemeSupplier~graphemeAtIndexG(22)=      </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: 22 is less than the current index 23 (the supplier can only advance).</span>
-<span style="font-weight:bold;color:red;">Invalid code point index: 22 is less than the current index 23 (the supplier can only advance).
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">graphemeSupplier~graphemeAtIndexG(22)=      </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: 22 is less than the current index 23 (the supplier can only advance).</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: 22 is less than the current index 23 (the supplier can only advance).
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">graphemeSupplier~graphemeAtIndexG(0)=       </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: 0.</span>
 <span style="font-weight:bold;color:red;">Invalid grapheme index: 0.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">graphemeSupplier~graphemeAtIndexG(-1)=      </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: -1.</span>
-<span style="font-weight:bold;color:red;">Negative grapheme index is not supported; found -1.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">graphemeSupplier~graphemeAtIndexG(-1)=      </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: -1; negative indexes are not supported.</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: -1; negative indexes are not supported.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
 
@@ -952,8 +952,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointDe
 </span><span style="font-weight:bold;color:blue;">-- All other negative codepoints are invalid
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepoint(-1)=                         </span><span style="font-weight:bold;color:blue;">-- -1</span>
 -1
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepoint(-2)=                         </span><span style="font-weight:bold;color:blue;">-- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepoint(-2)=                         </span><span style="font-weight:bold;color:blue;">-- Invalid code point: -2; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: -2; allowed range is 0 to 1114111 (U+10FFFF).
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
 <span style="font-weight:bold;color:blue;">-- The special value -1 is represented using U+FFFFFF, even though the resulting value is not a valid Unicode scalar value
@@ -1179,8 +1179,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUT
 
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint)~c2x=      </span><span style="font-weight:bold;color:blue;">-- 'F48FBFBF'</span>
 'F48FBFBF'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  </span><span style="font-weight:bold;color:blue;">-- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  </span><span style="font-weight:bold;color:blue;">-- Invalid codepoint: 1114112; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: 1114112; allowed range is 0 to 1114111 (U+10FFFF).
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUnicodeEscapeNotation(&quot;D800&quot;~x2d)=    </span><span style="font-weight:bold;color:blue;">-- '\uD800'</span>
@@ -1339,8 +1339,8 @@ M'U+1F385'
 
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~D2U(.RexxUnicode~maxCodepoint)=        </span><span style="font-weight:bold;color:blue;">-- 'U+10FFFF'</span>
 'U+10FFFF'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~D2U(.RexxUnicode~maxCodepoint + 1)=    </span><span style="font-weight:bold;color:blue;">-- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~D2U(.RexxUnicode~maxCodepoint + 1)=    </span><span style="font-weight:bold;color:blue;">-- Invalid codepoint: 1114112; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: 1114112; allowed range is 0 to 1114111 (U+10FFFF).
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~D2U(-1)=                               </span><span style="font-weight:bold;color:blue;">-- 'U+FFFFFF' (was Invalid codepoint -1; allowed range is 0 to 1114111 (U+10FFFF).)</span>
 'U+FFFFFF'
