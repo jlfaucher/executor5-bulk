@@ -893,7 +893,11 @@ How other languages are supporting escape characters for Unicode:
         codepoint = codepoints~item -- integer
         bytes = codepoints~item("b") -- byte sequence as string
         error = codepoints~item("e")
-        if error \== "" then buffer~append("\x{", bytes~c2x, "}")
+        if error \== "" then do
+            xbytes = bytes~c2x
+            if xbytes~length == 2 then buffer~append("\x", xbytes)
+                                  else buffer~append("\x{", xbytes, "}")
+        end
         else do
             select case codepoint
                 when 7 then buffer~append("\a")
@@ -2015,6 +2019,7 @@ Other helpers
     -- The 0xNNNN notation is easier to read,
     -- but the \x{NNNN} can be unescaped and supports an arbitrary number of N.
     if hexdigits == "" then return ""
+    if hexdigits~length == 2 then return "\x" || hexdigits
     return "\x{" || hexdigits || "}"
 
     -- CAUTION: this notation is not adapted to hexdigits containing spaces!

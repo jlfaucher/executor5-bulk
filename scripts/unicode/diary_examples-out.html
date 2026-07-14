@@ -42,7 +42,7 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 13 Jun 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: Sc3f1Q600003a04b40
+</span><span style="font-weight:bold;color:green;">Input queue name: S936bQ600003a2a340
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
@@ -189,7 +189,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrors=      
 </span><span style="font-weight:bold;color:blue;">    4 -&gt; 19: ë
 </span><span style="font-weight:bold;color:blue;">    5 -&gt; 18: o
 </span><span style="font-weight:bold;color:blue;">*/
-</span><span style="font-weight:bold;color:blue;">-- Easy: pass -endIndexG, where a negative index means &quot;relative index from the end&quot;
+</span><span style="font-weight:bold;color:blue;">-- Easy: pass -endIndexG, where a negative index means &quot;index from the end&quot;
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG&quot;:&quot; indexer~graphemeAtIndexG(-endIndexG); end</span>
 1: 👨‍👩‍👧
 2:  
@@ -1224,7 +1224,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCh
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">The string representation of a RexxUnicodeCharacter has been modified.
 </span><span style="font-weight:bold;color:blue;">    old:    (&quot;&quot;    U+0000 Cc Control 0 &quot;&quot;)
-</span><span style="font-weight:bold;color:blue;">    new:    (&lt;?&gt; \x{00} U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)
+</span><span style="font-weight:bold;color:blue;">    new:    (&lt;?&gt; \x00 U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)
 </span><span style="font-weight:bold;color:blue;">    old:    (&quot;🎅&quot;  U+1F385 So Other_Symbol 2 &quot;FATHER CHRISTMAS&quot;)
 </span><span style="font-weight:bold;color:blue;">    new:    (&quot;🎅&quot; \x{F09F8E85} U+1F385 So Other_Symbol &quot;FATHER CHRISTMAS&quot;)
 </span><span style="font-weight:bold;color:blue;">    old:    (&quot;🛏&quot;   U+1F6CF So Other_Symbol 1 &quot;BED&quot;)
@@ -1241,14 +1241,14 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&
 (&quot;⑈&quot; \x{E29188} U+2448 So Other_Symbol &quot;OCR DASH&quot;)
 
 <span style="font-weight:bold;color:blue;">-- Search control character by extended name
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&quot;&lt;control-0000&gt;&quot;)=           </span><span style="font-weight:bold;color:blue;">-- (&lt;?&gt; \x{00} U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)</span>
-(&lt;?&gt; \x{00} U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&quot;&lt;control-000&gt;&quot;)=            </span><span style="font-weight:bold;color:blue;">-- (&lt;?&gt; \x{00} U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)</span>
-(&lt;?&gt; \x{00} U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&quot;&lt;control-00&gt;&quot;)=             </span><span style="font-weight:bold;color:blue;">-- (&lt;?&gt; \x{00} U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)</span>
-(&lt;?&gt; \x{00} U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&quot;&lt;control-0&gt;&quot;)=              </span><span style="font-weight:bold;color:blue;">-- (&lt;?&gt; \x{00} U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)</span>
-(&lt;?&gt; \x{00} U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&quot;&lt;control-0000&gt;&quot;)=           </span><span style="font-weight:bold;color:blue;">-- (&lt;?&gt; \x00 U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)</span>
+(&lt;?&gt; \x00 U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&quot;&lt;control-000&gt;&quot;)=            </span><span style="font-weight:bold;color:blue;">-- (&lt;?&gt; \x00 U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)</span>
+(&lt;?&gt; \x00 U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&quot;&lt;control-00&gt;&quot;)=             </span><span style="font-weight:bold;color:blue;">-- (&lt;?&gt; \x00 U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)</span>
+(&lt;?&gt; \x00 U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&quot;&lt;control-0&gt;&quot;)=              </span><span style="font-weight:bold;color:blue;">-- (&lt;?&gt; \x00 U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)</span>
+(&lt;?&gt; \x00 U+0000 Cc Control &quot;&lt;control-0000&gt;&quot;)
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&quot;&lt;control-&gt;&quot;)=               </span><span style="font-weight:bold;color:blue;">-- Name '&lt;control-&gt;' not found</span>
 <span style="font-weight:bold;color:red;">Name &quot;&lt;control-&gt;&quot; not found.
 </span><span style="font-weight:bold;color:red;">Error code= 98.900
@@ -1545,10 +1545,10 @@ a RexxUnicodeGraphemeSupplier
 </span><span style="font-weight:bold;color:blue;">-- Here, we request the byte index and the codepoint byte sequence as hex digits
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCodepointSupplier~new(&quot;noël👩‍👨‍👩‍👧🎅&quot;, &quot;b&quot;, &quot;h&quot;)==</span>
 a RexxUnicodeCodepointSupplier 
- 1  : '\x{6E}'
- 2  : '\x{6F}'
+ 1  : '\x6E'
+ 2  : '\x6F'
  3  : '\x{C3AB}'
- 5  : '\x{6C}'
+ 5  : '\x6C'
  6  : '\x{F09F91A9}'
  10 : '\x{E2808D}'
  13 : '\x{F09F91A8}'
@@ -1559,10 +1559,10 @@ a RexxUnicodeCodepointSupplier
  31 : '\x{F09F8E85}'
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">        a RexxUnicodeCodepointSupplier
-</span><span style="font-weight:bold;color:blue;">         1  : '\x{6E}'
-</span><span style="font-weight:bold;color:blue;">         2  : '\x{6F}'
+</span><span style="font-weight:bold;color:blue;">         1  : '\x6E'
+</span><span style="font-weight:bold;color:blue;">         2  : '\x6F'
 </span><span style="font-weight:bold;color:blue;">         3  : '\x{C3AB}'
-</span><span style="font-weight:bold;color:blue;">         5  : '\x{6C}'
+</span><span style="font-weight:bold;color:blue;">         5  : '\x6C'
 </span><span style="font-weight:bold;color:blue;">         6  : '\x{F09F91A9}'
 </span><span style="font-weight:bold;color:blue;">         10 : '\x{E2808D}'
 </span><span style="font-weight:bold;color:blue;">         13 : '\x{F09F91A8}'
@@ -1576,18 +1576,18 @@ a RexxUnicodeCodepointSupplier
 <span style="font-weight:bold;color:blue;">-- Grapheme supplier providing the byte index and the grapheme byte sequence as hex digits
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(&quot;noël👩‍👨‍👩‍👧🎅&quot;, &quot;b&quot;, &quot;h&quot;)==</span>
 a RexxUnicodeGraphemeSupplier 
- 1  : '\x{6E}'
- 2  : '\x{6F}'
+ 1  : '\x6E'
+ 2  : '\x6F'
  3  : '\x{C3AB}'
- 5  : '\x{6C}'
+ 5  : '\x6C'
  6  : '\x{F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
  31 : '\x{F09F8E85}'
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">        a RexxUnicodeGraphemeSupplier
-</span><span style="font-weight:bold;color:blue;">         1  : '\x{6E}'
-</span><span style="font-weight:bold;color:blue;">         2  : '\x{6F}'
+</span><span style="font-weight:bold;color:blue;">         1  : '\x6E'
+</span><span style="font-weight:bold;color:blue;">         2  : '\x6F'
 </span><span style="font-weight:bold;color:blue;">         3  : '\x{C3AB}'
-</span><span style="font-weight:bold;color:blue;">         5  : '\x{6C}'
+</span><span style="font-weight:bold;color:blue;">         5  : '\x6C'
 </span><span style="font-weight:bold;color:blue;">         6  : '\x{F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
 </span><span style="font-weight:bold;color:blue;">         31 : '\x{F09F8E85}'
 </span><span style="font-weight:bold;color:blue;">*/
@@ -1696,10 +1696,10 @@ a RexxUnicodeGraphemeSupplier
 <span style="font-weight:bold;color:blue;">-- Codepoint supplier providing the default index and the codepoint as a RexxUnicodeCharacter
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCodepointSupplier~new(&quot;noël👩‍👨‍👩‍👧🎅&quot;, , .RexxUnicodeCharacter)==</span>
 a RexxUnicodeCodepointSupplier 
- 1  : (&quot;n&quot; \x{6E} U+006E Ll Lowercase_Letter &quot;LATIN SMALL LETTER N&quot;)
- 2  : (&quot;o&quot; \x{6F} U+006F Ll Lowercase_Letter &quot;LATIN SMALL LETTER O&quot;)
+ 1  : (&quot;n&quot; \x6E U+006E Ll Lowercase_Letter &quot;LATIN SMALL LETTER N&quot;)
+ 2  : (&quot;o&quot; \x6F U+006F Ll Lowercase_Letter &quot;LATIN SMALL LETTER O&quot;)
  3  : (&quot;ë&quot; \x{C3AB} U+00EB Ll Lowercase_Letter &quot;LATIN SMALL LETTER E WITH DIAERESIS&quot;)
- 4  : (&quot;l&quot; \x{6C} U+006C Ll Lowercase_Letter &quot;LATIN SMALL LETTER L&quot;)
+ 4  : (&quot;l&quot; \x6C U+006C Ll Lowercase_Letter &quot;LATIN SMALL LETTER L&quot;)
  5  : (&quot;👩&quot; \x{F09F91A9} U+1F469 So Other_Symbol &quot;WOMAN&quot;)
  6  : (&lt;?&gt; \x{E2808D} U+200D Cf Format &quot;ZERO WIDTH JOINER&quot;)
  7  : (&quot;👨&quot; \x{F09F91A8} U+1F468 So Other_Symbol &quot;MAN&quot;)
@@ -1710,10 +1710,10 @@ a RexxUnicodeCodepointSupplier
  12 : (&quot;🎅&quot; \x{F09F8E85} U+1F385 So Other_Symbol &quot;FATHER CHRISTMAS&quot;)
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">        a RexxUnicodeCodepointSupplier
-</span><span style="font-weight:bold;color:blue;">         1  : (&quot;n&quot; \x{6E} U+006E Ll Lowercase_Letter &quot;LATIN SMALL LETTER N&quot;)
-</span><span style="font-weight:bold;color:blue;">         2  : (&quot;o&quot; \x{6F} U+006F Ll Lowercase_Letter &quot;LATIN SMALL LETTER O&quot;)
+</span><span style="font-weight:bold;color:blue;">         1  : (&quot;n&quot; \x6E U+006E Ll Lowercase_Letter &quot;LATIN SMALL LETTER N&quot;)
+</span><span style="font-weight:bold;color:blue;">         2  : (&quot;o&quot; \x6F U+006F Ll Lowercase_Letter &quot;LATIN SMALL LETTER O&quot;)
 </span><span style="font-weight:bold;color:blue;">         3  : (&quot;ë&quot; \x{C3AB} U+00EB Ll Lowercase_Letter &quot;LATIN SMALL LETTER E WITH DIAERESIS&quot;)
-</span><span style="font-weight:bold;color:blue;">         4  : (&quot;l&quot; \x{6C} U+006C Ll Lowercase_Letter &quot;LATIN SMALL LETTER L&quot;)
+</span><span style="font-weight:bold;color:blue;">         4  : (&quot;l&quot; \x6C U+006C Ll Lowercase_Letter &quot;LATIN SMALL LETTER L&quot;)
 </span><span style="font-weight:bold;color:blue;">         5  : (&quot;👩&quot; \x{F09F91A9} U+1F469 So Other_Symbol &quot;WOMAN&quot;)
 </span><span style="font-weight:bold;color:blue;">         6  : (&lt;?&gt; \x{E2808D} U+200D Cf Format &quot;ZERO WIDTH JOINER&quot;)
 </span><span style="font-weight:bold;color:blue;">         7  : (&quot;👨&quot; \x{F09F91A8} U+1F468 So Other_Symbol &quot;MAN&quot;)
@@ -1759,25 +1759,25 @@ a RexxUnicodeCodepointSupplier
 </span><span style="font-weight:bold;color:blue;">-- (don't display directly the graphemes because the output would be invalid UTF-8)
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, , &quot;\&quot;)==</span>
 a RexxUnicodeGraphemeSupplier 
- 1 : '\x{F4}'
- 2 : '\x{91}'
- 3 : '\x{92}'
- 4 : '\x{93}'
- 5 : '\x{FF}'
+ 1 : '\xF4'
+ 2 : '\x91'
+ 3 : '\x92'
+ 4 : '\x93'
+ 5 : '\xFF'
  6 : 'A'
- 7 : '\x{80}'
- 8 : '\x{BF}'
+ 7 : '\x80'
+ 8 : '\xBF'
  9 : 'B'
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">        a RexxUnicodeGraphemeSupplier
-</span><span style="font-weight:bold;color:blue;">         1 : '\x{F4}'
-</span><span style="font-weight:bold;color:blue;">         2 : '\x{91}'
-</span><span style="font-weight:bold;color:blue;">         3 : '\x{92}'
-</span><span style="font-weight:bold;color:blue;">         4 : '\x{93}'
-</span><span style="font-weight:bold;color:blue;">         5 : '\x{FF}'
+</span><span style="font-weight:bold;color:blue;">         1 : '\xF4'
+</span><span style="font-weight:bold;color:blue;">         2 : '\x91'
+</span><span style="font-weight:bold;color:blue;">         3 : '\x92'
+</span><span style="font-weight:bold;color:blue;">         4 : '\x93'
+</span><span style="font-weight:bold;color:blue;">         5 : '\xFF'
 </span><span style="font-weight:bold;color:blue;">         6 : 'A'
-</span><span style="font-weight:bold;color:blue;">         7 : '\x{80}'
-</span><span style="font-weight:bold;color:blue;">         8 : '\x{BF}'
+</span><span style="font-weight:bold;color:blue;">         7 : '\x80'
+</span><span style="font-weight:bold;color:blue;">         8 : '\xBF'
 </span><span style="font-weight:bold;color:blue;">         9 : 'B'
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
@@ -1785,25 +1785,25 @@ a RexxUnicodeGraphemeSupplier
 </span><span style="font-weight:bold;color:blue;">-- A negative byte index indicates an invalid byte sequence
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCodepointSupplier~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, &quot;b&quot;, &quot;\&quot;)==</span>
 a RexxUnicodeCodepointSupplier 
--1 : '\x{F4}'
--2 : '\x{91}'
--3 : '\x{92}'
--4 : '\x{93}'
--5 : '\x{FF}'
+-1 : '\xF4'
+-2 : '\x91'
+-3 : '\x92'
+-4 : '\x93'
+-5 : '\xFF'
  6 : 'A'
--7 : '\x{80}'
--8 : '\x{BF}'
+-7 : '\x80'
+-8 : '\xBF'
  9 : 'B'
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">        a RexxUnicodeCodepointSupplier
-</span><span style="font-weight:bold;color:blue;">        -1 : '\x{F4}'
-</span><span style="font-weight:bold;color:blue;">        -2 : '\x{91}'
-</span><span style="font-weight:bold;color:blue;">        -3 : '\x{92}'
-</span><span style="font-weight:bold;color:blue;">        -4 : '\x{93}'
-</span><span style="font-weight:bold;color:blue;">        -5 : '\x{FF}'
+</span><span style="font-weight:bold;color:blue;">        -1 : '\xF4'
+</span><span style="font-weight:bold;color:blue;">        -2 : '\x91'
+</span><span style="font-weight:bold;color:blue;">        -3 : '\x92'
+</span><span style="font-weight:bold;color:blue;">        -4 : '\x93'
+</span><span style="font-weight:bold;color:blue;">        -5 : '\xFF'
 </span><span style="font-weight:bold;color:blue;">         6 : 'A'
-</span><span style="font-weight:bold;color:blue;">        -7 : '\x{80}'
-</span><span style="font-weight:bold;color:blue;">        -8 : '\x{BF}'
+</span><span style="font-weight:bold;color:blue;">        -7 : '\x80'
+</span><span style="font-weight:bold;color:blue;">        -8 : '\xBF'
 </span><span style="font-weight:bold;color:blue;">         9 : 'B'
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
@@ -1811,25 +1811,25 @@ a RexxUnicodeCodepointSupplier
 </span><span style="font-weight:bold;color:blue;">-- A negative byte index indicates an invalid byte sequence
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, &quot;b&quot;, &quot;\&quot;)==</span>
 a RexxUnicodeGraphemeSupplier 
--1 : '\x{F4}'
--2 : '\x{91}'
--3 : '\x{92}'
--4 : '\x{93}'
--5 : '\x{FF}'
+-1 : '\xF4'
+-2 : '\x91'
+-3 : '\x92'
+-4 : '\x93'
+-5 : '\xFF'
  6 : 'A'
--7 : '\x{80}'
--8 : '\x{BF}'
+-7 : '\x80'
+-8 : '\xBF'
  9 : 'B'
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">        a RexxUnicodeGraphemeSupplier
-</span><span style="font-weight:bold;color:blue;">        -1 : '\x{F4}'
-</span><span style="font-weight:bold;color:blue;">        -2 : '\x{91}'
-</span><span style="font-weight:bold;color:blue;">        -3 : '\x{92}'
-</span><span style="font-weight:bold;color:blue;">        -4 : '\x{93}'
-</span><span style="font-weight:bold;color:blue;">        -5 : '\x{FF}'
+</span><span style="font-weight:bold;color:blue;">        -1 : '\xF4'
+</span><span style="font-weight:bold;color:blue;">        -2 : '\x91'
+</span><span style="font-weight:bold;color:blue;">        -3 : '\x92'
+</span><span style="font-weight:bold;color:blue;">        -4 : '\x93'
+</span><span style="font-weight:bold;color:blue;">        -5 : '\xFF'
 </span><span style="font-weight:bold;color:blue;">         6 : 'A'
-</span><span style="font-weight:bold;color:blue;">        -7 : '\x{80}'
-</span><span style="font-weight:bold;color:blue;">        -8 : '\x{BF}'
+</span><span style="font-weight:bold;color:blue;">        -7 : '\x80'
+</span><span style="font-weight:bold;color:blue;">        -8 : '\xBF'
 </span><span style="font-weight:bold;color:blue;">         9 : 'B'
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
@@ -1956,14 +1956,14 @@ a RexxUnicodeCodepointSupplier
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x, , &quot;\&quot;)==</span>
 a RexxUnicodeGraphemeSupplier 
  1 : '\x{E180}'
- 2 : '\x{E2}'
+ 2 : '\xE2'
  3 : '\x{F09192}'
  4 : '\x{F1BF}'
  5 : 'A'
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">        a RexxUnicodeGraphemeSupplier
 </span><span style="font-weight:bold;color:blue;">         1 : '\x{E180}'
-</span><span style="font-weight:bold;color:blue;">         2 : '\x{E2}'
+</span><span style="font-weight:bold;color:blue;">         2 : '\xE2'
 </span><span style="font-weight:bold;color:blue;">         3 : '\x{F09192}'
 </span><span style="font-weight:bold;color:blue;">         4 : '\x{F1BF}'
 </span><span style="font-weight:bold;color:blue;">         5 : 'A'
@@ -1974,14 +1974,14 @@ a RexxUnicodeGraphemeSupplier
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCodepointSupplier~new(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x, &quot;b&quot;, &quot;\&quot;)==</span>
 a RexxUnicodeCodepointSupplier 
 -1 : '\x{E180}'
--3 : '\x{E2}'
+-3 : '\xE2'
 -4 : '\x{F09192}'
 -7 : '\x{F1BF}'
  9 : 'A'
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">        a RexxUnicodeCodepointSupplier
 </span><span style="font-weight:bold;color:blue;">        -1 : '\x{E180}'
-</span><span style="font-weight:bold;color:blue;">        -3 : '\x{E2}'
+</span><span style="font-weight:bold;color:blue;">        -3 : '\xE2'
 </span><span style="font-weight:bold;color:blue;">        -4 : '\x{F09192}'
 </span><span style="font-weight:bold;color:blue;">        -7 : '\x{F1BF}'
 </span><span style="font-weight:bold;color:blue;">         9 : 'A'
@@ -1992,14 +1992,14 @@ a RexxUnicodeCodepointSupplier
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x, &quot;b&quot;, &quot;\&quot;)==</span>
 a RexxUnicodeGraphemeSupplier 
 -1 : '\x{E180}'
--3 : '\x{E2}'
+-3 : '\xE2'
 -4 : '\x{F09192}'
 -7 : '\x{F1BF}'
  9 : 'A'
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">        a RexxUnicodeGraphemeSupplier
 </span><span style="font-weight:bold;color:blue;">        -1 : '\x{E180}'
-</span><span style="font-weight:bold;color:blue;">        -3 : '\x{E2}'
+</span><span style="font-weight:bold;color:blue;">        -3 : '\xE2'
 </span><span style="font-weight:bold;color:blue;">        -4 : '\x{F09192}'
 </span><span style="font-weight:bold;color:blue;">        -7 : '\x{F1BF}'
 </span><span style="font-weight:bold;color:blue;">         9 : 'A'
@@ -2097,7 +2097,7 @@ a RexxUnicodeGraphemeSupplier
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~stringEscape(string, buffer=.nil)
 </span><span style="font-weight:bold;color:blue;">    Escapes characters that are not printable:
-</span><span style="font-weight:bold;color:blue;">    - Invalid byte sequences are represented by escaped hexadecimal byte sequences: \x{XX..XX}.
+</span><span style="font-weight:bold;color:blue;">    - Invalid byte sequences are represented by escaped hexadecimal byte sequences: \XX or \x{XX..XX}.
 </span><span style="font-weight:bold;color:blue;">    - Non-printable codepoints are represented using the standard escape sequences (\a, \b, \t, \n, \v, \f, \r) when applicable;
 </span><span style="font-weight:bold;color:blue;">      otherwise, Unicode escape notation (\uXXXX or \UXXXXXXXX) is used.
 </span><span style="font-weight:bold;color:blue;">
@@ -2242,8 +2242,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnesc
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94&quot;)=     </span><span style="font-weight:bold;color:blue;">-- '𝓐B𝓒𝓓𝓔'</span>
 '𝓐B𝓒𝓓𝓔'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringEscape(xrange(&quot;00&quot;x, &quot;FF&quot;x))=          </span><span style="font-weight:bold;color:blue;">-- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !&quot;#$%&amp;''()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'</span>
-'\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !&quot;#$%&amp;''()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringEscape(xrange(&quot;00&quot;x, &quot;FF&quot;x))=          </span><span style="font-weight:bold;color:blue;">-- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !&quot;#$%&amp;''()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'</span>
+'\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !&quot;#$%&amp;''()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'
 
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringEscape(.RexxUnicode~U2C(&quot;U+10FFF&quot;))=   </span><span style="font-weight:bold;color:blue;">-- '\U00010FFF'</span>
 '\U00010FFF'
@@ -2256,13 +2256,13 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringEscap
 </span><span style="font-weight:bold;color:blue;">        2 : 'U+FFFD'
 </span><span style="font-weight:bold;color:blue;">        3 : 'U+FFFD'
 </span><span style="font-weight:bold;color:blue;">    Codepoint byte sequence as hexadecimal digits (option &quot;h):
-</span><span style="font-weight:bold;color:blue;">        1 : '\x{ED}'
-</span><span style="font-weight:bold;color:blue;">        2 : '\x{A0}'
-</span><span style="font-weight:bold;color:blue;">        3 : '\x{80}'
-</span><span style="font-weight:bold;color:blue;">    Escaping U+D800 is '\x{ED}\x{A0}\x{80}' because \x{EDA080} can't be decoded as U+D800.
+</span><span style="font-weight:bold;color:blue;">        1 : '\xED'
+</span><span style="font-weight:bold;color:blue;">        2 : '\xA0'
+</span><span style="font-weight:bold;color:blue;">        3 : '\x80'
+</span><span style="font-weight:bold;color:blue;">    Escaping U+D800 is '\xED\xA0\x80' because \x{EDA080} can't be decoded as U+D800.
 </span><span style="font-weight:bold;color:blue;">*/
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringEscape(.RexxUnicode~stringUnescape(&quot;\N{&lt;lead surrogate-D800&gt;}&quot;))=    </span><span style="font-weight:bold;color:blue;">-- '\x{ED}\x{A0}\x{80}'</span>
-'\x{ED}\x{A0}\x{80}'
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringEscape(.RexxUnicode~stringUnescape(&quot;\N{&lt;lead surrogate-D800&gt;}&quot;))=    </span><span style="font-weight:bold;color:blue;">-- '\xED\xA0\x80'</span>
+'\xED\xA0\x80'
 
 
 <span style="font-weight:bold;color:blue;">-- ===============================================================================

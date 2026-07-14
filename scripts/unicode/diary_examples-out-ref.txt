@@ -144,7 +144,7 @@ ooRexx> do endIndexG=1 to indexer~endGraphemeIndexes~items; indexG = indexer~gra
     4 -> 19: ë
     5 -> 18: o
 */
--- Easy: pass -endIndexG, where a negative index means "relative index from the end"
+-- Easy: pass -endIndexG, where a negative index means "index from the end"
 ooRexx> do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~graphemeAtIndexG(-endIndexG); end
 1: 👨‍👩‍👧
 2:  
@@ -1179,7 +1179,7 @@ Update .RexxUnicode~character(identifier)
 
 The string representation of a RexxUnicodeCharacter has been modified.
     old:    (""    U+0000 Cc Control 0 "")
-    new:    (<?> \x{00} U+0000 Cc Control "<control-0000>")
+    new:    (<?> \x00 U+0000 Cc Control "<control-0000>")
     old:    ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
     new:    ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
     old:    ("🛏"   U+1F6CF So Other_Symbol 1 "BED")
@@ -1196,14 +1196,14 @@ ooRexx> .RexxUnicode~character(" MICR ON US SYMBOL")=       -- ("⑈" \x{E29188}
 ("⑈" \x{E29188} U+2448 So Other_Symbol "OCR DASH")
 
 -- Search control character by extended name
-ooRexx> .RexxUnicode~character("<control-0000>")=           -- (<?> \x{00} U+0000 Cc Control "<control-0000>")
-(<?> \x{00} U+0000 Cc Control "<control-0000>")
-ooRexx> .RexxUnicode~character("<control-000>")=            -- (<?> \x{00} U+0000 Cc Control "<control-0000>")
-(<?> \x{00} U+0000 Cc Control "<control-0000>")
-ooRexx> .RexxUnicode~character("<control-00>")=             -- (<?> \x{00} U+0000 Cc Control "<control-0000>")
-(<?> \x{00} U+0000 Cc Control "<control-0000>")
-ooRexx> .RexxUnicode~character("<control-0>")=              -- (<?> \x{00} U+0000 Cc Control "<control-0000>")
-(<?> \x{00} U+0000 Cc Control "<control-0000>")
+ooRexx> .RexxUnicode~character("<control-0000>")=           -- (<?> \x00 U+0000 Cc Control "<control-0000>")
+(<?> \x00 U+0000 Cc Control "<control-0000>")
+ooRexx> .RexxUnicode~character("<control-000>")=            -- (<?> \x00 U+0000 Cc Control "<control-0000>")
+(<?> \x00 U+0000 Cc Control "<control-0000>")
+ooRexx> .RexxUnicode~character("<control-00>")=             -- (<?> \x00 U+0000 Cc Control "<control-0000>")
+(<?> \x00 U+0000 Cc Control "<control-0000>")
+ooRexx> .RexxUnicode~character("<control-0>")=              -- (<?> \x00 U+0000 Cc Control "<control-0000>")
+(<?> \x00 U+0000 Cc Control "<control-0000>")
 ooRexx> .RexxUnicode~character("<control->")=               -- Name '<control->' not found
 Name "<control->" not found.
 Error code= 98.900
@@ -1500,10 +1500,10 @@ a RexxUnicodeGraphemeSupplier
 -- Here, we request the byte index and the codepoint byte sequence as hex digits
 ooRexx> .RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", "b", "h")==
 a RexxUnicodeCodepointSupplier 
- 1  : '\x{6E}'
- 2  : '\x{6F}'
+ 1  : '\x6E'
+ 2  : '\x6F'
  3  : '\x{C3AB}'
- 5  : '\x{6C}'
+ 5  : '\x6C'
  6  : '\x{F09F91A9}'
  10 : '\x{E2808D}'
  13 : '\x{F09F91A8}'
@@ -1514,10 +1514,10 @@ a RexxUnicodeCodepointSupplier
  31 : '\x{F09F8E85}'
 /*
         a RexxUnicodeCodepointSupplier
-         1  : '\x{6E}'
-         2  : '\x{6F}'
+         1  : '\x6E'
+         2  : '\x6F'
          3  : '\x{C3AB}'
-         5  : '\x{6C}'
+         5  : '\x6C'
          6  : '\x{F09F91A9}'
          10 : '\x{E2808D}'
          13 : '\x{F09F91A8}'
@@ -1531,18 +1531,18 @@ a RexxUnicodeCodepointSupplier
 -- Grapheme supplier providing the byte index and the grapheme byte sequence as hex digits
 ooRexx> .RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", "b", "h")==
 a RexxUnicodeGraphemeSupplier 
- 1  : '\x{6E}'
- 2  : '\x{6F}'
+ 1  : '\x6E'
+ 2  : '\x6F'
  3  : '\x{C3AB}'
- 5  : '\x{6C}'
+ 5  : '\x6C'
  6  : '\x{F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
  31 : '\x{F09F8E85}'
 /*
         a RexxUnicodeGraphemeSupplier
-         1  : '\x{6E}'
-         2  : '\x{6F}'
+         1  : '\x6E'
+         2  : '\x6F'
          3  : '\x{C3AB}'
-         5  : '\x{6C}'
+         5  : '\x6C'
          6  : '\x{F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
          31 : '\x{F09F8E85}'
 */
@@ -1651,10 +1651,10 @@ a RexxUnicodeGraphemeSupplier
 -- Codepoint supplier providing the default index and the codepoint as a RexxUnicodeCharacter
 ooRexx> .RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", , .RexxUnicodeCharacter)==
 a RexxUnicodeCodepointSupplier 
- 1  : ("n" \x{6E} U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
- 2  : ("o" \x{6F} U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
+ 1  : ("n" \x6E U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
+ 2  : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
  3  : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")
- 4  : ("l" \x{6C} U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+ 4  : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
  5  : ("👩" \x{F09F91A9} U+1F469 So Other_Symbol "WOMAN")
  6  : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
  7  : ("👨" \x{F09F91A8} U+1F468 So Other_Symbol "MAN")
@@ -1665,10 +1665,10 @@ a RexxUnicodeCodepointSupplier
  12 : ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
 /*
         a RexxUnicodeCodepointSupplier
-         1  : ("n" \x{6E} U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
-         2  : ("o" \x{6F} U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
+         1  : ("n" \x6E U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
+         2  : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
          3  : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")
-         4  : ("l" \x{6C} U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+         4  : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
          5  : ("👩" \x{F09F91A9} U+1F469 So Other_Symbol "WOMAN")
          6  : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
          7  : ("👨" \x{F09F91A8} U+1F468 So Other_Symbol "MAN")
@@ -1714,25 +1714,25 @@ a RexxUnicodeCodepointSupplier
 -- (don't display directly the graphemes because the output would be invalid UTF-8)
 ooRexx> .RexxUnicodeGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, , "\")==
 a RexxUnicodeGraphemeSupplier 
- 1 : '\x{F4}'
- 2 : '\x{91}'
- 3 : '\x{92}'
- 4 : '\x{93}'
- 5 : '\x{FF}'
+ 1 : '\xF4'
+ 2 : '\x91'
+ 3 : '\x92'
+ 4 : '\x93'
+ 5 : '\xFF'
  6 : 'A'
- 7 : '\x{80}'
- 8 : '\x{BF}'
+ 7 : '\x80'
+ 8 : '\xBF'
  9 : 'B'
 /*
         a RexxUnicodeGraphemeSupplier
-         1 : '\x{F4}'
-         2 : '\x{91}'
-         3 : '\x{92}'
-         4 : '\x{93}'
-         5 : '\x{FF}'
+         1 : '\xF4'
+         2 : '\x91'
+         3 : '\x92'
+         4 : '\x93'
+         5 : '\xFF'
          6 : 'A'
-         7 : '\x{80}'
-         8 : '\x{BF}'
+         7 : '\x80'
+         8 : '\xBF'
          9 : 'B'
 */
 
@@ -1740,25 +1740,25 @@ a RexxUnicodeGraphemeSupplier
 -- A negative byte index indicates an invalid byte sequence
 ooRexx> .RexxUnicodeCodepointSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "\")==
 a RexxUnicodeCodepointSupplier 
--1 : '\x{F4}'
--2 : '\x{91}'
--3 : '\x{92}'
--4 : '\x{93}'
--5 : '\x{FF}'
+-1 : '\xF4'
+-2 : '\x91'
+-3 : '\x92'
+-4 : '\x93'
+-5 : '\xFF'
  6 : 'A'
--7 : '\x{80}'
--8 : '\x{BF}'
+-7 : '\x80'
+-8 : '\xBF'
  9 : 'B'
 /*
         a RexxUnicodeCodepointSupplier
-        -1 : '\x{F4}'
-        -2 : '\x{91}'
-        -3 : '\x{92}'
-        -4 : '\x{93}'
-        -5 : '\x{FF}'
+        -1 : '\xF4'
+        -2 : '\x91'
+        -3 : '\x92'
+        -4 : '\x93'
+        -5 : '\xFF'
          6 : 'A'
-        -7 : '\x{80}'
-        -8 : '\x{BF}'
+        -7 : '\x80'
+        -8 : '\xBF'
          9 : 'B'
 */
 
@@ -1766,25 +1766,25 @@ a RexxUnicodeCodepointSupplier
 -- A negative byte index indicates an invalid byte sequence
 ooRexx> .RexxUnicodeGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "\")==
 a RexxUnicodeGraphemeSupplier 
--1 : '\x{F4}'
--2 : '\x{91}'
--3 : '\x{92}'
--4 : '\x{93}'
--5 : '\x{FF}'
+-1 : '\xF4'
+-2 : '\x91'
+-3 : '\x92'
+-4 : '\x93'
+-5 : '\xFF'
  6 : 'A'
--7 : '\x{80}'
--8 : '\x{BF}'
+-7 : '\x80'
+-8 : '\xBF'
  9 : 'B'
 /*
         a RexxUnicodeGraphemeSupplier
-        -1 : '\x{F4}'
-        -2 : '\x{91}'
-        -3 : '\x{92}'
-        -4 : '\x{93}'
-        -5 : '\x{FF}'
+        -1 : '\xF4'
+        -2 : '\x91'
+        -3 : '\x92'
+        -4 : '\x93'
+        -5 : '\xFF'
          6 : 'A'
-        -7 : '\x{80}'
-        -8 : '\x{BF}'
+        -7 : '\x80'
+        -8 : '\xBF'
          9 : 'B'
 */
 
@@ -1911,14 +1911,14 @@ a RexxUnicodeCodepointSupplier
 ooRexx> .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, , "\")==
 a RexxUnicodeGraphemeSupplier 
  1 : '\x{E180}'
- 2 : '\x{E2}'
+ 2 : '\xE2'
  3 : '\x{F09192}'
  4 : '\x{F1BF}'
  5 : 'A'
 /*
         a RexxUnicodeGraphemeSupplier
          1 : '\x{E180}'
-         2 : '\x{E2}'
+         2 : '\xE2'
          3 : '\x{F09192}'
          4 : '\x{F1BF}'
          5 : 'A'
@@ -1929,14 +1929,14 @@ a RexxUnicodeGraphemeSupplier
 ooRexx> .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
 a RexxUnicodeCodepointSupplier 
 -1 : '\x{E180}'
--3 : '\x{E2}'
+-3 : '\xE2'
 -4 : '\x{F09192}'
 -7 : '\x{F1BF}'
  9 : 'A'
 /*
         a RexxUnicodeCodepointSupplier
         -1 : '\x{E180}'
-        -3 : '\x{E2}'
+        -3 : '\xE2'
         -4 : '\x{F09192}'
         -7 : '\x{F1BF}'
          9 : 'A'
@@ -1947,14 +1947,14 @@ a RexxUnicodeCodepointSupplier
 ooRexx> .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
 a RexxUnicodeGraphemeSupplier 
 -1 : '\x{E180}'
--3 : '\x{E2}'
+-3 : '\xE2'
 -4 : '\x{F09192}'
 -7 : '\x{F1BF}'
  9 : 'A'
 /*
         a RexxUnicodeGraphemeSupplier
         -1 : '\x{E180}'
-        -3 : '\x{E2}'
+        -3 : '\xE2'
         -4 : '\x{F09192}'
         -7 : '\x{F1BF}'
          9 : 'A'
@@ -2052,7 +2052,7 @@ Add .RexxUnicode~stringUnescape(string, buffer=.nil)
 
 Add .RexxUnicode~stringEscape(string, buffer=.nil)
     Escapes characters that are not printable:
-    - Invalid byte sequences are represented by escaped hexadecimal byte sequences: \x{XX..XX}.
+    - Invalid byte sequences are represented by escaped hexadecimal byte sequences: \XX or \x{XX..XX}.
     - Non-printable codepoints are represented using the standard escape sequences (\a, \b, \t, \n, \v, \f, \r) when applicable;
       otherwise, Unicode escape notation (\uXXXX or \UXXXXXXXX) is used.
 
@@ -2197,8 +2197,8 @@ Error code= 23.900
 ooRexx> .RexxUnicode~stringUnescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
 '𝓐B𝓒𝓓𝓔'
 
-ooRexx> .RexxUnicode~stringEscape(xrange("00"x, "FF"x))=          -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'
-'\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'
+ooRexx> .RexxUnicode~stringEscape(xrange("00"x, "FF"x))=          -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'
+'\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'
 
 ooRexx> .RexxUnicode~stringEscape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF'
 '\U00010FFF'
@@ -2211,13 +2211,13 @@ ooRexx> .RexxUnicode~stringEscape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF
         2 : 'U+FFFD'
         3 : 'U+FFFD'
     Codepoint byte sequence as hexadecimal digits (option "h):
-        1 : '\x{ED}'
-        2 : '\x{A0}'
-        3 : '\x{80}'
-    Escaping U+D800 is '\x{ED}\x{A0}\x{80}' because \x{EDA080} can't be decoded as U+D800.
+        1 : '\xED'
+        2 : '\xA0'
+        3 : '\x80'
+    Escaping U+D800 is '\xED\xA0\x80' because \x{EDA080} can't be decoded as U+D800.
 */
-ooRexx> .RexxUnicode~stringEscape(.RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}"))=    -- '\x{ED}\x{A0}\x{80}'
-'\x{ED}\x{A0}\x{80}'
+ooRexx> .RexxUnicode~stringEscape(.RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}"))=    -- '\xED\xA0\x80'
+'\xED\xA0\x80'
 
 
 -- ===============================================================================
