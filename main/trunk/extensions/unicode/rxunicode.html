@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
-Unicode support
+rxunicode Reference Documentation
     </title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel='stylesheet' href='https://jlfaucher.github.io/css/rexx-vim-light-zellner.css'>
@@ -24,12 +24,14 @@ Unicode support
       <div class='row layout-main'>
         <div class='col-md-9 content-pane'>
           <div class='content' id="content">
-<h1 id="unicode-support">Unicode support</h1>
+<h1 id="rxunicode-reference-documentation">rxunicode Reference
+Documentation</h1>
 <p>The <code>RexxUnicodeServices</code> class is a native class that
-exposes the Unicode services supported by ooRexx. Its current
-implementation is based on the <a
-href="https://juliastrings.github.io/utf8proc/"><code>utf8proc</code></a>
-library embedded in ooRexx.</p>
+exposes the Unicode services supported by <code>ooRexx</code>. Its
+current implementation is based on the <a
+href="https://juliastrings.github.io/utf8proc/"
+title="utf8proc"><code>utf8proc</code></a> library embedded in
+<code>ooRexx</code>.</p>
 <p><code>rxunicode.cls</code> is an optional package that defines:</p>
 <ul>
 <li>The <code>RexxUnicode</code> class, a subclass of
@@ -71,6 +73,14 @@ when mixing graphemes and bytes.</p>
 <p><strong>Note on terminology:</strong> This documentation and the code
 comments use the term "codepoint" instead of "code point", except when
 quoting definitions from the Unicode Standard.</p>
+<p><strong>Note on examples:</strong> The special syntax
+<code>expression=</code> or <code>expression==</code> is a feature of
+<code>ooRexxShell</code>. It is a shortcut for displaying the result of
+<code>expression</code>. Collections are displayed either in compact
+form (when the expression ends with <code>=</code>) or in expanded form
+(when it ends with <code>==</code>). If you are using
+<code>rexxtry</code> or running a script, use
+<code>say expression</code> instead.</p>
 <h2 id="rexxunicodeservices-class">1.   RexxUnicodeServices Class</h2>
 <p>The <code>RexxUnicodeServices</code> class cannot be
 instantiated.<br />
@@ -1204,8 +1214,9 @@ href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083
 </div>
 <h4 id="h_uax44_lm2">2.4.14.   h_UAX44_LM2</h4>
 <pre><code>.RexxUnicode~h_UAX44_LM2(name)</code></pre>
-<p>h_UAX44_LM2 delegates either to ICU4ooRexx, if registered, or to
-.RexxUnicode~UAX44_LM2 (slower, but always available).</p>
+<p><code>h_UAX44_LM2</code> delegates either to <code>ICU4ooRexx</code>,
+if registered, or to <code>.RexxUnicode~UAX44_LM2</code> (slower, but
+always available).</p>
 <p><strong>Examples:</strong></p>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">h_UAX44_LM2</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"> MICR on US SYMBOL</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 'micronussymbol'</span></code>

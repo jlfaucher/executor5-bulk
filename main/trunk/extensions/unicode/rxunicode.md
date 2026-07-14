@@ -1,8 +1,8 @@
-# Unicode support
+# rxunicode Reference Documentation
 
 The `RexxUnicodeServices` class is a native class that exposes the Unicode services
-supported by ooRexx. Its current implementation is based on the [`utf8proc`](https://juliastrings.github.io/utf8proc/)
-library embedded in ooRexx.
+supported by `ooRexx`. Its current implementation is based on the [`utf8proc`][utf8proc]
+library embedded in `ooRexx`.
 
 
 `rxunicode.cls` is an optional package that defines:
@@ -42,7 +42,7 @@ library embedded in ooRexx.
 **Note on terminology:** This documentation and the code comments use the term "codepoint"
 instead of "code point", except when quoting definitions from the Unicode Standard.
 
-**Note on examples:** The special syntax `expression=` or `expression==` is a feature of ooRexxShell.
+**Note on examples:** The special syntax `expression=` or `expression==` is a feature of `ooRexxShell`.
 It is a shortcut for displaying the result of `expression`.
 Collections are displayed either in compact form (when the expression ends with `=`)
 or in expanded form (when it ends with `==`).
@@ -1363,8 +1363,8 @@ The special value -1 is represented using `U+FFFFFF`, even though the resulting 
 
     .RexxUnicode~h_UAX44_LM2(name)
 
-h_UAX44_LM2 delegates either to ICU4ooRexx, if registered,
-or to .RexxUnicode~UAX44_LM2 (slower, but always available).
+`h_UAX44_LM2` delegates either to `ICU4ooRexx`, if registered,
+or to `.RexxUnicode~UAX44_LM2` (slower, but always available).
 
 **Examples:**
 
@@ -2617,3 +2617,4 @@ The special value -1 can be represented using a RexxUnicodeCharacter.
 [unicode_standard_annex_29]: https://www.unicode.org/reports/tr29/ "Standard Annex #29"
 [uax44_lm2]: https://unicode.org/reports/tr44/#UAX44-LM2 "Loose matching rule UAX44-LM2"
 [uax44_lm3]: https://unicode.org/reports/tr44/#UAX44-LM3 "Loose matching rule UAX44-LM3"
+[utf8proc]: https://juliastrings.github.io/utf8proc/ "utf8proc"
