@@ -199,8 +199,8 @@ Additional codepoint services
     if codepoint < 0 | codepoint > self~maxCodepoint then signal error_range
     return .true
 
-    not_wholenumber: raise syntax 88.900 array ("code point must be in the range 0 to" self~maxCodepoint "("self~D2U(self~maxCodepoint)"); found" quoted(codepoint))
-    error_range: raise syntax 88.900 array ("Invalid code point" codepoint"; allowed range is 0 to" self~maxCodepoint "("self~D2U(self~maxCodepoint)")")
+    not_wholenumber: raise syntax 88.900 array ("Code point must be in the range 0 to" self~maxCodepoint "("self~D2U(self~maxCodepoint)"); found" quoted(codepoint))
+    error_range: raise syntax 88.900 array ("Invalid code point:" codepoint"; allowed range is 0 to" self~maxCodepoint "("self~D2U(self~maxCodepoint)")")
 
 
 -- Returns the UTF-8 encoding of this codepoint.
@@ -1038,7 +1038,7 @@ How other languages are supporting escape characters for Unicode:
 ::method codepointAtIndexC
     expose indexC
     use strict arg index
-    if index < 0 then raise syntax 88.900 array ("Negative code point index is not supported; found" index)
+    if index < 0 then raise syntax 88.900 array ("Invalid code point index:" index"; negative indexes are not supported")
     if index == 0 then raise syntax 88.900 array ("Invalid code point index:" index)
     if index < indexC then raise syntax 88.900 array ("Invalid code point index:" index "is less than the current index" indexC "(the supplier can only advance)")
     loop while indexC \== index
@@ -1307,9 +1307,9 @@ Maybe it can be simplified...
 ::method graphemeAtIndexG
     expose indexG
     use strict arg index
-    if index < 0 then raise syntax 88.900 array ("Negative grapheme index is not supported; found" index)
+    if index < 0 then raise syntax 88.900 array ("Invalid grapheme index:" index"; negative indexes are not supported")
     if index == 0 then raise syntax 88.900 array ("Invalid grapheme index:" index)
-    if index < indexG then raise syntax 88.900 array ("Invalid code point index:" index "is less than the current index" indexG "(the supplier can only advance)")
+    if index < indexG then raise syntax 88.900 array ("Invalid grapheme index:" index "is less than the current index" indexG "(the supplier can only advance)")
     loop while indexG \== index
         self~next
     end

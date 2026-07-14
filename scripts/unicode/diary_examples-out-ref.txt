@@ -737,8 +737,8 @@ Error code= 88.900
 ooRexx> codepointSupplier~codepointAtIndexC(0)=     -- Invalid code point index: 0.
 Invalid code point index: 0.
 Error code= 88.900
-ooRexx> codepointSupplier~codepointAtIndexC(-1)=    -- Invalid code point index: -1.
-Negative code point index is not supported; found -1.
+ooRexx> codepointSupplier~codepointAtIndexC(-1)=    -- Invalid code point index: -1; negative indexes are not supported.
+Invalid code point index: -1; negative indexes are not supported.
 Error code= 88.900
 
 ooRexx> string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
@@ -753,22 +753,22 @@ ooRexx> graphemeSupplier~graphemeAtIndexG(7)~c2x=   -- '80'
  80
 ooRexx> graphemeSupplier~graphemeAtIndexG(22)=      -- '👨‍👩‍👧'
 '👨‍👩‍👧'
-ooRexx> graphemeSupplier~graphemeAtIndexG(21)=      -- Invalid code point index: 21 is less than the current index 22 (the supplier can only advance).
-Invalid code point index: 21 is less than the current index 22 (the supplier can only advance).
+ooRexx> graphemeSupplier~graphemeAtIndexG(21)=      -- Invalid grapheme index: 21 is less than the current index 22 (the supplier can only advance).
+Invalid grapheme index: 21 is less than the current index 22 (the supplier can only advance).
 Error code= 88.900
 ooRexx> graphemeSupplier~graphemeAtIndexG(22)=      -- '👨‍👩‍👧'
 '👨‍👩‍👧'
 ooRexx> graphemeSupplier~graphemeAtIndexG(23)=      -- No more supplier items available.
 No more supplier items available.
 Error code= 93.937
-ooRexx> graphemeSupplier~graphemeAtIndexG(22)=      -- Invalid code point index: 22 is less than the current index 23 (the supplier can only advance).
-Invalid code point index: 22 is less than the current index 23 (the supplier can only advance).
+ooRexx> graphemeSupplier~graphemeAtIndexG(22)=      -- Invalid grapheme index: 22 is less than the current index 23 (the supplier can only advance).
+Invalid grapheme index: 22 is less than the current index 23 (the supplier can only advance).
 Error code= 88.900
 ooRexx> graphemeSupplier~graphemeAtIndexG(0)=       -- Invalid grapheme index: 0.
 Invalid grapheme index: 0.
 Error code= 88.900
-ooRexx> graphemeSupplier~graphemeAtIndexG(-1)=      -- Invalid grapheme index: -1.
-Negative grapheme index is not supported; found -1.
+ooRexx> graphemeSupplier~graphemeAtIndexG(-1)=      -- Invalid grapheme index: -1; negative indexes are not supported.
+Invalid grapheme index: -1; negative indexes are not supported.
 Error code= 88.900
 
 
@@ -907,8 +907,8 @@ ooRexx> .RexxUnicode~codepointCharNameAlias(-1)=            -- ''
 -- All other negative codepoints are invalid
 ooRexx> .RexxUnicode~codepoint(-1)=                         -- -1
 -1
-ooRexx> .RexxUnicode~codepoint(-2)=                         -- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicode~codepoint(-2)=                         -- Invalid code point: -2; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: -2; allowed range is 0 to 1114111 (U+10FFFF).
 Error code= 88.900
 
 -- The special value -1 is represented using U+FFFFFF, even though the resulting value is not a valid Unicode scalar value
@@ -1134,8 +1134,8 @@ ooRexx> .RexxUnicode~codepointUTF8Encoding(2448~x2d)~c2x=                       
 
 ooRexx> .RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint)~c2x=      -- 'F48FBFBF'
 'F48FBFBF'
-ooRexx> .RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  -- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  -- Invalid codepoint: 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 1114112; allowed range is 0 to 1114111 (U+10FFFF).
 Error code= 88.900
 
 ooRexx> .RexxUnicode~codepointUnicodeEscapeNotation("D800"~x2d)=    -- '\uD800'
@@ -1294,8 +1294,8 @@ M'U+1F385'
 
 ooRexx> .RexxUnicode~D2U(.RexxUnicode~maxCodepoint)=        -- 'U+10FFFF'
 'U+10FFFF'
-ooRexx> .RexxUnicode~D2U(.RexxUnicode~maxCodepoint + 1)=    -- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicode~D2U(.RexxUnicode~maxCodepoint + 1)=    -- Invalid codepoint: 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 1114112; allowed range is 0 to 1114111 (U+10FFFF).
 Error code= 88.900
 ooRexx> .RexxUnicode~D2U(-1)=                               -- 'U+FFFFFF' (was Invalid codepoint -1; allowed range is 0 to 1114111 (U+10FFFF).)
 'U+FFFFFF'
