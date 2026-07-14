@@ -27,7 +27,7 @@ library embedded in ooRexx.
 > use `tutor off` for a permanent workaround,  
 > or use `~string` for a temporary workaround.
 >
-> The `requestBaseString` method ensures that any string passed as an argument
+> The `requestBaseString` routine ensures that any string passed as an argument
 > is a `.String` instance, not an instance of a subclass of `.String`.
 >
 > No attempt is made to obtain a string from these arguments.
@@ -535,7 +535,7 @@ Returns the next codepoint (an integer) at position `indexB` of `string`, or -1 
 `refSizeB` receives the size in bytes of the decoded codepoint.  
 If `indexB` is outside the `string` index range, the received size is 0.  
 In case of error, the received size is negative, indicating the number of bytes to skip
-to follow the U+FFFD Substitution of Maximal Subparts.  
+to follow the `U+FFFD` Substitution of Maximal Subparts.  
 `refErrorCode` and `refErrorMsg` receive a detailed description of the error.
 
 **Error codes and messages:**
@@ -714,17 +714,17 @@ Mapping rules:
 ```
 
 `NLF2LF`  
-convert LF, CRLF, CR and NEL into LF.
+converts LF, CRLF, CR and NEL into LF.
 
 `NLF2LS`  
 Converts LF, CRLF, CR and NEL into LS.  
-NLF-sequences (LF, CRLF, CR, NEL) are representing a line break,
-and should be converted to the codepoint for line separation (LS).
+NLF sequences (LF, CRLF, CR, NEL) represent a line break and are converted
+to the Unicode Line Separator (LS) codepoint.
 
 `NLF2PS`  
 Converts LF, CRLF, CR and NEL into PS.  
-NLF-sequences (LF, CRLF, CR, NEL) are representing a paragraph break,
-and should be converted to the codepoint for paragraph separation (PS).
+NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are converted
+to the Unicode Paragraph Separator (PS) codepoint.
 
 
 ##### 1.1.22.4.   'normalization' argument
@@ -732,7 +732,7 @@ and should be converted to the codepoint for paragraph separation (PS).
 ```rexx
 -- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).
 -- These constants are declared in the RexxUnicode class.
--- If rxunicode.cls is not loaded, use the numeric value directly..
+-- If rxunicode.cls is not loaded, use the numeric value directly.
 ::constant NFC 1
 ::constant NFD 2
 ::constant NFKC 3
@@ -765,16 +765,16 @@ Strips all character markings.
 
 This includes non-spacing, spacing and enclosing (i.e. accents) categories:
 
-- Mc Spacing Mark
-- Me Enclosing Mark
-- Mn Nonspacing Mark
+- `Mc` Spacing Mark
+- `Me` Enclosing Mark
+- `Mn` Nonspacing Mark
 
 This option works only with a normalization applied.
 
 
 ##### 1.1.22.8.   'stripNA' argument
 
-Strips the characters whose category is Cn Unassigned.
+Strips the characters whose category is `Cn` Unassigned.
 
 
 ##### 1.1.22.9.   Examples of transformations
@@ -786,28 +786,28 @@ string = .RexxUnicode~stringUnescape(string)
 .RexxUnicodeCodepointSupplier~new(string, , .RexxUnicodeCharacter)==
     /*
     an Array (shape [22], 22 items)
-     1  : (<?> \x{07} U+0007 Cc Control "<control-0007>")                                   <-- removable with STRIPCC:.true
-     2  : ("L" \x{4C} U+004C Lu Uppercase_Letter "LATIN CAPITAL LETTER L")
-     3  : ("e" \x{65} U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+     1  : (<?> \x07 U+0007 Cc Control "<control-0007>")                                     <-- removable with STRIPCC:.true
+     2  : ("L" \x4C U+004C Lu Uppercase_Letter "LATIN CAPITAL LETTER L")
+     3  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
      4  : ("　" \x{E38080} U+3000 Zs Space_Separator "IDEOGRAPHIC SPACE")                   <-- replaceable by " " with LUMP:.true
      5  : (" " \x{E19A80} U+1680 Zs Space_Separator "OGHAM SPACE MARK")                     <-- replaceable by " " with LUMP:.true
      6  : (<?> \x{E2808B} U+200B Cf Format "ZERO WIDTH SPACE")                              <-- removable by STRIPIGNORABLE:.TRUE
-     7  : ("P" \x{50} U+0050 Lu Uppercase_Letter "LATIN CAPITAL LETTER P")
+     7  : ("P" \x50 U+0050 Lu Uppercase_Letter "LATIN CAPITAL LETTER P")
      8  : ("è" \x{C3A8} U+00E8 Ll Lowercase_Letter "LATIN SMALL LETTER E WITH GRAVE")
-     9  : ("r" \x{72} U+0072 Ll Lowercase_Letter "LATIN SMALL LETTER R")
-     10 : ("e" \x{65} U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
-     11 : (<?> \x{09} U+0009 Cc Control "<control-0009>")                                   <-- replaceable by " " with STRIPCC:.true
+     9  : ("r" \x72 U+0072 Ll Lowercase_Letter "LATIN SMALL LETTER R")
+     10 : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+     11 : (<?> \x09 U+0009 Cc Control "<control-0009>")                                     <-- replaceable by " " with STRIPCC:.true
      12 : ("‐" \x{E28090} U+2010 Pd Dash_Punctuation "HYPHEN")                              <-- replaceable by "-" with LUMP:.true
      13 : (<?> \x{C2AD} U+00AD Cf Format "SOFT HYPHEN")                                     <-- removable by STRIPIGNORABLE:.true
      14 : ("–" \x{E28093} U+2013 Pd Dash_Punctuation "EN DASH")                             <-- replaceable by "-" with LUMP:.true
      15 : ("—" \x{E28094} U+2014 Pd Dash_Punctuation "EM DASH")                             <-- replaceable by "-" with LUMP:.true
-     16 : ("N" \x{4E} U+004E Lu Uppercase_Letter "LATIN CAPITAL LETTER N")
-     17 : ("o" \x{6F} U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
+     16 : ("N" \x4E U+004E Lu Uppercase_Letter "LATIN CAPITAL LETTER N")
+     17 : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
      18 : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")
-     19 : ("l" \x{6C} U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+     19 : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
      20 : (<?> \x{EFB790} U+FDD0 Cn Unassigned "<noncharacter-FDD0>")                       <-- removeable with STRIPNA:.true
-     21 : (<?> \x{0D} U+000D Cc Control "<control-000D>")
-     22 : (<?> \x{0A} U+000A Cc Control "<control-000A>")                                   <-- CR+LF replaceable by " " with STRIPCC:.true
+     21 : (<?> \x0D U+000D Cc Control "<control-000D>")
+     22 : (<?> \x0A U+000A Cc Control "<control-000A>")                                     <-- CR+LF replaceable by " " with STRIPCC:.true
     */
 
 string=; .RexxUnicode~C2U(string)=
@@ -918,23 +918,23 @@ tstring=; .RexxUnicode~C2U(tstring)=
 
 .RexxUnicodeCodepointSupplier~new(tstring, , .RexxUnicodeCharacter)==
     /*
-     1  : ("l" \x{6C} U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
-     2  : ("e" \x{65} U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
-     3  : (" " \x{20} U+0020 Zs Space_Separator "SPACE")                    <-- LUMP (was IDEOGRAPHIC SPACE)
-     4  : (" " \x{20} U+0020 Zs Space_Separator "SPACE")                    <-- LUMP (was OGHAM SPACE MARK)
-     5  : ("p" \x{70} U+0070 Ll Lowercase_Letter "LATIN SMALL LETTER P")
-     6  : ("e" \x{65} U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
-     7  : ("r" \x{72} U+0072 Ll Lowercase_Letter "LATIN SMALL LETTER R")
-     8  : ("e" \x{65} U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
-     9  : (" " \x{20} U+0020 Zs Space_Separator "SPACE")                    <-- STRIPCC (was TAB)
-     10 : ("-" \x{2D} U+002D Pd Dash_Punctuation "HYPHEN-MINUS")            <-- LUMP (was HYPHEN)
-     11 : ("-" \x{2D} U+002D Pd Dash_Punctuation "HYPHEN-MINUS")            <-- LUMP (was EN DASH)
-     12 : ("-" \x{2D} U+002D Pd Dash_Punctuation "HYPHEN-MINUS")            <-- LUMP (was EM DASH)
-     13 : ("n" \x{6E} U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
-     14 : ("o" \x{6F} U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
-     15 : ("e" \x{65} U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
-     16 : ("l" \x{6C} U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
-     17 : (" " \x{20} U+0020 Zs Space_Separator "SPACE")                    <-- STRIPCC (was CR+LF)
+     1  : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+     2  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+     3  : (" " \x20 U+0020 Zs Space_Separator "SPACE")                    <-- LUMP (was IDEOGRAPHIC SPACE)
+     4  : (" " \x20 U+0020 Zs Space_Separator "SPACE")                    <-- LUMP (was OGHAM SPACE MARK)
+     5  : ("p" \x70 U+0070 Ll Lowercase_Letter "LATIN SMALL LETTER P")
+     6  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+     7  : ("r" \x72 U+0072 Ll Lowercase_Letter "LATIN SMALL LETTER R")
+     8  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+     9  : (" " \x20 U+0020 Zs Space_Separator "SPACE")                    <-- STRIPCC (was TAB)
+     10 : ("-" \x2D U+002D Pd Dash_Punctuation "HYPHEN-MINUS")            <-- LUMP (was HYPHEN)
+     11 : ("-" \x2D U+002D Pd Dash_Punctuation "HYPHEN-MINUS")            <-- LUMP (was EN DASH)
+     12 : ("-" \x2D U+002D Pd Dash_Punctuation "HYPHEN-MINUS")            <-- LUMP (was EM DASH)
+     13 : ("n" \x6E U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
+     14 : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
+     15 : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+     16 : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+     17 : (" " \x20 U+0020 Zs Space_Separator "SPACE")                    <-- STRIPCC (was CR+LF)
     */
     
 ```
@@ -999,7 +999,7 @@ See the `RexxUnicodeServices` class.
 
     .RexxUnicode~C2U(string, buffer=.nil)
 
-Returns an ASCII string containing a sequence of U+XXXX (4 to 6 hex digits).
+Returns an ASCII string containing a sequence of `U+XXXX` (4 to 6 hex digits).
 
 If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
 
@@ -1096,7 +1096,7 @@ See the `codepoint` method for a definition of "codepoint identifier".
     .RexxUnicode~checkCodepoint(codepoint, minusOneAllowed=.false)
 
 Returns `.true` if `codepoint` is in the range 0...RexxUnicode~maxCodepoint.  
-The range U+D800-U+DFFF is allowed (surrogates).  
+The range `U+D800-U+DFFF` is allowed (surrogates).  
 If `minusOneAllowed` is true then -1 is allowed (special value used in case of error).
 
 
@@ -1109,7 +1109,7 @@ Gets a codepoint from a codepoint identifier.
 A codepoint identifier may be:
 
 - a decimal value (the codepoint itself),
-- a U+ notation,
+- a `U+` notation,
 - a character name,
 - or a UTF-8 encoded character.
 
@@ -1286,7 +1286,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 
     .RexxUnicode~codepointUnicodeEscapeNotation(codepoint, buffer=.nil)
 
-Returns the Unicode escape notation `\uXXXX` or `\UXXXXXXXX` for the given codepoin.
+Returns the Unicode escape notation `\uXXXX` or `\UXXXXXXXX` for the given codepoint.
 
 If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
 
@@ -1402,7 +1402,7 @@ Returns a `StringTable` containing information about the Unicode environment.
 
 Returns a string in which non-printable codepoints and invalid byte sequences are replaced with escape sequences.
 
-- Invalid byte sequences are represented as escaped hexadecimal byte sequences: `\x{XX..XX}`.
+- Invalid byte sequences are represented as escaped hexadecimal byte sequences: `\XX` or `\x{XX..XX}`.
 - Non-printable codepoints are represented using the standard escape sequences (`\a`, `\b`, `\t`, `\n`, `\v`, `\f`, `\r`) when applicable;  
   otherwise, Unicode escape notation (`\uXXXX` or `\UXXXXXXXX`) is used.
 
@@ -1411,14 +1411,14 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 **Examples:**
 
 ```rexx
-.RexxUnicode~stringEscape(xrange("00"x, "FF"x))=          -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'
+.RexxUnicode~stringEscape(xrange("00"x, "FF"x))=          -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'
 
 .RexxUnicode~stringEscape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF'
 
 ```
 
 ```rexx
-.RexxUnicode~stringEscape(.RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}"))=    -- '\x{ED}\x{A0}\x{80}'
+.RexxUnicode~stringEscape(.RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}"))=    -- '\xED\xA0\x80'
 /*
 A lead surrogate is invalid in a UTF-8 string (would be valid in a WTF-8 string).
 (<?> \x{EDA080} U+D800 Cs Surrogate "<lead surrogate-D800>")
@@ -1427,10 +1427,10 @@ A codepoint supplier returns 3 codepoints for U+D800:
     2 : 'U+FFFD'
     3 : 'U+FFFD'
 Codepoint byte sequence as hexadecimal digits (option "h):
-    1 : '\x{ED}'
-    2 : '\x{A0}'
-    3 : '\x{80}'
-Escaping U+D800 is '\x{ED}\x{A0}\x{80}' because \x{EDA080} can't be UTF-8 decoded as U+D800.
+    1 : '\xED'
+    2 : '\xA0'
+    3 : '\x80'
+Escaping U+D800 is '\xED\xA0\x80' because \x{EDA080} can't be UTF-8 decoded as U+D800.
 */
 
 ```
@@ -1731,7 +1731,7 @@ Otherwise, returns -1 or, if requested, raises an error.
     .RexxUnicode~UAX44_LM2(string)
 
 Returns a string ready for comparison using the [loose matching rule UAX44-LM2][uax44_lm2] where
-case, whitespace, underscore ('_'), and all medial hyphens except the hyphen in U+1180 HANGUL JUNGSEONG O-E
+case, whitespace, underscore ('_'), and all medial hyphens except the hyphen in `U+1180` HANGUL JUNGSEONG O-E
 are removed.
 
 **Examples:**
@@ -1814,10 +1814,10 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", "b", "h")==
     /*
     a RexxUnicodeCodepointSupplier 
-     1  : '\x{6E}'
-     2  : '\x{6F}'
+     1  : '\x6E'
+     2  : '\x6F'
      3  : '\x{C3AB}'
-     5  : '\x{6C}'
+     5  : '\x6C'
      6  : '\x{F09F91A8}'
      10 : '\x{E2808D}'
      13 : '\x{F09F91A9}'
@@ -1874,10 +1874,10 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , .RexxUnicodeCharacter)==
     /*
     a RexxUnicodeCodepointSupplier 
-     1  : ("n" \x{6E} U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
-     2  : ("o" \x{6F} U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
+     1  : ("n" \x6E U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
+     2  : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
      3  : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")
-     4  : ("l" \x{6C} U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+     4  : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
      5  : ("👨" \x{F09F91A8} U+1F468 So Other_Symbol "MAN")
      6  : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
      7  : ("👩" \x{F09F91A9} U+1F469 So Other_Symbol "WOMAN")
@@ -1914,7 +1914,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
     /*
     a RexxUnicodeCodepointSupplier 
     -1 : '\x{E180}'
-    -3 : '\x{E2}'
+    -3 : '\xE2'
     -4 : '\x{F09192}'
     -7 : '\x{F1BF}'
      9 : 'A'
@@ -2053,10 +2053,10 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 .RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", "b", "h")==
     /*
     a RexxUnicodeGraphemeSupplier 
-     1  : '\x{6E}'
-     2  : '\x{6F}'
+     1  : '\x6E'
+     2  : '\x6F'
      3  : '\x{C3AB}'
-     5  : '\x{6C}'
+     5  : '\x6C'
      6  : '\x{F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
      24 : '\x{F09F8E85}'
     */
@@ -2105,7 +2105,7 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
     /*
     a RexxUnicodeGraphemeSupplier
      1 : '\x{E180}'
-     2 : '\x{E2}'
+     2 : '\xE2'
      3 : '\x{F09192}'
      4 : '\x{F1BF}'
      5 : 'A'
@@ -2121,7 +2121,7 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
     /*
     a RexxUnicodeGraphemeSupplier 
     -1 : '\x{E180}'
-    -3 : '\x{E2}'
+    -3 : '\xE2'
     -4 : '\x{F09192}'
     -7 : '\x{F1BF}'
      9 : 'A'
@@ -2413,14 +2413,14 @@ indexer~codepointCount=             -- 9
 indexer~codepointStorageLimit=      -- 4
 indexer~codepointIndexes=           -- [-1,-2,-3,-4]
 indexer~codepointAtIndexC(3)=       -- 65533
-indexer~codepointAtIndexC(5)=       -- Invalid code point index: 5 is greater than the storage limit 4.
+indexer~codepointAtIndexC(5)=       -- Code point index 5 is not stored.
 
 -- The specified grapheme storage limit is 2
 indexer~graphemeCount=              -- 9
 indexer~graphemeStorageLimit=       -- 2
 indexer~graphemeIndexes=            -- [-1,-2]
 indexer~graphemeAtIndexG(2)~c2x=    -- 91 (use ~c2x to not display an invalid byte sequence)
-indexer~graphemeAtIndexG(3)~c2x=    -- Invalid grapheme index: 3 is greater than the storage limit 2.
+indexer~graphemeAtIndexG(3)~c2x=    -- Grapheme index 3 is not stored.
 
 -- The specified error storage limit is 1
 indexer~errorCount=                 -- 7
@@ -2450,12 +2450,20 @@ indexer~errorCount=         -- 7
 -- In case of error, reports only the first error.
 string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
 indexer = .RexxUnicodeStringIndexer~new(string, /*codepointStorageLimit:*/ 0, /*graphemeStorageLimit:*/ 0, /*errorStorageLimit:*/ 1, /*endCodepointStorageSize:*/ 0, /*endGraphemeStorageSize:*/ 5)
-indexer~errorCount=
-indexer~errors~items=
-indexer~errors[1]=
-indexer~endGraphemeIndexes=
-do index over indexer~endGraphemeIndexes; say index ":" indexer~graphemeAtIndexG(index); end
-
+indexer~errorCount=         -- 7
+indexer~errors~items=       -- 1
+indexer~errors[1]=          -- 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
+indexer~endGraphemeIndexes= -- [ 23, 22, 21, 19, 18]
+-- Pass -endIndexG, where a negative index means "index from the end"
+do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~graphemeAtIndexG(-endIndexG); end
+    /*
+    1: 👨‍👩‍👧
+    2:  
+    3: l
+    4: ë
+    5: o
+    */
+    
 ```
 
 

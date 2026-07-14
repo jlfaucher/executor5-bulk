@@ -54,7 +54,7 @@ with any <code>String</code> subclass that overrides
 </ul>
 <p>use <code>tutor off</code> for a permanent workaround,<br />
 or use <code>~string</code> for a temporary workaround.</p>
-<p>The <code>requestBaseString</code> method ensures that any string
+<p>The <code>requestBaseString</code> routine ensures that any string
 passed as an argument is a <code>.String</code> instance, not an
 instance of a subclass of <code>.String</code>.</p>
 <p>No attempt is made to obtain a string from these arguments.</p>
@@ -503,8 +503,8 @@ codepoint.<br />
 If <code>indexB</code> is outside the <code>string</code> index range,
 the received size is 0.<br />
 In case of error, the received size is negative, indicating the number
-of bytes to skip to follow the U+FFFD Substitution of Maximal
-Subparts.<br />
+of bytes to skip to follow the <code>U+FFFD</code> Substitution of
+Maximal Subparts.<br />
 <code>refErrorCode</code> and <code>refErrorMsg</code> receive a
 detailed description of the error.</p>
 <p><strong>Error codes and messages:</strong></p>
@@ -654,22 +654,21 @@ href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213
 </code></pre>
 </div>
 <p><code>NLF2LF</code><br />
-convert LF, CRLF, CR and NEL into LF.</p>
+converts LF, CRLF, CR and NEL into LF.</p>
 <p><code>NLF2LS</code><br />
 Converts LF, CRLF, CR and NEL into LS.<br />
-NLF-sequences (LF, CRLF, CR, NEL) are representing a line break, and
-should be converted to the codepoint for line separation (LS).</p>
+NLF sequences (LF, CRLF, CR, NEL) represent a line break and are
+converted to the Unicode Line Separator (LS) codepoint.</p>
 <p><code>NLF2PS</code><br />
 Converts LF, CRLF, CR and NEL into PS.<br />
-NLF-sequences (LF, CRLF, CR, NEL) are representing a paragraph break,
-and should be converted to the codepoint for paragraph separation
-(PS).</p>
+NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are
+converted to the Unicode Paragraph Separator (PS) codepoint.</p>
 <h5 id="normalization-argument">1.1.22.4.   'normalization'
 argument</h5>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).</span></code>
 <code lineno="2"><span class="rx-lncm">-- These constants are declared in the RexxUnicode class.</span></code>
-<code lineno="3"><span class="rx-lncm">-- If rxunicode.cls is not loaded, use the numeric value directly..</span></code>
+<code lineno="3"><span class="rx-lncm">-- If rxunicode.cls is not loaded, use the numeric value directly.</span></code>
 <code lineno="4"><span class="rx-dir">::</span><span class="rx-dkw">constant</span><span class="rx-ws"> </span><span class="rx-const rx-method">NFC</span><span class="rx-ws"> </span><span class="rx-const rx-constant-value">1</span></code>
 <code lineno="5"><span class="rx-dir">::</span><span class="rx-dkw">constant</span><span class="rx-ws"> </span><span class="rx-const rx-method">NFD</span><span class="rx-ws"> </span><span class="rx-const rx-constant-value">2</span></code>
 <code lineno="6"><span class="rx-dir">::</span><span class="rx-dkw">constant</span><span class="rx-ws"> </span><span class="rx-const rx-method">NFKC</span><span class="rx-ws"> </span><span class="rx-const rx-constant-value">3</span></code>
@@ -694,13 +693,14 @@ argument</h5>
 <p>This includes non-spacing, spacing and enclosing (i.e. accents)
 categories:</p>
 <ul>
-<li>Mc Spacing Mark</li>
-<li>Me Enclosing Mark</li>
-<li>Mn Nonspacing Mark</li>
+<li><code>Mc</code> Spacing Mark</li>
+<li><code>Me</code> Enclosing Mark</li>
+<li><code>Mn</code> Nonspacing Mark</li>
 </ul>
 <p>This option works only with a normalization applied.</p>
 <h5 id="stripna-argument">1.1.22.8.   'stripNA' argument</h5>
-<p>Strips the characters whose category is Cn Unassigned.</p>
+<p>Strips the characters whose category is <code>Cn</code>
+Unassigned.</p>
 <h5 id="examples-of-transformations">1.1.22.9.   Examples of
 transformations</h5>
 <div class="highlight-rexx-vim-light-zellner">
@@ -710,28 +710,28 @@ transformations</h5>
 <code lineno="4"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="5"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="6"><span class="rx-cm">    an Array (shape [22], 22 items)</span></code>
-<code lineno="7"><span class="rx-cm">     1  : (&lt;?&gt; \x{07} U+0007 Cc Control "&lt;control-0007&gt;")                                   &lt;-- removable with STRIPCC:.true</span></code>
-<code lineno="8"><span class="rx-cm">     2  : ("L" \x{4C} U+004C Lu Uppercase_Letter "LATIN CAPITAL LETTER L")</span></code>
-<code lineno="9"><span class="rx-cm">     3  : ("e" \x{65} U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")</span></code>
+<code lineno="7"><span class="rx-cm">     1  : (&lt;?&gt; \x07 U+0007 Cc Control "&lt;control-0007&gt;")                                     &lt;-- removable with STRIPCC:.true</span></code>
+<code lineno="8"><span class="rx-cm">     2  : ("L" \x4C U+004C Lu Uppercase_Letter "LATIN CAPITAL LETTER L")</span></code>
+<code lineno="9"><span class="rx-cm">     3  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")</span></code>
 <code lineno="10"><span class="rx-cm">     4  : ("　" \x{E38080} U+3000 Zs Space_Separator "IDEOGRAPHIC SPACE")                   &lt;-- replaceable by " " with LUMP:.true</span></code>
 <code lineno="11"><span class="rx-cm">     5  : (" " \x{E19A80} U+1680 Zs Space_Separator "OGHAM SPACE MARK")                     &lt;-- replaceable by " " with LUMP:.true</span></code>
 <code lineno="12"><span class="rx-cm">     6  : (&lt;?&gt; \x{E2808B} U+200B Cf Format "ZERO WIDTH SPACE")                              &lt;-- removable by STRIPIGNORABLE:.TRUE</span></code>
-<code lineno="13"><span class="rx-cm">     7  : ("P" \x{50} U+0050 Lu Uppercase_Letter "LATIN CAPITAL LETTER P")</span></code>
+<code lineno="13"><span class="rx-cm">     7  : ("P" \x50 U+0050 Lu Uppercase_Letter "LATIN CAPITAL LETTER P")</span></code>
 <code lineno="14"><span class="rx-cm">     8  : ("è" \x{C3A8} U+00E8 Ll Lowercase_Letter "LATIN SMALL LETTER E WITH GRAVE")</span></code>
-<code lineno="15"><span class="rx-cm">     9  : ("r" \x{72} U+0072 Ll Lowercase_Letter "LATIN SMALL LETTER R")</span></code>
-<code lineno="16"><span class="rx-cm">     10 : ("e" \x{65} U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")</span></code>
-<code lineno="17"><span class="rx-cm">     11 : (&lt;?&gt; \x{09} U+0009 Cc Control "&lt;control-0009&gt;")                                   &lt;-- replaceable by " " with STRIPCC:.true</span></code>
+<code lineno="15"><span class="rx-cm">     9  : ("r" \x72 U+0072 Ll Lowercase_Letter "LATIN SMALL LETTER R")</span></code>
+<code lineno="16"><span class="rx-cm">     10 : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")</span></code>
+<code lineno="17"><span class="rx-cm">     11 : (&lt;?&gt; \x09 U+0009 Cc Control "&lt;control-0009&gt;")                                     &lt;-- replaceable by " " with STRIPCC:.true</span></code>
 <code lineno="18"><span class="rx-cm">     12 : ("‐" \x{E28090} U+2010 Pd Dash_Punctuation "HYPHEN")                              &lt;-- replaceable by "-" with LUMP:.true</span></code>
 <code lineno="19"><span class="rx-cm">     13 : (&lt;?&gt; \x{C2AD} U+00AD Cf Format "SOFT HYPHEN")                                     &lt;-- removable by STRIPIGNORABLE:.true</span></code>
 <code lineno="20"><span class="rx-cm">     14 : ("–" \x{E28093} U+2013 Pd Dash_Punctuation "EN DASH")                             &lt;-- replaceable by "-" with LUMP:.true</span></code>
 <code lineno="21"><span class="rx-cm">     15 : ("—" \x{E28094} U+2014 Pd Dash_Punctuation "EM DASH")                             &lt;-- replaceable by "-" with LUMP:.true</span></code>
-<code lineno="22"><span class="rx-cm">     16 : ("N" \x{4E} U+004E Lu Uppercase_Letter "LATIN CAPITAL LETTER N")</span></code>
-<code lineno="23"><span class="rx-cm">     17 : ("o" \x{6F} U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")</span></code>
+<code lineno="22"><span class="rx-cm">     16 : ("N" \x4E U+004E Lu Uppercase_Letter "LATIN CAPITAL LETTER N")</span></code>
+<code lineno="23"><span class="rx-cm">     17 : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")</span></code>
 <code lineno="24"><span class="rx-cm">     18 : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")</span></code>
-<code lineno="25"><span class="rx-cm">     19 : ("l" \x{6C} U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")</span></code>
+<code lineno="25"><span class="rx-cm">     19 : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")</span></code>
 <code lineno="26"><span class="rx-cm">     20 : (&lt;?&gt; \x{EFB790} U+FDD0 Cn Unassigned "&lt;noncharacter-FDD0&gt;")                       &lt;-- removeable with STRIPNA:.true</span></code>
-<code lineno="27"><span class="rx-cm">     21 : (&lt;?&gt; \x{0D} U+000D Cc Control "&lt;control-000D&gt;")</span></code>
-<code lineno="28"><span class="rx-cm">     22 : (&lt;?&gt; \x{0A} U+000A Cc Control "&lt;control-000A&gt;")                                   &lt;-- CR+LF replaceable by " " with STRIPCC:.true</span></code>
+<code lineno="27"><span class="rx-cm">     21 : (&lt;?&gt; \x0D U+000D Cc Control "&lt;control-000D&gt;")</span></code>
+<code lineno="28"><span class="rx-cm">     22 : (&lt;?&gt; \x0A U+000A Cc Control "&lt;control-000A&gt;")                                     &lt;-- CR+LF replaceable by " " with STRIPCC:.true</span></code>
 <code lineno="29"><span class="rx-cm">    */</span></code>
 <code lineno="30"></code>
 <code lineno="31"><span class="rx-var">string</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2U</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">)</span><span class="rx-spe">=</span></code>
@@ -842,23 +842,23 @@ transformations</h5>
 <code lineno="7"></code>
 <code lineno="8"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">tstring</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="9"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
-<code lineno="10"><span class="rx-cm">     1  : ("l" \x{6C} U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")</span></code>
-<code lineno="11"><span class="rx-cm">     2  : ("e" \x{65} U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")</span></code>
-<code lineno="12"><span class="rx-cm">     3  : (" " \x{20} U+0020 Zs Space_Separator "SPACE")                    &lt;-- LUMP (was IDEOGRAPHIC SPACE)</span></code>
-<code lineno="13"><span class="rx-cm">     4  : (" " \x{20} U+0020 Zs Space_Separator "SPACE")                    &lt;-- LUMP (was OGHAM SPACE MARK)</span></code>
-<code lineno="14"><span class="rx-cm">     5  : ("p" \x{70} U+0070 Ll Lowercase_Letter "LATIN SMALL LETTER P")</span></code>
-<code lineno="15"><span class="rx-cm">     6  : ("e" \x{65} U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")</span></code>
-<code lineno="16"><span class="rx-cm">     7  : ("r" \x{72} U+0072 Ll Lowercase_Letter "LATIN SMALL LETTER R")</span></code>
-<code lineno="17"><span class="rx-cm">     8  : ("e" \x{65} U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")</span></code>
-<code lineno="18"><span class="rx-cm">     9  : (" " \x{20} U+0020 Zs Space_Separator "SPACE")                    &lt;-- STRIPCC (was TAB)</span></code>
-<code lineno="19"><span class="rx-cm">     10 : ("-" \x{2D} U+002D Pd Dash_Punctuation "HYPHEN-MINUS")            &lt;-- LUMP (was HYPHEN)</span></code>
-<code lineno="20"><span class="rx-cm">     11 : ("-" \x{2D} U+002D Pd Dash_Punctuation "HYPHEN-MINUS")            &lt;-- LUMP (was EN DASH)</span></code>
-<code lineno="21"><span class="rx-cm">     12 : ("-" \x{2D} U+002D Pd Dash_Punctuation "HYPHEN-MINUS")            &lt;-- LUMP (was EM DASH)</span></code>
-<code lineno="22"><span class="rx-cm">     13 : ("n" \x{6E} U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")</span></code>
-<code lineno="23"><span class="rx-cm">     14 : ("o" \x{6F} U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")</span></code>
-<code lineno="24"><span class="rx-cm">     15 : ("e" \x{65} U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")</span></code>
-<code lineno="25"><span class="rx-cm">     16 : ("l" \x{6C} U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")</span></code>
-<code lineno="26"><span class="rx-cm">     17 : (" " \x{20} U+0020 Zs Space_Separator "SPACE")                    &lt;-- STRIPCC (was CR+LF)</span></code>
+<code lineno="10"><span class="rx-cm">     1  : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")</span></code>
+<code lineno="11"><span class="rx-cm">     2  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")</span></code>
+<code lineno="12"><span class="rx-cm">     3  : (" " \x20 U+0020 Zs Space_Separator "SPACE")                    &lt;-- LUMP (was IDEOGRAPHIC SPACE)</span></code>
+<code lineno="13"><span class="rx-cm">     4  : (" " \x20 U+0020 Zs Space_Separator "SPACE")                    &lt;-- LUMP (was OGHAM SPACE MARK)</span></code>
+<code lineno="14"><span class="rx-cm">     5  : ("p" \x70 U+0070 Ll Lowercase_Letter "LATIN SMALL LETTER P")</span></code>
+<code lineno="15"><span class="rx-cm">     6  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")</span></code>
+<code lineno="16"><span class="rx-cm">     7  : ("r" \x72 U+0072 Ll Lowercase_Letter "LATIN SMALL LETTER R")</span></code>
+<code lineno="17"><span class="rx-cm">     8  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")</span></code>
+<code lineno="18"><span class="rx-cm">     9  : (" " \x20 U+0020 Zs Space_Separator "SPACE")                    &lt;-- STRIPCC (was TAB)</span></code>
+<code lineno="19"><span class="rx-cm">     10 : ("-" \x2D U+002D Pd Dash_Punctuation "HYPHEN-MINUS")            &lt;-- LUMP (was HYPHEN)</span></code>
+<code lineno="20"><span class="rx-cm">     11 : ("-" \x2D U+002D Pd Dash_Punctuation "HYPHEN-MINUS")            &lt;-- LUMP (was EN DASH)</span></code>
+<code lineno="21"><span class="rx-cm">     12 : ("-" \x2D U+002D Pd Dash_Punctuation "HYPHEN-MINUS")            &lt;-- LUMP (was EM DASH)</span></code>
+<code lineno="22"><span class="rx-cm">     13 : ("n" \x6E U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")</span></code>
+<code lineno="23"><span class="rx-cm">     14 : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")</span></code>
+<code lineno="24"><span class="rx-cm">     15 : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")</span></code>
+<code lineno="25"><span class="rx-cm">     16 : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")</span></code>
+<code lineno="26"><span class="rx-cm">     17 : (" " \x20 U+0020 Zs Space_Separator "SPACE")                    &lt;-- STRIPCC (was CR+LF)</span></code>
 <code lineno="27"><span class="rx-cm">    */</span></code>
 <code lineno="28"><span class="rx-ws">    </span>
 </code></pre>
@@ -905,8 +905,8 @@ inherited from the <code>RexxUnicodeServices</code> class</h3>
 <h3 id="class-methods-1">2.4.   Class methods</h3>
 <h4 id="c2u">2.4.1.   C2U</h4>
 <pre><code>.RexxUnicode~C2U(string, buffer=.nil)</code></pre>
-<p>Returns an ASCII string containing a sequence of U+XXXX (4 to 6 hex
-digits).</p>
+<p>Returns an ASCII string containing a sequence of <code>U+XXXX</code>
+(4 to 6 hex digits).</p>
 <p>If a buffer is passed as an argument, the resulting string is
 appended to the buffer, and the buffer is returned.</p>
 <p><strong>Examples:</strong></p>
@@ -991,7 +991,7 @@ identifier".</p>
 <pre><code>.RexxUnicode~checkCodepoint(codepoint, minusOneAllowed=.false)</code></pre>
 <p>Returns <code>.true</code> if <code>codepoint</code> is in the range
 0...RexxUnicode~maxCodepoint.<br />
-The range U+D800-U+DFFF is allowed (surrogates).<br />
+The range <code>U+D800-U+DFFF</code> is allowed (surrogates).<br />
 If <code>minusOneAllowed</code> is true then -1 is allowed (special
 value used in case of error).</p>
 <h4 id="codepoint">2.4.5.   codepoint</h4>
@@ -1000,7 +1000,7 @@ value used in case of error).</p>
 <p>A codepoint identifier may be:</p>
 <ul>
 <li>a decimal value (the codepoint itself),</li>
-<li>a U+ notation,</li>
+<li>a <code>U+</code> notation,</li>
 <li>a character name,</li>
 <li>or a UTF-8 encoded character.</li>
 </ul>
@@ -1147,7 +1147,7 @@ appended to the buffer, and the buffer is returned.</p>
 id="codepointunicodeescapenotation">2.4.11.   codepointUnicodeEscapeNotation</h4>
 <pre><code>.RexxUnicode~codepointUnicodeEscapeNotation(codepoint, buffer=.nil)</code></pre>
 <p>Returns the Unicode escape notation <code>\uXXXX</code> or
-<code>\UXXXXXXXX</code> for the given codepoin.</p>
+<code>\UXXXXXXXX</code> for the given codepoint.</p>
 <p>If a buffer is passed as an argument, the resulting string is
 appended to the buffer, and the buffer is returned.</p>
 <p><strong>Examples:</strong></p>
@@ -1242,7 +1242,7 @@ Unicode environment.</p>
 sequences are replaced with escape sequences.</p>
 <ul>
 <li>Invalid byte sequences are represented as escaped hexadecimal byte
-sequences: <code>\x{XX..XX}</code>.</li>
+sequences: <code>\XX</code> or <code>\x{XX..XX}</code>.</li>
 <li>Non-printable codepoints are represented using the standard escape
 sequences (<code>\a</code>, <code>\b</code>, <code>\t</code>,
 <code>\n</code>, <code>\v</code>, <code>\f</code>, <code>\r</code>) when
@@ -1254,14 +1254,14 @@ otherwise, Unicode escape notation (<code>\uXXXX</code> or
 appended to the buffer, and the buffer is returned.</p>
 <p><strong>Examples:</strong></p>
 <div class="highlight-rexx-vim-light-zellner">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringEscape</span><span class="rx-spe">(</span><span class="rx-const rx-bif-func">xrange</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">00</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">FF</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&amp;''()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'</span></code>
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringEscape</span><span class="rx-spe">(</span><span class="rx-const rx-bif-func">xrange</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">00</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">FF</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&amp;''()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'</span></code>
 <code lineno="2"></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringEscape</span><span class="rx-spe">(</span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+10FFF</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- '\U00010FFF'</span></code>
 <code lineno="4">
 </code></pre>
 </div>
 <div class="highlight-rexx-vim-light-zellner">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringEscape</span><span class="rx-spe">(</span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;lead surrogate-D800&gt;}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '\x{ED}\x{A0}\x{80}'</span></code>
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringEscape</span><span class="rx-spe">(</span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;lead surrogate-D800&gt;}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '\xED\xA0\x80'</span></code>
 <code lineno="2"><span class="rx-cm">/*</span></code>
 <code lineno="3"><span class="rx-cm">A lead surrogate is invalid in a UTF-8 string (would be valid in a WTF-8 string).</span></code>
 <code lineno="4"><span class="rx-cm">(&lt;?&gt; \x{EDA080} U+D800 Cs Surrogate "&lt;lead surrogate-D800&gt;")</span></code>
@@ -1270,10 +1270,10 @@ appended to the buffer, and the buffer is returned.</p>
 <code lineno="7"><span class="rx-cm">    2 : 'U+FFFD'</span></code>
 <code lineno="8"><span class="rx-cm">    3 : 'U+FFFD'</span></code>
 <code lineno="9"><span class="rx-cm">Codepoint byte sequence as hexadecimal digits (option "h):</span></code>
-<code lineno="10"><span class="rx-cm">    1 : '\x{ED}'</span></code>
-<code lineno="11"><span class="rx-cm">    2 : '\x{A0}'</span></code>
-<code lineno="12"><span class="rx-cm">    3 : '\x{80}'</span></code>
-<code lineno="13"><span class="rx-cm">Escaping U+D800 is '\x{ED}\x{A0}\x{80}' because \x{EDA080} can't be UTF-8 decoded as U+D800.</span></code>
+<code lineno="10"><span class="rx-cm">    1 : '\xED'</span></code>
+<code lineno="11"><span class="rx-cm">    2 : '\xA0'</span></code>
+<code lineno="12"><span class="rx-cm">    3 : '\x80'</span></code>
+<code lineno="13"><span class="rx-cm">Escaping U+D800 is '\xED\xA0\x80' because \x{EDA080} can't be UTF-8 decoded as U+D800.</span></code>
 <code lineno="14"><span class="rx-cm">*/</span></code>
 <code lineno="15">
 </code></pre>
@@ -1535,7 +1535,7 @@ Otherwise, returns -1 or, if requested, raises an error.</p>
 href="https://unicode.org/reports/tr44/#UAX44-LM2"
 title="Loose matching rule UAX44-LM2">loose matching rule UAX44-LM2</a>
 where case, whitespace, underscore ('_'), and all medial hyphens except
-the hyphen in U+1180 HANGUL JUNGSEONG O-E are removed.</p>
+the hyphen in <code>U+1180</code> HANGUL JUNGSEONG O-E are removed.</p>
 <p><strong>Examples:</strong></p>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">UAX44_LM2</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"> MICR on US SYMBOL</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- 'micronussymbol'</span></code>
@@ -1608,10 +1608,10 @@ codepoints without indexer.</p>
 <code lineno="4"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">h</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="5"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="6"><span class="rx-cm">    a RexxUnicodeCodepointSupplier </span></code>
-<code lineno="7"><span class="rx-cm">     1  : '\x{6E}'</span></code>
-<code lineno="8"><span class="rx-cm">     2  : '\x{6F}'</span></code>
+<code lineno="7"><span class="rx-cm">     1  : '\x6E'</span></code>
+<code lineno="8"><span class="rx-cm">     2  : '\x6F'</span></code>
 <code lineno="9"><span class="rx-cm">     3  : '\x{C3AB}'</span></code>
-<code lineno="10"><span class="rx-cm">     5  : '\x{6C}'</span></code>
+<code lineno="10"><span class="rx-cm">     5  : '\x6C'</span></code>
 <code lineno="11"><span class="rx-cm">     6  : '\x{F09F91A8}'</span></code>
 <code lineno="12"><span class="rx-cm">     10 : '\x{E2808D}'</span></code>
 <code lineno="13"><span class="rx-cm">     13 : '\x{F09F91A9}'</span></code>
@@ -1668,10 +1668,10 @@ codepoints without indexer.</p>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="5"><span class="rx-cm">    a RexxUnicodeCodepointSupplier </span></code>
-<code lineno="6"><span class="rx-cm">     1  : ("n" \x{6E} U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")</span></code>
-<code lineno="7"><span class="rx-cm">     2  : ("o" \x{6F} U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")</span></code>
+<code lineno="6"><span class="rx-cm">     1  : ("n" \x6E U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")</span></code>
+<code lineno="7"><span class="rx-cm">     2  : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")</span></code>
 <code lineno="8"><span class="rx-cm">     3  : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")</span></code>
-<code lineno="9"><span class="rx-cm">     4  : ("l" \x{6C} U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")</span></code>
+<code lineno="9"><span class="rx-cm">     4  : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")</span></code>
 <code lineno="10"><span class="rx-cm">     5  : ("👨" \x{F09F91A8} U+1F468 So Other_Symbol "MAN")</span></code>
 <code lineno="11"><span class="rx-cm">     6  : (&lt;?&gt; \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")</span></code>
 <code lineno="12"><span class="rx-cm">     7  : ("👩" \x{F09F91A9} U+1F469 So Other_Symbol "WOMAN")</span></code>
@@ -1708,7 +1708,7 @@ codepoints without indexer.</p>
 <code lineno="5"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="6"><span class="rx-cm">    a RexxUnicodeCodepointSupplier </span></code>
 <code lineno="7"><span class="rx-cm">    -1 : '\x{E180}'</span></code>
-<code lineno="8"><span class="rx-cm">    -3 : '\x{E2}'</span></code>
+<code lineno="8"><span class="rx-cm">    -3 : '\xE2'</span></code>
 <code lineno="9"><span class="rx-cm">    -4 : '\x{F09192}'</span></code>
 <code lineno="10"><span class="rx-cm">    -7 : '\x{F1BF}'</span></code>
 <code lineno="11"><span class="rx-cm">     9 : 'A'</span></code>
@@ -1838,10 +1838,10 @@ graphemes without indexer.</p>
 <code lineno="3"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">h</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="5"><span class="rx-cm">    a RexxUnicodeGraphemeSupplier </span></code>
-<code lineno="6"><span class="rx-cm">     1  : '\x{6E}'</span></code>
-<code lineno="7"><span class="rx-cm">     2  : '\x{6F}'</span></code>
+<code lineno="6"><span class="rx-cm">     1  : '\x6E'</span></code>
+<code lineno="7"><span class="rx-cm">     2  : '\x6F'</span></code>
 <code lineno="8"><span class="rx-cm">     3  : '\x{C3AB}'</span></code>
-<code lineno="9"><span class="rx-cm">     5  : '\x{6C}'</span></code>
+<code lineno="9"><span class="rx-cm">     5  : '\x6C'</span></code>
 <code lineno="10"><span class="rx-cm">     6  : '\x{F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'</span></code>
 <code lineno="11"><span class="rx-cm">     24 : '\x{F09F8E85}'</span></code>
 <code lineno="12"><span class="rx-cm">    */</span></code>
@@ -1890,7 +1890,7 @@ graphemes without indexer.</p>
 <code lineno="7"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="8"><span class="rx-cm">    a RexxUnicodeGraphemeSupplier</span></code>
 <code lineno="9"><span class="rx-cm">     1 : '\x{E180}'</span></code>
-<code lineno="10"><span class="rx-cm">     2 : '\x{E2}'</span></code>
+<code lineno="10"><span class="rx-cm">     2 : '\xE2'</span></code>
 <code lineno="11"><span class="rx-cm">     3 : '\x{F09192}'</span></code>
 <code lineno="12"><span class="rx-cm">     4 : '\x{F1BF}'</span></code>
 <code lineno="13"><span class="rx-cm">     5 : 'A'</span></code>
@@ -1906,7 +1906,7 @@ graphemes without indexer.</p>
 <code lineno="5"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="6"><span class="rx-cm">    a RexxUnicodeGraphemeSupplier </span></code>
 <code lineno="7"><span class="rx-cm">    -1 : '\x{E180}'</span></code>
-<code lineno="8"><span class="rx-cm">    -3 : '\x{E2}'</span></code>
+<code lineno="8"><span class="rx-cm">    -3 : '\xE2'</span></code>
 <code lineno="9"><span class="rx-cm">    -4 : '\x{F09192}'</span></code>
 <code lineno="10"><span class="rx-cm">    -7 : '\x{F1BF}'</span></code>
 <code lineno="11"><span class="rx-cm">     9 : 'A'</span></code>
@@ -2143,14 +2143,14 @@ redundant storage allocation.</p>
 <code lineno="11"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointStorageLimit</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- 4</span></code>
 <code lineno="12"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIndexes</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- [-1,-2,-3,-4]</span></code>
 <code lineno="13"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointAtIndexC</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">3</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- 65533</span></code>
-<code lineno="14"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointAtIndexC</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">5</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- Invalid code point index: 5 is greater than the storage limit 4.</span></code>
+<code lineno="14"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointAtIndexC</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">5</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- Code point index 5 is not stored.</span></code>
 <code lineno="15"></code>
 <code lineno="16"><span class="rx-lncm">-- The specified grapheme storage limit is 2</span></code>
 <code lineno="17"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeCount</span><span class="rx-spe">=</span><span class="rx-ws">              </span><span class="rx-lncm">-- 9</span></code>
 <code lineno="18"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeStorageLimit</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- 2</span></code>
 <code lineno="19"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeIndexes</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- [-1,-2]</span></code>
 <code lineno="20"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeAtIndexG</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 91 (use ~c2x to not display an invalid byte sequence)</span></code>
-<code lineno="21"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeAtIndexG</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">3</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- Invalid grapheme index: 3 is greater than the storage limit 2.</span></code>
+<code lineno="21"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeAtIndexG</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">3</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- Grapheme index 3 is not stored.</span></code>
 <code lineno="22"></code>
 <code lineno="23"><span class="rx-lncm">-- The specified error storage limit is 1</span></code>
 <code lineno="24"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errorCount</span><span class="rx-spe">=</span><span class="rx-ws">                 </span><span class="rx-lncm">-- 7</span></code>
@@ -2180,12 +2180,20 @@ redundant storage allocation.</p>
 <code lineno="3"><span class="rx-lncm">-- In case of error, reports only the first error.</span></code>
 <code lineno="4"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">F4 91 92 93 FF 41 80 BF 42</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">Joyeux Noël 👨‍👩‍👧</span><span class="rx-str rx-cquo">"</span></code>
 <code lineno="5"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*codepointStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*graphemeStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*errorStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*endCodepointStorageSize:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*endGraphemeStorageSize:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">)</span></code>
-<code lineno="6"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errorCount</span><span class="rx-spe">=</span></code>
-<code lineno="7"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errors</span><span class="rx-op">~</span><span class="rx-const rx-method">items</span><span class="rx-spe">=</span></code>
-<code lineno="8"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errors</span><span class="rx-spe">[</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">]</span><span class="rx-spe">=</span></code>
-<code lineno="9"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">endGraphemeIndexes</span><span class="rx-spe">=</span></code>
-<code lineno="10"><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">index</span><span class="rx-ws"> </span><span class="rx-skw">over</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">endGraphemeIndexes</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">index</span><span class="rx-op"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeAtIndexG</span><span class="rx-spe">(</span><span class="rx-var">index</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
-<code lineno="11">
+<code lineno="6"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errorCount</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- 7</span></code>
+<code lineno="7"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errors</span><span class="rx-op">~</span><span class="rx-const rx-method">items</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- 1</span></code>
+<code lineno="8"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errors</span><span class="rx-spe">[</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">]</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point &gt; U+10FFFF)'</span></code>
+<code lineno="9"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">endGraphemeIndexes</span><span class="rx-spe">=</span><span class="rx-ws"> </span><span class="rx-lncm">-- [ 23, 22, 21, 19, 18]</span></code>
+<code lineno="10"><span class="rx-lncm">-- Pass -endIndexG, where a negative index means "index from the end"</span></code>
+<code lineno="11"><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">endIndexG</span><span class="rx-asg">=</span><span class="rx-int rx-ipart">1</span><span class="rx-ws"> </span><span class="rx-skw">to</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">endGraphemeIndexes</span><span class="rx-op">~</span><span class="rx-const rx-method">items</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">endIndexG</span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeAtIndexG</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-var">endIndexG</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
+<code lineno="12"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="13"><span class="rx-cm">    1: 👨‍👩‍👧</span></code>
+<code lineno="14"><span class="rx-cm">    2:  </span></code>
+<code lineno="15"><span class="rx-cm">    3: l</span></code>
+<code lineno="16"><span class="rx-cm">    4: ë</span></code>
+<code lineno="17"><span class="rx-cm">    5: o</span></code>
+<code lineno="18"><span class="rx-cm">    */</span></code>
+<code lineno="19"><span class="rx-ws">    </span>
 </code></pre>
 </div>
 <h4 id="string">5.2.21.   STRING</h4>
