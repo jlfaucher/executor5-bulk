@@ -1080,6 +1080,41 @@ RexxInteger *RexxUnicodeServicesClass::codepointCharWidth(RexxInteger *rexxCodep
 }
 
 
+// This enumerated type is not available with utf8proc.
+// But the boolean ambiguous_width is available: true when East Asian width class A.
+//
+// East_Asian_Width property.
+// PropertyValueAliases.txt
+// EastAsianWidth.txt
+// #  - All code points, assigned or unassigned, that are not listed
+// #      explicitly are given the value "N".
+// #  - The unassigned code points in the following blocks default to "W":
+// #         CJK Unified Ideographs Extension A: U+3400..U+4DBF
+// #         CJK Unified Ideographs:             U+4E00..U+9FFF
+// #         CJK Compatibility Ideographs:       U+F900..U+FAFF
+// #  - All undesignated code points in Planes 2 and 3, whether inside or
+// #      outside of allocated blocks, default to "W":
+// #         Plane 2:                            U+20000..U+2FFFD
+// #         Plane 3:                            U+30000..U+3FFFD
+// #
+const char *East_Asian_Width[]=
+{
+    "A",    "Ambiguous",
+    "F",    "Fullwidth",
+    "H",    "Halfwidth",
+    "N",    "Neutral",
+    "Na",   "Narrow",
+    "W",    "Wide"
+};
+
+RexxInteger *RexxUnicodeServicesClass::codepointEastAsianWidthIsAmbiguous(RexxInteger *rexxCodepoint)
+{
+    requiredArgument(rexxCodepoint, "codepoint");
+    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    const utf8proc_property_t *property = utf8proc_get_property(codepoint);
+    return property->ambiguous_width ? TheTrueObject : TheFalseObject;
+}
+
 // Boundclass property. (TR29)
 // auxiliary/GraphemeBreakProperty.txt
 //   #  All code points not explicitly listed for Grapheme_Cluster_Break

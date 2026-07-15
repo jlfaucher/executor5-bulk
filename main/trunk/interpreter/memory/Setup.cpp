@@ -1749,6 +1749,7 @@ StartClassDefinition(RexxUnicodeServices)
         AddClassUnguardedMethod("CodepointControlBoundary", RexxUnicodeServicesClass::codepointControlBoundary, 1);
         AddClassUnguardedMethod("CodepointBoundClass", RexxUnicodeServicesClass::codepointBoundClass, 3);
         AddClassUnguardedMethod("CodepointCharWidth", RexxUnicodeServicesClass::codepointCharWidth, 1);
+        AddClassUnguardedMethod("CodepointEastAsianWidthIsAmbiguous", RexxUnicodeServicesClass::codepointEastAsianWidthIsAmbiguous, 1);
         AddClassUnguardedMethod("CodepointToLower", RexxUnicodeServicesClass::codepointToLower, 1);
         AddClassUnguardedMethod("CodepointToUpper", RexxUnicodeServicesClass::codepointToUpper, 1);
         AddClassUnguardedMethod("CodepointToTitle", RexxUnicodeServicesClass::codepointToTitle, 1);

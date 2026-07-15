@@ -70,6 +70,7 @@ Native methods of RexxUnicodeServices
     RexxInteger *codepointCombiningClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // integer 0..254, enum
     RexxInteger *codepointControlBoundary(RexxInteger *rexxCodepoint); // boolean
     RexxInteger *codepointDecompositionType(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
+    RexxInteger *codepointEastAsianWidthIsAmbiguous(RexxInteger *rexxCodepoint); // boolean
     RexxInteger *codepointIgnorable(RexxInteger *rexxCodepoint); // boolean
 
     RexxInteger *codepointIsLower(RexxInteger *rexxCodepoint);

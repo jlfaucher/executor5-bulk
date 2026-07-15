@@ -1348,6 +1348,7 @@ PCPPM CPPCode::exportedMethods[] =
     CPPM(RexxUnicodeServicesClass::codepointControlBoundary),
     CPPM(RexxUnicodeServicesClass::codepointBoundClass),
     CPPM(RexxUnicodeServicesClass::codepointCharWidth),
+    CPPM(RexxUnicodeServicesClass::codepointEastAsianWidthIsAmbiguous),
     CPPM(RexxUnicodeServicesClass::codepointToLower),
     CPPM(RexxUnicodeServicesClass::codepointToUpper),
     CPPM(RexxUnicodeServicesClass::codepointToTitle),

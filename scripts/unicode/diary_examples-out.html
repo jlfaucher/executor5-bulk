@@ -42,7 +42,7 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 13 Jun 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S14cadQ600003a2b300
+</span><span style="font-weight:bold;color:green;">Input queue name: S14a46Q600003a04c00
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
@@ -50,9 +50,31 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
 
 
 <span style="font-weight:bold;color:blue;">-- ===============================================================================
+</span><span style="font-weight:bold;color:blue;">-- 2026 July 15
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">[Unicode]
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">utf8proc facade: Add the wrapper function
+</span><span style="font-weight:bold;color:blue;">    RexxInteger *codepointEastAsianWidthIsAmbiguous(RexxInteger *rexxCodepoint); // boolean
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Examples:
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous(0)=             </span><span style="font-weight:bold;color:blue;">-- 0</span>
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous(&quot;00A1&quot;~x2d)=    </span><span style="font-weight:bold;color:blue;">-- 1</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous(&quot;2010&quot;~x2d)=    </span><span style="font-weight:bold;color:blue;">-- 1</span>
+ 1
+
+
+<span style="font-weight:bold;color:blue;">-- ===============================================================================
 </span><span style="font-weight:bold;color:blue;">-- 2026 July 14
 </span>
 <span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">[Unicode]
+</span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">Update stringEscape to use the shorter notation \xXX when applicable.
 </span><span style="font-weight:bold;color:blue;">Before: \x{80}
 </span><span style="font-weight:bold;color:blue;">Now:    \x80
@@ -127,7 +149,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexes
 [-1,-2,-3,-4]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointAtIndexC(3)=       </span><span style="font-weight:bold;color:blue;">-- 65533</span>
  65533
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointAtIndexC(5)=       </span><span style="font-weight:bold;color:blue;">-- Code point index 5 is not stored..</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointAtIndexC(5)=       </span><span style="font-weight:bold;color:blue;">-- Code point index 5 is not stored.</span>
 <span style="font-weight:bold;color:red;">Code point index 5 is not stored.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span><span style="font-weight:bold;color:blue;">-- The specified grapheme storage limit is 2
@@ -557,7 +579,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 'd'
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;)~graphemeAtIndexG(5)=         </span><span style="font-weight:bold;color:blue;">-- 'e'</span>
 'e'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;)~graphemeAtIndexG(6)=         </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: 6 exceeds the grapheme count 5..</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;)~graphemeAtIndexG(6)=         </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: 6 exceeds the grapheme count 5.</span>
 <span style="font-weight:bold;color:red;">Invalid grapheme index: 6 exceeds the grapheme count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
@@ -2140,10 +2162,10 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnesc
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\z&quot;)=        </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\z' at position 1.</span>
 <span style="font-weight:bold;color:red;">Invalid escape character '\z' at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot; \z &quot;)=      </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\z' at position 2</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot; \z &quot;)=      </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\z' at position 2.</span>
 <span style="font-weight:bold;color:red;">Invalid escape character '\z' at position 2.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot; \z  &quot;)=     </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\z' at position 2..</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot; \z  &quot;)=     </span><span style="font-weight:bold;color:blue;">-- Invalid escape character '\z' at position 2.</span>
 <span style="font-weight:bold;color:red;">Invalid escape character '\z' at position 2.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>
@@ -2184,7 +2206,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnesc
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\v&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0B'</span>
 '0B'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\N&quot;)=        </span><span style="font-weight:bold;color:blue;">-- Expected {a Unicode character name} after \N at position 1..</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\N&quot;)=        </span><span style="font-weight:bold;color:blue;">-- Expected {a Unicode character name} after \N at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected {a Unicode character name} after \N at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\N{&quot;)=       </span><span style="font-weight:bold;color:blue;">-- Expected {a Unicode character name} after \N at position 1.</span>
@@ -2235,7 +2257,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnesc
 <span style="font-weight:bold;color:red;">Expected 8 hex digits after \U at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x&quot;)=            </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1..</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x&quot;)=            </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x0&quot;)=           </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>

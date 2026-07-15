@@ -17,7 +17,7 @@ library embedded in `ooRexx`.
 > [!CAUTION]  
 > Testing these classes from `ooRexxShell` with `TUTOR` enabled showed that a
 > defensive barrier is needed. This problem is not limited to `TUTOR` classes;
-> it can occur with any `String` subclass that overrides `~length` anord `~substr`.
+> it can occur with any `String` subclass that overrides `~length` or `~substr`.
 >
 > In case of errors like
 >
@@ -60,6 +60,135 @@ In the examples, you can replace `RexxUnicodeServices` by `RexxUnicode` if you l
 
 
 ### 1.1.   Class methods
+
+Method-to-Unicode property mapping (PropertyAliases.txt):
+
+<table>
+    <thead>
+      <tr>
+        <th><code>Method</code></th>
+        <th><code>Property type</code></th>
+        <th><code>Short name</code></th>
+        <th><code>Long name</code></th>
+        <th><code>Comment</code></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>codepointBidiClass</code></td>
+        <td><code>Enumerated</code></td>
+        <td><code>bc</code></td>
+        <td><code>Bidi_Class</code></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><code>codepointBidiMirrored</code></td>
+        <td><code>Binary</code></td>
+        <td><code>Bidi_M</code></td>
+        <td><code>Bidi_Mirrored</code></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><code>codepointBoundClass</code></td>
+        <td><code>Enumerated</code></td>
+        <td><code>GCB</code></td>
+        <td><code>Grapheme_Cluster_Break</code></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><code>codepointCategory</code></td>
+        <td><code>Enumerated</code></td>
+        <td><code>gc</code></td>
+        <td><code>General_Category</code></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><code>codepointCharWidth</code></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><code>not a Unicode property</code></td>
+      </tr>
+      <tr>
+        <td><code>codepointCombiningClass</code></td>
+        <td><code>Enumerated</code></td>
+        <td><code>ccc</code></td>
+        <td><code>Canonical_Combining_Class</code></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><code>codepointControlBoundary</code></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><code>not a Unicode property (this method is likely to be deprecated)</code></td>
+      </tr>
+      <tr>
+        <td><code>codepointDecompositionType</code></td>
+        <td><code>Enumerated</code></td>
+        <td><code>td</code></td>
+        <td><code>Decomposition_Type</code></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><code>codepointEastAsianWidth</code></td>
+        <td><code>Enumerated</code></td>
+        <td><code>ea</code></td>
+        <td><code>East_Asian_Width</code></td>
+        <td><code>Not available</code></td>
+      </tr>
+      <tr>
+        <td><code>codepointEastAsianWidthIsAmbiguous</code></td>
+        <td><code>Binary</code></td>
+        <td></td>
+        <td></td>
+        <td><code>True if East Asian width class A</code></td>
+      </tr>
+      <tr>
+        <td><code>codepointIgnorable</code></td>
+        <td><code>Binary</code></td>
+        <td><code>DI</code></td>
+        <td><code>Default_Ignorable_Code_Point</code></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><code>codepointIsLower</code></td>
+        <td><code>Binary</code></td>
+        <td><code>Lower</code></td>
+        <td><code>Lowercase</code></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><code>codepointIsUpper</code></td>
+        <td><code>Binary</code></td>
+        <td><code>Upper</code></td>
+        <td><code>Uppercase</code></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><code>codepointToLower</code></td>
+        <td><code>String</code></td>
+        <td><code>slc</code></td>
+        <td><code>Simple_Lowercase_Mapping</code></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><code>codepointToTitle</code></td>
+        <td><code>String</code></td>
+        <td><code>stc</code></td>
+        <td><code>Simple_Titlecase_Mapping</code></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><code>codepointToUpper</code></td>
+        <td><code>String</code></td>
+        <td><code>suc</code></td>
+        <td><code>Simple_Uppercase_Mapping</code></td>
+        <td></td>
+      </tr>
+    </tbody>
+</table>
+
 
 #### 1.1.1.   codepointBidiClass
 
@@ -119,7 +248,7 @@ For portability, use refCode instead.
 
 Returns `.true` if the `Bidi_Mirrored` property value of `codepoint` is `Yes`.
 
-[https://unicode.org/reports/tr9/#Mirroring](https://unicode.org/reports/tr9/#Mirroring)
+[https://unicode.org/reports/tr9/#Mirroring][unicode_standard_annex_9_mirroring]
 
 
 #### 1.1.3.   codepointBoundClass
@@ -417,14 +546,24 @@ For portability, use refCode instead.
 ```
 
 
-#### 1.1.9.   codepointIgnorable
+#### 1.1.9.   codepointEastAsianWidthIsAmbiguous
+
+    .RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous(codepoint)
+
+Returns `.true` if the `East_Asian_Width` property value of `codepoint` is `"A" "Ambiguous"`.
+
+[https://www.unicode.org/reports/tr11/][unicode_standard_annex_11]
+
+
+
+#### 1.1.10.   codepointIgnorable
 
     .RexxUnicodeServices~codepointIgnorable(codepoint)
 
 Returns the `Default_Ignorable_Code_Point` property value of `codepoint` (boolean value).
 
 
-#### 1.1.10.   codepointIsLower
+#### 1.1.11.   codepointIsLower
 
     .RexxUnicodeServices~codepointIsLower(codepoint)
 
@@ -433,7 +572,7 @@ and `.false` otherwise.
 
 
 
-#### 1.1.11.   codepointIsUpper
+#### 1.1.12.   codepointIsUpper
 
     .RexxUnicodeServices~codepointIsUpper(codepoint)
 
@@ -441,7 +580,7 @@ Returns `.true` if the codepoint corresponds to an upper-case character
 and `.false` otherwise.
 
 
-#### 1.1.12.   codepointToLower
+#### 1.1.13.   codepointToLower
 
     .RexxUnicodeServices~codepointToLower(codepoint)
 
@@ -452,7 +591,7 @@ This method uses the simple case mappings defined in `UnicodeData.txt`
 and always returns a single codepoint.
 
 
-#### 1.1.13.   codepointToTitle
+#### 1.1.14.   codepointToTitle
 
     .RexxUnicodeServices~codepointToTitle(codepoint)
 
@@ -463,7 +602,7 @@ This method uses the simple case mappings defined in `UnicodeData.txt`
 and always returns a single codepoint.
 
 
-#### 1.1.14.   codepointToUpper
+#### 1.1.15.   codepointToUpper
 
     .RexxUnicodeServices~codepointToUpper(codepoint)
 
@@ -474,7 +613,7 @@ This method uses the simple case mappings defined in `UnicodeData.txt`
 and always returns a single codepoint.
 
 
-#### 1.1.15.   graphemeBreak
+#### 1.1.16.   graphemeBreak
 
     .RexxUnicodeServices~graphemeBreak(array)
 
@@ -490,19 +629,19 @@ break = .RexxUnicodeServices~graphemeBreak(array) -- true or false
 
 ```
 
-#### 1.1.16.   new
+#### 1.1.17.   new
 
 This method raises an error because `RexxUnicodeServices` has no instance.
 
 
-#### 1.1.17.   systemIsLittleEndian
+#### 1.1.18.   systemIsLittleEndian
 
     .RexxUnicodeServices~systemIsLittleEndian
 
 Returns `.true` if the system is little-endian.
 
 
-#### 1.1.18.   unicodeVersion
+#### 1.1.19.   unicodeVersion
 
     .RexxUnicodeServices~unicodeVersion
 
@@ -516,7 +655,7 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 ```
 
 
-#### 1.1.19.   utf8DecodeCodepoint
+#### 1.1.20.   utf8DecodeCodepoint
 
 ```
 .RexxUnicodeServices~utf8DecodeCodepoint(string, indexB [, [>refSizeB] [, [>refErrorCode] [, >refErrorMsg]]])
@@ -582,7 +721,7 @@ to follow the `U+FFFD` Substitution of Maximal Subparts.
 ```
 
 
-#### 1.1.20.   utf8EncodeCodepoint
+#### 1.1.21.   utf8EncodeCodepoint
 
 ```
 .RexxUnicodeServices~utf8EncodeCodepoint(codepoint, destination [, >refSizeB])
@@ -624,7 +763,7 @@ Append the UTF-8 encoding of 1114112 to mb: size = 0 mb = oë€🎅
 ```
 
 
-#### 1.1.21.   utf8procVersion
+#### 1.1.22.   utf8procVersion
 
     .RexxUnicodeServices~utf8procVersion
 
@@ -638,7 +777,7 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 ```
 
 
-#### 1.1.22.   utf8Transform
+#### 1.1.23.   utf8Transform
 
 ```
 .RexxUnicodeServices~utf8Transform(string [, casefold = .false [, lump= .false [, nlf = 0 [, normalization = 0 [, stripCC = .false [, stripIgnorable= .false [, stripMark = .false [, stripNA = .false]]]]]]]])
@@ -658,13 +797,13 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 
 Returns the transformed string.
 
-##### 1.1.22.1.   'caseFold' argument
+##### 1.1.23.1.   'caseFold' argument
 
 Performs unicode case folding, to be able to do a case-insensitive
 string comparison.
 
 
-##### 1.1.22.2.   'lump' argument
+##### 1.1.23.2.   'lump' argument
 
 Maps certain characters to a common representative (i.e., several distinct characters produce the same output character).  
 All the concerned characters become the same character, but still remain distinct characters.
@@ -706,9 +845,9 @@ Mapping rules:
     U+007E  ~   <-- tilde operator U+223C
 
 
-##### 1.1.22.3.   'nlf' argument
+##### 1.1.23.3.   'nlf' argument
 
-[https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213](https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213)
+[https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213][newline_guidelines]
 
 ```rexx
 -- Value to pass as the 'nlf' argument to utf8Transform (default: 0 no transformation).
@@ -733,7 +872,7 @@ NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are converted
 to the Unicode Paragraph Separator (PS) codepoint.
 
 
-##### 1.1.22.4.   'normalization' argument
+##### 1.1.23.4.   'normalization' argument
 
 ```rexx
 -- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).
@@ -748,7 +887,7 @@ to the Unicode Paragraph Separator (PS) codepoint.
 If `normalization` is not `0`, apply the requested normalization.
 
 
-##### 1.1.22.5.   'stripCC' argument
+##### 1.1.23.5.   'stripCC' argument
 
 Strips and/or converts control characters.
 
@@ -759,13 +898,13 @@ are treated as a NLF-sequence in this case.
 All other control characters are simply removed.
 
 
-##### 1.1.22.6.   'stripIgnorable' argument
+##### 1.1.23.6.   'stripIgnorable' argument
 
 Strips the characters whose property `Default_Ignorable_Code_Point` is true,
 such as `SOFT-HYPHEN` or `ZERO-WIDTH-SPACE`.
 
 
-##### 1.1.22.7.   'stripMark' argument
+##### 1.1.23.7.   'stripMark' argument
 
 Strips all character markings.
 
@@ -778,12 +917,12 @@ This includes non-spacing, spacing and enclosing (i.e. accents) categories:
 This option works only with a normalization applied.
 
 
-##### 1.1.22.8.   'stripNA' argument
+##### 1.1.23.8.   'stripNA' argument
 
 Strips the characters whose category is `Cn` Unassigned.
 
 
-##### 1.1.22.9.   Examples of transformations
+##### 1.1.23.9.   Examples of transformations
 
 ```rexx
 string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n"
@@ -1342,7 +1481,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 
 The special value -1 is represented using `U+FFFFFF`, even though the resulting value is not a valid Unicode scalar value
 
-[https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083](https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083)
+[https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083][typographic_conventions_code_points]
 
 **Examples:**
 
@@ -2614,7 +2753,11 @@ The special value -1 can be represented using a RexxUnicodeCharacter.
 
 
 [examples_internal_errors]: https://github.com/jlfaucher/executor5-bulk/blob/82f9531bb7b6d4be62f33b201ba62e53a74be640/main/trunk/extensions/unicode/rxunicode.cls#L1725-L1769 "Examples of internal errors"
-[unicode_standard_annex_29]: https://www.unicode.org/reports/tr29/ "Standard Annex #29"
+[newline_guidelines]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213 "Newline Guidelines"
+[typographic_conventions_code_points]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083 "Typographic Conventions - Code Points"
+[unicode_standard_annex_9_mirroring]: https://unicode.org/reports/tr9/#Mirroring "Standard Annex #9 Unicode Bidirectional Algorithm - Mirroring"
+[unicode_standard_annex_11]: https://www.unicode.org/reports/tr11/ "Standard Annex #11 East Asian Width"
+[unicode_standard_annex_29]: https://www.unicode.org/reports/tr29/ "Standard Annex #29 Unicode Text Segmentation"
 [uax44_lm2]: https://unicode.org/reports/tr44/#UAX44-LM2 "Loose matching rule UAX44-LM2"
 [uax44_lm3]: https://unicode.org/reports/tr44/#UAX44-LM3 "Loose matching rule UAX44-LM3"
 [utf8proc]: https://juliastrings.github.io/utf8proc/ "utf8proc"

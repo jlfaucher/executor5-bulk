@@ -22,7 +22,23 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 July 15
+
+[Unicode]
+
+utf8proc facade: Add the wrapper function
+    RexxInteger *codepointEastAsianWidthIsAmbiguous(RexxInteger *rexxCodepoint); // boolean
+
+Examples:
+    .RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous(0)=             -- 0
+    .RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous("00A1"~x2d)=    -- 1
+    .RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous("2010"~x2d)=    -- 1
+
+
+===============================================================================
 2026 July 14
+
+[Unicode]
 
 Update stringEscape to use the shorter notation \xXX when applicable.
 Before: \x{80}
@@ -307,7 +323,7 @@ Examples
     .RexxUnicodeStringIndexer~new("abcde")~graphemeAtIndexG(3)=         -- 'c'
     .RexxUnicodeStringIndexer~new("abcde")~graphemeAtIndexG(4)=         -- 'd'
     .RexxUnicodeStringIndexer~new("abcde")~graphemeAtIndexG(5)=         -- 'e'
-    .RexxUnicodeStringIndexer~new("abcde")~graphemeAtIndexG(6)=         -- Invalid grapheme index: 6 exceeds the grapheme count 5..
+    .RexxUnicodeStringIndexer~new("abcde")~graphemeAtIndexG(6)=         -- Invalid grapheme index: 6 exceeds the grapheme count 5.
 
     -- 5 graphemes, storage limit 2, no end storage
     .RexxUnicodeStringIndexer~new("abcde", , 2)~graphemeIndexes=        -- [ 1, 2]
@@ -1338,8 +1354,8 @@ Examples
     .RexxUnicode~stringUnescape(" \  ")=      -- Invalid escape character '\ ' at position 2.
 
     .RexxUnicode~stringUnescape("\z")=        -- Invalid escape character '\z' at position 1.
-    .RexxUnicode~stringUnescape(" \z ")=      -- Invalid escape character '\z' at position 2
-    .RexxUnicode~stringUnescape(" \z  ")=     -- Invalid escape character '\z' at position 2..
+    .RexxUnicode~stringUnescape(" \z ")=      -- Invalid escape character '\z' at position 2.
+    .RexxUnicode~stringUnescape(" \z  ")=     -- Invalid escape character '\z' at position 2.
 
     .RexxUnicode~stringUnescape("\\")=            -- '\'
     .RexxUnicode~stringUnescape("a\\")=           -- 'a\'
@@ -1361,7 +1377,7 @@ Examples
     .RexxUnicode~stringUnescape("\t")~c2x=    -- 09
     .RexxUnicode~stringUnescape("\v")~c2x=    -- '0B'
 
-    .RexxUnicode~stringUnescape("\N")=        -- Expected {a Unicode character name} after \N at position 1..
+    .RexxUnicode~stringUnescape("\N")=        -- Expected {a Unicode character name} after \N at position 1.
     .RexxUnicode~stringUnescape("\N{")=       -- Expected {a Unicode character name} after \N at position 1.
     .RexxUnicode~stringUnescape("\N{}")=      -- Expected {a Unicode character name} after \N at position 1.
     .RexxUnicode~stringUnescape("\N{a")=      -- Expected {a Unicode character name} after \N at position 1.
@@ -1382,7 +1398,7 @@ Examples
     .RexxUnicode~stringUnescape("\U0")=           -- Expected 8 hex digits after \U at position 1.
     .RexxUnicode~stringUnescape("\U0000_0000")=   -- Expected 8 hex digits after \U at position 1.
 
-    .RexxUnicode~stringUnescape("\x")=            -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1..
+    .RexxUnicode~stringUnescape("\x")=            -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
     .RexxUnicode~stringUnescape("\x0")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
     .RexxUnicode~stringUnescape("\x{")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
     .RexxUnicode~stringUnescape("\x{}")=          -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
@@ -1701,7 +1717,7 @@ Documentation:
 Translate sequences of characters into another sequence of characters.
 Append the translated sequences of characters to the destination.
 Currently, the destination must be a mutable buffer, but it could be any object
-supporting the "append" method at C++ level..
+supporting the "append" method at C++ level.
 The resulting string may be shorter or longer than the receiving string.
 
 tablei and tableo can be either a string or an array.
@@ -2192,6 +2208,7 @@ Merge SVN rev 13174
 
 Remember, to merge the last changes from SVN:
 MAKE SURE YOU DON'T HAVE ANY MODIFIED FILES!!!
+MAKE SURE YOU DON'T HAVE UNTRACKED FILES THAT ARE IMPORTANT, THEY COULD BE DELETED DURING THE MERGE!!!
 cd /local/rexx/oorexx/executor5-bulk
 git svn fetch
 git merge refs/remotes/git-svn

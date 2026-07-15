@@ -48,7 +48,7 @@ Testing these classes from <code>ooRexxShell</code> with
 <code>TUTOR</code> enabled showed that a defensive barrier is needed.
 This problem is not limited to <code>TUTOR</code> classes; it can occur
 with any <code>String</code> subclass that overrides
-<code>~length</code> anord <code>~substr</code>.</p>
+<code>~length</code> or <code>~substr</code>.</p>
 <p>In case of errors like</p>
 <ul>
 <li><code>Argument &lt;name&gt; class: expected String, found Text.</code></li>
@@ -90,6 +90,283 @@ Its services are provided through class methods.</p>
 <p>In the examples, you can replace <code>RexxUnicodeServices</code> by
 <code>RexxUnicode</code> if you loaded <code>rxunicode.cls</code>.</p>
 <h3 id="class-methods">1.1.   Class methods</h3>
+<p>Method-to-Unicode property mapping (PropertyAliases.txt):</p>
+<table>
+<thead>
+<tr>
+<th>
+<code>Method</code>
+</th>
+<th>
+<code>Property type</code>
+</th>
+<th>
+<code>Short name</code>
+</th>
+<th>
+<code>Long name</code>
+</th>
+<th>
+<code>Comment</code>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>codepointBidiClass</code>
+</td>
+<td>
+<code>Enumerated</code>
+</td>
+<td>
+<code>bc</code>
+</td>
+<td>
+<code>Bidi_Class</code>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<code>codepointBidiMirrored</code>
+</td>
+<td>
+<code>Binary</code>
+</td>
+<td>
+<code>Bidi_M</code>
+</td>
+<td>
+<code>Bidi_Mirrored</code>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<code>codepointBoundClass</code>
+</td>
+<td>
+<code>Enumerated</code>
+</td>
+<td>
+<code>GCB</code>
+</td>
+<td>
+<code>Grapheme_Cluster_Break</code>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<code>codepointCategory</code>
+</td>
+<td>
+<code>Enumerated</code>
+</td>
+<td>
+<code>gc</code>
+</td>
+<td>
+<code>General_Category</code>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<code>codepointCharWidth</code>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+<code>not a Unicode property</code>
+</td>
+</tr>
+<tr>
+<td>
+<code>codepointCombiningClass</code>
+</td>
+<td>
+<code>Enumerated</code>
+</td>
+<td>
+<code>ccc</code>
+</td>
+<td>
+<code>Canonical_Combining_Class</code>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<code>codepointControlBoundary</code>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+<code>not a Unicode property (this method is likely to be
+deprecated)</code>
+</td>
+</tr>
+<tr>
+<td>
+<code>codepointDecompositionType</code>
+</td>
+<td>
+<code>Enumerated</code>
+</td>
+<td>
+<code>td</code>
+</td>
+<td>
+<code>Decomposition_Type</code>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<code>codepointEastAsianWidth</code>
+</td>
+<td>
+<code>Enumerated</code>
+</td>
+<td>
+<code>ea</code>
+</td>
+<td>
+<code>East_Asian_Width</code>
+</td>
+<td>
+<code>Not available</code>
+</td>
+</tr>
+<tr>
+<td>
+<code>codepointEastAsianWidthIsAmbiguous</code>
+</td>
+<td>
+<code>Binary</code>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+<code>True if East Asian width class A</code>
+</td>
+</tr>
+<tr>
+<td>
+<code>codepointIgnorable</code>
+</td>
+<td>
+<code>Binary</code>
+</td>
+<td>
+<code>DI</code>
+</td>
+<td>
+<code>Default_Ignorable_Code_Point</code>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<code>codepointIsLower</code>
+</td>
+<td>
+<code>Binary</code>
+</td>
+<td>
+<code>Lower</code>
+</td>
+<td>
+<code>Lowercase</code>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<code>codepointIsUpper</code>
+</td>
+<td>
+<code>Binary</code>
+</td>
+<td>
+<code>Upper</code>
+</td>
+<td>
+<code>Uppercase</code>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<code>codepointToLower</code>
+</td>
+<td>
+<code>String</code>
+</td>
+<td>
+<code>slc</code>
+</td>
+<td>
+<code>Simple_Lowercase_Mapping</code>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<code>codepointToTitle</code>
+</td>
+<td>
+<code>String</code>
+</td>
+<td>
+<code>stc</code>
+</td>
+<td>
+<code>Simple_Titlecase_Mapping</code>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<code>codepointToUpper</code>
+</td>
+<td>
+<code>String</code>
+</td>
+<td>
+<code>suc</code>
+</td>
+<td>
+<code>Simple_Uppercase_Mapping</code>
+</td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
 <h4 id="codepointbidiclass">1.1.1.   codepointBidiClass</h4>
 <pre><code>.RexxUnicodeServices~codepointBidiClass(codepoint [, [&gt;refCode] [, &gt;refLabel]])</code></pre>
 <p>Returns the bidirectional character type of <code>codepoint</code> as
@@ -144,8 +421,8 @@ For portability, use refCode instead.</p>
 <pre><code>.RexxUnicodeServices~codepointBidiMirrored(codepoint)</code></pre>
 <p>Returns <code>.true</code> if the <code>Bidi_Mirrored</code> property
 value of <code>codepoint</code> is <code>Yes</code>.</p>
-<p><a
-href="https://unicode.org/reports/tr9/#Mirroring">https://unicode.org/reports/tr9/#Mirroring</a></p>
+<p><a href="https://unicode.org/reports/tr9/#Mirroring"
+title="Standard Annex #9 Unicode Bidirectional Algorithm - Mirroring">https://unicode.org/reports/tr9/#Mirroring</a></p>
 <h4 id="codepointboundclass">1.1.3.   codepointBoundClass</h4>
 <pre><code>.RexxUnicodeServices~codepointBoundClass(codepoint [, [&gt;refCode] [, &gt;refLabel]])</code></pre>
 <p>Returns the <code>Grapheme_Cluster_Break</code> property value of
@@ -375,9 +652,9 @@ category, except for:</p>
 <p>[!WARNING]<br />
 This rule is not used internally by <code>utf8proc</code> and does not
 appear in <a href="https://www.unicode.org/reports/tr29/"
-title="Standard Annex #29">Unicode Standard Annex #29</a>. Therefore,
-this method is likely to be deprecated unless a use case is
-identified.</p>
+title="Standard Annex #29 Unicode Text Segmentation">Unicode Standard
+Annex #29</a>. Therefore, this method is likely to be deprecated unless
+a use case is identified.</p>
 </blockquote>
 <h4
 id="codepointdecompositiontype">1.1.8.   codepointDecompositionType</h4>
@@ -425,19 +702,27 @@ For portability, use refCode instead.</p>
 <code lineno="6">
 </code></pre>
 </div>
-<h4 id="codepointignorable">1.1.9.   codepointIgnorable</h4>
+<h4
+id="codepointeastasianwidthisambiguous">1.1.9.   codepointEastAsianWidthIsAmbiguous</h4>
+<pre><code>.RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous(codepoint)</code></pre>
+<p>Returns <code>.true</code> if the <code>East_Asian_Width</code>
+property value of <code>codepoint</code> is
+<code>"A" "Ambiguous"</code>.</p>
+<p><a href="https://www.unicode.org/reports/tr11/"
+title="Standard Annex #11 East Asian Width">https://www.unicode.org/reports/tr11/</a></p>
+<h4 id="codepointignorable">1.1.10.   codepointIgnorable</h4>
 <pre><code>.RexxUnicodeServices~codepointIgnorable(codepoint)</code></pre>
 <p>Returns the <code>Default_Ignorable_Code_Point</code> property value
 of <code>codepoint</code> (boolean value).</p>
-<h4 id="codepointislower">1.1.10.   codepointIsLower</h4>
+<h4 id="codepointislower">1.1.11.   codepointIsLower</h4>
 <pre><code>.RexxUnicodeServices~codepointIsLower(codepoint)</code></pre>
 <p>Returns <code>.true</code> if the codepoint corresponds to a
 lower-case character and <code>.false</code> otherwise.</p>
-<h4 id="codepointisupper">1.1.11.   codepointIsUpper</h4>
+<h4 id="codepointisupper">1.1.12.   codepointIsUpper</h4>
 <pre><code>.RexxUnicodeServices~codepointIsUpper(codepoint)</code></pre>
 <p>Returns <code>.true</code> if the codepoint corresponds to an
 upper-case character and <code>.false</code> otherwise.</p>
-<h4 id="codepointtolower">1.1.12.   codepointToLower</h4>
+<h4 id="codepointtolower">1.1.13.   codepointToLower</h4>
 <pre><code>.RexxUnicodeServices~codepointToLower(codepoint)</code></pre>
 <p>Returns the codepoint of the corresponding lower-case
 character.<br />
@@ -445,7 +730,7 @@ If <code>codepoint</code> has no lower-case mapping, returns
 <code>codepoint</code>.</p>
 <p>This method uses the simple case mappings defined in
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
-<h4 id="codepointtotitle">1.1.13.   codepointToTitle</h4>
+<h4 id="codepointtotitle">1.1.14.   codepointToTitle</h4>
 <pre><code>.RexxUnicodeServices~codepointToTitle(codepoint)</code></pre>
 <p>Returns the codepoint of the corresponding title-case
 character.<br />
@@ -453,7 +738,7 @@ If <code>codepoint</code> has no title-case mapping, returns
 <code>codepoint</code>.</p>
 <p>This method uses the simple case mappings defined in
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
-<h4 id="codepointtoupper">1.1.14.   codepointToUpper</h4>
+<h4 id="codepointtoupper">1.1.15.   codepointToUpper</h4>
 <pre><code>.RexxUnicodeServices~codepointToUpper(codepoint)</code></pre>
 <p>Returns the codepoint of the corresponding upper-case
 character.<br />
@@ -461,7 +746,7 @@ If <code>codepoint</code> has no upper-case mapping, returns
 <code>codepoint</code>.</p>
 <p>This method uses the simple case mappings defined in
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
-<h4 id="graphemebreak">1.1.15.   graphemeBreak</h4>
+<h4 id="graphemebreak">1.1.16.   graphemeBreak</h4>
 <pre><code>.RexxUnicodeServices~graphemeBreak(array)</code></pre>
 <p>Returns <code>.true</code> if there is a grapheme break between the
 two consecutive codepoints passed in <code>array</code>.</p>
@@ -474,13 +759,13 @@ two consecutive codepoints passed in <code>array</code>.</p>
 <code lineno="5">
 </code></pre>
 </div>
-<h4 id="new">1.1.16.   new</h4>
+<h4 id="new">1.1.17.   new</h4>
 <p>This method raises an error because <code>RexxUnicodeServices</code>
 has no instance.</p>
-<h4 id="systemislittleendian">1.1.17.   systemIsLittleEndian</h4>
+<h4 id="systemislittleendian">1.1.18.   systemIsLittleEndian</h4>
 <pre><code>.RexxUnicodeServices~systemIsLittleEndian</code></pre>
 <p>Returns <code>.true</code> if the system is little-endian.</p>
-<h4 id="unicodeversion">1.1.18.   unicodeVersion</h4>
+<h4 id="unicodeversion">1.1.19.   unicodeVersion</h4>
 <pre><code>.RexxUnicodeServices~unicodeVersion</code></pre>
 <p>Returns the Unicode version supported by the <code>utf8proc</code>
 library.</p>
@@ -490,7 +775,7 @@ library.</p>
 <code lineno="2">
 </code></pre>
 </div>
-<h4 id="utf8decodecodepoint">1.1.19.   utf8DecodeCodepoint</h4>
+<h4 id="utf8decodecodepoint">1.1.20.   utf8DecodeCodepoint</h4>
 <pre><code>.RexxUnicodeServices~utf8DecodeCodepoint(string, indexB [, [&gt;refSizeB] [, [&gt;refErrorCode] [, &gt;refErrorMsg]]])
 
 .RexxUnicodeServices~utf8DecodeCodepoint(
@@ -549,7 +834,7 @@ detailed description of the error.</p>
 <code lineno="19">
 </code></pre>
 </div>
-<h4 id="utf8encodecodepoint">1.1.20.   utf8EncodeCodepoint</h4>
+<h4 id="utf8encodecodepoint">1.1.21.   utf8EncodeCodepoint</h4>
 <pre><code>.RexxUnicodeServices~utf8EncodeCodepoint(codepoint, destination [, &gt;refSizeB])
 
 .RexxUnicodeServices~utf8EncodeCodepoint(
@@ -584,7 +869,7 @@ byte sequence (0..4).</p>
 <code lineno="15">
 </code></pre>
 </div>
-<h4 id="utf8procversion">1.1.21.   utf8procVersion</h4>
+<h4 id="utf8procversion">1.1.22.   utf8procVersion</h4>
 <pre><code>.RexxUnicodeServices~utf8procVersion</code></pre>
 <p>Returns the version of the <code>utf8proc</code> library.</p>
 <p><strong>Example:</strong></p>
@@ -593,7 +878,7 @@ byte sequence (0..4).</p>
 <code lineno="2">
 </code></pre>
 </div>
-<h4 id="utf8transform">1.1.22.   utf8Transform</h4>
+<h4 id="utf8transform">1.1.23.   utf8Transform</h4>
 <pre><code>.RexxUnicodeServices~utf8Transform(string [, casefold = .false [, lump= .false [, nlf = 0 [, normalization = 0 [, stripCC = .false [, stripIgnorable= .false [, stripMark = .false [, stripNA = .false]]]]]]]])
 
 .RexxUnicodeServices~utf8Transform(
@@ -608,10 +893,10 @@ byte sequence (0..4).</p>
     stripNA = .false        -- Strips unassigned codepoints
     )</code></pre>
 <p>Returns the transformed string.</p>
-<h5 id="casefold-argument">1.1.22.1.   'caseFold' argument</h5>
+<h5 id="casefold-argument">1.1.23.1.   'caseFold' argument</h5>
 <p>Performs unicode case folding, to be able to do a case-insensitive
 string comparison.</p>
-<h5 id="lump-argument">1.1.22.2.   'lump' argument</h5>
+<h5 id="lump-argument">1.1.23.2.   'lump' argument</h5>
 <p>Maps certain characters to a common representative (i.e., several
 distinct characters produce the same output character).<br />
 All the concerned characters become the same character, but still remain
@@ -651,9 +936,10 @@ U+005F  _   &lt;-- all connector characters (general category Pc),
 U+0060  `   &lt;-- modifier letter grave accent U+02CB
 U+007C  |   &lt;-- divides U+2223
 U+007E  ~   &lt;-- tilde operator U+223C</code></pre>
-<h5 id="nlf-argument">1.1.22.3.   'nlf' argument</h5>
+<h5 id="nlf-argument">1.1.23.3.   'nlf' argument</h5>
 <p><a
-href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213">https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213</a></p>
+href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213"
+title="Newline Guidelines">https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213</a></p>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- Value to pass as the 'nlf' argument to utf8Transform (default: 0 no transformation).</span></code>
 <code lineno="2"><span class="rx-lncm">-- These constants are declared in the RexxUnicode class.</span></code>
@@ -673,7 +959,7 @@ converted to the Unicode Line Separator (LS) codepoint.</p>
 Converts LF, CRLF, CR and NEL into PS.<br />
 NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are
 converted to the Unicode Paragraph Separator (PS) codepoint.</p>
-<h5 id="normalization-argument">1.1.22.4.   'normalization'
+<h5 id="normalization-argument">1.1.23.4.   'normalization'
 argument</h5>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-lncm">-- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).</span></code>
@@ -687,18 +973,18 @@ argument</h5>
 </div>
 <p>If <code>normalization</code> is not <code>0</code>, apply the
 requested normalization.</p>
-<h5 id="stripcc-argument">1.1.22.5.   'stripCC' argument</h5>
+<h5 id="stripcc-argument">1.1.23.5.   'stripCC' argument</h5>
 <p>Strips and/or converts control characters.</p>
 <p>NLF-sequences are transformed into space, except if one of the
 NLF2LS/PS/LF options is given. HorizontalTab (HT) and FormFeed (FF) are
 treated as a NLF-sequence in this case.</p>
 <p>All other control characters are simply removed.</p>
-<h5 id="stripignorable-argument">1.1.22.6.   'stripIgnorable'
+<h5 id="stripignorable-argument">1.1.23.6.   'stripIgnorable'
 argument</h5>
 <p>Strips the characters whose property
 <code>Default_Ignorable_Code_Point</code> is true, such as
 <code>SOFT-HYPHEN</code> or <code>ZERO-WIDTH-SPACE</code>.</p>
-<h5 id="stripmark-argument">1.1.22.7.   'stripMark' argument</h5>
+<h5 id="stripmark-argument">1.1.23.7.   'stripMark' argument</h5>
 <p>Strips all character markings.</p>
 <p>This includes non-spacing, spacing and enclosing (i.e. accents)
 categories:</p>
@@ -708,10 +994,10 @@ categories:</p>
 <li><code>Mn</code> Nonspacing Mark</li>
 </ul>
 <p>This option works only with a normalization applied.</p>
-<h5 id="stripna-argument">1.1.22.8.   'stripNA' argument</h5>
+<h5 id="stripna-argument">1.1.23.8.   'stripNA' argument</h5>
 <p>Strips the characters whose category is <code>Cn</code>
 Unassigned.</p>
-<h5 id="examples-of-transformations">1.1.22.9.   Examples of
+<h5 id="examples-of-transformations">1.1.23.9.   Examples of
 transformations</h5>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;control-0007&gt;}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n</span><span class="rx-str rx-cquo">"</span></code>
@@ -1198,7 +1484,8 @@ appended to the buffer, and the buffer is returned.</p>
 <p>The special value -1 is represented using <code>U+FFFFFF</code>, even
 though the resulting value is not a valid Unicode scalar value</p>
 <p><a
-href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083">https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083</a></p>
+href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083"
+title="Typographic Conventions - Code Points">https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083</a></p>
 <p><strong>Examples:</strong></p>
 <div class="highlight-rexx-vim-light-zellner">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">D2U</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">235</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                              </span><span class="rx-lncm">-- 'U+00EB'</span></code>

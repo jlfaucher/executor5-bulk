@@ -7,9 +7,28 @@ demo on
 
 
 -- ===============================================================================
+-- 2026 July 15
+
+/*
+[Unicode]
+
+utf8proc facade: Add the wrapper function
+    RexxInteger *codepointEastAsianWidthIsAmbiguous(RexxInteger *rexxCodepoint); // boolean
+
+Examples:
+*/
+
+.RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous(0)=             -- 0
+.RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous("00A1"~x2d)=    -- 1
+.RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous("2010"~x2d)=    -- 1
+
+
+-- ===============================================================================
 -- 2026 July 14
 
 /*
+[Unicode]
+
 Update stringEscape to use the shorter notation \xXX when applicable.
 Before: \x{80}
 Now:    \x80
@@ -80,7 +99,7 @@ indexer~codepointCount=             -- 9
 indexer~codepointStorageLimit=      -- 4
 indexer~codepointIndexes=           -- [-1,-2,-3,-4]
 indexer~codepointAtIndexC(3)=       -- 65533
-indexer~codepointAtIndexC(5)=       -- Code point index 5 is not stored..
+indexer~codepointAtIndexC(5)=       -- Code point index 5 is not stored.
 -- The specified grapheme storage limit is 2
 indexer~graphemeCount=              -- 9
 indexer~graphemeStorageLimit=       -- 2
@@ -296,7 +315,7 @@ do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~gra
 .RexxUnicodeStringIndexer~new("abcde")~graphemeAtIndexG(3)=         -- 'c'
 .RexxUnicodeStringIndexer~new("abcde")~graphemeAtIndexG(4)=         -- 'd'
 .RexxUnicodeStringIndexer~new("abcde")~graphemeAtIndexG(5)=         -- 'e'
-.RexxUnicodeStringIndexer~new("abcde")~graphemeAtIndexG(6)=         -- Invalid grapheme index: 6 exceeds the grapheme count 5..
+.RexxUnicodeStringIndexer~new("abcde")~graphemeAtIndexG(6)=         -- Invalid grapheme index: 6 exceeds the grapheme count 5.
 
 -- 5 graphemes, storage limit 2, no end storage
 .RexxUnicodeStringIndexer~new("abcde", , 2)~graphemeIndexes=        -- [ 1, 2]
@@ -1315,8 +1334,8 @@ Examples
 .RexxUnicode~stringUnescape(" \  ")=      -- Invalid escape character '\ ' at position 2.
 
 .RexxUnicode~stringUnescape("\z")=        -- Invalid escape character '\z' at position 1.
-.RexxUnicode~stringUnescape(" \z ")=      -- Invalid escape character '\z' at position 2
-.RexxUnicode~stringUnescape(" \z  ")=     -- Invalid escape character '\z' at position 2..
+.RexxUnicode~stringUnescape(" \z ")=      -- Invalid escape character '\z' at position 2.
+.RexxUnicode~stringUnescape(" \z  ")=     -- Invalid escape character '\z' at position 2.
 
 .RexxUnicode~stringUnescape("\\")=            -- '\'
 .RexxUnicode~stringUnescape("a\\")=           -- 'a\'
@@ -1338,7 +1357,7 @@ Examples
 .RexxUnicode~stringUnescape("\t")~c2x=    -- 09
 .RexxUnicode~stringUnescape("\v")~c2x=    -- '0B'
 
-.RexxUnicode~stringUnescape("\N")=        -- Expected {a Unicode character name} after \N at position 1..
+.RexxUnicode~stringUnescape("\N")=        -- Expected {a Unicode character name} after \N at position 1.
 .RexxUnicode~stringUnescape("\N{")=       -- Expected {a Unicode character name} after \N at position 1.
 .RexxUnicode~stringUnescape("\N{}")=      -- Expected {a Unicode character name} after \N at position 1.
 .RexxUnicode~stringUnescape("\N{a")=      -- Expected {a Unicode character name} after \N at position 1.
@@ -1359,7 +1378,7 @@ Examples
 .RexxUnicode~stringUnescape("\U0")=           -- Expected 8 hex digits after \U at position 1.
 .RexxUnicode~stringUnescape("\U0000_0000")=   -- Expected 8 hex digits after \U at position 1.
 
-.RexxUnicode~stringUnescape("\x")=            -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1..
+.RexxUnicode~stringUnescape("\x")=            -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 .RexxUnicode~stringUnescape("\x0")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 .RexxUnicode~stringUnescape("\x{")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 .RexxUnicode~stringUnescape("\x{}")=          -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
