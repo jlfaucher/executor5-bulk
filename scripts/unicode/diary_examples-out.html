@@ -42,7 +42,7 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 13 Jun 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S14a46Q600003a04c00
+</span><span style="font-weight:bold;color:green;">Input queue name: S1087aQ600003a01a40
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
@@ -1000,26 +1000,31 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepoint(-
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(-1)~class=                   </span><span style="font-weight:bold;color:blue;">-- (The RexxUnicodeCharacter class)</span>
 (The RexxUnicodeCharacter class)
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(-1)~info=</span>
-a StringTable (19 items)
-'bidiClass'       : '?'
-'bidiClassName'   : '?'
-'bidiMirrored'    :  0
-'category'        : 'Cn'
-'categoryName'    : 'Unassigned'
-'charWidth'       : -1
-'codepoint'       : 'U+FFFFFF'
-'combiningClass'  : -1
-'controlBoundary' :  0
-'extendedName'    : ''
-'ignorable'       :  1
-'isLower'         :  0
-'isUpper'         :  0
-'name'            : ''
-'nameAlias'       : ''
-'toLower'         : 'U+FFFFFF'
-'toTitle'         : 'U+FFFFFF'
-'toUpper'         : 'U+FFFFFF'
-'UTF8'            : ''
+a StringTable (24 items)
+'bidiClass'                 : '?'
+'bidiClassName'             : '?'
+'bidiMirrored'              :  0
+'boundClass'                : '?'
+'boundClassName'            : '?'
+'category'                  : 'Cn'
+'categoryName'              : 'Unassigned'
+'charWidth'                 : -1
+'codepoint'                 : 'U+FFFFFF'
+'combiningClass'            : -1
+'controlBoundary'           :  0
+'decompositionType'         : '?'
+'decompositionTypeName'     : '?'
+'eastAsianWidthIsAmbiguous' :  0
+'extendedName'              : ''
+'ignorable'                 :  1
+'isLower'                   :  0
+'isUpper'                   :  0
+'name'                      : ''
+'nameAlias'                 : ''
+'toLower'                   : 'U+FFFFFF'
+'toTitle'                   : 'U+FFFFFF'
+'toUpper'                   : 'U+FFFFFF'
+'UTF8'                      : ''
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">        a StringTable (19 items)
 </span><span style="font-weight:bold;color:blue;">        'bidiClass'       : '?'
@@ -2318,26 +2323,31 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&
 
 <span style="font-weight:bold;color:blue;">-- Properties of a character
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&quot;🎅&quot;)~info=</span>
-a StringTable (19 items)
-'bidiClass'       : 'ON'
-'bidiClassName'   : 'Other_Neutral'
-'bidiMirrored'    :  0
-'category'        : 'So'
-'categoryName'    : 'Other_Symbol'
-'charWidth'       :  2
-'codepoint'       : 'U+1F385'
-'combiningClass'  :  0
-'controlBoundary' :  0
-'extendedName'    : 'FATHER CHRISTMAS'
-'ignorable'       :  0
-'isLower'         :  0
-'isUpper'         :  0
-'name'            : 'FATHER CHRISTMAS'
-'nameAlias'       : ''
-'toLower'         : 'U+1F385'
-'toTitle'         : 'U+1F385'
-'toUpper'         : 'U+1F385'
-'UTF8'            : '\x{F09F8E85}'
+a StringTable (24 items)
+'bidiClass'                 : 'ON'
+'bidiClassName'             : 'Other_Neutral'
+'bidiMirrored'              :  0
+'boundClass'                : 'EP'
+'boundClassName'            : 'Extended_Pictographic'
+'category'                  : 'So'
+'categoryName'              : 'Other_Symbol'
+'charWidth'                 :  2
+'codepoint'                 : 'U+1F385'
+'combiningClass'            :  0
+'controlBoundary'           :  0
+'decompositionType'         : 'None'
+'decompositionTypeName'     : 'Code point not explicitly listed for Decomposition_Type'
+'eastAsianWidthIsAmbiguous' :  0
+'extendedName'              : 'FATHER CHRISTMAS'
+'ignorable'                 :  0
+'isLower'                   :  0
+'isUpper'                   :  0
+'name'                      : 'FATHER CHRISTMAS'
+'nameAlias'                 : ''
+'toLower'                   : 'U+1F385'
+'toTitle'                   : 'U+1F385'
+'toUpper'                   : 'U+1F385'
+'UTF8'                      : '\x{F09F8E85}'
 
 <span style="font-weight:bold;color:blue;">-- \N{bed} is different from \u{0bed}
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&quot;bed&quot;)=                  </span><span style="font-weight:bold;color:blue;">-- (&quot;🛏&quot; 0xF09F9B8F U+1F6CF So Other_Symbol &quot;BED&quot;)</span>

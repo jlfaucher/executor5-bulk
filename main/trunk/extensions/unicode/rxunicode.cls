@@ -1768,6 +1768,14 @@ otherwise use the extended name (never empty)
     return .RexxUnicode~codepointIgnorable(codepoint)
 
 
+-- https://www.unicode.org/reports/tr11/
+::method eastAsianWidthIsAmbiguous
+    expose codepoint
+    use strict arg -- none
+    if codepoint == -1 then return .false
+    return .RexxUnicode~codepointEastAsianWidthIsAmbiguous(codepoint)
+
+
 -- https://www.unicode.org/reports/tr29/
 ::method controlBoundary
     expose codepoint
@@ -1875,16 +1883,17 @@ otherwise use the extended name (never empty)
         "bidiClass",,
         "bidiClassName",,
         "bidiMirrored",,
-        ,, -- "boundClass",,
-        ,, -- "boundClassName",,
+        "boundClass",,
+        "boundClassName",,
         "category",,
         "categoryName",,
         "charWidth",,
         "codepoint",,
         "combiningClass",,
         "controlBoundary",,
-        ,, -- "decompositionTypeName",,
-        ,, -- "decompositionType",,
+        "decompositionTypeName",,
+        "decompositionType",,
+        "eastAsianWidthIsAmbiguous",,
         "extendedName",,
         "ignorable",,
         "isLower",,

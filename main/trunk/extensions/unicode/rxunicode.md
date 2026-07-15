@@ -550,7 +550,7 @@ For portability, use refCode instead.
 
     .RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous(codepoint)
 
-Returns `.true` if the `East_Asian_Width` property value of `codepoint` is `"A" "Ambiguous"`.
+Returns `.true` if the `East_Asian_Width` property value of `codepoint` is `"A"` (`"Ambiguous"`).
 
 [https://www.unicode.org/reports/tr11/][unicode_standard_annex_11]
 
@@ -1198,19 +1198,21 @@ See the `codepoint` method for a definition of "codepoint identifier".
 
 ```rexx
 -- Search by decimal value
-.RexxUnicode~character("127877")=               -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
+.RexxUnicode~character(127877)=                 -- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+.RexxUnicode~character("127877")=               -- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+.RexxUnicode~character("1F385"~x2d)=            -- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
 
 ```
 
 ```rexx
 -- Search by U+ notation
-.RexxUnicode~character("U+1F385")=              -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
+.RexxUnicode~character("U+1F385")=              -- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
 
 ```
 
 ```rexx
 -- Search by name
-.RexxUnicode~character("FATHER CHRISTMAS")=     -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
+.RexxUnicode~character("FATHER CHRISTMAS")=     -- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
 
 ```
 
@@ -1223,7 +1225,7 @@ See the `codepoint` method for a definition of "codepoint identifier".
 
 ```rexx
 -- Search directly a character
-.RexxUnicode~character("🎅")=                   -- ("🎅"  U+1F385 So Other_Symbol 2 "FATHER CHRISTMAS")
+.RexxUnicode~character("🎅")=                   -- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
 
 ```
 
@@ -1262,7 +1264,9 @@ A codepoint identifier may be:
 
 ```rexx
 -- Search by decimal value
+.RexxUnicode~codepoint(127877)=                 -- 127877
 .RexxUnicode~codepoint("127877")=               -- 127877
+.RexxUnicode~codepoint("1F385"~x2d)=            -- 127877
 
 ```
 
@@ -2627,9 +2631,82 @@ The special value -1 can be represented using a RexxUnicodeCharacter.
 
 ### 6.1.   Class methods
 
-#### 6.1.1.   PROPERTIES
+#### 6.1.1.   properties
 
+    .RexxUnicodeCharacter~properties
 
+Returns an array of property names.
+
+These property names can be used as message names sent to a `RexxUnicodeCharacter` instance to get the corresponding property value.
+
+The `RexxUnicodeCharacter~info(codepoint)` method uses these property names to build a table of property-value.
+
+**Example**
+
+```rexx
+.RexxUnicodeCharacter~properties==
+    /*
+    an Array (shape [27], 24 items)
+     1  : 'bidiClass'
+     2  : 'bidiClassName'
+     3  : 'bidiMirrored'
+     4  : 'boundClass'
+     5  : 'boundClassName'
+     6  : 'category'
+     7  : 'categoryName'
+     8  : 'charWidth'
+     9  : 'codepoint'
+     10 : 'combiningClass'
+     11 : 'controlBoundary'
+     12 : 'decompositionTypeName'
+     13 : 'decompositionType'
+     14 : 'eastAsianWidthIsAmbiguous'
+     15 : 'extendedName'
+     16 : 'ignorable'
+     17 : 'isLower'
+     18 : 'isUpper'
+     19 : 'name'
+     20 : 'nameAlias'
+     21 : 'toLower'
+     23 : 'toTitle'
+     25 : 'toUpper'
+     27 : 'UTF8'
+    */
+
+```
+ 
+```rexx
+c = .RexxUnicode~character("€"); do message over .RexxUnicodeCharacter~properties; say message":" c~send(message); end
+    /*
+    bidiClass: ET
+    bidiClassName: European_Terminator
+    bidiMirrored: 0
+    boundClass: XX
+    boundClassName: Other
+    category: Sc
+    categoryName: Currency_Symbol
+    charWidth: 1
+    codepoint: 8364
+    combiningClass: 0
+    controlBoundary: 0
+    decompositionTypeName: Code point not explicitly listed for Decomposition_Type
+    decompositionType: None
+    eastAsianWidthIsAmbiguous: 1
+    extendedName: EURO SIGN
+    ignorable: 0
+    isLower: 0
+    isUpper: 0
+    name: EURO SIGN
+    nameAlias: 
+    toLower: 8364
+    toTitle: 8364
+    toUpper: 8364
+    UTF8: €
+    */
+
+```
+ 
+ 
 ### 6.2.   Instance methods
 
 #### 6.2.1.   BIDICLASS
@@ -2675,6 +2752,15 @@ The special value -1 can be represented using a RexxUnicodeCharacter.
 
 
 #### 6.2.15.   DECOMPOSITIONTYPENAME
+
+
+#### codepointEastAsianWidthIsAmbiguous
+
+    .RexxUnicodeCharacter~eastAsianWidthIsAmbiguous(codepoint)
+
+Returns `.true` if the `East_Asian_Width` property value of `codepoint` is `"A"` (`"Ambiguous"`).
+
+[https://www.unicode.org/reports/tr11/][unicode_standard_annex_11]
 
 
 #### 6.2.16.   EXTENDEDNAME
