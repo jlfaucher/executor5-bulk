@@ -1,0 +1,722 @@
+===============================================================================
+2026 July 04
+
+[Unicode]
+
+TODO:
+Add the RexxUnicodeStringTransformer class.
+This is a backport of the RexxTextTransformer class from Exexutor.
+
+Functionalities of the current Executor implementation:
+    - Converts positions in a transformed string to positions in the corresponding
+      untransformed string. This is used for the caselessXXX methods which takes
+      or returns positions.
+    - Supports expansion and contraction.
+        https://www.unicode.org/reports/tr10/#Expansions
+        https://www.unicode.org/reports/tr10/#Contractions
+        http://www.unicode.org/reports/tr35/tr35-collation.html#Context_Sensitive_Mappings
+    - The transformation can be made on a part of the string (from startC, for
+      lengthC characters).
+    - The transformation methods are NFC, NFD, NFKC, NFKD, casefold, transform.
+      The result is the instance of RexxTextTransformer, not the transformed text.
+    - Only one call to a transformation method can be done. This is because the
+      parameters of the transformation are memorized to re-apply internally the
+      transformation character by character, when moving the cursors.
+
+
+I submitted this Executor implementation to an AI, and it generated the following summary:
+
+RexxTextTransformer is an index translator between two views of the same text:
+- The external (untransformed) text, where positions are in grapheme units.
+  This is what the user sees.
+- The internal (transformed) text, where searching happens at the byte level
+  after normalization, casefolding, mark stripping, etc.
+A single external grapheme like ß may expand to ss internally (casefold expansion),
+or a ligature like ﬄ may expand to ffl. The reverse can happen too (contraction).
+So there’s no simple arithmetic mapping between internal byte positions and external
+grapheme positions.
+Dual-cursor walk:
+- The external cursor is advanced one grapheme at a time, transforming each grapheme
+  individually, and accumulating the internal byte length until reaching or overshooting
+  the target internal byte position. This is correct because the transformation
+  is compositional at the grapheme level; transforming the whole string produces
+  the same bytes as concatenating per-grapheme transformations.
+
+The ib2xc dual-cursor approach is functionally correct and handles the hard cases
+(expansion, contraction, non-aligned matches) properly. For the C rewrite, the main
+optimization opportunity is precomputing the internal <--> external mapping during
+transformation so that ib2xc becomes a stateless binary search instead of a stateful
+linear walk.
+
+
+
+The following excerpt is from the Executor documentation (~text does not exist in ooRexx):
+
+    - full text        = original text (untransformed)
+    - external subtext = part of the full text to transform
+    - internal subtext = transformed part of the full text
+
+    The method ib2xc converts an internal byte (ib) position in the internal
+    subtext (iSubtext) to an external character (xc) position in the external
+    full text.
+    ib2xc supports only growing positions. The only way to go backward is to
+    use backupPos/restorePos or resetPos.
+
+                                 --                          Transformed part of the full text
+                                 --                       +-------------------------------------+               -- GLOBAL INDEXES (offsetC=3, offsetB=7)
+                                 --  01   | 02   | 03     | 04 | 05     | 06    | 07       | 08 | 09            -- (external character indexes) <--------+
+                                 --  1 2  | 3 4  | 5 6 7  | 8  | 9 0    | 1 2   | 3 4 5    | 6  | 7 8 9         -- (external byte indexes)               |
+        "éßﬄ#éßﬄ#…"~text~c2g   --  C3A9 | C39F | EFAC84 | 23 | C3A9   | C39F  | EFAC84   | 23 | E280A6        -- (external bytes)                      |
+                                 --  é    | ß    | ﬄ     | #  | é      | ß     | ﬄ       | #  | …             -- (full text)                           ^
+                                 --  1 2  | 3 4  | 5 6 7  | 8  | 9 0 1  | 2  3  | 4  5  6  | 7  | 8 9 0         -- (internal byte indexes, offset=7)     |
+                                 --  C3A9 | C39F | EFAC84 | 23 | 65CC81 | 73 73 | 66 66 6C | 23 | E280A6        -- (internal bytes)                      |
+                                                          +-------------------------------------+                                                        |
+                                                                                                                -- RELATIVE INDEXES                      |
+                                                        --  01 | 02     | 03    | 04       | 05                 -- (external character indexes) <--------+
+                                                        --  1  | 2 3    | 4 5   | 6 7 8    | 9                  -- (external byte indexes)               |
+        "#éßﬄ#"~text~c2g=                              --  23 | C3A9   | C39F  | EFAC84   | 23                 -- (external bytes)                      |
+                                                        --  #  | é      | ß     | ﬄ       | #                  -- (external subtext)                    ^
+                                                                                                                                                         |
+                                                                                                                -- RELATIVE INDEXES                      |
+                                                        --  01 | 02     | 03 04 | 05 06 07 | 08                 -- (internal character indexes)          |
+                                                        --  1  | 2 3 4  | 5  6  | 7  8  9  | 0                  -- (internal byte indexes) ------>-------+
+        "#éßﬄ#"~text~NFD(casefold:)~c2g=               --  23 | 65CC81 | 73 73 | 66 66 6C | 23                 -- (internal bytes)
+                                                        --  #  | é      | s  s  | f  f  l  | #                  -- (internal subtext)
+
+        transformer = "éßﬄ#éßﬄ#…"~text~transformer(4, 5)~NFD(casefold:)
+        transformer~fulltext=       -- T'éßﬄ#éßﬄ#…'
+        transformer~xSubtext=       -- T'#éßﬄ#'
+        transformer~iSubtext=       -- T'#éssffl#'
+
+        -- ib2xc supports only growing positions
+        transformer~ib2xc(1)=       -- 4    the internal byte position 1 in the internal subtext corresponds to the 4th external character in the full text
+        transformer~ib2xc(7)=       -- 7
+        transformer~ib2xc(2)=       -- Error RexxTextTransformer: You specified a byte position (2) lower than the previous one (7).
+
+        -- The previous error is avoided by backuping/restoring the current position
+        transformer~resetPos        -- reset to allow iteration again from internal byte position 1
+        transformer~ib2xc(1)=       -- 4
+        transformer~backupPos
+        transformer~ib2xc(7)=       -- 7
+        transformer~restorePos
+        transformer~ib2xc(2)=       -- 5
+
+        transformer~resetPos
+        do i=1 to transformer~iSubtext~string~length; say "byte pos" i~right(2) "    character pos=" transformer~ib2xc(i)~string~left(20) transformer~ib2xc(i, aligned:.false); end
+        /*
+            byte pos  1     character pos= 4                    +4.8    -- the 8th internal byte is aligned with the 4th external character
+            byte pos  2     character pos= 5                    +5.9
+            byte pos  3     character pos= The NIL object       -5.10   -- the 10th internal byte is part of the 5th external character, but is not aligned with it.
+            byte pos  4     character pos= The NIL object       -5.11
+            byte pos  5     character pos= 6                    +6.12
+            byte pos  6     character pos= The NIL object       -6.13
+            byte pos  7     character pos= 7                    +7.14
+            byte pos  8     character pos= The NIL object       -7.15
+            byte pos  9     character pos= The NIL object       -7.16
+            byte pos 10     character pos= 8                    +8.17
+        */
+        /*
+            More details on positions mappings.
+            transformer~iSubtext is the transformed part of the full text.
+            The internal relative byte position 1 becomes the internal global byte position 8:
+                There are 7 bytes (offsetB=7) before the part to transform: 1 + 7 = 8.
+                It's the same offsetB=7 for external and internal bytes, because this part is not transformed.
+                Remember:
+                It doesn't make sense to return the external byte position, because some internal byte positions
+                have no corresponding external byte position. For example the internal global byte position 11.
+                For diagnostics and analysis, only internal byte positions are relevant.
+            The external relative character position 1 becomes the external global character position 4:
+                There are 3 characters (offsetC=3) before the part to transform: 1 + 3 = 4.
+                It's the same offsetC=3 for external and internal characters, because this part is not transformed.
+                Remember:
+                The user works only with external global character positions.
+                It wouldn't make sense to return internal character positions.
+            Example of alignment:
+                The internal relative byte position 1 becomes the internal global byte position 8,
+                is part of the 4th external character and is aligned with it.
+            Example of non-alignment:
+                The internal relative byte position 3 becomes the internal global byte position 10,
+                is part of the 5th external character and is not aligned with it.
+        */
+
+
+
+
+
+
+
+
+                    ****************************************
+                    History of changes and tests in Executor
+                    ****************************************
+
+
+The notation \U{name} is not a standard notation.
+rxunicode use \N{name}
+
+Some older entries may contain errors that were corrected in later entries.
+Keeping these erroneous assumptions helps explain how the solution evolved.
+
+Rakudo was of great help in validating the implementation.
+https://github.com/jlfaucher/executor/blob/d6c0563f41c852efd5dfa3da0e8d63de82a008f4/sandbox/jlf/unicode/_notes-unicode.txt#L10019-L10079
+
+Entries are listed from newest to oldest.
+
+
+===============================================================================
+2023 Dec 04
+
+[Encoded strings]
+
+
+"Bundesschnellstraße"~text~caselessMatchChar(18, "s")=           -- now 0: "ß" casefolded to "ss" doesn't match "s"
+"BAFFLE"~text~caselessMatchChar(5, "ﬄ")=                        -- now 0: "L" casefolded to "l" doesn't match "ﬄ" casefolded to "ffl" (no more iteration on each character of "ffl")
+"baﬄe"~text~matchChar(3, "f", normalization:.Unicode~NFKD)=     -- now 0: "ﬄ" transformed to "ffl" doesn't match "f"
+
+-- Case 1 sounds good (no more iteration on each character of "ffl")
+"BAFFLE"~text~caselessMatchChar(3, "ﬄ")=        -- 0    was 1 "ﬄ" becomes "ffl" (3 graphemes), there is a match on "f" at 3
+"BAFFLE"~text~caselessPos("ﬄ", aslist:, aligned:0)=
+    a List (1 items)
+     0 : [+3.3,+6.6]
+-- I get the same result as before by explicitely decomposing the ligature "ﬄ" to "ffl" BEFORE :
+"BAFFLE"~text~caselessMatchChar(3, "ﬄ"~text~transform(normalization:.Unicode~NFKD))=    -- 1
+-- here, it's ok because the match is on several characters
+"BAFFLE"~text~caselessMatch(3, "ﬄ")=            -- 1
+
+
+-- Case 2 sounds good (no more iteration on each character of "ffl")
+"BAFFLE"~text~caselessMatchChar(5, "ﬄ")=        -- 0    was 1 "ﬄ" becomes "ffl" (3 graphemes), there is a match on "l" at 5
+"BAFFLE"~text~caselessMatch(5, "ﬄ")=            -- 0
+
+
+-- Case 3 sounds good (no more iteration on each character of "ffl")
+"baﬄe"~text~caselessMatchChar(3, "F")=          -- 0    was 1 "ﬄ" at 3 (1 grapheme) becomes "ffl" (3 graphemes), there is a match on "f"
+
+
+-- Case 4 sound good (hum... did I really think that the character "ﬄ" at pos 3 can match an "l"?)
+"baﬄe"~text~caselessMatchChar(3, "L")=          -- 0    was 1 "ﬄ" at 3 (1 grapheme) becomes "ffl" (3 graphemes), there is a match on "l"
+
+===============================================================================
+2023 Nov 17
+
+"sss"~text~caselessCompare("", "ß")=                --  3 (not  4 because the 3rd  's' matches only half of the casefolded pad "ß" which is "ss")
+"straßssßßssse"~text~caselessCompare("stra", "ß")=  -- 12 (not 13 because the last 's' matches only half of the casefolded pad "ß" which is "ss")
+
+Analysis using Unicode scalars:
+
+-----------------------------------------
+CASE 1 : aligned in self, aligned in arg1
+-----------------------------------------
+
+"straßssßßssse"~text~compare("stra", "ß")=          --  6
+    "straßssßßssse"~text~unicode~c2g=
+         1  2  3  4  5  6  7  8  9  0  1  2  3      -- (external character indexes)
+         s  t  r  a  ß  s  s  ß  ß  s  s  s  e
+         73 74 72 61 DF 73 73 DF DF 73 73 73 65     -- (unicode scalars)
+    -------------------------------------------
+    "straßßßßßßßßß"~text~unicode~c2g=
+         1  2  3  4  5  6  7  8  9  0  1  2  3      -- (external character indexes)
+         s  t  r  a  ß  ß  ß  ß  ß  ß  ß  ß  ß
+         73 74 72 61 DF DF DF DF DF DF DF DF DF     -- (unicode scalars)
+                        |
+                        first different unicode scalar
+
+/*
+Debug output: the indexer supports the named parameter debug
+"straßssßßssse"~text~indexer~compare("stra", "ß", debug:.true)=
+    selfTextTransformer~iSubtext~string = straßssßßssse
+    selfTextTransformer~iSubtext~c2g = 73 74 72 61 C39F 73 73 C39F C39F 73 73 73 65
+    selfTextTransformedString~length = 16
+    textTextTransformer~iSubtext~string = straßßßßßßßßß
+    textTextTransformer~iSubtext~c2g = 73 74 72 61 C39F C39F C39F C39F C39F C39F C39F C39F C39F
+    textTextTransformedString~length = 22
+    posB1 = 7
+    posC1 = +6.7
+    posB2 = 7
+    posC2 = +6.7
+     6
+*/
+
+
+
+
+
+---------------------------------------------
+CASE 2 : aligned in self, not aligned in arg1
+---------------------------------------------
+
+"straßssßßssse"~text~caselessCompare("stra", "ß")=                              -- 12
+    "straßssßßssse"~text~unicode~c2g=
+         1  2  3  4  5     6  7  8     9     0  1  2  3                         -- (external character indexes)
+         s  t  r  a  ß     s  s  ß     ß     s  s  s  e
+         73 74 72 61 DF    73 73 DF    DF    73 73 73 65                        -- (unicode scalars)
+    "straßssßßssse"~text~casefold~unicode~c2g=
+         1  2  3  4  5  6  7  8  9  0  1  2  3  4  5  6                         -- (internal byte indexes)
+         s  t  r  a  s  s  s  s  s  s  s  s  s  s  s  e
+         73 74 72 61 73 73 73 73 73 73 73 73 73 73 73 65                        -- (unicode scalars)
+    ----------------------------------------------------
+    "straßßßßßßßßß"~text~unicode~c2g=
+         1  2  3  4  5     6     7     8     9     0     1     2     3          -- (external character indexes)
+         s  t  r  a  ß     ß     ß     ß     ß     ß     ß     ß     ß
+         73 74 72 61 DF    DF    DF    DF    DF    DF    DF    DF    DF         -- (unicode scalars)
+    "straßßßßßßßßß"~text~casefold~unicode~c2g=
+         1  2  3  4  5  6  7  8  9  0  1  2  3  4  5  6  7  8  9  0  1  2       -- (internal byte indexes)
+         s  t  r  a  ß     ß     ß     ß     ß     ß     ß     ß     ß
+         73 74 72 61 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73      -- (unicode scalars)
+                                                   |  |
+                                                   |  +-- 65 at (13,16) <> 73 at (-10,+16) but can't be 13 because would match only the first 73 of ß at (10,15)
+                                                   +-- yes, 12.
+
+/*
+Debug output: the indexer supports the named parameter debug
+"straßssßßssse"~text~indexer~caselessCompare("stra", "ß", debug:.true)=
+    selfTextTransformer~iSubtext~string = strassssssssssse
+    selfTextTransformer~iSubtext~c2g = 73 74 72 61 73 73 73 73 73 73 73 73 73 73 73 65
+    selfTextTransformedString~length = 16
+    textTextTransformer~iSubtext~string = strassssssssssssssssss
+    textTextTransformer~iSubtext~c2g = 73 74 72 61 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73
+    textTextTransformedString~length = 22
+    posB1 = 16
+    posC1 = +13.16
+    posB2 = 16
+    posC2 = -10.16
+     12
+*/
+
+-- Another way to test: at which moment the growing padded string on the right will no longer be found at pos 1
+--   1234567890123
+    "straßssßßssse"~text~caselessPos("straß")=          -- 1
+--   straß
+    "straßssßßssse"~text~caselessPos("straßß")=         -- 1
+--   straßß
+    "straßssßßssse"~text~caselessPos("straßßß")=        -- 1
+--   straßß ß
+    "straßssßßssse"~text~caselessPos("straßßßß")=       -- 1
+--   straßß ßß
+    "straßssßßssse"~text~caselessPos("straßßßßß")=      -- 1
+--   straßß ßßß
+    "straßssßßssse"~text~caselessPos("straßßßßßß")=     -- 0    The last ß doesn't match "se" at 12
+--   straßß ßßß ß
+
+
+---------------------------------------------
+CASE 3 : not aligned in self, aligned in arg1
+---------------------------------------------
+
+"stra"~text~caselessCompare("straßssßßssse", "ß")=  -- 9
+    1  2  3  4  5     6     7     8     9     0     1     2     3               -- (external character indexes)
+    s  t  r  a  ß     ß     ß     ß     ß     ß     ß     ß     ß
+    1  2  3  4  5  6  7  8  9  0  1  2  3  4  5  6  7  8  9  0  1  2            -- (internal byte indexes)
+    73 74 72 61 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73           -- (unicode scalars of the casefolded string)
+    -----------------------------------------------------------------
+    1  2  3  4  5     6  7  8     9     0  1  2  3                              -- (external character indexes)
+    s  t  r  a  ß     s  s  ß     ß     s  s  s  e
+    1  2  3  4  5  6  7  8  9  0  1  2  3  4  5  6                              -- (internal byte indexes)
+    73 74 72 61 73 73 73 73 73 73 73 73 73 73 73 65                             -- (unicode scalars of the casefolded string)
+                                        |        |
+                                        |        + 73 at (-10,16) <> 65 at (13,16)
+                                        +-- yes, 9.
+
+/*
+Debug output: the indexer supports the named parameter debug
+"stra"~text~indexer~caselessCompare("straßssßßssse", "ß", debug:.true)=
+    selfTextTransformer~iSubtext~string = strassssssssssssssssss
+    selfTextTransformer~iSubtext~c2g = 73 74 72 61 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73
+    selfTextTransformedString~length = 22
+    textTextTransformer~iSubtext~string = strassssssssssse
+    textTextTransformer~iSubtext~c2g = 73 74 72 61 73 73 73 73 73 73 73 73 73 73 73 65
+    textTextTransformedString~length = 16
+    posB1 = 16
+    posC1 = -10.16
+    posB2 = 16
+    posC2 = +13.16
+     9
+*/
+
+"straß"        ~text~caselessCompare("straßssßßssse", "ß")=  -- 9
+"straßß"       ~text~caselessCompare("straßssßßssse", "ß")=  -- 9
+"straßßß"      ~text~caselessCompare("straßssßßssse", "ß")=  -- 9
+"straßßßß"     ~text~caselessCompare("straßssßßssse", "ß")=  -- 9
+"straßßßßß"    ~text~caselessCompare("straßssßßssse", "ß")=  -- 9
+"straßßßßßß"   ~text~caselessCompare("straßssßßssse", "ß")=  -- 9
+"straßßßßßßß"  ~text~caselessCompare("straßssßßssse", "ß")=  -- 9
+"straßßßßßßßß" ~text~caselessCompare("straßssßßssse", "ß")=  -- 9
+
+"straß"        ~text~caselessCompareTo("straßssßßssse")=  -- -1
+"straßß"       ~text~caselessCompareTo("straßssßßssse")=  -- -1
+"straßßß"      ~text~caselessCompareTo("straßssßßssse")=  -- -1
+"straßßßß"     ~text~caselessCompareTo("straßssßßssse")=  -- -1
+"straßßßßß"    ~text~caselessCompareTo("straßssßßssse")=  -- -1     up to 9 characters, it's lesser
+"straßßßßßß"   ~text~caselessCompareTo("straßssßßssse")=  -- 1      from 10 characters, it's greater
+"straßßßßßßß"  ~text~caselessCompareTo("straßssßßssse")=  -- 1
+"straßßßßßßßß" ~text~caselessCompareTo("straßssßßssse")=  -- 1
+
+"stra"     ~caselessCompare("strasssssse", "s")=    -- 11
+"stra"~text~caselessCompare("strasssssse", "s")=    -- 11
+"strasssssse"     ~caselessCompare("stra", "s")=    -- 11
+"strasssssse"~text~caselessCompare("stra", "s")=    -- 11
+
+"strà"     ~caselessCompare("stràsssssse", "s")=    -- 12
+"strà"~text~caselessCompare("stràsssssse", "s")=    -- 11
+"stràsssssse"     ~caselessCompare("strà", "s")=    -- 12
+"stràsssssse"~text~caselessCompare("strà", "s")=    -- 11
+
+
+-------------------------------------------------
+CASE 4 : not aligned in self, not aligned in arg1
+-------------------------------------------------
+
+iota_dt = "\u{GREEK SMALL LETTER IOTA WITH DIALYTIKA AND TONOS}"~text~unescape
+("a" iota_dt~casefold "b")~compare("a" iota_dt, normalization: 0)=  -- 3
+
+/*
+Debug output: the indexer supports the named parameter debug
+("a" iota_dt~casefold "b")~indexer~compare("a" iota_dt, normalization: 0, debug:.true)=
+    selfTextTransformer~iSubtext~string = a ΐ b
+    selfTextTransformer~iSubtext~c2g = 61 20 CEB9CC88CC81 20 62
+    selfTextTransformedString~length = 10
+    textTextTransformer~iSubtext~string = a ΐ
+    textTextTransformer~iSubtext~c2g = 61 20 CE90 20 20
+    textTextTransformedString~length = 6
+    posB1 = 4
+    posC1 = -3.4
+    posB2 = 4
+    posC2 = -3.4
+     3
+*/
+
+
+===============================================================================
+2023 Sep 28
+
+
+Better names for inflating and deflating transformations:
+    https://www.unicode.org/reports/tr10/#Expansions
+    https://www.unicode.org/reports/tr10/#Contractions
+See also
+    http://www.unicode.org/reports/tr35/tr35-collation.html#Context_Sensitive_Mappings
+
+RexxTextTransformer: the next step could be collation folding... But that sounds
+way more complicated than what is implemented currently.
+https://www.unicode.org/reports/tr10/#Collation_Folding
+    Ignorable characters need special handling (jlf: the problem is not ignoring
+    ignorable characters, it's already supported with stripIgnorable. The problem
+    is "In some contexts, however, fully ignorable characters may have an effect
+    on comparison, or characters that are not ignorable at the given strength
+    level may be treated as ignorable."
+https://unicode-org.atlassian.net/browse/ICU-22422
+    Markus Scherer:
+    This is “easy except for the complicated cases”, around normalization,
+    contractions, expansions, and prefix matching.
+    It probably requires a fair bit of design and code, and maybe more data
+    (computed/cached, or prebuilt).
+
+
+===============================================================================
+2023 Sep 27
+
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape=                                         -- T'Mrs. 🤶 a͸nd Mr. 🎅
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape~c2g=                                     -- 'C286 4D 72 73 2E C2A0 F09FA4B6 20 61 CDB8 6E 64 20 4D 72 2E C2A0 F09F8E85 C287'
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape~transform(stripNA:)~c2g=                 -- 'C286 4D 72 73 2E C2A0 F09FA4B6 20 61      6E 64 20 4D 72 2E C2A0 F09F8E85 C287'
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape~transform(stripNA:, stripCC:)~c2g=       -- '     4D 72 73 2E C2A0 F09FA4B6 20 61      6E 64 20 4D 72 2E C2A0 F09F8E85     '
+
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape~pos("and")=                              -- 0
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape~pos("and", stripNA:)=                    -- 9
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape~pos("and", stripNA:, stripCC:)=          -- 9    yes! 9, not 8 because it's the EXTERNAL position
+
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape~caselessPos("mr.")=                      -- 14
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape~caselessPos("mr.", stripNA:)=            -- 14   yes! 14, not 13
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape~caselessPos("mr.", stripNA:, stripCC:)=  -- 14   yes! 14, not 12
+
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape~caselessPos("\U{SSA}"~text~unescape)=              -- 1
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape~caselessPos("\U{SSA}"~text~unescape, stripCC:)=    -- 0
+
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape~caselessPos("a\u0378nd"~text~unescape)=                        -- 9
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape~caselessPos("a\u0378nd"~text~unescape, stripCC:)=              -- 9
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape~caselessPos("a\u0378nd"~text~unescape, stripNA:)=              -- 9    yes! 9, not 0 because \u0378 is removed both in the needle and in thehaystack
+    "\U{SSA}Mrs.\U{NBSP}🤶 a\u0378nd Mr.\U{NBSP}🎅\U{ESA}"~text~unescape~caselessPos("a\u0378nd"~text~unescape, stripNA:, stripCC:)=    -- 9    yes! 9, not 8
+
+
+caselessEndsWith, endsWith: returns false if the start of the 'other' string is
+not aligned with a character.
+Examples
+    "#éßﬄ#…"~text~endsWith("…")=                      -- true
+    "#éßﬄ#…"~text~caselessEndsWith("…")=              -- true
+
+    "#éßﬄ#…"~text~endsWith("fl#…")=                   -- false, ﬄ remains ﬄ
+    "#éßﬄ#…"~text~caselessEndsWith("FL#…")=           -- false, ﬄ becomes ffl but FL is not aligned with ffl
+
+    "#éßﬄ#…"~text~endsWith("ﬄ#…")=                   -- true
+    "#éßﬄ#…"~text~caselessEndsWith("ﬄ#…")=           -- true
+
+    "#éßﬄ#…"~text~endsWith("ffl#…")=                  -- false, ﬄ remains ﬄ
+    "#éßﬄ#…"~text~caselessEndsWith("FFL#…")=          -- true,  ﬄ becomes ffl and FFL is aligned with ffl
+
+    "#éßﬄ#…"~text~endsWith("sﬄ#…")=                  -- false, ß remains ß
+    "#éßﬄ#…"~text~caselessEndsWith("Sﬄ#…")=          -- false, ß becomes ss but s is not aligned with ss
+
+    "#éßﬄ#…"~text~endsWith("ßﬄ#…")=                  -- true
+    "#éßﬄ#…"~text~caselessEndsWith("ßﬄ#…")=          -- true
+
+    "#éßﬄ#…"~text~endsWith("ssﬄ#…")=                 -- false, ß remains ß
+    "#éßﬄ#…"~text~caselessEndsWith("SSﬄ#…")=         -- true,  ß becomes ss
+
+    "#éßﬄ#…"~text~endsWith("éßﬄ#…")=                 -- true
+    "#éßﬄ#…"~text~caselessEndsWith("ÉSSFFL#…")=       -- true
+
+    "#éßﬄ#…"~text~endsWith("#éßﬄ#…")=                -- true
+    "#éßﬄ#…"~text~caselessEndsWith("#ÉSSFFL#…")=      -- true
+
+    "#e\U{COMBINING ACUTE ACCENT}ßﬄ#…"~text~unescape~c2g=                                                                   -- '23 65CC81 C39F EFAC84 23 E280A6'
+      "\U{COMBINING ACUTE ACCENT}ßﬄ#…"~text~unescape~c2g=                                                                   -- '     CC81 C39F EFAC84 23 E280A6'
+    "#e\U{COMBINING ACUTE ACCENT}ßﬄ#…"~text~unescape~endsWith("\U{COMBINING ACUTE ACCENT}ßﬄ#…"~text~unescape)=             -- false, not aligned with e\U{COMBINING ACUTE ACCENT}
+
+    "#e\U{COMBINING ACUTE ACCENT}ßﬄ#…"~text~unescape~casefold~c2g=                                                          -- '23 65CC81 73 73 66 66 6C 23 E280A6'
+      "\U{COMBINING ACUTE ACCENT}SSFFL#…"~text~unescape~casefold~c2g=                                                        -- '     CC81 73 73 66 66 6C 23 E280A6'
+    "#e\U{COMBINING ACUTE ACCENT}ßﬄ#…"~text~unescape~caselessEndsWith("\U{COMBINING ACUTE ACCENT}SSFFL#…"~text~unescape)=   -- false, not aligned with e\U{COMBINING ACUTE ACCENT}
+
+
+New 'RexxTextTransformer' class:
+(cut... the description has been moved at the begining of this file
+)
+
+===============================================================================
+2023 Sep 11
+
+
+Rework the implementation of caselessPos, pos.
+- Thanks to Raku and Chrome, I realize that a matching should be succesful only
+  if all the bytes of a grapheme are matched.
+- New named argument 'asList', to return a list of positions
+  (similar to Raku's method .indices).
+- New named argument overlap: (same as Raku)
+  If the optional named argument 'overlap' is specified, the search continues
+  from the position directly following the previous match, otherwise the search
+  will continue after the previous match.
+
+Remember:
+aligned=.false is intended for analysis of matchings and [non-]regression tests.
+Otherwise, I don't see any use.
+When aligned:.false, a returned position has the form +/-posC.posB where posB is
+the position of the matched byte in the transformed haystack, and posC is the
+corresponding grapheme position in the untransformed haystack.
+Don't use trunc(abs(position)) because you may need up to numeric digits 40:
+    position max can be +/-(2**64-1)||"."||(2**64-1)
+Use instead:
+    if position~matchChar(1, "+-") then parse var position 2 posC "." posB
+
+
+===============================================================================
+2023 Aug 28
+
+Add a named argument 'aligned' to caselessPos, pos:
+- If aligned=.true (default) then return the first character position in the
+  untransformed haystack such as all the bytes of the transformed needle are
+  matched with corresponding bytes in the transformed haystack AND the first
+  and last byte positions are aligned with character positions.
+  If no match then return 0.
+- If aligned=.false then return a couple (array) of numbers +/-posC.posB where
+  posB is the position of the matched byte in the transformed haystack, and posC
+  is the corresponding grapheme position in the untransformed haystack.
+  A number is negative if the byte position is not aligned with the corresponding
+  character position.
+  The first number is the start of the matching.
+  The second number is the end of the matching + 1.
+
+aligned=.false is intended for analysis of matchings and [non-]regression tests.
+Otherwise, I don't see any use.
+
+Example:
+    "noël👩‍👨‍👩‍👧🎅"~text~pos("👧🎅")=                           -- 0
+    "noël👩‍👨‍👩‍👧🎅"~text~pos("👧🎅", aligned:.false)=           -- [-5.27,+7.35]
+    "noël👩‍👨‍👩‍👧🎅"~text~pos("👩‍👨‍👩‍👧🎅", aligned:.false)=  -- [+5.6,+7.35]
+
+
+Comparison operators:
+Take into account the default normalization managed by the .Unicode class
+- NFC when strict
+- NFKD when not strict
+Example:
+    ("baﬄe"~text == "baffle"~text) =    -- false
+    ("baﬄe"~text = "baffle"~text) =     -- true
+Reminder: the non-strict mode supports all the Unicode spaces, not just U+0032.
+    string1 = " Le\u{IDEOGRAPHIC SPACE}Pè\u{ZERO-WIDTH-SPACE}re\u{HYPHEN}Noël"~text~unescape
+    string2 = "Le\u{OGHAM SPACE MARK}Père\u{EN DASH}No\u{ZERO-WIDTH-SPACE}ël "~text~unescape
+    (string1 == string2) =              -- false
+    (string1 = string2) =               -- true
+
+
+===============================================================================
+2023 Aug 26
+
+New method characterIndexC which retrieves the character index corresponding to
+a given byte position, using a binay search. The result is negative when the
+byte index is not aligned with the character index.
+---
+t = "noël👩‍👨‍👩‍👧🎅"~text; t~c2g=    -- '6E 6F C3AB 6C F09F91A9E2808DF09F91A8E2808DF09F91A9E2808DF09F91A7 F09F8E85'
+t = "noël👩‍👨‍👩‍👧🎅"~text; do indexB=1 to t~string~length + 2; indexC = t~indexer~characterIndexC(indexB); character = t~character(abs(indexC)); say "indexB" indexB~right(3) "--> indexC" indexC~right(4) "    " character~c2x; end
+    indexB   1 --> indexC    1      6E
+    indexB   2 --> indexC    2      6F
+    indexB   3 --> indexC    3      C3AB
+    indexB   4 --> indexC   -3      C3AB
+    indexB   5 --> indexC    4      6C
+    indexB   6 --> indexC    5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB   7 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB   8 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB   9 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  10 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  11 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  12 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  13 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  14 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  15 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  16 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  17 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  18 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  19 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  20 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  21 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  22 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  23 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  24 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  25 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  26 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  27 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  28 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  29 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  30 --> indexC   -5      F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7
+    indexB  31 --> indexC    6      F09F8E85
+    indexB  32 --> indexC   -6      F09F8E85
+    indexB  33 --> indexC   -6      F09F8E85
+    indexB  34 --> indexC   -6      F09F8E85
+    indexB  35 --> indexC    7
+    indexB  36 --> indexC    7
+
+New non-regression test file tests/encoding/test_character_index.rex
+Usage:
+    cd tests/encoding
+    make test_character_index
+
+
+Implementation of caselessCompare, compare.
+Implementation of caselessEndsWith, endsWith.
+
+Rework implementation of caselessMatchChar, matchChar.
+The character at position n and the chars are normalized. Any character can
+become several decomposed characters (for example the ligatures). These
+decomposed characters are iterated over and compared letter by letter.
+    "BAFFLE"~text~caselessMatchChar(3, "ﬄ")=               -- 1      "ﬄ" becomes "ffl" (3 graphemes), there is a match on "f" at 3
+    "BAFFLE"~text~caselessMatchChar(5, "ﬄ")=               -- 1      "ﬄ" becomes "ffl" (3 graphemes), there is a match on "l" at 5
+    "baffle"~text~caselessMatchChar(5, "L")=                -- 1      there is a match on "l" at 5 (forward to string)
+    "baﬄe"~text~caselessMatchChar(3, "ﬄ")=                -- 1      "ﬄ" at 3 (1 grapheme) becomes "ffl" (3 graphemes), there is a match on "l"
+    "baﬄe"~text~caselessMatchChar(3, "F")=                 -- 1      "ﬄ" at 3 (1 grapheme) becomes "ffl" (3 graphemes), there is a match on "f"
+    "baﬄe"~text~caselessMatchChar(3, "L")=                 -- 1      "ﬄ" at 3 (1 grapheme) becomes "ffl" (3 graphemes), there is a match on "l"
+    "baﬄe"~text~caselessMatchChar(4, "E")=                 -- 1      the grapheme at 4 is "e", not "f". There is a match with "e"
+
+
+Rework implementation of caselessCompareTo, compareTo.
+Implementation of caselessPos, pos.
+
+
+===============================================================================
+2023 Aug 23
+
+[Encoded strings]
+
+The default normalization is now managed by the Unicode class:
+- NFC when strict
+- NFKD when not strict
+
+
+The methods doing comparisons now accept the named argument 'strict':
+- By default, the comparisons are made in strict mode (i.e. like ==).
+  This is aligned with the classic Rexx.
+- lump and stripIgnorable are false when strict, and true when not strict.
+- stripMark is not impacted by the strict mode. It's up to the Rexx user to
+  explicitely decide if the accents are removed.
+  By default, the accents are not removed. This is aligned with the classic Rexx.
+
+
+===============================================================================
+2023 March 08
+
+[Encoded strings]
+
+Implementation of caselessMatchChar, matchChar
+"Noëlle"~text~matchChar(2, "aeiouy")=                       -- 1
+"Noëlle"~text~matchChar(3, "aeiouy")=                       -- 0
+"Noëlle"~text~matchChar(3, "aeëiouy")=                      -- 1    include the accents in the list of accepted characters
+"Noëlle"~text~matchChar(3, "aeiouy", stripMark:)=           -- 1    or remove the accents from the tested string
+"Noëlle"~text~matchChar(6, "aeiouy")=                       -- 1
+
+"Bundesschnellstraße"                                       -- at 14: "s", at 18:"ß"
+ 1234567890123456789
+"Bundesschnellstraße"~text~matchChar(14, "s")=              -- 1
+"Bundesschnellstraße"~text~matchChar(18, "s")=              -- 0
+"Bundesschnellstraße"~text~matchChar(18, "sß")=             -- 1
+"Bundesschnellstraße"~text~caselessMatchChar(18, "s")=      -- 1    "ß" becomes "ss" which is 2 graphemes. The first grapheme at 18 matches "s"
+"Bundesschnellstraße"~text~caselessMatchChar(19, "s")=      -- 0    "ß" becomes "ss" which is 2 graphemes. The grapheme at 19 is "e", not the second "s"
+"Bundesschnellstraße"~text~caselessMatchChar(19, "e")=      -- 1    "ß" becomes "ss" which is 2 graphemes. The grapheme at 19 is "e", not the second "s"
+
+The ligature disappears in NFK[CD] but not in NF[CD]
+"baﬄe"~text~NFKC=                                            -- T'baffle'
+"baﬄe"~text~NFKD=                                            -- T'baffle'
+"baﬄe"~text~matchChar(3, "f")=                               -- 0     "ﬄ" is ONE grapheme because NFC
+"baﬄe"~text~matchChar(3, "ﬄ")=                              -- 1     "ﬄ" is ONE grapheme because NFC
+"baﬄe"~text~matchChar(3, "ﬄ", normalization:.Unicode~NFKD)= -- 1     "ﬄ" becomes "ffl" (3 graphemes). There is a match because the first grapheme is "f"
+"baﬄe"~text~matchChar(3, "f", normalization:.Unicode~NFKD)=  -- 1     "ﬄ" becomes "ffl" (3 graphemes). There is a match because the first grapheme is "f"
+"baﬄe"~text~matchChar(4, "f", normalization:.Unicode~NFKD)=  -- 0     "ﬄ" becomes "ffl" (3 graphemes). The grapheme at 4 is "e", not the second "f"
+"baﬄe"~text~matchChar(4, "e", normalization:.Unicode~NFKD)=  -- 1     "ﬄ" becomes "ffl" (3 graphemes). The grapheme at 4 is "e", not the second "f"
+
+The ligature disappears when casefolded
+"baﬄe"~text~casefold=                                        -- T'baffle'
+"BAFFLE"~text~caselessMatchChar(3, "ﬄ")=                     -- 1      "ﬄ" becomes "ffl" (3 graphemes), there is a match on "f" at 3
+"BAFFLE"~text~caselessMatchChar(5, "ﬄ")=                     -- 1      "ﬄ" becomes "ffl" (3 graphemes), there is a match on "l" at 5
+"BAFFLE"~text~caselessMatchChar(5, "L")=                      -- 1      there is a match on "l" at 5 (forward to String)
+
+
+Implementation of caselessEquals, equals
+"ŒUF"~text~caselessEquals("œuf")=           -- 1
+"œuf"~text~caselessEquals("ŒUF")=           -- 1
+"Straße"~text~caselessEquals("strasse")=    -- 1
+"strasse"~text~caselessEquals("Straße")=    -- 1
+
+
+Reminder: a caseless method is transforming its arguments using CaseFold.
+The default normalization is NFC, it's possible to change it with the argument
+normalization
+    .unicode~NFC    (default)
+    .unicode~NFD
+    .unicode~NFKC
+    .unicode~NFKD
+There is no value NFKC_CF because it can be done using the caseless methods by
+passing NFKC + stripIgnorable.
+
+
+Some ligatures are not decomposed by NFKC.
+"ŒUF"~text~caselessEquals("oeuf")=                                  -- 0
+"ŒUF"~text~caselessEquals("oeuf", normalization:.Unicode~NFKC)=     -- 0
+
+https://github.com/unicode-org/icu4x/issues/3151#issuecomment-1458494311
+ŒUF and œuf are primary-equal to oeuf, whereas they are not identifier caseless matches.
+For general-purpose matching that does not have stability requirements,
+something collation-based is more appropriate.
+Todo with ICU4X...
+
+https://www.unicode.org/L2/L2023/23005.htm#174-C4
+Recently the UTC approved (in consensus 174-C4) a change to the collation of
+punctuation marks that look like the ASCII ' and ", which has the effect that
+O'Connor (APOSTROPHE) will now be primary-equal to O’Connor (RIGHT SINGLE QUOTATION MARK)
+Todo with ICU4X...
+
+
+Implementation of caselessMatch and match to rework to support this case where
+the casefold transformation invalidates the position 14:
+"Bundesstraße im Freiland"~text~caselessMatch(14, "im")=        -- returns false, must be true
+ 123456789012345678901234
+"Bundesstraße im Freiland"~text~caselessMatch(15, "im")=        -- returns true, must be false
+An easy implementation is to extract the substring and then apply the transformations and then compare.
+That will be in contradiction with this sentence in RexxRef, but acceptable for
+a prototype:
+"The caselessMatch method is useful for efficient string parsing as it does not
+require new string objects be extracted from the target string."
