@@ -706,8 +706,8 @@ For portability, use refCode instead.</p>
 id="codepointeastasianwidthisambiguous">1.1.9.   codepointEastAsianWidthIsAmbiguous</h4>
 <pre><code>.RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous(codepoint)</code></pre>
 <p>Returns <code>.true</code> if the <code>East_Asian_Width</code>
-property value of <code>codepoint</code> is
-<code>"A" "Ambiguous"</code>.</p>
+property value of <code>codepoint</code> is <code>"A"</code>
+(<code>"Ambiguous"</code>).</p>
 <p><a href="https://www.unicode.org/reports/tr11/"
 title="Standard Annex #11 East Asian Width">https://www.unicode.org/reports/tr11/</a></p>
 <h4 id="codepointignorable">1.1.10.   codepointIgnorable</h4>
@@ -791,7 +791,7 @@ library.</p>
                     --                  or the error message otherwise.
     )
 </code></pre>
-<p>Returns the next codepoint (an integer) at position
+<p>Returns the next codepoint (an integer) at byte index
 <code>indexB</code> of <code>string</code>, or -1 in case of error.</p>
 <p><code>refSizeB</code> receives the size in bytes of the decoded
 codepoint.<br />
@@ -803,11 +803,11 @@ Maximal Subparts.<br />
 <code>refErrorCode</code> and <code>refErrorMsg</code> receive a
 detailed description of the error.</p>
 <p><strong>Error codes and messages:</strong></p>
-<pre><code>- &quot;CONTINUATION_ERROR_RANGE&quot;        &quot;Invalid continuation byte %i (&#39;%02X&#39;x) at byte-position %zu (codepoint &gt; U+10FFFF)&quot;
-- &quot;CONTINUATION_HIGH_SURROGATE&quot;     &quot;Invalid continuation byte %i (&#39;%02X&#39;x) at byte-position %zu (high surrogate)&quot;
-- &quot;CONTINUATION_LOW_SURROGATE&quot;      &quot;Invalid continuation byte %i (&#39;%02X&#39;x) at byte-position %zu (low surrogate)&quot;
-- &quot;CONTINUATION&quot;                    &quot;Invalid continuation byte %i (&#39;%02X&#39;x) at byte-position %zu&quot;
-- &quot;CONTINUATION_NON_SHORTEST_FORM&quot;  &quot;Invalid continuation byte %i (&#39;%02X&#39;x) at byte-position %zu (non-shortest form)&quot;
+<pre><code>- &quot;CONTINUATION_ERROR_RANGE&quot;        &quot;Invalid continuation byte %i (&#39;%02X&#39;x) at byte position %zu (codepoint &gt; U+10FFFF)&quot;
+- &quot;CONTINUATION_HIGH_SURROGATE&quot;     &quot;Invalid continuation byte %i (&#39;%02X&#39;x) at byte position %zu (high surrogate)&quot;
+- &quot;CONTINUATION_LOW_SURROGATE&quot;      &quot;Invalid continuation byte %i (&#39;%02X&#39;x) at byte position %zu (low surrogate)&quot;
+- &quot;CONTINUATION&quot;                    &quot;Invalid continuation byte %i (&#39;%02X&#39;x) at byte position %zu&quot;
+- &quot;CONTINUATION_NON_SHORTEST_FORM&quot;  &quot;Invalid continuation byte %i (&#39;%02X&#39;x) at byte position %zu (non-shortest form)&quot;
 - &quot;START_ERROR_RANGE&quot;               &quot;Invalid start byte %i (&#39;%02X&#39;x) (codepoint &gt; U+10FFFF)&quot;
 - &quot;START_NON_SHORTEST_FORM&quot;         &quot;Invalid start byte %i (&#39;%02X&#39;x) (non-shortest form)&quot;
 - &quot;TRUNCATED&quot;                       &quot;Truncated, expected %i bytes&quot;</code></pre>
@@ -825,7 +825,7 @@ detailed description of the error.</p>
 <code lineno="10"><span class="rx-ws">    </span><span class="rx-kw">end</span></code>
 <code lineno="11"><span class="rx-ws">    </span><span class="rx-kw">else</span><span class="rx-ws"> </span><span class="rx-kw">do</span></code>
 <code lineno="12"><span class="rx-ws">        </span><span class="rx-kw">if</span><span class="rx-ws"> </span><span class="rx-var">sizeB</span><span class="rx-ws"> </span><span class="rx-op">&lt;</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-ws"> </span><span class="rx-kw">then</span><span class="rx-ws"> </span><span class="rx-kw">do</span></code>
-<code lineno="13"><span class="rx-ws">            </span><span class="rx-xvar">error</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">start byte-position</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-xvar">indexB</span><span class="rx-op"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">errorMsg</span></code>
+<code lineno="13"><span class="rx-ws">            </span><span class="rx-xvar">error</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">start byte position</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-xvar">indexB</span><span class="rx-op"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">errorMsg</span></code>
 <code lineno="14"><span class="rx-ws">            </span><span class="rx-xvar">codepoint</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">FFFD</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-ws"> </span><span class="rx-lncm">-- the current byte sequence is invalid, return the replacement character</span></code>
 <code lineno="15"><span class="rx-ws">            </span><span class="rx-xvar">indexB</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-op">-</span><span class="rx-xvar">indexB</span><span class="rx-ws"> </span><span class="rx-lncm">-- same convention as .RexxUnicodeStringIndexer; a negative index indicates an invalid byte sequence</span></code>
 <code lineno="16"><span class="rx-ws">        </span><span class="rx-kw">end</span></code>
@@ -1611,10 +1611,10 @@ appended to the buffer, and the buffer is returned.</p>
 <code lineno="5"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errors</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="6"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="7"><span class="rx-cm">    an Array (shape [4], 4 items)</span></code>
-<code lineno="8"><span class="rx-cm">     1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'</span></code>
-<code lineno="9"><span class="rx-cm">     2 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'</span></code>
-<code lineno="10"><span class="rx-cm">     3 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'</span></code>
-<code lineno="11"><span class="rx-cm">     4 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'</span></code>
+<code lineno="8"><span class="rx-cm">     1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'</span></code>
+<code lineno="9"><span class="rx-cm">     2 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'</span></code>
+<code lineno="10"><span class="rx-cm">     3 : 'start byte position 4 : Invalid continuation byte 145 (''91''x) at byte position 7'</span></code>
+<code lineno="11"><span class="rx-cm">     4 : 'start byte position 7 : Invalid continuation byte 191 (''BF''x) at byte position 9'</span></code>
 <code lineno="12"><span class="rx-cm">    */</span></code>
 <code lineno="13">
 </code></pre>
@@ -2024,10 +2024,10 @@ codepoints without indexer.</p>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">e</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="5"><span class="rx-cm">    a RexxUnicodeCodepointSupplier </span></code>
-<code lineno="6"><span class="rx-cm">    -1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'</span></code>
-<code lineno="7"><span class="rx-cm">    -3 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'</span></code>
-<code lineno="8"><span class="rx-cm">    -4 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'</span></code>
-<code lineno="9"><span class="rx-cm">    -7 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'</span></code>
+<code lineno="6"><span class="rx-cm">    -1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'</span></code>
+<code lineno="7"><span class="rx-cm">    -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'</span></code>
+<code lineno="8"><span class="rx-cm">    -4 : 'start byte position 4 : Invalid continuation byte 145 (''91''x) at byte position 7'</span></code>
+<code lineno="9"><span class="rx-cm">    -7 : 'start byte position 7 : Invalid continuation byte 191 (''BF''x) at byte position 9'</span></code>
 <code lineno="10"><span class="rx-cm">     9 : ''</span></code>
 <code lineno="11"><span class="rx-cm">    */</span></code>
 <code lineno="12">
@@ -2047,12 +2047,13 @@ codepoints.</p>
 <h4 id="codepointatindexc">3.2.2.   codepointAtIndexC</h4>
 <pre><code>.RexxUnicodeCodepointSupplier~codepointAtIndexC(indexC)</code></pre>
 <p>Convenience method.<br />
-Advances the supplier to codepoint index <code>indexC</code> and returns
-the corresponding codepoint as an integer.<br />
+Advances the supplier to codepoint position <code>indexC</code> and
+returns the corresponding codepoint as an integer.<br />
+<code>indexC</code> must be a positive whole number.<br />
 If <code>indexC</code> is less than the current codepoint index, the
-supplier raises an error (can only advance).<br />
-This method does not support negative indexes (indexes from the end of
-the string).</p>
+supplier raises an error (can only advance).</p>
+<p>This method does not support negative indexes (counting from the end
+of the string).</p>
 <h4 id="index">3.2.3.   index</h4>
 <pre><code>.RexxUnicodeCodepointSupplier~index(type=defaultIndexType)</code></pre>
 <p>Returns the index of the current codepoint in the string.<br />
@@ -2222,10 +2223,10 @@ graphemes without indexer.</p>
 <code lineno="3"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">e</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="5"><span class="rx-cm">    a RexxUnicodeGraphemeSupplier </span></code>
-<code lineno="6"><span class="rx-cm">    -1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'</span></code>
-<code lineno="7"><span class="rx-cm">    -3 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'</span></code>
-<code lineno="8"><span class="rx-cm">    -4 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'</span></code>
-<code lineno="9"><span class="rx-cm">    -7 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'</span></code>
+<code lineno="6"><span class="rx-cm">    -1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'</span></code>
+<code lineno="7"><span class="rx-cm">    -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'</span></code>
+<code lineno="8"><span class="rx-cm">    -4 : 'start byte position 4 : Invalid continuation byte 145 (''91''x) at byte position 7'</span></code>
+<code lineno="9"><span class="rx-cm">    -7 : 'start byte position 7 : Invalid continuation byte 191 (''BF''x) at byte position 9'</span></code>
 <code lineno="10"><span class="rx-cm">     9 : ''</span></code>
 <code lineno="11"><span class="rx-cm">    */</span></code>
 <code lineno="12">
@@ -2245,11 +2246,11 @@ graphemes.</p>
 <h4 id="graphemeatindexg">4.2.2.   graphemeAtIndexG</h4>
 <pre><code>.RexxUnicodeCodepointSupplier~graphemeAtIndexG(indexG)</code></pre>
 <p>Convenience method.<br />
-Advances the supplier to grapheme index <code>indexG</code> and returns
-the corresponding grapheme as a string.<br />
+Advances the supplier to grapheme position <code>indexG</code> and
+returns the corresponding grapheme as a string.<br />
 If <code>indexG</code> is less than the current grapheme index, the
 supplier raises an error (can only advance).<br />
-This method does not support negative indexes (indexes from the end of
+This method does not support negative indexes (counting from the end of
 the string).</p>
 <h4 id="index-1">4.2.3.   index</h4>
 <pre><code>.RexxUnicodeGraphemeSupplier~index(type=defaultIndexType)</code></pre>
@@ -2338,13 +2339,13 @@ indexer.</p>
 <code lineno="7"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errors</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="8"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="9"><span class="rx-cm">    an Array (shape [7], 7 items)</span></code>
-<code lineno="10"><span class="rx-cm">     1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point &gt; U+10FFFF)'</span></code>
-<code lineno="11"><span class="rx-cm">     2 : 'start byte-position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'</span></code>
-<code lineno="12"><span class="rx-cm">     3 : 'start byte-position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'</span></code>
-<code lineno="13"><span class="rx-cm">     4 : 'start byte-position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'</span></code>
-<code lineno="14"><span class="rx-cm">     5 : 'start byte-position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'</span></code>
-<code lineno="15"><span class="rx-cm">     6 : 'start byte-position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'</span></code>
-<code lineno="16"><span class="rx-cm">     7 : 'start byte-position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'</span></code>
+<code lineno="10"><span class="rx-cm">     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'</span></code>
+<code lineno="11"><span class="rx-cm">     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'</span></code>
+<code lineno="12"><span class="rx-cm">     3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'</span></code>
+<code lineno="13"><span class="rx-cm">     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'</span></code>
+<code lineno="14"><span class="rx-cm">     5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'</span></code>
+<code lineno="15"><span class="rx-cm">     6 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'</span></code>
+<code lineno="16"><span class="rx-cm">     7 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'</span></code>
 <code lineno="17"><span class="rx-cm">    */</span></code>
 <code lineno="18"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointAtIndexC</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">3</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- 65533</span></code>
 <code lineno="19"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">65533</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- ("�" \x{EFBFBD} U+FFFD So Other_Symbol "REPLACEMENT CHARACTER")</span></code>
@@ -2356,13 +2357,35 @@ indexer.</p>
 <p>The <code>RexxUnicodeStringIndexer</code> class defines no class
 methods of its own.</p>
 <h3 id="instance-methods-4">5.2.   Instance methods</h3>
-<h4 id="codepointatindexc-1">5.2.1.   CODEPOINTATINDEXC</h4>
+<h4 id="codepointatindexc-1">5.2.1.   codepointAtIndexC</h4>
+<pre><code>.RexxUnicodeStringIndexer~codepointAtIndexC(indexC)</code></pre>
+<p>Returns the codepoint at codepoint index <code>indexC</code> as an
+integer.</p>
+<p><code>indexC</code> must be a positive or negative whole
+number.<br />
+If <code>indexC</code> is negative, the codepoint index is counted from
+the end of the string.</p>
+<p>If <code>abs(indexC)</code> exceeds the codepoint count, or if the
+requested index is not stored in the indexer, an error is raised.</p>
+<p>For an explanation of storage, see
+<code>.RexxUnicodeStringIndexer~init</code>.</p>
 <h4 id="codepointcount">5.2.2.   codepointCount</h4>
 <pre><code>.RexxUnicodeStringIndexer~codepointCount</code></pre>
 <p>Returns the codepoint count calculated during the full scan performed
 when the indexer was initialized.<br />
 This result is not impacted by <code>codepointStorageLimit</code>.</p>
-<h4 id="codepointindexb">5.2.3.   CODEPOINTINDEXB</h4>
+<h4 id="codepointindexb">5.2.3.   codepointIndexB</h4>
+<pre><code>.RexxUnicodeStringIndexer~codepointIndexB(indexC)</code></pre>
+<p>Returns the byte index corresponding to codepoint index
+<code>indexC</code>.</p>
+<p><code>indexC</code> must be a positive or negative whole
+number.<br />
+If <code>indexC</code> is negative, the codepoint index is counted from
+the end of the string.</p>
+<p>If <code>abs(indexC)</code> exceeds the codepoint count, or if the
+requested index is not stored in the indexer, an error is raised.</p>
+<p>For an explanation of storage, see
+<code>.RexxUnicodeStringIndexer~init</code>.</p>
 <h4 id="codepointindexes">5.2.4.   CODEPOINTINDEXES</h4>
 <h4 id="codepointstoragelimit">5.2.5.   codepointStorageLimit</h4>
 <h4 id="endcodepointindexes">5.2.6.   ENDCODEPOINTINDEXES</h4>
@@ -2418,7 +2441,8 @@ default, no end storage is allocated (0).</p>
 <li><code>endErrorStorageSize</code></li>
 </ul>
 <p>The storage limits and end storage sizes allow fine-tuning of memory
-usage.</p>
+usage. They determine how many codepoint, grapheme, and error positions
+are stored in the indexer..</p>
 <p>There is nothing wrong with specifying an end storage size without
 specifying the corresponding storage limit, but doing so creates a
 redundant storage allocation.</p>
@@ -2460,7 +2484,7 @@ redundant storage allocation.</p>
 <code lineno="26"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errors</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="27"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="28"><span class="rx-cm">    an Array (shape [1], 1 items)</span></code>
-<code lineno="29"><span class="rx-cm">     1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point &gt; U+10FFFF)'</span></code>
+<code lineno="29"><span class="rx-cm">     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'</span></code>
 <code lineno="30"><span class="rx-cm">    */</span></code>
 <code lineno="31">
 </code></pre>
@@ -2484,7 +2508,7 @@ redundant storage allocation.</p>
 <code lineno="5"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*codepointStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*graphemeStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*errorStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*endCodepointStorageSize:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*endGraphemeStorageSize:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">)</span></code>
 <code lineno="6"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errorCount</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- 7</span></code>
 <code lineno="7"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errors</span><span class="rx-op">~</span><span class="rx-const rx-method">items</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- 1</span></code>
-<code lineno="8"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errors</span><span class="rx-spe">[</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">]</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point &gt; U+10FFFF)'</span></code>
+<code lineno="8"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errors</span><span class="rx-spe">[</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">]</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'</span></code>
 <code lineno="9"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">endGraphemeIndexes</span><span class="rx-spe">=</span><span class="rx-ws"> </span><span class="rx-lncm">-- [ 23, 22, 21, 19, 18]</span></code>
 <code lineno="10"><span class="rx-lncm">-- Pass -endIndexG, where a negative index means "index from the end"</span></code>
 <code lineno="11"><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">endIndexG</span><span class="rx-asg">=</span><span class="rx-int rx-ipart">1</span><span class="rx-ws"> </span><span class="rx-skw">to</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">endGraphemeIndexes</span><span class="rx-op">~</span><span class="rx-const rx-method">items</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">endIndexG</span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeAtIndexG</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-var">endIndexG</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
@@ -2507,7 +2531,78 @@ character.</p>
 RexxUnicodeCharacter.</p>
 <p><code>::requires "rxunicode.cls"</code></p>
 <h3 id="class-methods-5">6.1.   Class methods</h3>
-<h4 id="properties">6.1.1.   PROPERTIES</h4>
+<h4 id="properties">6.1.1.   properties</h4>
+<pre><code>.RexxUnicodeCharacter~properties</code></pre>
+<p>Returns an array of property names.</p>
+<p>These property names can be used as message names sent to a
+<code>RexxUnicodeCharacter</code> instance to get the corresponding
+property value.</p>
+<p>The <code>RexxUnicodeCharacter~info(codepoint)</code> method uses
+these property names to build a table of property-value.</p>
+<p><strong>Example</strong></p>
+<div class="highlight-rexx-vim-light-zellner">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">properties</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="2"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="3"><span class="rx-cm">    an Array (shape [27], 24 items)</span></code>
+<code lineno="4"><span class="rx-cm">     1  : 'bidiClass'</span></code>
+<code lineno="5"><span class="rx-cm">     2  : 'bidiClassName'</span></code>
+<code lineno="6"><span class="rx-cm">     3  : 'bidiMirrored'</span></code>
+<code lineno="7"><span class="rx-cm">     4  : 'boundClass'</span></code>
+<code lineno="8"><span class="rx-cm">     5  : 'boundClassName'</span></code>
+<code lineno="9"><span class="rx-cm">     6  : 'category'</span></code>
+<code lineno="10"><span class="rx-cm">     7  : 'categoryName'</span></code>
+<code lineno="11"><span class="rx-cm">     8  : 'charWidth'</span></code>
+<code lineno="12"><span class="rx-cm">     9  : 'codepoint'</span></code>
+<code lineno="13"><span class="rx-cm">     10 : 'combiningClass'</span></code>
+<code lineno="14"><span class="rx-cm">     11 : 'controlBoundary'</span></code>
+<code lineno="15"><span class="rx-cm">     12 : 'decompositionTypeName'</span></code>
+<code lineno="16"><span class="rx-cm">     13 : 'decompositionType'</span></code>
+<code lineno="17"><span class="rx-cm">     14 : 'eastAsianWidthIsAmbiguous'</span></code>
+<code lineno="18"><span class="rx-cm">     15 : 'extendedName'</span></code>
+<code lineno="19"><span class="rx-cm">     16 : 'ignorable'</span></code>
+<code lineno="20"><span class="rx-cm">     17 : 'isLower'</span></code>
+<code lineno="21"><span class="rx-cm">     18 : 'isUpper'</span></code>
+<code lineno="22"><span class="rx-cm">     19 : 'name'</span></code>
+<code lineno="23"><span class="rx-cm">     20 : 'nameAlias'</span></code>
+<code lineno="24"><span class="rx-cm">     21 : 'toLower'</span></code>
+<code lineno="25"><span class="rx-cm">     23 : 'toTitle'</span></code>
+<code lineno="26"><span class="rx-cm">     25 : 'toUpper'</span></code>
+<code lineno="27"><span class="rx-cm">     27 : 'UTF8'</span></code>
+<code lineno="28"><span class="rx-cm">    */</span></code>
+<code lineno="29">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner">
+<pre><code lineNo="1"><span class="rx-var">c</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">character</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">€</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">message</span><span class="rx-ws"> </span><span class="rx-skw">over</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">properties</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">message</span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">c</span><span class="rx-op">~</span><span class="rx-const rx-method">send</span><span class="rx-spe">(</span><span class="rx-var">message</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
+<code lineno="2"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="3"><span class="rx-cm">    bidiClass: ET</span></code>
+<code lineno="4"><span class="rx-cm">    bidiClassName: European_Terminator</span></code>
+<code lineno="5"><span class="rx-cm">    bidiMirrored: 0</span></code>
+<code lineno="6"><span class="rx-cm">    boundClass: XX</span></code>
+<code lineno="7"><span class="rx-cm">    boundClassName: Other</span></code>
+<code lineno="8"><span class="rx-cm">    category: Sc</span></code>
+<code lineno="9"><span class="rx-cm">    categoryName: Currency_Symbol</span></code>
+<code lineno="10"><span class="rx-cm">    charWidth: 1</span></code>
+<code lineno="11"><span class="rx-cm">    codepoint: 8364</span></code>
+<code lineno="12"><span class="rx-cm">    combiningClass: 0</span></code>
+<code lineno="13"><span class="rx-cm">    controlBoundary: 0</span></code>
+<code lineno="14"><span class="rx-cm">    decompositionTypeName: Code point not explicitly listed for Decomposition_Type</span></code>
+<code lineno="15"><span class="rx-cm">    decompositionType: None</span></code>
+<code lineno="16"><span class="rx-cm">    eastAsianWidthIsAmbiguous: 1</span></code>
+<code lineno="17"><span class="rx-cm">    extendedName: EURO SIGN</span></code>
+<code lineno="18"><span class="rx-cm">    ignorable: 0</span></code>
+<code lineno="19"><span class="rx-cm">    isLower: 0</span></code>
+<code lineno="20"><span class="rx-cm">    isUpper: 0</span></code>
+<code lineno="21"><span class="rx-cm">    name: EURO SIGN</span></code>
+<code lineno="22"><span class="rx-cm">    nameAlias: </span></code>
+<code lineno="23"><span class="rx-cm">    toLower: 8364</span></code>
+<code lineno="24"><span class="rx-cm">    toTitle: 8364</span></code>
+<code lineno="25"><span class="rx-cm">    toUpper: 8364</span></code>
+<code lineno="26"><span class="rx-cm">    UTF8: €</span></code>
+<code lineno="27"><span class="rx-cm">    */</span></code>
+<code lineno="28">
+</code></pre>
+</div>
 <h3 id="instance-methods-5">6.2.   Instance methods</h3>
 <h4 id="bidiclass">6.2.1.   BIDICLASS</h4>
 <h4 id="bidiclassname">6.2.2.   BIDICLASSNAME</h4>
@@ -2524,23 +2619,30 @@ RexxUnicodeCharacter.</p>
 <h4 id="controlboundary">6.2.13.   CONTROLBOUNDARY</h4>
 <h4 id="decompositiontype">6.2.14.   DECOMPOSITIONTYPE</h4>
 <h4 id="decompositiontypename">6.2.15.   DECOMPOSITIONTYPENAME</h4>
-<h4 id="extendedname">6.2.16.   EXTENDEDNAME</h4>
-<h4 id="ignorable">6.2.17.   IGNORABLE</h4>
-<h4 id="info-1">6.2.18.   INFO</h4>
-<h4 id="init-3">6.2.19.   INIT</h4>
-<h4 id="islower">6.2.20.   ISLOWER</h4>
-<h4 id="isupper">6.2.21.   ISUPPER</h4>
-<h4 id="name">6.2.22.   NAME</h4>
-<h4 id="namealias">6.2.23.   NAMEALIAS</h4>
-<h4 id="string-1">6.2.24.   STRING</h4>
-<h4 id="tolower">6.2.25.   TOLOWER</h4>
-<h4 id="tolowerfull">6.2.26.   TOLOWERFULL</h4>
-<h4 id="totitle">6.2.27.   TOTITLE</h4>
-<h4 id="totitlefull">6.2.28.   TOTITLEFULL</h4>
-<h4 id="toupper">6.2.29.   TOUPPER</h4>
-<h4 id="toupperfull">6.2.30.   TOUPPERFULL</h4>
-<h4 id="uname">6.2.31.   UNAME</h4>
-<h4 id="utf8">6.2.32.   UTF8</h4>
+<h4
+id="codepointeastasianwidthisambiguous-1">6.2.16.   codepointEastAsianWidthIsAmbiguous</h4>
+<pre><code>.RexxUnicodeCharacter~eastAsianWidthIsAmbiguous</code></pre>
+<p>Returns <code>.true</code> if the <code>East_Asian_Width</code>
+property value is <code>"A"</code> (<code>"Ambiguous"</code>).</p>
+<p><a href="https://www.unicode.org/reports/tr11/"
+title="Standard Annex #11 East Asian Width">https://www.unicode.org/reports/tr11/</a></p>
+<h4 id="extendedname">6.2.17.   EXTENDEDNAME</h4>
+<h4 id="ignorable">6.2.18.   IGNORABLE</h4>
+<h4 id="info-1">6.2.19.   INFO</h4>
+<h4 id="init-3">6.2.20.   INIT</h4>
+<h4 id="islower">6.2.21.   ISLOWER</h4>
+<h4 id="isupper">6.2.22.   ISUPPER</h4>
+<h4 id="name">6.2.23.   NAME</h4>
+<h4 id="namealias">6.2.24.   NAMEALIAS</h4>
+<h4 id="string-1">6.2.25.   STRING</h4>
+<h4 id="tolower">6.2.26.   TOLOWER</h4>
+<h4 id="tolowerfull">6.2.27.   TOLOWERFULL</h4>
+<h4 id="totitle">6.2.28.   TOTITLE</h4>
+<h4 id="totitlefull">6.2.29.   TOTITLEFULL</h4>
+<h4 id="toupper">6.2.30.   TOUPPER</h4>
+<h4 id="toupperfull">6.2.31.   TOUPPERFULL</h4>
+<h4 id="uname">6.2.32.   UNAME</h4>
+<h4 id="utf8">6.2.33.   UTF8</h4>
 <h2 id="icu4oorexxinterface-class">7.   ICU4ooRexxInterface Class</h2>
 <p><code>::requires "rxunicode.cls"</code></p>
 <h3 id="class-methods-6">7.1.   Class methods</h3>

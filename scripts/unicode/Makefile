@@ -7,7 +7,8 @@
 # Under Windows, nmake will ignore GNUmakefile and use Makefile.
 
 # ooRexxShell scripts in the current directory
-ooRexxShellFiles = diary_examples
+ooRexxShellFiles = diary_examples \
+                   rxunicode_examples
 
 # ooRexx scripts in the current directory
 scriptsFiles = controlBoundary_test \

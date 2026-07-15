@@ -675,7 +675,7 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 
 ```
 
-Returns the next codepoint (an integer) at position `indexB` of `string`, or -1 in case of error.
+Returns the next codepoint (an integer) at byte index `indexB` of `string`, or -1 in case of error.
 
 `refSizeB` receives the size in bytes of the decoded codepoint.  
 If `indexB` is outside the `string` index range, the received size is 0.  
@@ -686,11 +686,11 @@ to follow the `U+FFFD` Substitution of Maximal Subparts.
 **Error codes and messages:**
 
 ```
-- "CONTINUATION_ERROR_RANGE"        "Invalid continuation byte %i ('%02X'x) at byte-position %zu (codepoint > U+10FFFF)"
-- "CONTINUATION_HIGH_SURROGATE"     "Invalid continuation byte %i ('%02X'x) at byte-position %zu (high surrogate)"
-- "CONTINUATION_LOW_SURROGATE"      "Invalid continuation byte %i ('%02X'x) at byte-position %zu (low surrogate)"
-- "CONTINUATION"                    "Invalid continuation byte %i ('%02X'x) at byte-position %zu"
-- "CONTINUATION_NON_SHORTEST_FORM"  "Invalid continuation byte %i ('%02X'x) at byte-position %zu (non-shortest form)"
+- "CONTINUATION_ERROR_RANGE"        "Invalid continuation byte %i ('%02X'x) at byte position %zu (codepoint > U+10FFFF)"
+- "CONTINUATION_HIGH_SURROGATE"     "Invalid continuation byte %i ('%02X'x) at byte position %zu (high surrogate)"
+- "CONTINUATION_LOW_SURROGATE"      "Invalid continuation byte %i ('%02X'x) at byte position %zu (low surrogate)"
+- "CONTINUATION"                    "Invalid continuation byte %i ('%02X'x) at byte position %zu"
+- "CONTINUATION_NON_SHORTEST_FORM"  "Invalid continuation byte %i ('%02X'x) at byte position %zu (non-shortest form)"
 - "START_ERROR_RANGE"               "Invalid start byte %i ('%02X'x) (codepoint > U+10FFFF)"
 - "START_NON_SHORTEST_FORM"         "Invalid start byte %i ('%02X'x) (non-shortest form)"
 - "TRUNCATED"                       "Truncated, expected %i bytes"
@@ -711,7 +711,7 @@ to follow the `U+FFFD` Substitution of Maximal Subparts.
     end
     else do
         if sizeB < 0 then do
-            error = "start byte-position" indexB ":" errorMsg
+            error = "start byte position" indexB ":" errorMsg
             codepoint = "FFFD"~x2d -- the current byte sequence is invalid, return the replacement character
             indexB = -indexB -- same convention as .RexxUnicodeStringIndexer; a negative index indicates an invalid byte sequence
         end
@@ -1619,10 +1619,10 @@ If provided, `indexer` receives a `RexxUnicodeStringIndexer` instance.
 indexer~errors==
     /*
     an Array (shape [4], 4 items)
-     1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
-     2 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
-     3 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
-     4 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'
+     1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'
+     2 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+     3 : 'start byte position 4 : Invalid continuation byte 145 (''91''x) at byte position 7'
+     4 : 'start byte position 7 : Invalid continuation byte 191 (''BF''x) at byte position 9'
     */
 
 ```
@@ -2077,10 +2077,10 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
     /*
     a RexxUnicodeCodepointSupplier 
-    -1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
-    -3 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
-    -4 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
-    -7 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'
+    -1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'
+    -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+    -4 : 'start byte position 4 : Invalid continuation byte 145 (''91''x) at byte position 7'
+    -7 : 'start byte position 7 : Invalid continuation byte 191 (''BF''x) at byte position 9'
      9 : ''
     */
 
@@ -2106,9 +2106,11 @@ Returns `.false` if the supplier has already enumerated all codepoints.
     .RexxUnicodeCodepointSupplier~codepointAtIndexC(indexC)
 
 Convenience method.  
-Advances the supplier to codepoint index `indexC` and returns the corresponding codepoint as an integer.  
-If `indexC` is less than the current codepoint index, the supplier raises an error (can only advance).  
-This method does not support negative indexes (indexes from the end of the string).
+Advances the supplier to codepoint position `indexC` and returns the corresponding codepoint as an integer.  
+`indexC` must be a positive whole number.  
+If `indexC` is less than the current codepoint index, the supplier raises an error (can only advance).
+
+This method does not support negative indexes (counting from the end of the string).
 
 
 #### 3.2.3.   index
@@ -2284,10 +2286,10 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
     /*
     a RexxUnicodeGraphemeSupplier 
-    -1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
-    -3 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
-    -4 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
-    -7 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'
+    -1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'
+    -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+    -4 : 'start byte position 4 : Invalid continuation byte 145 (''91''x) at byte position 7'
+    -7 : 'start byte position 7 : Invalid continuation byte 191 (''BF''x) at byte position 9'
      9 : ''
     */
 
@@ -2313,9 +2315,9 @@ Returns `.false` if the supplier has already enumerated all graphemes.
     .RexxUnicodeCodepointSupplier~graphemeAtIndexG(indexG)
 
 Convenience method.  
-Advances the supplier to grapheme index `indexG` and returns the corresponding grapheme as a string.  
+Advances the supplier to grapheme position `indexG` and returns the corresponding grapheme as a string.  
 If `indexG` is less than the current grapheme index, the supplier raises an error (can only advance).  
-This method does not support negative indexes (indexes from the end of the string).
+This method does not support negative indexes (counting from the end of the string).
 
 
 #### 4.2.3.   index
@@ -2409,13 +2411,13 @@ indexer~graphemeIndexes=            -- [-1,-2,-3,-4,-5, 6,-7,-8, 9]
 indexer~errors==
     /*
     an Array (shape [7], 7 items)
-     1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
-     2 : 'start byte-position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
-     3 : 'start byte-position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
-     4 : 'start byte-position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
-     5 : 'start byte-position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
-     6 : 'start byte-position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
-     7 : 'start byte-position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+     3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+     5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+     6 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+     7 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
     */
 indexer~codepointAtIndexC(3)=       -- 65533
 .RexxUnicodeCharacter~new(65533)=   -- ("�" \x{EFBFBD} U+FFFD So Other_Symbol "REPLACEMENT CHARACTER")
@@ -2431,7 +2433,18 @@ The `RexxUnicodeStringIndexer` class defines no class methods of its own.
 
 ### 5.2.   Instance methods
 
-#### 5.2.1.   CODEPOINTATINDEXC
+#### 5.2.1.   codepointAtIndexC
+
+    .RexxUnicodeStringIndexer~codepointAtIndexC(indexC)
+
+Returns the codepoint at codepoint index `indexC` as an integer.
+
+`indexC` must be a positive or negative whole number.  
+If `indexC` is negative, the codepoint index is counted from the end of the string.
+
+If `abs(indexC)` exceeds the codepoint count, or if the requested index is not stored in the indexer, an error is raised.
+
+For an explanation of storage, see `.RexxUnicodeStringIndexer~init`.
 
 
 #### 5.2.2.   codepointCount
@@ -2442,7 +2455,18 @@ Returns the codepoint count calculated during the full scan performed when the i
 This result is not impacted by `codepointStorageLimit`.
 
 
-#### 5.2.3.   CODEPOINTINDEXB
+#### 5.2.3.   codepointIndexB
+
+    .RexxUnicodeStringIndexer~codepointIndexB(indexC)
+
+Returns the byte index corresponding to codepoint index `indexC`.
+
+`indexC` must be a positive or negative whole number.  
+If `indexC` is negative, the codepoint index is counted from the end of the string.
+
+If `abs(indexC)` exceeds the codepoint count, or if the requested index is not stored in the indexer, an error is raised.
+
+For an explanation of storage, see `.RexxUnicodeStringIndexer~init`.
 
 
 #### 5.2.4.   CODEPOINTINDEXES
@@ -2535,6 +2559,7 @@ End storage sizes can be specified when creating the indexer; by default, no end
 - `endErrorStorageSize`
 
 The storage limits and end storage sizes allow fine-tuning of memory usage.
+They determine how many codepoint, grapheme, and error positions are stored in the indexer..
 
 There is nothing wrong with specifying an end storage size without specifying the corresponding storage limit, but doing so creates a redundant storage allocation.
 
@@ -2577,7 +2602,7 @@ indexer~errorStorageLimit=          -- 1
 indexer~errors==
     /*
     an Array (shape [1], 1 items)
-     1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
+     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
     */
 
 ```
@@ -2601,7 +2626,7 @@ string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
 indexer = .RexxUnicodeStringIndexer~new(string, /*codepointStorageLimit:*/ 0, /*graphemeStorageLimit:*/ 0, /*errorStorageLimit:*/ 1, /*endCodepointStorageSize:*/ 0, /*endGraphemeStorageSize:*/ 5)
 indexer~errorCount=         -- 7
 indexer~errors~items=       -- 1
-indexer~errors[1]=          -- 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
+indexer~errors[1]=          -- 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
 indexer~endGraphemeIndexes= -- [ 23, 22, 21, 19, 18]
 -- Pass -endIndexG, where a negative index means "index from the end"
 do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~graphemeAtIndexG(-endIndexG); end
@@ -2754,64 +2779,64 @@ c = .RexxUnicode~character("€"); do message over .RexxUnicodeCharacter~propert
 #### 6.2.15.   DECOMPOSITIONTYPENAME
 
 
-#### codepointEastAsianWidthIsAmbiguous
+#### 6.2.16.   codepointEastAsianWidthIsAmbiguous
 
-    .RexxUnicodeCharacter~eastAsianWidthIsAmbiguous(codepoint)
+    .RexxUnicodeCharacter~eastAsianWidthIsAmbiguous
 
-Returns `.true` if the `East_Asian_Width` property value of `codepoint` is `"A"` (`"Ambiguous"`).
+Returns `.true` if the `East_Asian_Width` property value is `"A"` (`"Ambiguous"`).
 
 [https://www.unicode.org/reports/tr11/][unicode_standard_annex_11]
 
 
-#### 6.2.16.   EXTENDEDNAME
+#### 6.2.17.   EXTENDEDNAME
 
 
-#### 6.2.17.   IGNORABLE
+#### 6.2.18.   IGNORABLE
 
 
-#### 6.2.18.   INFO
+#### 6.2.19.   INFO
 
 
-#### 6.2.19.   INIT
+#### 6.2.20.   INIT
 
 
-#### 6.2.20.   ISLOWER
+#### 6.2.21.   ISLOWER
 
 
-#### 6.2.21.   ISUPPER
+#### 6.2.22.   ISUPPER
 
 
-#### 6.2.22.   NAME
+#### 6.2.23.   NAME
 
 
-#### 6.2.23.   NAMEALIAS
+#### 6.2.24.   NAMEALIAS
 
 
-#### 6.2.24.   STRING
+#### 6.2.25.   STRING
 
 
-#### 6.2.25.   TOLOWER
+#### 6.2.26.   TOLOWER
 
 
-#### 6.2.26.   TOLOWERFULL
+#### 6.2.27.   TOLOWERFULL
 
 
-#### 6.2.27.   TOTITLE
+#### 6.2.28.   TOTITLE
 
 
-#### 6.2.28.   TOTITLEFULL
+#### 6.2.29.   TOTITLEFULL
 
 
-#### 6.2.29.   TOUPPER
+#### 6.2.30.   TOUPPER
 
 
-#### 6.2.30.   TOUPPERFULL
+#### 6.2.31.   TOUPPERFULL
 
 
-#### 6.2.31.   UNAME
+#### 6.2.32.   UNAME
 
 
-#### 6.2.32.   UTF8
+#### 6.2.33.   UTF8
 
 ## 7.   ICU4ooRexxInterface Class
 

@@ -963,7 +963,7 @@ How other languages are supporting escape characters for Unicode:
     end
     else do
         if sizeB < 0 then do
-            error = "start byte-position" indexB ":" errorMsg
+            error = "start byte position" indexB ":" errorMsg
             codepoint = "FFFD"~x2d -- the current byte sequence is invalid, return the replacement character
             indexB = -indexB -- same convention as .RexxUnicodeStringIndexer; a negative index indicates an invalid byte sequence
         end
@@ -1174,7 +1174,7 @@ Maybe it can be simplified...
         if debug then say "            indexB ==" indexB
         if debug then say "            previousCodepoint ==" previousCodepoint
         if debug then say "            codepoint ==" codepoint
-        errorMsg = "start byte-position" indexB ":" errorMsg
+        errorMsg = "start byte position" indexB ":" errorMsg
         call appendGraphemeIndex -indexB, errorMsg -- a negative index means "error"
         graphemeBreakArgs[3] = 0 -- reset the extended grapheme state
         previousCodepoint = codepoint
@@ -1442,7 +1442,7 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 
     error:
         errorCount += 1
-        errorMsg = "start byte-position" indexB ":" errorMsg
+        errorMsg = "start byte position" indexB ":" errorMsg
         if errorCount <= errorStorageLimit then errors~append(errorMsg)
         if endErrorStorageSize > 0 then endErrors~append(errorMsg)
 
@@ -1461,7 +1461,7 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
         signal forever
 
 
--- Converts a codepoint index into a byte index
+-- Converts a codepoint index to a byte index
 ::method codepointIndexB
     expose string codepointIndexes endCodepointIndexes codepointCount codepointStorageLimit
     use strict arg indexC
@@ -1522,7 +1522,7 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     return .RexxUnicode~utf8DecodeCodepoint(string, startB) -- yes, must decode to return the codepoint as an integer
 
 
--- Converts a grapheme index into a byte index
+-- Converts a grapheme index to a byte index
 ::method graphemeIndexB
     expose string graphemeIndexes lastGraphemeSuccessorIndex endGraphemeIndexes graphemeCount graphemeStorageLimit
     use strict arg indexG, plus1 = .false

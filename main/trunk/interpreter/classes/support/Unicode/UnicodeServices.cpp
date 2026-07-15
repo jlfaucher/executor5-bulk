@@ -228,11 +228,11 @@ ssize_t integer(RexxObject *obj, const char *errorMessage)
 // To return the error message CONTINUATION_ERROR_RANGE___MSG3,
 // use the macro DECODE_ERROR_3 because the message takes 3 arguments,
 // and pass the ident CONTINUATION_ERROR_RANGE, the 3 arguments and the returned value.
-#define CONTINUATION_ERROR_RANGE___MSG3 "Invalid continuation byte %i ('%02X'x) at byte-position %zu (code point > U+10FFFF)"
-#define CONTINUATION_HIGH_SURROGATE___MSG3 "Invalid continuation byte %i ('%02X'x) at byte-position %zu (high surrogate)"
-#define CONTINUATION_LOW_SURROGATE___MSG3 "Invalid continuation byte %i ('%02X'x) at byte-position %zu (low surrogate)"
-#define CONTINUATION___MSG3 "Invalid continuation byte %i ('%02X'x) at byte-position %zu"
-#define CONTINUATION_NON_SHORTEST_FORM___MSG3 "Invalid continuation byte %i ('%02X'x) at byte-position %zu (non-shortest form)"
+#define CONTINUATION_ERROR_RANGE___MSG3 "Invalid continuation byte %i ('%02X'x) at byte position %zu (code point > U+10FFFF)"
+#define CONTINUATION_HIGH_SURROGATE___MSG3 "Invalid continuation byte %i ('%02X'x) at byte position %zu (high surrogate)"
+#define CONTINUATION_LOW_SURROGATE___MSG3 "Invalid continuation byte %i ('%02X'x) at byte position %zu (low surrogate)"
+#define CONTINUATION___MSG3 "Invalid continuation byte %i ('%02X'x) at byte position %zu"
+#define CONTINUATION_NON_SHORTEST_FORM___MSG3 "Invalid continuation byte %i ('%02X'x) at byte position %zu (non-shortest form)"
 #define START_ERROR_RANGE___MSG2 "Invalid start byte %i ('%02X'x) (code point > U+10FFFF)"
 #define START_NON_SHORTEST_FORM___MSG2 "Invalid start byte %i ('%02X'x) (non-shortest form)"
 #define TRUNCATED___MSG1 "Truncated, expected %i bytes"

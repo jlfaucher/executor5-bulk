@@ -26,6 +26,16 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 [Unicode]
 
+Add regression test rxunicode_examples.oorexxshell.
+
+"byte-position" replaced by "byte position" everywhere.
+
+
+===============================================================================
+2026 July 15
+
+[Unicode]
+
 utf8proc facade: Add the wrapper function
     RexxInteger *codepointEastAsianWidthIsAmbiguous(RexxInteger *rexxCodepoint); // boolean
 
@@ -125,7 +135,7 @@ Examples
     -- The specified error storage limit is 1
     indexer~errorCount=                 -- 7
     indexer~errorStorageLimit=          -- 1
-    indexer~errors[1]=                  -- 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
+    indexer~errors[1]=                  -- 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
 
     -- Collect counters, no need to store indexes and errors
     string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
@@ -140,7 +150,7 @@ Examples
     indexer = .RexxUnicodeStringIndexer~new(string, /*codepointStorageLimit:*/ 0, /*graphemeStorageLimit:*/ 0, /*errorStorageLimit:*/ 1, /*endCodepointStorageSize:*/ 0, /*endGraphemeStorageSize:*/ 5)
     indexer~errorCount=                 -- 7
     indexer~errors~items=               -- 1
-    indexer~errors[1]=                  -- 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
+    indexer~errors[1]=                  -- 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
     indexer~endCodepointStorageSize=    -- 0
     indexer~endCodepointIndexes=        -- (The NIL object)
     indexer~endGraphemeStorageSize=     -- 5
@@ -674,7 +684,7 @@ Fix .RexxUnicodeServices~utf8DecodeCodepoint
         -1
         -2
         'CONTINUATION'
-        'Invalid continuation byte 191 (''BF''x) at byte-position 3'
+        'Invalid continuation byte 191 (''BF''x) at byte position 3'
 
 
 [Unicode]
@@ -739,10 +749,10 @@ Examples
     .RexxUnicode~stringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >indexer)=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
     indexer~errors==
         an Array (shape [4], 4 items)
-         1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
-         2 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
-         3 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
-         4 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'
+         1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'
+         2 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+         3 : 'start byte position 4 : Invalid continuation byte 145 (''91''x) at byte position 7'
+         4 : 'start byte position 7 : Invalid continuation byte 191 (''BF''x) at byte position 9'
 
     .RexxUnicode~stringIsASCII("Noel")=     -- 1
     .RexxUnicode~stringIsASCII("Noël")=     -- 0
@@ -973,13 +983,13 @@ Examples
     indexer~graphemeIndexes=            -- [-1,-2,-3,-4,-5, 6,-7,-8, 9]
     indexer~errors==
         an Array (shape [7], 7 items)
-         1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
-         2 : 'start byte-position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
-         3 : 'start byte-position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
-         4 : 'start byte-position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
-         5 : 'start byte-position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
-         6 : 'start byte-position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
-         7 : 'start byte-position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+         1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+         2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+         3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+         4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+         5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+         6 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+         7 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
     indexer~codepointAtIndexC(3)=       -- 65533
     .RexxUnicodeCharacter~new(65533)=   -- ("�" \x{EFBFBD} U+FFFD So Other_Symbol "REPLACEMENT CHARACTER")
     indexer~graphemeAtIndexG(3)~c2x=    -- 92 (use ~c2x to not display an invalid byte sequence)
@@ -1183,53 +1193,53 @@ Examples
     -- Codepoint supplier providing the byte index and the error message
     .RexxUnicodeCodepointSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "e")==
         a RexxUnicodeCodepointSupplier
-        -1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
-        -2 : 'start byte-position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
-        -3 : 'start byte-position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
-        -4 : 'start byte-position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
-        -5 : 'start byte-position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+        -1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+        -2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+        -3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+        -4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+        -5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
          6 : ''
-        -7 : 'start byte-position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
-        -8 : 'start byte-position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+        -7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+        -8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
          9 : ''
 
     -- Grapheme supplier providing the byte index and the error message
     .RexxUnicodeGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "e")==
         a RexxUnicodeGraphemeSupplier
-        -1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
-        -2 : 'start byte-position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
-        -3 : 'start byte-position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
-        -4 : 'start byte-position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
-        -5 : 'start byte-position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+        -1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+        -2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+        -3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+        -4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+        -5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
          6 : ''
-        -7 : 'start byte-position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
-        -8 : 'start byte-position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+        -7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+        -8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
          9 : ''
 
     -- Test case: the last codepoint byte sequence is invalid
     .RexxUnicodeCodepointSupplier~new("F4 91 92 93 FF 41 80 BF"x, "b", "e")==
         a RexxUnicodeCodepointSupplier
-        -1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
-        -2 : 'start byte-position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
-        -3 : 'start byte-position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
-        -4 : 'start byte-position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
-        -5 : 'start byte-position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+        -1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+        -2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+        -3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+        -4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+        -5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
          6 : ''
-        -7 : 'start byte-position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
-        -8 : 'start byte-position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+        -7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+        -8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
         Duration: 0.001569
 
     -- Test case: the last grapheme byte sequence is invalid
     .RexxUnicodeGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF"x, "b", "e")==
         a RexxUnicodeGraphemeSupplier
-        -1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
-        -2 : 'start byte-position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
-        -3 : 'start byte-position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
-        -4 : 'start byte-position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
-        -5 : 'start byte-position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+        -1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+        -2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+        -3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+        -4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+        -5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
          6 : ''
-        -7 : 'start byte-position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
-        -8 : 'start byte-position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+        -7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+        -8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
 
     ----------------------------------------------------------------------------
     -- Invalid string - U+FFFD Substitution of Maximal Subparts
@@ -1278,36 +1288,36 @@ Examples
     -- Codepoint supplier providing the byte index and the error message
     .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
         a RexxUnicodeCodepointSupplier
-        -1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
-        -3 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
-        -4 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
-        -7 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'
+        -1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'
+        -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+        -4 : 'start byte position 4 : Invalid continuation byte 145 (''91''x) at byte position 7'
+        -7 : 'start byte position 7 : Invalid continuation byte 191 (''BF''x) at byte position 9'
          9 : ''
 
     -- Grapheme supplier providing the byte index and the error message
     .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
         a RexxUnicodeGraphemeSupplier
-        -1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
-        -3 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
-        -4 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
-        -7 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'
+        -1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'
+        -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+        -4 : 'start byte position 4 : Invalid continuation byte 145 (''91''x) at byte position 7'
+        -7 : 'start byte position 7 : Invalid continuation byte 191 (''BF''x) at byte position 9'
          9 : ''
 
     -- Test case: the last codepoint byte sequence is invalid
     .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF"x, "b", "e")==
         a RexxUnicodeCodepointSupplier
-        -1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
-        -3 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
-        -4 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
-        -7 : 'start byte-position 7 : Truncated, expected 4 bytes'
+        -1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'
+        -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+        -4 : 'start byte position 4 : Invalid continuation byte 145 (''91''x) at byte position 7'
+        -7 : 'start byte position 7 : Truncated, expected 4 bytes'
 
     -- Test case: the last grapheme byte sequence is invalid
     .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF"x, "b", "e")==
         a RexxUnicodeGraphemeSupplier
-        -1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
-        -3 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
-        -4 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
-        -7 : 'start byte-position 7 : Truncated, expected 4 bytes'
+        -1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'
+        -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+        -4 : 'start byte position 4 : Invalid continuation byte 145 (''91''x) at byte position 7'
+        -7 : 'start byte position 7 : Truncated, expected 4 bytes'
 
 
 Add .RexxUnicode~stringUnescape(string, buffer=.nil)

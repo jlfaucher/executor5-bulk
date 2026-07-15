@@ -415,7 +415,7 @@ Helpers for direct access to codepoints and graphemes
     signal forever
 
     error:
-        errors~append("start byte-position" indexB ":" errorMsg)
+        errors~append("start byte position" indexB ":" errorMsg)
         codepointIndexes~append(-indexB) -- a negative index means "error"
         graphemeIndexes~append(-indexB) -- idem
         graphemeBreakArgs[3] = 0 -- reset the extended grapheme state

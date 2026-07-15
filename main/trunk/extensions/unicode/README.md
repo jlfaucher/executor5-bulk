@@ -19,11 +19,18 @@ Demo / Validation:
 - [`RexxUnicode_test.rex`][RexxUnicode_test]: depends on `RexxUnicode` (optionally using ICU4ooRexx).
 - [`RexxUnicode_test-out-ref.txt`][RexxUnicode_test_output]: script's output.
 
-The `rxunicode` library provides additional classes built on the `RexxUnicodeServices` and `RexxUnicode` classes. The complete reference documentation is available here:
+The `rxunicode` library provides additional classes built on the `RexxUnicodeServices` and `RexxUnicode` classes.
+
+**Reference documentation:**
 
 - [Markdown documentation][rxunicode_documentation_md].
 - [HTML documentation][rxunicode_documentation_html].
-- [rxunicode examples][rxunicode_examples] from the development diary.
+
+**Examples**
+
+- [rxunicode documentation examples][rxunicode_documentation_examples].
+- [Unicode diary examples][unicode_diary_examples].
+
 
 ## ICU4ooRexx library
 
@@ -51,7 +58,8 @@ If you don't have `ICU4C` installed and want to try it, follow the instructions 
 [RexxUnicodeServices]: https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/rxunicode.md#1rexxunicodeservices-class "RexxUnicodeServices class"
 [RexxUnicodeServices_test]: https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/unicode/RexxUnicodeServices_test.rex "RexxUnicodeServices_test.rex"
 [RexxUnicodeServices_test_output]: https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/unicode/RexxUnicodeServices_test-out-ref.txt "RexxUnicodeServices_test-out-ref.txt"
+[rxunicode_documentation_examples]: https://htmlpreview.github.io/?https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/unicode/rxunicode_examples-out.html "rxunicode documentation examples"
 [rxunicode_documentation_md]: https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/rxunicode.md "rxunicode markdown documentation"
 [rxunicode_documentation_html]: https://htmlpreview.github.io/?https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/rxunicode.html "rxunicode HTML documentation"
-[rxunicode_examples]: https://htmlpreview.github.io/?https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/unicode/diary_examples-out.html "Unicode examples"
+[unicode_diary_examples]: https://htmlpreview.github.io/?https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/unicode/diary_examples-out.html "Unicode diary examples"
 [utf8proc]: https://juliastrings.github.io/utf8proc/ "utf8proc"
