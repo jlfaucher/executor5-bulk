@@ -22,6 +22,50 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 July 16
+
+[Unicode]
+
+Replace "integer" by "whole number".
+
+Revise the option letters for RexxUnicodeCodepointSupplier:
+
+    index
+        "c" -> ""
+        - If `type`is `""`, the codepoint index is returned (the default index type).
+        - If `type` is `"b"`, the byte index is returned (it is negative if the byte sequence is invalid).
+
+    item
+        "c" -> ""
+        "h" -> "x"
+        - "" to return the codepoint as a whole number (default)
+        - "b" to return the codepoint byte sequence as a string
+        - "e" to return the error message or ""
+        - "u" to return the codepoint in U+ notation
+        - "x" to return the codepoint byte sequence as hexadecimal digits
+        - "\" to return the codepoint byte sequence as an escaped string
+        - a class to return a new instance of that class, initialized with the result of item("")
+
+Revise the option letters for RexxUnicodeGraphemeSupplier:
+
+    index
+        "g" -> ""
+        - If `type`is `""`, the grapheme index is returned (the default index type).
+        - If `type` is `"b"`, the byte index is returned (it is negative if the byte sequence is invalid).
+
+    item
+        "g" -> ""
+        "h" -> "x"
+        - "" to return the grapheme as a string (default option)
+        - "b" to return the grapheme byte sequence as a string (same as "")
+        - "e" to return the error message or ""
+        - "u" to return the grapheme codepoints in U+ notation
+        - "x" to return the grapheme byte sequence as hexadecimal digits
+        - "\" to return the grapheme byte sequence as an escaped string
+        - a class to return a new instance of that class, initialized with the result of item("")
+
+
+===============================================================================
 2026 July 15
 
 [Unicode]
@@ -1004,7 +1048,7 @@ Examples
 
     -- Codepoint supplier
     -- the default index type is the codepoint index
-    -- the default item type is the codepoint as an integer
+    -- the default item type is the codepoint as a whole number
     .RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅")==
         a RexxUnicodeCodepointSupplier
          1  :  110
@@ -1050,7 +1094,7 @@ Examples
          27 : '\x{F09F91A7}'
          31 : '\x{F09F8E85}'
 
-    -- Grapheme supplier providing the byte index and the grapheme byte sequence as hex digits
+    -- Grapheme supplier providing the byte index and returning the grapheme byte sequence as hex digits
     .RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", "b", "h")==
         a RexxUnicodeGraphemeSupplier
          1  : '\x{6E}'
@@ -1060,7 +1104,7 @@ Examples
          6  : '\x{F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
          31 : '\x{F09F8E85}'
 
-    -- Codepoint supplier providing the default index and the codepoint escaped string
+    -- Codepoint supplier providing the default index and returning the codepoint escaped string
     .RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", , "\")==
         a RexxUnicodeCodepointSupplier
          1  : 'n'
@@ -1076,7 +1120,7 @@ Examples
          11 : '👧'
          12 : '🎅'
 
-    -- Grapheme supplier providing the default index and the grapheme escaped string
+    -- Grapheme supplier providing the default index and returning the grapheme escaped string
     .RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", , "\")==
         a RexxUnicodeGraphemeSupplier
          1 : 'n'
@@ -1087,7 +1131,7 @@ Examples
          6 : '🎅'
 
 
-    -- Codepoint supplier providing the default index and the codepoint in U+ notation
+    -- Codepoint supplier providing the default index and returning the codepoint in U+ notation
     .RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", , "u")==
         a RexxUnicodeCodepointSupplier
          1  : 'U+006E'
@@ -1103,7 +1147,7 @@ Examples
          11 : 'U+1F467'
          12 : 'U+1F385'
 
-    -- Grapheme supplier providing the default index and the grapheme codepoints in U+ notation
+    -- Grapheme supplier providing the default index and returning the grapheme codepoints in U+ notation
     .RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", , "u")==
         a RexxUnicodeGraphemeSupplier
          1 : 'U+006E'
@@ -1113,7 +1157,7 @@ Examples
          5 : 'U+1F469 U+200D U+1F468 U+200D U+1F469 U+200D U+1F467'
          6 : 'U+1F385'
 
-    -- Codepoint supplier providing the default index and the codepoint as a RexxUnicodeCharacter
+    -- Codepoint supplier providing the default index and returning the codepoint as a RexxUnicodeCharacter
     .RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", , .RexxUnicodeCharacter)==
         a RexxUnicodeCodepointSupplier
          1  : ("n" \x{6E} U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
@@ -1135,7 +1179,7 @@ Examples
     ----------------------------------------------------------------------------
 
 
-    -- Codepoint supplier providing the codepoint index and the codepoint as an integer
+    -- Codepoint supplier providing the codepoint index and returning the codepoint as a whole number
     .RexxUnicodeCodepointSupplier~new("F4 91 92 93 FF 41 80 BF 42"x)==
         a RexxUnicodeCodepointSupplier
          1 :  65533
@@ -1148,7 +1192,7 @@ Examples
          8 :  65533
          9 :  66
 
-    -- Grapheme supplier providing the grapheme index and the grapheme escaped string
+    -- Grapheme supplier providing the grapheme index and returning the grapheme escaped string
     -- (don't display directly the graphemes because the output would be invalid UTF-8)
     .RexxUnicodeGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, , "\")==
         a RexxUnicodeGraphemeSupplier
@@ -1162,7 +1206,7 @@ Examples
          8 : '\x{BF}'
          9 : 'B'
 
-    -- Codepoint supplier providing the byte index and the codepoint escaped string
+    -- Codepoint supplier providing the byte index and returning the codepoint escaped string
     -- A negative byte index indicates an invalid byte sequence
     .RexxUnicodeCodepointSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "\")==
         a RexxUnicodeCodepointSupplier
@@ -1176,7 +1220,7 @@ Examples
         -8 : '\x{BF}'
          9 : 'B'
 
-    -- Grapheme supplier providing the byte index and the grapheme escaped string
+    -- Grapheme supplier providing the byte index and returning the grapheme escaped string
     -- A negative byte index indicates an invalid byte sequence
     .RexxUnicodeGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "\")==
         a RexxUnicodeGraphemeSupplier
@@ -1190,7 +1234,7 @@ Examples
         -8 : '\x{BF}'
          9 : 'B'
 
-    -- Codepoint supplier providing the byte index and the error message
+    -- Codepoint supplier providing the byte index and returning the error message
     .RexxUnicodeCodepointSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "e")==
         a RexxUnicodeCodepointSupplier
         -1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
@@ -1203,7 +1247,7 @@ Examples
         -8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
          9 : ''
 
-    -- Grapheme supplier providing the byte index and the error message
+    -- Grapheme supplier providing the byte index and returning the error message
     .RexxUnicodeGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "e")==
         a RexxUnicodeGraphemeSupplier
         -1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
@@ -1246,7 +1290,7 @@ Examples
     -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
     ----------------------------------------------------------------------------
 
-    -- Codepoint supplier providing the codepoint index and the codepoint as an integer
+    -- Codepoint supplier providing the codepoint index and returning the codepoint as a whole number
     .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x)==
         a RexxUnicodeCodepointSupplier
          1 :  65533
@@ -1255,7 +1299,7 @@ Examples
          4 :  65533
          5 :  65
 
-    -- Grapheme supplier providing the grapheme index and the grapheme escaped string
+    -- Grapheme supplier providing the grapheme index and returning the grapheme escaped string
     -- (don't display directly the graphemes because the output would be invalid UTF-8)
     .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, , "\")==
         a RexxUnicodeGraphemeSupplier
@@ -1265,7 +1309,7 @@ Examples
          4 : '\x{F1BF}'
          5 : 'A'
 
-    -- Codepoint supplier providing the byte index and the codepoint escaped string
+    -- Codepoint supplier providing the byte index and returning the codepoint escaped string
     -- A negative byte index indicates an invalid byte sequence
     .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
         a RexxUnicodeCodepointSupplier
@@ -1275,7 +1319,7 @@ Examples
         -7 : '\x{F1BF}'
          9 : 'A'
 
-    -- Grapheme supplier providing the byte index and the grapheme escaped string
+    -- Grapheme supplier providing the byte index and returning the grapheme escaped string
     -- A negative byte index indicates an invalid byte sequence
     .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
         a RexxUnicodeGraphemeSupplier
@@ -1285,7 +1329,7 @@ Examples
         -7 : '\x{F1BF}'
          9 : 'A'
 
-    -- Codepoint supplier providing the byte index and the error message
+    -- Codepoint supplier providing the byte index and returning the error message
     .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
         a RexxUnicodeCodepointSupplier
         -1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'
@@ -1294,7 +1338,7 @@ Examples
         -7 : 'start byte position 7 : Invalid continuation byte 191 (''BF''x) at byte position 9'
          9 : ''
 
-    -- Grapheme supplier providing the byte index and the error message
+    -- Grapheme supplier providing the byte index and returning the error message
     .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
         a RexxUnicodeGraphemeSupplier
         -1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'

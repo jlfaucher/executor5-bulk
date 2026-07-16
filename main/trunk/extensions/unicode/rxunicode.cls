@@ -469,7 +469,7 @@ C2U C2X D2U U2C U2D
     do while codepoints~available
         if \first then buffer~append(" ")
         first = .false
-        codepoint = codepoints~item("c") -- "c": get the codepoint as integer
+        codepoint = codepoints~item -- get the codepoint as a whole number
         UPlusCodepoint = self~D2U(codepoint, buffer)
         codepoints~next
     end
@@ -891,7 +891,7 @@ How other languages are supporting escape characters for Unicode:
 
     codepoints = .RexxUnicodeCodepointSupplier~new(string)
     do while codepoints~available
-        codepoint = codepoints~item -- integer
+        codepoint = codepoints~item -- whole number
         bytes = codepoints~item("b") -- byte sequence as string
         error = codepoints~item("e")
         if error \== "" then do
@@ -927,20 +927,22 @@ How other languages are supporting escape characters for Unicode:
 
 ::method getIndexType class private
     use strict arg type
-    if type~caselessMatchChar(1, "BC") then return type~left(1)~lower
-    raise syntax 88.900 array ("Expected an index type starting with 'B' or 'C'; found" quoted(type))
+    if type == "" then return ""
+    if type~caselessMatchChar(1, "B") then return type~left(1)~lower
+    raise syntax 88.900 array ("Expected an empty index type or one starting with 'B'; found" quoted(type))
 
 
 ::method getItemType class private
     use strict arg type
     if type~isa(.Class) then return type
-    if type~caselessMatchChar(1, "BCEHU\") then return type~left(1)~lower
-    raise syntax 88.900 array ("Expected an item type starting with 'B', 'C', 'E', 'H', 'U', or '\', or a Class object; found" quoted(type))
+    if type == "" then return ""
+    if type~caselessMatchChar(1, "BEUX\") then return type~left(1)~lower
+    raise syntax 88.900 array ("Expected an empty item type or one starting with 'B', 'E', 'U', 'X', or '\', or a Class object; found" quoted(type))
 
 
 ::method init
     expose string indexB indexC defaultIndexType defaultItemType
-    use strict arg string, defaultIndexType="c", defaultItemType="c"
+    use strict arg string, defaultIndexType="", defaultItemType=""
     string = requestBaseString(string, "string")
     defaultIndexType = self~class~getIndexType(defaultIndexType)
     defaultItemType = self~class~getItemType(defaultItemType)
@@ -981,14 +983,14 @@ How other languages are supporting escape characters for Unicode:
     expose indexB indexC defaultIndexType
     /*
     Different index types can be returned:
+    - If `type`is `""`, the codepoint index is returned (the default index type).
     - If `type` is `"b"`, the byte index is returned (it is negative if the byte sequence is invalid).
-    - If `type`is `"c"`, the codepoint index is returned (the default index type).
     */
     use strict arg type=(defaultIndexType)
     if self~available then do
         type = self~class~getIndexType(type)
+        if type == "" then return indexC
         if type == "b" then return indexB -- can be negative
-        if type == "c" then return indexC
     end
     else raise syntax 93.937 -- No more supplier items available
 
@@ -1001,22 +1003,22 @@ How other languages are supporting escape characters for Unicode:
     - and a workaround for the lack of higher-order functions such as ~each{...} when type is a class.
 
     Possible values:
+    - "" to return the codepoint as a whole number (default)
     - "b" to return the codepoint byte sequence as a string
-    - "c" to return the codepoint as an integer (default)
     - "e" to return the error message or ""
-    - "h" to return the codepoint byte sequence as hexadecimal digits
     - "u" to return the codepoint in U+ notation
+    - "x" to return the codepoint byte sequence as hexadecimal digits
     - "\" to return the codepoint byte sequence as an escaped string
-    - a class to return a new instance of that class, initialized with the result of item("c")
+    - a class to return a new instance of that class, initialized with the result of item("")
     */
     use strict arg type=(defaultItemType)
     if self~available then do
         type = self~class~getItemType(type)
+        if type == "" then return codepoint
         if type == "b" then return byteSequence -- YES! ALWAYS return the raw byte sequence
-        if type == "c" then return codepoint
         if type == "e" then return error
-        if type == "h" then return escapedHexdigits(byteSequence~c2x)
         if type == "u" then return .RexxUnicode~D2U(codepoint)
+        if type == "x" then return escapedHexdigits(byteSequence~c2x)
         if type == "\" then return .RexxUnicode~stringEscape(byteSequence)
         if type~isa(.Class) then return type~new(codepoint)
     end
@@ -1056,21 +1058,23 @@ How other languages are supporting escape characters for Unicode:
 
 ::method getIndexType class private
     use strict arg type
-    if type~caselessMatchChar(1, "BG") then return type~left(1)~lower
-    raise syntax 88.900 array ("Expected an index type starting with 'B' or 'G'; found" quoted(type))
+    if type == "" then return ""
+    if type~caselessMatchChar(1, "B") then return type~left(1)~lower
+    raise syntax 88.900 array ("Expected an empty index type or one starting with 'B'; found" quoted(type))
 
 
 ::method getItemType class private
     use strict arg type
     if type~isa(.Class) then return type
-    if type~caselessMatchChar(1, "BEGHU\") then return type~left(1)~lower
-    raise syntax 88.900 array ("Expected an item type starting with 'B', 'E', 'G', 'H', 'U', or '\', or a Class object; found" quoted(type))
+    if type == "" then return ""
+    if type~caselessMatchChar(1, "BEUX\") then return type~left(1)~lower
+    raise syntax 88.900 array ("Expected an empty item type or one starting with 'B', 'E', 'U', 'X', or '\', or a Class object; found" quoted(type))
 
 
 ::method init
     expose string indexB indexG defaultIndexType defaultItemType -
            /* coroutine internal state */ decodeNextStep
-    use strict arg string, defaultIndexType="g", defaultItemType="g"
+    use strict arg string, defaultIndexType="", defaultItemType=""
     string = requestBaseString(string, "string")
     defaultIndexType = self~class~getIndexType(defaultIndexType)
     defaultItemType = self~class~getItemType(defaultItemType)
@@ -1233,14 +1237,14 @@ Maybe it can be simplified...
     expose graphemeIndexB indexG defaultIndexType
     /*
     Different index types can be returned:
+    - If `type`is `""`, the grapheme index is returned (the default index type).
     - If `type` is `"b"`, the byte index is returned (it is negative if the byte sequence is invalid).
-    - If `type`is `"g"`, the grapheme index is returned (the default index type).
     */
     use strict arg type=(defaultIndexType)
     if self~available then do
         type = self~class~getIndexType(type)
+        if type == "" then return indexG
         if type == "b" then return graphemeIndexB -- (can be negative)
-        if type == "g" then return indexG
     end
     else raise syntax 93.937 -- No more supplier items available
 
@@ -1253,22 +1257,22 @@ Maybe it can be simplified...
     - and a workaround for the lack of higher-order functions like ~each{...} when type is a class.
 
     Possible values:
-    - "b" to return the grapheme byte sequence as a string (same as "g")
+    - "" to return the grapheme as a string (default option)
+    - "b" to return the grapheme byte sequence as a string (same as "")
     - "e" to return the error message or ""
-    - "g" to return the grapheme as a string (default option)
-    - "h" to return the grapheme byte sequence as hexadecimal digits
     - "u" to return the grapheme codepoints in U+ notation
+    - "x" to return the grapheme byte sequence as hexadecimal digits
     - "\" to return the grapheme byte sequence as an escaped string
-    - a class to return a new instance of that class, initialized with the result of item("g")
+    - a class to return a new instance of that class, initialized with the result of item("")
     */
     use strict arg type=(defaultItemType)
     if self~available then do
         type = self~class~getItemType(type)
+        if type == "" then return grapheme
         if type == "b" then return grapheme -- YES! ALWAYS return the raw byte sequence
         if type == "e" then return error
-        if type == "g" then return grapheme
-        if type == "h" then return escapedHexdigits(.RexxUnicode~C2X(grapheme))
         if type == "u" then return .RexxUnicode~C2U(grapheme)
+        if type == "x" then return escapedHexdigits(.RexxUnicode~C2X(grapheme))
         if type == "\" then return .RexxUnicode~stringEscape(grapheme)
         if type~isa(.Class) then return type~new(grapheme)
     end
@@ -1519,7 +1523,7 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     use strict arg indexC
     startB = self~codepointIndexB(indexC)
     if startB < 0 then return "FFFD"~x2d -- the current byte sequence is invalid, return the replacement character
-    return .RexxUnicode~utf8DecodeCodepoint(string, startB) -- yes, must decode to return the codepoint as an integer
+    return .RexxUnicode~utf8DecodeCodepoint(string, startB) -- yes, must decode to return the codepoint as a whole number
 
 
 -- Converts a grapheme index to a byte index

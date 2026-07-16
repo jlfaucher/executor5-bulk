@@ -675,7 +675,7 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 
 ```
 
-Returns the next codepoint (an integer) at byte index `indexB` of `string`, or -1 in case of error.
+Returns the next codepoint (a whole number) at byte index `indexB` of `string`, or -1 in case of error.
 
 `refSizeB` receives the size in bytes of the decoded codepoint.  
 If `indexB` is outside the `string` index range, the received size is 0.  
@@ -727,7 +727,7 @@ to follow the `U+FFFD` Substitution of Maximal Subparts.
 .RexxUnicodeServices~utf8EncodeCodepoint(codepoint, destination [, >refSizeB])
 
 .RexxUnicodeServices~utf8EncodeCodepoint(
-    codepoint,      -- (in)             The codepoint to encode (an integer).
+    codepoint,      -- (in)             The codepoint to encode (a non-negative whole number).
     destination,    -- (in-out)         The mutable buffer to update.
     >refSizeB       -- (out, optional)  The size of the encoded byte sequence (0..4)
                     --                  The size is 0 if the codepoint is not in the range 0..10FFFF.
@@ -1938,7 +1938,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 ```rexx
 -- Example 1
 -- the default index type is the codepoint index
--- the default item type is the codepoint as an integer
+-- the default item type is the codepoint as a whole number
 .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅")==
     /*
     a RexxUnicodeCodepointSupplier 
@@ -1960,7 +1960,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 -- Example 2
 -- It's possible to get other types of index and item
 -- Here, we request the byte index and the codepoint byte sequence as hex digits
-.RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", "b", "h")==
+.RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", "b", "x")==
     /*
     a RexxUnicodeCodepointSupplier 
      1  : '\x6E'
@@ -1979,7 +1979,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 
 ```rexx
 -- Example 3
--- Codepoint supplier providing the default index and the codepoint escaped string
+-- Codepoint supplier providing the default index and returning the codepoint escaped string
 .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , "\")==
     /*
     a RexxUnicodeCodepointSupplier 
@@ -1999,7 +1999,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 
 ```rexx
 -- Example 4
--- Codepoint supplier providing the default index and the codepoint in U+ notation
+-- Codepoint supplier providing the default index and returning the codepoint in U+ notation
 .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , "u")==
     /*
     a RexxUnicodeCodepointSupplier 
@@ -2019,7 +2019,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 
 ```rexx
 -- Example 5
--- Codepoint supplier providing the default index and the codepoint as a RexxUnicodeCharacter
+-- Codepoint supplier providing the default index and returning the codepoint as a RexxUnicodeCharacter
 .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , .RexxUnicodeCharacter)==
     /*
     a RexxUnicodeCodepointSupplier 
@@ -2042,7 +2042,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 -- Invalid string - U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
 
--- Codepoint supplier providing the codepoint index and the codepoint as an integer
+-- Codepoint supplier providing the codepoint index and returning the codepoint as a whole number
 .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x)==
     /*
     a RexxUnicodeCodepointSupplier
@@ -2057,7 +2057,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 
 ```rexx
 -- Example 7
--- Codepoint supplier providing the byte index and the codepoint escaped string
+-- Codepoint supplier providing the byte index and returning the codepoint escaped string
 -- A negative byte index indicates an invalid byte sequence
 .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
     /*
@@ -2073,7 +2073,7 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 
 ```rexx
 -- Example 8
--- Codepoint supplier providing the byte index and the error message
+-- Codepoint supplier providing the byte index and returning the error message
 .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
     /*
     a RexxUnicodeCodepointSupplier 
@@ -2106,7 +2106,7 @@ Returns `.false` if the supplier has already enumerated all codepoints.
     .RexxUnicodeCodepointSupplier~codepointAtIndexC(indexC)
 
 Convenience method.  
-Advances the supplier to codepoint position `indexC` and returns the corresponding codepoint as an integer.  
+Advances the supplier to codepoint index `indexC` and returns the corresponding codepoint as a whole number.  
 `indexC` must be a positive whole number.  
 If `indexC` is less than the current codepoint index, the supplier raises an error (can only advance).
 
@@ -2122,24 +2122,24 @@ If no codepoint is available, that is, if `available` would return `.false`, the
 
 The following index types are supported:
 
+- If `type`is `""`, the codepoint index is returned.
 - If `type` is `"b"`, the byte index is returned (it is negative if the byte sequence is invalid).
-- If `type`is `"c"`, the codepoint index is returned (the default index type).
 
 The default index type is specified when the supplier is created.
 
 
 #### 3.2.4.   init
 
-    .RexxUnicodeCodepointSupplier~init(string, defaultIndexType="c", defaultItemType="c")
+    .RexxUnicodeCodepointSupplier~init(string, defaultIndexType="", defaultItemType="")
 
 Initializes a `RexxUnicodeCodepointSupplier` instance for the UTF-8 string `string`.
 
 If specified, `defaultIndexType` defines the default index type returned by the `index` method.  
-The default is `"c"` (codepoint index).  
+The default is `""` (codepoint index).  
 See the `index` method for the list of possible values.
 
 If specified, `defaultItemType` defines the default item type returned by the `item` method.  
-The default value is `"c"` (codepoint as an integer).  
+The default value is `""` (codepoint as a whole number).  
 See the `item` method for the list of possible values.
 
 
@@ -2152,13 +2152,13 @@ If no codepoint is available, that is, if `available` would return `.false`, the
 
 The following item types are supported:
 
+- If `type` is `""`, the codepoint is returned as a whole number.
 - If `type` is `"b"`, the codepoint byte sequence is returned as a string.
-- If `type` is `"c"`, the codepoint is returned as an integer (default).
 - If `type` is `"e"`, the error message is returned (an empty string if there is no error).
-- If `type` is `"h"`, the codepoint byte sequence is returned as hexadecimal digits.
 - If `type` is `"u"`, the codepoint is returned in `U+` notation.
+- If `type` is `"x"`, the codepoint byte sequence is returned as hexadecimal digits.
 - If `type` is `"\"`, the codepoint byte sequence is returned as an escaped string.
-- If `type` is a class, a new instance of that class is returned, initialized with the result of `item("c")`.
+- If `type` is a class, a new instance of that class is returned, initialized with the result of `item("")`.
 
 The default item type is specified when the supplier is created.
 
@@ -2200,8 +2200,8 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 
 ```rexx
 -- Example 2
--- Grapheme supplier providing the byte index and the grapheme byte sequence as hex digits
-.RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", "b", "h")==
+-- Grapheme supplier providing the byte index and returning the grapheme byte sequence as hex digits
+.RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", "b", "x")==
     /*
     a RexxUnicodeGraphemeSupplier 
      1  : '\x6E'
@@ -2216,7 +2216,7 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 
 ```rexx
 -- Example 3
--- Grapheme supplier providing the default index and the grapheme escaped string
+-- Grapheme supplier providing the default index and returning the grapheme escaped string
 .RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", , "\")==
     /*
     a RexxUnicodeGraphemeSupplier 
@@ -2232,7 +2232,7 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 
 ```rexx
 -- Example 4
--- Grapheme supplier providing the default index and the grapheme codepoints in U+ notation
+-- Grapheme supplier providing the default index and returning the grapheme codepoints in U+ notation
 .RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", , "u")==
     /*
     a RexxUnicodeGraphemeSupplier 
@@ -2251,7 +2251,7 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 -- Invalid string - U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
 
--- Grapheme supplier providing the grapheme index and the grapheme escaped string
+-- Grapheme supplier providing the grapheme index and returning the grapheme escaped string
 .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, , "\")==
     /*
     a RexxUnicodeGraphemeSupplier
@@ -2266,7 +2266,7 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 
 ```rexx
 -- Example 6
--- Grapheme supplier providing the byte index and the grapheme escaped string
+-- Grapheme supplier providing the byte index and returning the grapheme escaped string
 -- A negative byte index indicates an invalid byte sequence
 .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
     /*
@@ -2282,7 +2282,7 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 
 ```rexx
 -- Example 7
--- Grapheme supplier providing the byte index and the error message
+-- Grapheme supplier providing the byte index and returning the error message
 .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
     /*
     a RexxUnicodeGraphemeSupplier 
@@ -2315,7 +2315,7 @@ Returns `.false` if the supplier has already enumerated all graphemes.
     .RexxUnicodeCodepointSupplier~graphemeAtIndexG(indexG)
 
 Convenience method.  
-Advances the supplier to grapheme position `indexG` and returns the corresponding grapheme as a string.  
+Advances the supplier to grapheme index `indexG` and returns the corresponding grapheme as a string.  
 If `indexG` is less than the current grapheme index, the supplier raises an error (can only advance).  
 This method does not support negative indexes (counting from the end of the string).
 
@@ -2329,23 +2329,23 @@ If no grapheme is available, that is, if `available` would return `.false`, the 
 
 The following index types are supported:
 
+- If `type`is `""`, the grapheme index is returned.
 - If `type` is `"b"`, the byte index is returned (it is negative if the byte sequence is invalid).
-- If `type`is `"g"`, the grapheme index is returned (the default index type).
 
 The default index type is specified when the supplier is created.
 
 #### 4.2.4.   init
 
-    .RexxUnicodeGraphemeSupplier~init(string, defaultIndexType="g", defaultItemType="g")
+    .RexxUnicodeGraphemeSupplier~init(string, defaultIndexType="", defaultItemType="")
 
 Initializes a `RexxUnicodeGraphemeSupplier` instance for the UTF-8 string `string`.
 
 If specified, `defaultIndexType` defines the default index type returned by the `index` method.  
-The default is `"g"` (grapheme index).  
+The default is `""` (grapheme index).  
 See the `index` method for the list of possible values.
 
 If specified, `defaultItemType` defines the default item type returned by the `item` method.  
-The default value is `"g"` (grapheme as a string).  
+The default value is `""` (grapheme as a string).  
 See the `item` method for the list of possible values.
 
 
@@ -2358,13 +2358,13 @@ If no grapheme is available, that is, if `available` would return `.false`, the 
 
 The following item types are supported:
 
-- If `type` is `"b"`, the grapheme byte sequence is returned as a string (same as `"g"`).
+- If `type` is `""`, the grapheme is returned as a string.
+- If `type` is `"b"`, the grapheme byte sequence is returned as a string (same as `""`).
 - If `type` is `"e"`, the error message is returned (an empty string if there is no error).
-- If `type` is `"g"`, the grapheme is returned as a string (default).
-- If `type` is `"h"`, the grapheme byte sequence is returned as hexadecimal digits.
 - If `type` is `"u"`, the grapheme is returned in `U+` notation.
+- If `type` is `"x"`, the grapheme byte sequence is returned as hexadecimal digits.
 - If `type` is `"\"`, the grapheme byte sequence is returned as an escaped string.
-- If `type` is a class, a new instance of that class is returned, initialized with the result of `item("g")`.
+- If `type` is a class, a new instance of that class is returned, initialized with the result of `item("")`.
 
 The default item type is specified when the supplier is created.
 
@@ -2437,7 +2437,7 @@ The `RexxUnicodeStringIndexer` class defines no class methods of its own.
 
     .RexxUnicodeStringIndexer~codepointAtIndexC(indexC)
 
-Returns the codepoint at codepoint index `indexC` as an integer.
+Returns the codepoint at codepoint index `indexC` as a whole number.
 
 `indexC` must be a positive or negative whole number.  
 If `indexC` is negative, the codepoint index is counted from the end of the string.
@@ -2559,7 +2559,7 @@ End storage sizes can be specified when creating the indexer; by default, no end
 - `endErrorStorageSize`
 
 The storage limits and end storage sizes allow fine-tuning of memory usage.
-They determine how many codepoint, grapheme, and error positions are stored in the indexer..
+They determine how many codepoint, grapheme, and error indexes are stored in the indexer..
 
 There is nothing wrong with specifying an end storage size without specifying the corresponding storage limit, but doing so creates a redundant storage allocation.
 
