@@ -66,124 +66,124 @@ Method-to-Unicode property mapping (PropertyAliases.txt):
 <table>
     <thead>
       <tr>
-        <th><code>Method</code></th>
-        <th><code>Property type</code></th>
-        <th><code>Short name</code></th>
-        <th><code>Long name</code></th>
-        <th><code>Comment</code></th>
+        <th><small><small>Method</small></small></th>
+        <th><small><small>Property type</small></small></th>
+        <th><small><small>Short name</small></small></th>
+        <th><small><small>Long name</small></small></th>
+        <th><small><small>Comment</small></small></th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><code>codepointBidiClass</code></td>
-        <td><code>Enumerated</code></td>
-        <td><code>bc</code></td>
-        <td><code>Bidi_Class</code></td>
+        <td><small><small>codepointBidiClass</small></small></td>
+        <td><small><small>Enumerated</small></small></td>
+        <td><small><small>bc</small></small></td>
+        <td><small><small>Bidi_Class</small></small></td>
         <td></td>
       </tr>
       <tr>
-        <td><code>codepointBidiMirrored</code></td>
-        <td><code>Binary</code></td>
-        <td><code>Bidi_M</code></td>
-        <td><code>Bidi_Mirrored</code></td>
+        <td><small><small>codepointBidiMirrored</small></small></td>
+        <td><small><small>Binary</small></small></td>
+        <td><small><small>Bidi_M</small></small></td>
+        <td><small><small>Bidi_Mirrored</small></small></td>
         <td></td>
       </tr>
       <tr>
-        <td><code>codepointBoundClass</code></td>
-        <td><code>Enumerated</code></td>
-        <td><code>GCB</code></td>
-        <td><code>Grapheme_Cluster_Break</code></td>
+        <td><small><small>codepointBoundClass</small></small></td>
+        <td><small><small>Enumerated</small></small></td>
+        <td><small><small>GCB</small></small></td>
+        <td><small><small>Grapheme_Cluster_Break</small></small></td>
         <td></td>
       </tr>
       <tr>
-        <td><code>codepointCategory</code></td>
-        <td><code>Enumerated</code></td>
-        <td><code>gc</code></td>
-        <td><code>General_Category</code></td>
+        <td><small><small>codepointCategory</small></small></td>
+        <td><small><small>Enumerated</small></small></td>
+        <td><small><small>gc</small></small></td>
+        <td><small><small>General_Category</small></small></td>
         <td></td>
       </tr>
       <tr>
-        <td><code>codepointCharWidth</code></td>
+        <td><small><small>codepointCharWidth</small></small></td>
         <td></td>
         <td></td>
         <td></td>
-        <td><code>not a Unicode property</code></td>
+        <td><small><small>Not a Unicode property</small></small></td>
       </tr>
       <tr>
-        <td><code>codepointCombiningClass</code></td>
-        <td><code>Enumerated</code></td>
-        <td><code>ccc</code></td>
-        <td><code>Canonical_Combining_Class</code></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><code>codepointControlBoundary</code></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><code>not a Unicode property (this method is likely to be deprecated)</code></td>
-      </tr>
-      <tr>
-        <td><code>codepointDecompositionType</code></td>
-        <td><code>Enumerated</code></td>
-        <td><code>td</code></td>
-        <td><code>Decomposition_Type</code></td>
+        <td><small><small>codepointCombiningClass</small></small></td>
+        <td><small><small>Enumerated</small></small></td>
+        <td><small><small>ccc</small></small></td>
+        <td><small><small>Canonical_Combining_Class</small></small></td>
         <td></td>
       </tr>
       <tr>
-        <td><code>codepointEastAsianWidth</code></td>
-        <td><code>Enumerated</code></td>
-        <td><code>ea</code></td>
-        <td><code>East_Asian_Width</code></td>
-        <td><code>Not available</code></td>
-      </tr>
-      <tr>
-        <td><code>codepointEastAsianWidthIsAmbiguous</code></td>
-        <td><code>Binary</code></td>
+        <td><small><small>codepointControlBoundary</small></small></td>
         <td></td>
         <td></td>
-        <td><code>True if East Asian width class A</code></td>
+        <td></td>
+        <td><small><small>Not a Unicode property (this method is likely to be deprecated)</small></small></td>
       </tr>
       <tr>
-        <td><code>codepointIgnorable</code></td>
-        <td><code>Binary</code></td>
-        <td><code>DI</code></td>
-        <td><code>Default_Ignorable_Code_Point</code></td>
+        <td><small><small>codepointDecompositionType</small></small></td>
+        <td><small><small>Enumerated</small></small></td>
+        <td><small><small>td</small></small></td>
+        <td><small><small>Decomposition_Type</small></small></td>
         <td></td>
       </tr>
       <tr>
-        <td><code>codepointIsLower</code></td>
-        <td><code>Binary</code></td>
-        <td><code>Lower</code></td>
-        <td><code>Lowercase</code></td>
+        <td><small><small>codepointEastAsianWidth</small></small></td>
+        <td><small><small>Enumerated</small></small></td>
+        <td><small><small>ea</small></small></td>
+        <td><small><small>East_Asian_Width</small></small></td>
+        <td><small><small>Not available</small></small></td>
+      </tr>
+      <tr>
+        <td><small><small>codepointEastAsianWidthIsAmbiguous</small></small></td>
+        <td><small><small>Binary</small></small></td>
+        <td></td>
+        <td></td>
+        <td><small><small>True if East Asian width class A</small></small></td>
+      </tr>
+      <tr>
+        <td><small><small>codepointIgnorable</small></small></td>
+        <td><small><small>Binary</small></small></td>
+        <td><small><small>DI</small></small></td>
+        <td><small><small>Default_Ignorable_Code_Point</small></small></td>
         <td></td>
       </tr>
       <tr>
-        <td><code>codepointIsUpper</code></td>
-        <td><code>Binary</code></td>
-        <td><code>Upper</code></td>
-        <td><code>Uppercase</code></td>
+        <td><small><small>codepointIsLower</small></small></td>
+        <td><small><small>Binary</small></small></td>
+        <td><small><small>Lower</small></small></td>
+        <td><small><small>Lowercase</small></small></td>
         <td></td>
       </tr>
       <tr>
-        <td><code>codepointToLower</code></td>
-        <td><code>String</code></td>
-        <td><code>slc</code></td>
-        <td><code>Simple_Lowercase_Mapping</code></td>
+        <td><small><small>codepointIsUpper</small></small></td>
+        <td><small><small>Binary</small></small></td>
+        <td><small><small>Upper</small></small></td>
+        <td><small><small>Uppercase</small></small></td>
         <td></td>
       </tr>
       <tr>
-        <td><code>codepointToTitle</code></td>
-        <td><code>String</code></td>
-        <td><code>stc</code></td>
-        <td><code>Simple_Titlecase_Mapping</code></td>
+        <td><small><small>codepointToLower</small></small></td>
+        <td><small><small>String</small></small></td>
+        <td><small><small>slc</small></small></td>
+        <td><small><small>Simple_Lowercase_Mapping</small></small></td>
         <td></td>
       </tr>
       <tr>
-        <td><code>codepointToUpper</code></td>
-        <td><code>String</code></td>
-        <td><code>suc</code></td>
-        <td><code>Simple_Uppercase_Mapping</code></td>
+        <td><small><small>codepointToTitle</small></small></td>
+        <td><small><small>String</small></small></td>
+        <td><small><small>stc</small></small></td>
+        <td><small><small>Simple_Titlecase_Mapping</small></small></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><small><small>codepointToUpper</small></small></td>
+        <td><small><small>String</small></small></td>
+        <td><small><small>suc</small></small></td>
+        <td><small><small>Simple_Uppercase_Mapping</small></small></td>
         <td></td>
       </tr>
     </tbody>
