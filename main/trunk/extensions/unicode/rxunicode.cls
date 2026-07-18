@@ -1620,26 +1620,26 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 ::attribute codepoint get -- special value -1 for invalid character
 
 /*
-uname is the "best" Unicode name to display for the character.
+preferredName is the "best" Unicode name to display for the character.
 Use the standard name when not empty,
 otherwise use the alias when not empty (ICU gives only one alias,
   even if NameAliases.txt defines several aliases),
 otherwise use the extended name (never empty)
 */
-::attribute uname get
+::attribute preferredName get
 
 
 ::method init
-    expose codepoint uname
+    expose codepoint preferredName
     use strict arg codepoint
     .RexxUnicode~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
-    uname = self~name
-    if uname == "" then uname = self~nameAlias
-    if uname == "" then uname = self~extendedName
+    preferredName = self~name
+    if preferredName == "" then preferredName = self~nameAlias
+    if preferredName == "" then preferredName = self~extendedName
 
 
 ::method string
-    expose codepoint uname
+    expose codepoint preferredName
     use strict arg -- none
     if codepoint == -1 then return "An invalid character"
     utf8 = self~UTF8
@@ -1651,7 +1651,7 @@ otherwise use the extended name (never empty)
            escapedHexdigits(utf8~c2x) -
            .RexxUnicode~D2U(codepoint) -
            self~category self~categoryName -
-           quoted(uname)
+           quoted(preferredName)
 
 
 ::method name
@@ -1704,9 +1704,9 @@ otherwise use the extended name (never empty)
 ::method combiningClass
     expose codepoint
     use strict arg -- none
-    if codepoint == -1 then return -1
-    -- yes, return the numeric value, it's a Unicode standard value
-    return .RexxUnicode~codepointCombiningClass(codepoint)
+    if codepoint == -1 then return "?"
+    .RexxUnicode~codepointCombiningClass(codepoint, >code)
+    return code
 
 
 -- http://www.unicode.org/reports/tr44/#Canonical_Combining_Class_Values
@@ -1714,9 +1714,17 @@ otherwise use the extended name (never empty)
     expose codepoint
     use strict arg -- none
     if codepoint == -1 then return "?"
-    -- yes, return the code
-    .RexxUnicode~codepointCombiningClass(codepoint, >code)
-    return code
+    .RexxUnicode~codepointCombiningClass(codepoint, , >label)
+    return label
+
+
+-- http://www.unicode.org/reports/tr44/#Canonical_Combining_Class_Values
+::method combiningClassValue
+    expose codepoint
+    use strict arg -- none
+    if codepoint == -1 then return -1
+    -- yes, return the numeric value, it's a Unicode standard value
+    return .RexxUnicode~codepointCombiningClass(codepoint)
 
 
 -- http://www.unicode.org/reports/tr44/#Bidi_Class_Values
@@ -1826,9 +1834,9 @@ otherwise use the extended name (never empty)
 ::method toLowerFull
     expose codepoint
     use strict arg -- none
-    if codepoint == -1 then return -1
+    if codepoint == -1 then return .array~of(-1)
     -- TODO
-    return -1
+    return .array~of(-1)
 
 
 -- Simple case mappings in UnicodeData.txt, returns a single codepoint
@@ -1843,9 +1851,9 @@ otherwise use the extended name (never empty)
 ::method toUpperFull
     expose codepoint
     use strict arg -- none
-    if codepoint == -1 then return -1
+    if codepoint == -1 then return .array~of(-1)
     -- TODO
-    return -1
+    return .array~of(-1)
 
 
 -- Simple case mappings in UnicodeData.txt, returns a single codepoint
@@ -1860,9 +1868,9 @@ otherwise use the extended name (never empty)
 ::method toTitleFull
     expose codepoint
     use strict arg -- none
-    if codepoint == -1 then return -1
+    if codepoint == -1 then return .array~of(-1)
     -- TODO
-    return -1
+    return .array~of(-1)
 
 
 ::method isLower
@@ -1894,6 +1902,8 @@ otherwise use the extended name (never empty)
         "charWidth",,
         "codepoint",,
         "combiningClass",,
+        "combiningClassName",,
+        "combiningClassValue",,
         "controlBoundary",,
         "decompositionTypeName",,
         "decompositionType",,
@@ -2007,8 +2017,8 @@ otherwise use the extended name (never empty)
 
     registered_different_package: raise syntax 48.900 array("ICU4ooRexx is already registered with a different package")
     class_not_found:              raise syntax 48.900 array("Class" quoted(className) "not found")
-    version_requirement:          raise syntax 48.900 array("Minimum ICU4ooRexx version must be" versionRequirement || ", current version is" ICU4ooRexx~version)
-    method_not_found:             raise syntax 48.900 array("The ICU4ooRexx class does not understand message" quoted(methodName))
+    version_requirement:          raise syntax 48.900 array("The minimum required ICU4ooRexx version is" versionRequirement || "; the current version is" ICU4ooRexx~version)
+    method_not_found:             raise syntax 48.900 array("The ICU4ooRexx class does not understand the message" quoted(methodName))
 
 
 ::method assertICU4ooRexxIsRegistered class

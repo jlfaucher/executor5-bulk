@@ -955,7 +955,7 @@ ooRexx> .RexxUnicode~character(-1)=                         -- (An invalid chara
 ooRexx> .RexxUnicode~character(-1)~class=                   -- (The RexxUnicodeCharacter class)
 (The RexxUnicodeCharacter class)
 ooRexx> .RexxUnicode~character(-1)~info=
-a StringTable (24 items)
+a StringTable (26 items)
 'bidiClass'                 : '?'
 'bidiClassName'             : '?'
 'bidiMirrored'              :  0
@@ -965,7 +965,9 @@ a StringTable (24 items)
 'categoryName'              : 'Unassigned'
 'charWidth'                 : -1
 'codepoint'                 : 'U+FFFFFF'
-'combiningClass'            : -1
+'combiningClass'            : '?'
+'combiningClassName'        : '?'
+'combiningClassValue'       : -1
 'controlBoundary'           :  0
 'decompositionType'         : '?'
 'decompositionTypeName'     : '?'
@@ -981,26 +983,33 @@ a StringTable (24 items)
 'toUpper'                   : 'U+FFFFFF'
 'UTF8'                      : ''
 /*
-        a StringTable (19 items)
-        'bidiClass'       : '?'
-        'bidiClassName'   : '?'
-        'bidiMirrored'    :  0
-        'category'        : 'Cn'
-        'categoryName'    : 'Unassigned'
-        'charWidth'       : -1
-        'codepoint'       : 'U+FFFFFF'
-        'combiningClass'  : -1
-        'controlBoundary' :  0
-        'extendedName'    : ''
-        'ignorable'       :  1
-        'isLower'         :  0
-        'isUpper'         :  0
-        'name'            : ''
-        'nameAlias'       : ''
-        'toLower'         : 'U+FFFFFF'
-        'toTitle'         : 'U+FFFFFF'
-        'toUpper'         : 'U+FFFFFF'
-        'UTF8'            : ''
+        a StringTable (26 items)
+        'bidiClass'                 : '?'
+        'bidiClassName'             : '?'
+        'bidiMirrored'              :  0
+        'boundClass'                : '?'
+        'boundClassName'            : '?'
+        'category'                  : 'Cn'
+        'categoryName'              : 'Unassigned'
+        'charWidth'                 : -1
+        'codepoint'                 : 'U+FFFFFF'
+        'combiningClass'            : '?'
+        'combiningClassName'        : '?'
+        'combiningClassValue'       : -1
+        'controlBoundary'           :  0
+        'decompositionType'         : '?'
+        'decompositionTypeName'     : '?'
+        'eastAsianWidthIsAmbiguous' :  0
+        'extendedName'              : ''
+        'ignorable'                 :  1
+        'isLower'                   :  0
+        'isUpper'                   :  0
+        'name'                      : ''
+        'nameAlias'                 : ''
+        'toLower'                   : 'U+FFFFFF'
+        'toTitle'                   : 'U+FFFFFF'
+        'toUpper'                   : 'U+FFFFFF'
+        'UTF8'                      : ''
 */
 
 
@@ -2278,7 +2287,7 @@ ooRexx> .RexxUnicode~character("🎅")=                   -- ("🎅" 0xF09F8E85 
 
 -- Properties of a character
 ooRexx> .RexxUnicode~character("🎅")~info=
-a StringTable (24 items)
+a StringTable (26 items)
 'bidiClass'                 : 'ON'
 'bidiClassName'             : 'Other_Neutral'
 'bidiMirrored'              :  0
@@ -2288,7 +2297,9 @@ a StringTable (24 items)
 'categoryName'              : 'Other_Symbol'
 'charWidth'                 :  2
 'codepoint'                 : 'U+1F385'
-'combiningClass'            :  0
+'combiningClass'            : 'NR'
+'combiningClassName'        : 'Not_Reordered'
+'combiningClassValue'       :  0
 'controlBoundary'           :  0
 'decompositionType'         : 'None'
 'decompositionTypeName'     : 'Code point not explicitly listed for Decomposition_Type'

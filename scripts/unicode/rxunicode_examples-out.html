@@ -42,7 +42,7 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 16 Jul 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S330fQ600003a2c0c0
+</span><span style="font-weight:bold;color:green;">Input queue name: S120ddQ600003a30240
 </span>
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">Examples in rxunicode.md
@@ -74,10 +74,10 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~cod
 </span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~codepointBoundClass
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointBoundClass(&quot;AC01&quot;~x2d, &gt;code, &gt;label)=; code=; label=      </span><span style="font-weight:bold;color:blue;">--  10; 'LVT'; 'LVT'</span>
- 10
-'LVT'
-'LVT'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointBoundClass(&quot;1F1E6&quot;~x2d, &gt;code, &gt;label)=; code=; label=     </span><span style="font-weight:bold;color:blue;">--  11; 'RI'; 'Regional_Indicator'</span>
+ 11
+'RI'
+'Regional_Indicator'
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointBoundClass(&quot;FFFFFF&quot;~x2d, &gt;code, &gt;label)=; code=; label=    </span><span style="font-weight:bold;color:blue;">--  1; 'XX'; 'Other'</span>
  1
 'XX'
@@ -481,6 +481,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepoint(-
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCharName(2448~x2d)=       </span><span style="font-weight:bold;color:blue;">-- 'OCR DASH'</span>
 'OCR DASH'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCharName(&quot;D800&quot;~x2d)=     </span><span style="font-weight:bold;color:blue;">-- ''</span>
+''
 
 <span style="font-weight:bold;color:blue;">-- The special value -1 has no name
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCharName(-1)=             </span><span style="font-weight:bold;color:blue;">-- ''</span>
@@ -491,11 +493,13 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCh
 </span><span style="font-weight:bold;color:blue;">-- .RexxUnicode~codepointCharNameAlias
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCharNameAlias(2448~x2d)=       </span><span style="font-weight:bold;color:blue;">-- 'MICR ON US SYMBOL'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCharNameAlias(2448~x2d)=      </span><span style="font-weight:bold;color:blue;">-- 'MICR ON US SYMBOL'</span>
 'MICR ON US SYMBOL'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCharNameAlias(&quot;D800&quot;~x2d)=    </span><span style="font-weight:bold;color:blue;">-- ''</span>
+''
 
 <span style="font-weight:bold;color:blue;">-- The special value -1 has no name alias
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCharNameAlias(-1)=             </span><span style="font-weight:bold;color:blue;">-- ''</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCharNameAlias(-1)=            </span><span style="font-weight:bold;color:blue;">-- ''</span>
 ''
 
 
@@ -505,8 +509,10 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCh
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointExtendedCharName(2448~x2d)=   </span><span style="font-weight:bold;color:blue;">-- 'OCR DASH'</span>
 'OCR DASH'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointExtendedCharName(&quot;D800&quot;~x2d)= </span><span style="font-weight:bold;color:blue;">-- '&lt;lead surrogate-D800&gt;'</span>
+'&lt;lead surrogate-D800&gt;'
 
-<span style="font-weight:bold;color:blue;">-- The special value -1 has no name alias
+<span style="font-weight:bold;color:blue;">-- The special value -1 has no extended name
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointExtendedCharName(-1)=         </span><span style="font-weight:bold;color:blue;">-- ''</span>
 ''
 
@@ -1298,6 +1304,69 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeAtIndexG
 
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeStringIndexer~endCodepointIndexes
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 5, 0, 0, 5)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexes=       </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 6, 9, 13]</span>
+[ 1, 2, 6, 9, 13]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 20, 16, 13, 9, 6]</span>
+[ 20, 16, 13, 9, 6]
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeStringIndexer~endErrors
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+<span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts
+</span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, 0, 0, 5, 0, 0, 5)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errors==</span>
+an Array (shape [5], 5 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+ 2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+ 3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+ 4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+ 5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    an Array (shape [5], 5 items)
+</span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrors==</span>
+an Array (shape [5], 5 items)
+ 1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+ 2 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+ 3 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+ 4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+ 5 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    an Array (shape [5], 5 items)
+</span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     2 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     3 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     5 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeStringIndexer~endGraphemeIndexes
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 0, 5, 0, 0, 5)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexes=        </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 20]</span>
+[ 1, 2, 20]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endGraphemeIndexes=     </span><span style="font-weight:bold;color:blue;">-- [ 20, 2, 1]</span>
+[ 20, 2, 1]
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeStringIndexer~init
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span>
@@ -1402,7 +1471,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endGraphemeIndex
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~properties==</span>
-an Array (shape [27], 24 items)
+an Array (shape [29], 26 items)
  1  : 'bidiClass'
  2  : 'bidiClassName'
  3  : 'bidiMirrored'
@@ -1413,22 +1482,24 @@ an Array (shape [27], 24 items)
  8  : 'charWidth'
  9  : 'codepoint'
  10 : 'combiningClass'
- 11 : 'controlBoundary'
- 12 : 'decompositionTypeName'
- 13 : 'decompositionType'
- 14 : 'eastAsianWidthIsAmbiguous'
- 15 : 'extendedName'
- 16 : 'ignorable'
- 17 : 'isLower'
- 18 : 'isUpper'
- 19 : 'name'
- 20 : 'nameAlias'
- 21 : 'toLower'
- 23 : 'toTitle'
- 25 : 'toUpper'
- 27 : 'UTF8'
+ 11 : 'combiningClassName'
+ 12 : 'combiningClassValue'
+ 13 : 'controlBoundary'
+ 14 : 'decompositionTypeName'
+ 15 : 'decompositionType'
+ 16 : 'eastAsianWidthIsAmbiguous'
+ 17 : 'extendedName'
+ 18 : 'ignorable'
+ 19 : 'isLower'
+ 20 : 'isUpper'
+ 21 : 'name'
+ 22 : 'nameAlias'
+ 23 : 'toLower'
+ 25 : 'toTitle'
+ 27 : 'toUpper'
+ 29 : 'UTF8'
 <span style="font-weight:bold;color:blue;">/*
-</span><span style="font-weight:bold;color:blue;">    an Array (shape [27], 24 items)
+</span><span style="font-weight:bold;color:blue;">    an Array (shape [29], 26 items)
 </span><span style="font-weight:bold;color:blue;">     1  : 'bidiClass'
 </span><span style="font-weight:bold;color:blue;">     2  : 'bidiClassName'
 </span><span style="font-weight:bold;color:blue;">     3  : 'bidiMirrored'
@@ -1439,20 +1510,22 @@ an Array (shape [27], 24 items)
 </span><span style="font-weight:bold;color:blue;">     8  : 'charWidth'
 </span><span style="font-weight:bold;color:blue;">     9  : 'codepoint'
 </span><span style="font-weight:bold;color:blue;">     10 : 'combiningClass'
-</span><span style="font-weight:bold;color:blue;">     11 : 'controlBoundary'
-</span><span style="font-weight:bold;color:blue;">     12 : 'decompositionTypeName'
-</span><span style="font-weight:bold;color:blue;">     13 : 'decompositionType'
-</span><span style="font-weight:bold;color:blue;">     14 : 'eastAsianWidthIsAmbiguous'
-</span><span style="font-weight:bold;color:blue;">     15 : 'extendedName'
-</span><span style="font-weight:bold;color:blue;">     16 : 'ignorable'
-</span><span style="font-weight:bold;color:blue;">     17 : 'isLower'
-</span><span style="font-weight:bold;color:blue;">     18 : 'isUpper'
-</span><span style="font-weight:bold;color:blue;">     19 : 'name'
-</span><span style="font-weight:bold;color:blue;">     20 : 'nameAlias'
-</span><span style="font-weight:bold;color:blue;">     21 : 'toLower'
-</span><span style="font-weight:bold;color:blue;">     23 : 'toTitle'
-</span><span style="font-weight:bold;color:blue;">     25 : 'toUpper'
-</span><span style="font-weight:bold;color:blue;">     27 : 'UTF8'
+</span><span style="font-weight:bold;color:blue;">     11 : 'combiningClassName'
+</span><span style="font-weight:bold;color:blue;">     12 : 'combiningClassValue'
+</span><span style="font-weight:bold;color:blue;">     13 : 'controlBoundary'
+</span><span style="font-weight:bold;color:blue;">     14 : 'decompositionTypeName'
+</span><span style="font-weight:bold;color:blue;">     15 : 'decompositionType'
+</span><span style="font-weight:bold;color:blue;">     16 : 'eastAsianWidthIsAmbiguous'
+</span><span style="font-weight:bold;color:blue;">     17 : 'extendedName'
+</span><span style="font-weight:bold;color:blue;">     18 : 'ignorable'
+</span><span style="font-weight:bold;color:blue;">     19 : 'isLower'
+</span><span style="font-weight:bold;color:blue;">     20 : 'isUpper'
+</span><span style="font-weight:bold;color:blue;">     21 : 'name'
+</span><span style="font-weight:bold;color:blue;">     22 : 'nameAlias'
+</span><span style="font-weight:bold;color:blue;">     23 : 'toLower'
+</span><span style="font-weight:bold;color:blue;">     25 : 'toTitle'
+</span><span style="font-weight:bold;color:blue;">     27 : 'toUpper'
+</span><span style="font-weight:bold;color:blue;">     29 : 'UTF8'
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
 
@@ -1466,7 +1539,9 @@ category: Sc
 categoryName: Currency_Symbol
 charWidth: 1
 codepoint: 8364
-combiningClass: 0
+combiningClass: NR
+combiningClassName: Not_Reordered
+combiningClassValue: 0
 controlBoundary: 0
 decompositionTypeName: Code point not explicitly listed for Decomposition_Type
 decompositionType: None
@@ -1491,7 +1566,9 @@ UTF8: €
 </span><span style="font-weight:bold;color:blue;">    categoryName: Currency_Symbol
 </span><span style="font-weight:bold;color:blue;">    charWidth: 1
 </span><span style="font-weight:bold;color:blue;">    codepoint: 8364
-</span><span style="font-weight:bold;color:blue;">    combiningClass: 0
+</span><span style="font-weight:bold;color:blue;">    combiningClass: NR
+</span><span style="font-weight:bold;color:blue;">    combiningClassName: Not_Reordered
+</span><span style="font-weight:bold;color:blue;">    combiningClassValue: 0
 </span><span style="font-weight:bold;color:blue;">    controlBoundary: 0
 </span><span style="font-weight:bold;color:blue;">    decompositionTypeName: Code point not explicitly listed for Decomposition_Type
 </span><span style="font-weight:bold;color:blue;">    decompositionType: None
@@ -1507,6 +1584,292 @@ UTF8: €
 </span><span style="font-weight:bold;color:blue;">    toUpper: 8364
 </span><span style="font-weight:bold;color:blue;">    UTF8: €
 </span><span style="font-weight:bold;color:blue;">*/
-</span></pre>
+</span>
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~bidiClass
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0608&quot;~x2d)~bidiClass=        </span><span style="font-weight:bold;color:blue;">--  'AL'</span>
+'AL'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~bidiClass=      </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~bidiClass=                </span><span style="font-weight:bold;color:blue;">--  '?'</span>
+'?'
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~bidiClassName
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0608&quot;~x2d)~bidiClassName=        </span><span style="font-weight:bold;color:blue;">--  'Arabic_Letter'</span>
+'Arabic_Letter'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~bidiClassName=      </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~bidiClassName=                </span><span style="font-weight:bold;color:blue;">--  '?'</span>
+'?'
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~boundClass
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;1F1E6&quot;~x2d)~boundClass=      </span><span style="font-weight:bold;color:blue;">--  'RI'</span>
+'RI'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~boundClass=     </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~boundClass=               </span><span style="font-weight:bold;color:blue;">--  '?'</span>
+'?'
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~boundClassName
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;1F1E6&quot;~x2d)~boundClassName=      </span><span style="font-weight:bold;color:blue;">--  'Regional_Indicator'</span>
+'Regional_Indicator'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~boundClassName=     </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~boundClassName=               </span><span style="font-weight:bold;color:blue;">--  '?'</span>
+'?'
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~category
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0903&quot;~x2d)~category=     </span><span style="font-weight:bold;color:blue;">-- 'Mc'</span>
+'Mc'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~category=   </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~category=             </span><span style="font-weight:bold;color:blue;">--  'Cn'</span>
+'Cn'
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~categoryName
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0903&quot;~x2d)~categoryName=     </span><span style="font-weight:bold;color:blue;">-- 'Spacing_Mark'</span>
+'Spacing_Mark'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~categoryName=   </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~categoryName=             </span><span style="font-weight:bold;color:blue;">--  'Unassigned'</span>
+'Unassigned'
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~combiningClass
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;031B&quot;~x2d)~combiningClass=       </span><span style="font-weight:bold;color:blue;">--  'ATAR'</span>
+'ATAR'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~combiningClass=     </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~combiningClass=               </span><span style="font-weight:bold;color:blue;">--  '?'</span>
+'?'
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~combiningClassName
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;031B&quot;~x2d)~combiningClassName=       </span><span style="font-weight:bold;color:blue;">--  'Attached_Above_Right'</span>
+'Attached_Above_Right'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~combiningClassName=     </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~combiningClassName=               </span><span style="font-weight:bold;color:blue;">--  '?'</span>
+'?'
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~combiningClassValue
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;031B&quot;~x2d)~combiningClassValue=      </span><span style="font-weight:bold;color:blue;">--  216</span>
+ 216
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~combiningClassValue=    </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~combiningClassValue=              </span><span style="font-weight:bold;color:blue;">--  -1</span>
+-1
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~compareTo(otherUnicodeCharacter)
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">c1 = .RexxUnicodeCharacter~new(64); c2 = .RexxUnicodeCharacter~new(64); c1~compareTo(c2)=   </span><span style="font-weight:bold;color:blue;">-- 0</span>
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">c1 = .RexxUnicodeCharacter~new(65); c2 = .RexxUnicodeCharacter~new(64); c1~compareTo(c2)=   </span><span style="font-weight:bold;color:blue;">-- 1</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">c1 = .RexxUnicodeCharacter~new(64); c2 = .RexxUnicodeCharacter~new(65); c1~compareTo(c2)=   </span><span style="font-weight:bold;color:blue;">-- -1</span>
+-1
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~decompositionType
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0000&quot;~x2d)~decompositionType=        </span><span style="font-weight:bold;color:blue;">--  'None'</span>
+'None'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;00A8&quot;~x2d)~decompositionType=        </span><span style="font-weight:bold;color:blue;">--  'Compat'</span>
+'Compat'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;00BC&quot;~x2d)~decompositionType=        </span><span style="font-weight:bold;color:blue;">--  'Fraction'</span>
+'Fraction'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~decompositionType=      </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~decompositionType=                </span><span style="font-weight:bold;color:blue;">--  '?'</span>
+'?'
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~decompositionTypeName
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0000&quot;~x2d)~decompositionTypeName=        </span><span style="font-weight:bold;color:blue;">--  'Code point not explicitly listed for Decomposition_Type'</span>
+'Code point not explicitly listed for Decomposition_Type'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;00A8&quot;~x2d)~decompositionTypeName=        </span><span style="font-weight:bold;color:blue;">--  'Unspecified compatibility character'</span>
+'Unspecified compatibility character'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;00BC&quot;~x2d)~decompositionTypeName=        </span><span style="font-weight:bold;color:blue;">--  'Vulgar fraction form'</span>
+'Vulgar fraction form'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~decompositionTypeName=      </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~decompositionTypeName=                </span><span style="font-weight:bold;color:blue;">--  '?'</span>
+'?'
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~extendedName
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(2448~x2d)~extendedName=   </span><span style="font-weight:bold;color:blue;">-- 'OCR DASH'</span>
+'OCR DASH'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;D800&quot;~x2d)~extendedName= </span><span style="font-weight:bold;color:blue;">-- '&lt;lead surrogate-D800&gt;'</span>
+'&lt;lead surrogate-D800&gt;'
+
+
+<span style="font-weight:bold;color:blue;">-- The special value -1 has no extended name
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~extendedName=         </span><span style="font-weight:bold;color:blue;">-- ''</span>
+''
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~info
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&quot;€&quot;)~info=</span>
+a StringTable (26 items)
+'bidiClass'                 : 'ET'
+'bidiClassName'             : 'European_Terminator'
+'bidiMirrored'              :  0
+'boundClass'                : 'XX'
+'boundClassName'            : 'Other'
+'category'                  : 'Sc'
+'categoryName'              : 'Currency_Symbol'
+'charWidth'                 :  1
+'codepoint'                 : 'U+20AC'
+'combiningClass'            : 'NR'
+'combiningClassName'        : 'Not_Reordered'
+'combiningClassValue'       :  0
+'controlBoundary'           :  0
+'decompositionType'         : 'None'
+'decompositionTypeName'     : 'Code point not explicitly listed for Decomposition_Type'
+'eastAsianWidthIsAmbiguous' :  1
+'extendedName'              : 'EURO SIGN'
+'ignorable'                 :  0
+'isLower'                   :  0
+'isUpper'                   :  0
+'name'                      : 'EURO SIGN'
+'nameAlias'                 : ''
+'toLower'                   : 'U+20AC'
+'toTitle'                   : 'U+20AC'
+'toUpper'                   : 'U+20AC'
+'UTF8'                      : '\x{E282AC}'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a StringTable (26 items)
+</span><span style="font-weight:bold;color:blue;">    'bidiClass'                 : 'ET'
+</span><span style="font-weight:bold;color:blue;">    'bidiClassName'             : 'European_Terminator'
+</span><span style="font-weight:bold;color:blue;">    'bidiMirrored'              :  0
+</span><span style="font-weight:bold;color:blue;">    'boundClass'                : 'XX'
+</span><span style="font-weight:bold;color:blue;">    'boundClassName'            : 'Other'
+</span><span style="font-weight:bold;color:blue;">    'category'                  : 'Sc'
+</span><span style="font-weight:bold;color:blue;">    'categoryName'              : 'Currency_Symbol'
+</span><span style="font-weight:bold;color:blue;">    'charWidth'                 :  1
+</span><span style="font-weight:bold;color:blue;">    'codepoint'                 : 'U+20AC'
+</span><span style="font-weight:bold;color:blue;">    'combiningClass'            : 'NR'
+</span><span style="font-weight:bold;color:blue;">    'combiningClassName'        : 'Not_Reordered'
+</span><span style="font-weight:bold;color:blue;">    'combiningClassValue'       :  0
+</span><span style="font-weight:bold;color:blue;">    'controlBoundary'           :  0
+</span><span style="font-weight:bold;color:blue;">    'decompositionType'         : 'None'
+</span><span style="font-weight:bold;color:blue;">    'decompositionTypeName'     : 'Code point not explicitly listed for Decomposition_Type'
+</span><span style="font-weight:bold;color:blue;">    'eastAsianWidthIsAmbiguous' :  1
+</span><span style="font-weight:bold;color:blue;">    'extendedName'              : 'EURO SIGN'
+</span><span style="font-weight:bold;color:blue;">    'ignorable'                 :  0
+</span><span style="font-weight:bold;color:blue;">    'isLower'                   :  0
+</span><span style="font-weight:bold;color:blue;">    'isUpper'                   :  0
+</span><span style="font-weight:bold;color:blue;">    'name'                      : 'EURO SIGN'
+</span><span style="font-weight:bold;color:blue;">    'nameAlias'                 : ''
+</span><span style="font-weight:bold;color:blue;">    'toLower'                   : 'U+20AC'
+</span><span style="font-weight:bold;color:blue;">    'toTitle'                   : 'U+20AC'
+</span><span style="font-weight:bold;color:blue;">    'toUpper'                   : 'U+20AC'
+</span><span style="font-weight:bold;color:blue;">    'UTF8'                      : '\x{E282AC}'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~name
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(2448~x2d)~name=   </span><span style="font-weight:bold;color:blue;">-- 'OCR DASH'</span>
+'OCR DASH'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;D800&quot;~x2d)~name= </span><span style="font-weight:bold;color:blue;">-- ''</span>
+''
+
+
+<span style="font-weight:bold;color:blue;">-- The special value -1 has no name
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~name=         </span><span style="font-weight:bold;color:blue;">-- ''</span>
+''
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~nameAlias
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(2448~x2d)~nameAlias=   </span><span style="font-weight:bold;color:blue;">-- 'MICR ON US SYMBOL'</span>
+'MICR ON US SYMBOL'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;D800&quot;~x2d)~nameAlias= </span><span style="font-weight:bold;color:blue;">-- ''</span>
+''
+
+
+<span style="font-weight:bold;color:blue;">-- The special value -1 has no name alias
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~nameAlias=         </span><span style="font-weight:bold;color:blue;">-- ''</span>
+''
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeCharacter~string
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(2448~x2d)~string=     </span><span style="font-weight:bold;color:blue;">-- '&quot;⑈&quot; \x{E29188} U+2448 So Other_Symbol &quot;OCR DASH&quot;'</span>
+'&quot;⑈&quot; \x{E29188} U+2448 So Other_Symbol &quot;OCR DASH&quot;'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;D800&quot;~x2d)~string=   </span><span style="font-weight:bold;color:blue;">-- '&lt;?&gt; \x{EDA080} U+D800 Cs Surrogate &quot;&lt;lead surrogate-D800&gt;&quot;'</span>
+'&lt;?&gt; \x{EDA080} U+D800 Cs Surrogate &quot;&lt;lead surrogate-D800&gt;&quot;'
+
+
+<span style="font-weight:bold;color:blue;">-- The special codepoint value -1 has its own string representation
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~string=         </span><span style="font-weight:bold;color:blue;">-- 'An invalid character'</span>
+'An invalid character'
+</pre>
 </body>
 </html>

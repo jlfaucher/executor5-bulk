@@ -22,7 +22,7 @@ demo on
 -- .RexxUnicodeServices~codepointBoundClass
 --------------------------------------------------------------------------------
 
-.RexxUnicodeServices~codepointBoundClass("AC01"~x2d, >code, >label)=; code=; label=      --  10; 'LVT'; 'LVT'
+.RexxUnicodeServices~codepointBoundClass("1F1E6"~x2d, >code, >label)=; code=; label=     --  11; 'RI'; 'Regional_Indicator'
 .RexxUnicodeServices~codepointBoundClass("FFFFFF"~x2d, >code, >label)=; code=; label=    --  1; 'XX'; 'Other'
 .RexxUnicodeServices~codepointBoundClass(-1, >code, >label)=; code=; label=              --  1; 'XX'; 'Other'
 
@@ -295,6 +295,7 @@ tstring=; .RexxUnicode~C2U(tstring)=
 --------------------------------------------------------------------------------
 
 .RexxUnicode~codepointCharName(2448~x2d)=       -- 'OCR DASH'
+.RexxUnicode~codepointCharName("D800"~x2d)=     -- ''
 
 -- The special value -1 has no name
 .RexxUnicode~codepointCharName(-1)=             -- ''
@@ -304,10 +305,11 @@ tstring=; .RexxUnicode~C2U(tstring)=
 -- .RexxUnicode~codepointCharNameAlias
 --------------------------------------------------------------------------------
 
-.RexxUnicode~codepointCharNameAlias(2448~x2d)=       -- 'MICR ON US SYMBOL'
+.RexxUnicode~codepointCharNameAlias(2448~x2d)=      -- 'MICR ON US SYMBOL'
+.RexxUnicode~codepointCharNameAlias("D800"~x2d)=    -- ''
 
 -- The special value -1 has no name alias
-.RexxUnicode~codepointCharNameAlias(-1)=             -- ''
+.RexxUnicode~codepointCharNameAlias(-1)=            -- ''
 
 
 --------------------------------------------------------------------------------
@@ -315,8 +317,9 @@ tstring=; .RexxUnicode~C2U(tstring)=
 --------------------------------------------------------------------------------
 
 .RexxUnicode~codepointExtendedCharName(2448~x2d)=   -- 'OCR DASH'
+.RexxUnicode~codepointExtendedCharName("D800"~x2d)= -- '<lead surrogate-D800>'
 
--- The special value -1 has no name alias
+-- The special value -1 has no extended name
 .RexxUnicode~codepointExtendedCharName(-1)=         -- ''
 
 
@@ -866,6 +869,53 @@ indexer~graphemeAtIndexG(3)~c2x=    -- 92 (use ~c2x to not display an invalid by
 
 
 --------------------------------------------------------------------------------
+-- aRexxUnicodeStringIndexer~endCodepointIndexes
+--------------------------------------------------------------------------------
+
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 5, 0, 0, 5)
+indexer~codepointIndexes=       -- [ 1, 2, 6, 9, 13]
+indexer~endCodepointIndexes=    -- [ 20, 16, 13, 9, 6]
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeStringIndexer~endErrors
+--------------------------------------------------------------------------------
+
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x, 0, 0, 5, 0, 0, 5)
+indexer~errors==
+/*
+    an Array (shape [5], 5 items)
+     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+     3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+     5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+*/
+
+
+indexer~endErrors==
+/*
+    an Array (shape [5], 5 items)
+     1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+     2 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+     3 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+     5 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+*/
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeStringIndexer~endGraphemeIndexes
+--------------------------------------------------------------------------------
+
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 5, 0, 0, 5)
+indexer~graphemeIndexes=        -- [ 1, 2, 20]
+indexer~endGraphemeIndexes=     -- [ 20, 2, 1]
+
+
+--------------------------------------------------------------------------------
 -- .RexxUnicodeStringIndexer~init
 --------------------------------------------------------------------------------
 
@@ -942,7 +992,7 @@ do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~gra
 
 .RexxUnicodeCharacter~properties==
 /*
-    an Array (shape [27], 24 items)
+    an Array (shape [29], 26 items)
      1  : 'bidiClass'
      2  : 'bidiClassName'
      3  : 'bidiMirrored'
@@ -953,20 +1003,22 @@ do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~gra
      8  : 'charWidth'
      9  : 'codepoint'
      10 : 'combiningClass'
-     11 : 'controlBoundary'
-     12 : 'decompositionTypeName'
-     13 : 'decompositionType'
-     14 : 'eastAsianWidthIsAmbiguous'
-     15 : 'extendedName'
-     16 : 'ignorable'
-     17 : 'isLower'
-     18 : 'isUpper'
-     19 : 'name'
-     20 : 'nameAlias'
-     21 : 'toLower'
-     23 : 'toTitle'
-     25 : 'toUpper'
-     27 : 'UTF8'
+     11 : 'combiningClassName'
+     12 : 'combiningClassValue'
+     13 : 'controlBoundary'
+     14 : 'decompositionTypeName'
+     15 : 'decompositionType'
+     16 : 'eastAsianWidthIsAmbiguous'
+     17 : 'extendedName'
+     18 : 'ignorable'
+     19 : 'isLower'
+     20 : 'isUpper'
+     21 : 'name'
+     22 : 'nameAlias'
+     23 : 'toLower'
+     25 : 'toTitle'
+     27 : 'toUpper'
+     29 : 'UTF8'
 */
 
 
@@ -981,7 +1033,9 @@ c = .RexxUnicode~character("€"); do message over .RexxUnicodeCharacter~propert
     categoryName: Currency_Symbol
     charWidth: 1
     codepoint: 8364
-    combiningClass: 0
+    combiningClass: NR
+    combiningClassName: Not_Reordered
+    combiningClassValue: 0
     controlBoundary: 0
     decompositionTypeName: Code point not explicitly listed for Decomposition_Type
     decompositionType: None
@@ -997,3 +1051,199 @@ c = .RexxUnicode~character("€"); do message over .RexxUnicodeCharacter~propert
     toUpper: 8364
     UTF8: €
 */
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~bidiClass
+--------------------------------------------------------------------------------
+
+.RexxUnicodeCharacter~new("0608"~x2d)~bidiClass=        --  'AL'
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~bidiClass=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new(-1)~bidiClass=                --  '?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~bidiClassName
+--------------------------------------------------------------------------------
+
+.RexxUnicodeCharacter~new("0608"~x2d)~bidiClassName=        --  'Arabic_Letter'
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~bidiClassName=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new(-1)~bidiClassName=                --  '?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~boundClass
+--------------------------------------------------------------------------------
+
+.RexxUnicodeCharacter~new("1F1E6"~x2d)~boundClass=      --  'RI'
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~boundClass=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new(-1)~boundClass=               --  '?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~boundClassName
+--------------------------------------------------------------------------------
+
+.RexxUnicodeCharacter~new("1F1E6"~x2d)~boundClassName=      --  'Regional_Indicator'
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~boundClassName=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new(-1)~boundClassName=               --  '?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~category
+--------------------------------------------------------------------------------
+
+.RexxUnicodeCharacter~new("0903"~x2d)~category=     -- 'Mc'
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~category=   --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new(-1)~category=             --  'Cn'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~categoryName
+--------------------------------------------------------------------------------
+
+.RexxUnicodeCharacter~new("0903"~x2d)~categoryName=     -- 'Spacing_Mark'
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~categoryName=   --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new(-1)~categoryName=             --  'Unassigned'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~combiningClass
+--------------------------------------------------------------------------------
+
+.RexxUnicodeCharacter~new("031B"~x2d)~combiningClass=       --  'ATAR'
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClass=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new(-1)~combiningClass=               --  '?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~combiningClassName
+--------------------------------------------------------------------------------
+
+.RexxUnicodeCharacter~new("031B"~x2d)~combiningClassName=       --  'Attached_Above_Right'
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClassName=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new(-1)~combiningClassName=               --  '?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~combiningClassValue
+--------------------------------------------------------------------------------
+
+.RexxUnicodeCharacter~new("031B"~x2d)~combiningClassValue=      --  216
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClassValue=    --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new(-1)~combiningClassValue=              --  -1
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~compareTo(otherUnicodeCharacter)
+--------------------------------------------------------------------------------
+
+c1 = .RexxUnicodeCharacter~new(64); c2 = .RexxUnicodeCharacter~new(64); c1~compareTo(c2)=   -- 0
+c1 = .RexxUnicodeCharacter~new(65); c2 = .RexxUnicodeCharacter~new(64); c1~compareTo(c2)=   -- 1
+c1 = .RexxUnicodeCharacter~new(64); c2 = .RexxUnicodeCharacter~new(65); c1~compareTo(c2)=   -- -1
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~decompositionType
+--------------------------------------------------------------------------------
+
+.RexxUnicodeCharacter~new("0000"~x2d)~decompositionType=        --  'None'
+.RexxUnicodeCharacter~new("00A8"~x2d)~decompositionType=        --  'Compat'
+.RexxUnicodeCharacter~new("00BC"~x2d)~decompositionType=        --  'Fraction'
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~decompositionType=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new(-1)~decompositionType=                --  '?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~decompositionTypeName
+--------------------------------------------------------------------------------
+
+.RexxUnicodeCharacter~new("0000"~x2d)~decompositionTypeName=        --  'Code point not explicitly listed for Decomposition_Type'
+.RexxUnicodeCharacter~new("00A8"~x2d)~decompositionTypeName=        --  'Unspecified compatibility character'
+.RexxUnicodeCharacter~new("00BC"~x2d)~decompositionTypeName=        --  'Vulgar fraction form'
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~decompositionTypeName=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new(-1)~decompositionTypeName=                --  '?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~extendedName
+--------------------------------------------------------------------------------
+
+.RexxUnicodeCharacter~new(2448~x2d)~extendedName=   -- 'OCR DASH'
+.RexxUnicodeCharacter~new("D800"~x2d)~extendedName= -- '<lead surrogate-D800>'
+
+
+-- The special value -1 has no extended name
+.RexxUnicodeCharacter~new(-1)~extendedName=         -- ''
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~info
+--------------------------------------------------------------------------------
+
+.RexxUnicode~character("€")~info=
+/*
+    a StringTable (26 items)
+    'bidiClass'                 : 'ET'
+    'bidiClassName'             : 'European_Terminator'
+    'bidiMirrored'              :  0
+    'boundClass'                : 'XX'
+    'boundClassName'            : 'Other'
+    'category'                  : 'Sc'
+    'categoryName'              : 'Currency_Symbol'
+    'charWidth'                 :  1
+    'codepoint'                 : 'U+20AC'
+    'combiningClass'            : 'NR'
+    'combiningClassName'        : 'Not_Reordered'
+    'combiningClassValue'       :  0
+    'controlBoundary'           :  0
+    'decompositionType'         : 'None'
+    'decompositionTypeName'     : 'Code point not explicitly listed for Decomposition_Type'
+    'eastAsianWidthIsAmbiguous' :  1
+    'extendedName'              : 'EURO SIGN'
+    'ignorable'                 :  0
+    'isLower'                   :  0
+    'isUpper'                   :  0
+    'name'                      : 'EURO SIGN'
+    'nameAlias'                 : ''
+    'toLower'                   : 'U+20AC'
+    'toTitle'                   : 'U+20AC'
+    'toUpper'                   : 'U+20AC'
+    'UTF8'                      : '\x{E282AC}'
+*/
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~name
+--------------------------------------------------------------------------------
+
+.RexxUnicodeCharacter~new(2448~x2d)~name=   -- 'OCR DASH'
+.RexxUnicodeCharacter~new("D800"~x2d)~name= -- ''
+
+
+-- The special value -1 has no name
+.RexxUnicodeCharacter~new(-1)~name=         -- ''
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~nameAlias
+--------------------------------------------------------------------------------
+
+.RexxUnicodeCharacter~new(2448~x2d)~nameAlias=   -- 'MICR ON US SYMBOL'
+.RexxUnicodeCharacter~new("D800"~x2d)~nameAlias= -- ''
+
+
+-- The special value -1 has no name alias
+.RexxUnicodeCharacter~new(-1)~nameAlias=         -- ''
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~string
+--------------------------------------------------------------------------------
+
+.RexxUnicodeCharacter~new(2448~x2d)~string=     -- '"⑈" \x{E29188} U+2448 So Other_Symbol "OCR DASH"'
+.RexxUnicodeCharacter~new("D800"~x2d)~string=   -- '<?> \x{EDA080} U+D800 Cs Surrogate "<lead surrogate-D800>"'
+
+
+-- The special codepoint value -1 has its own string representation
+.RexxUnicodeCharacter~new(-1)~string=         -- 'An invalid character'
