@@ -1690,7 +1690,7 @@ Returns a `StringTable` containing information about the Unicode environment.
 
 Returns a string in which non-printable codepoints and invalid byte sequences are replaced with escape sequences.
 
-- Invalid byte sequences are represented as escaped hexadecimal byte sequences: `\XX` or `\x{XX..XX}`.
+- Invalid byte sequences are represented as escaped hexadecimal byte sequences: `\xXX` or `\x{XX..XX}`.
 - Non-printable codepoints are represented using the standard escape sequences (`\a`, `\b`, `\t`, `\n`, `\v`, `\f`, `\r`) when applicable;  
   otherwise, Unicode escape notation (`\uXXXX` or `\UXXXXXXXX`) is used.
 
@@ -2287,6 +2287,8 @@ If `indexC` is less than the current codepoint index, the supplier raises an err
 
 This method does not support negative indexes (counting from the end of the string).
 
+See also [`aRexxUnicodeStringIndexer~codepointAtIndexC`](#RexxUnicodeStringIndexer_codepointAtIndexC).
+
 
 <a id="RexxUnicodeCodepointSupplier_index"></a>
 
@@ -2513,6 +2515,8 @@ Convenience method.
 Advances the supplier to grapheme index `indexG` and returns the corresponding grapheme as a string.  
 If `indexG` is less than the current grapheme index, the supplier raises an error (can only advance).  
 This method does not support negative indexes (counting from the end of the string).
+
+See also [`aRexxUnicodeStringIndexer~graphemeAtIndexG`](#RexxUnicodeStringIndexer_graphemeAtIndexG).
 
 
 <a id="RexxUnicodeGraphemeSupplier_index"></a>

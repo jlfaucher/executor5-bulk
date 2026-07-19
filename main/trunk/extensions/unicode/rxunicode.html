@@ -1654,7 +1654,7 @@ Unicode environment.</p>
 sequences are replaced with escape sequences.</p>
 <ul>
 <li>Invalid byte sequences are represented as escaped hexadecimal byte
-sequences: <code>\XX</code> or <code>\x{XX..XX}</code>.</li>
+sequences: <code>\xXX</code> or <code>\x{XX..XX}</code>.</li>
 <li>Non-printable codepoints are represented using the standard escape
 sequences (<code>\a</code>, <code>\b</code>, <code>\t</code>,
 <code>\n</code>, <code>\v</code>, <code>\f</code>, <code>\r</code>) when
@@ -2181,6 +2181,8 @@ If <code>indexC</code> is less than the current codepoint index, the
 supplier raises an error (can only advance).</p>
 <p>This method does not support negative indexes (counting from the end
 of the string).</p>
+<p>See also <a
+href="#RexxUnicodeStringIndexer_codepointAtIndexC"><code>aRexxUnicodeStringIndexer~codepointAtIndexC</code></a>.</p>
 <p><a id="RexxUnicodeCodepointSupplier_index"></a></p>
 <h4 id="index">3.2.3.   index</h4>
 <pre><code>aRexxUnicodeCodepointSupplier~index(type=defaultIndexType)</code></pre>
@@ -2393,6 +2395,8 @@ If <code>indexG</code> is less than the current grapheme index, the
 supplier raises an error (can only advance).<br />
 This method does not support negative indexes (counting from the end of
 the string).</p>
+<p>See also <a
+href="#RexxUnicodeStringIndexer_graphemeAtIndexG"><code>aRexxUnicodeStringIndexer~graphemeAtIndexG</code></a>.</p>
 <p><a id="RexxUnicodeGraphemeSupplier_index"></a></p>
 <h4 id="index-1">4.2.3.   index</h4>
 <pre><code>aRexxUnicodeGraphemeSupplier~index(type=defaultIndexType)</code></pre>
