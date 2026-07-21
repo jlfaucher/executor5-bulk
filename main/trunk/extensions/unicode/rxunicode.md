@@ -48,7 +48,7 @@ Collections are displayed either in compact form (when the expression ends with 
 or in expanded form (when it ends with `==`).
 If you are using `rexxtry` or running a script, use `say expression` instead.
 
-**Note on feedback:** [As of 2026](feedback.png)...
+**Note on feedback:** [As of 2026][feedback_2026]...
 
 
 
@@ -4093,6 +4093,7 @@ The `ICU4ooRexxInterface` class defines no instance methods of its own.
 
 
 [examples_internal_errors]: https://github.com/jlfaucher/executor5-bulk/blob/82f9531bb7b6d4be62f33b201ba62e53a74be640/main/trunk/extensions/unicode/rxunicode.cls#L1725-L1769 "Examples of internal errors"
+[feedback_2026]: https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/feedback.png "Feedbak as of 2026"
 [icu4oorexx_library]: https://github.com/jlfaucher/icu4oorexx "ICU4ooRexx Library"
 [newline_guidelines]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213 "Newline Guidelines"
 [typographic_conventions_code_points]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083 "Typographic Conventions - Code Points"
