@@ -125,18 +125,7 @@ Additional string services
     string = requestBaseString(string)
     if arg() == 2 then indexer = .RexxUnicodeStringIndexer~new(string)          -- no limit, because indexer requested by user
                   else indexer = .RexxUnicodeStringIndexer~new(string, 0, 0, 0) -- no need to store indexes and errors
-    graphemeCount = indexer~graphemeCount
-    codepointCount = indexer~codepointCount
-    errorCount = indexer~errorCount
-
-    info =    "(" ||,
-              self~stringIsASCII(string)~?("ASCII", "not-ASCII")"," -
-              graphemeCount "grapheme" || singularPlural(graphemeCount)"," -
-              codepointCount "codepoint" || singularPlural(codepointCount)"," -
-              string~length "byte" || singularPlural(string~length)"," -
-              errorCount "error" || singularPlural(errorCount) -
-              || ")"
-    return info
+    return indexer~info
 
 
 ::method stringIsASCII class
@@ -1470,9 +1459,9 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     expose string codepointIndexes endCodepointIndexes codepointCount codepointStorageLimit
     use strict arg indexC
 
+    signedIndexC = indexC -- used in error messages
     if indexC <= 0 then do
         -- Index from the end
-        signedIndexC = indexC -- used in error messages
         indexC = codepointCount - abs(indexC) + 1
         if signedIndexC == 0 then raise syntax 88.900 array ("Invalid code point index:" signedIndexC)
         if indexC <= 0 then raise syntax 88.900 array ("Invalid code point index:" signedIndexC "exceeds the code point count" codepointCount)
@@ -1481,7 +1470,6 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     else do
         -- Index from the start
         -- Here, indexC > 0
-        signedIndexC = indexC -- used in error messages
         if indexC > codepointCount then raise syntax 88.900 array ("Invalid code point index:" indexC "exceeds the code point count" codepointCount)
     end
 
@@ -1517,6 +1505,44 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     return codepointIndexes[indexC]
 
 
+-- Returns the codepoint index corresponding to byte index `indexB`.
+-- It is negative if the byte index is not aligned with a codepoint boundary.
+-- Performs a binary search.
+-- Supports negative byte indexes and sparse storage, even though the latter does not make much sense.
+::method codepointIndexC
+    expose codepointIndexes endCodepointIndexes codepointCount
+    use strict arg indexB
+
+    signedIndexB = indexB -- used in error messages
+    if indexB <= 0 then do
+        -- Index from the end
+        indexB = self~string~length - abs(indexB) + 1
+        if signedIndexB == 0 then raise syntax 88.900 array ("Invalid byte index:" signedIndexB)
+        if indexB <= 0 then raise syntax 88.900 array ("Invalid byte index:" signedIndexB "exceeds the byte string length" self~string~length)
+        if indexB > self~string~length then raise syntax 88.900 array ("Invalid byte index:" signedIndexB "exceeds the byte string length" self~string~length)
+    end
+    else do
+        -- Index from the start
+        -- Here, indexB > 0
+        if indexB > self~string~length then raise syntax 88.900 array ("Invalid byte index:" indexB "exceeds the byte string length" self~string~length)
+    end
+
+    indexC1 = 1
+    indexC2 = codepointCount
+    do forever
+        if indexC1 > indexC2 then return -indexC2 -- -- negative when not aligned with the codepoint index
+        indexC = (indexC1 + indexC2) % 2
+        item = codepointIndexes[indexC]
+        if .nil == item, .nil \== endCodepointIndexes then item = endCodepointIndexes[codepointCount - indexC + 1]
+        if .nil == item then raise syntax 88.900 array ("Codepoint index" indexC "is not stored. Binary search for byte index" signedIndexB "requires unlimited storage")
+        item = abs(item) -- the stored index can be negative to indicate an invalid byte sequence
+        if item == indexB then return indexC
+        if item > indexB then indexC2 = indexC - 1
+                         else indexC1 = indexC + 1
+    end
+    return -- should never reach here
+
+
 -- Returns the codepoint at position indexC
 ::method codepointAtIndexC
     expose string codepointIndexes
@@ -1528,12 +1554,12 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 
 -- Converts a grapheme index to a byte index
 ::method graphemeIndexB
-    expose string graphemeIndexes lastGraphemeSuccessorIndex endGraphemeIndexes graphemeCount graphemeStorageLimit
+    expose string graphemeIndexes lastGraphemeSuccessorIndex endGraphemeIndexes graphemeCount
     use strict arg indexG, plus1 = .false
 
+    signedIndexG = indexG -- used in error messages
     if indexG <= 0 then do
         -- Index from the end
-        signedIndexG = indexG
         indexG = graphemeCount - abs(indexG) + 1
 
         -- Special case, to not raise an error when the user requests the grapheme at position -1 (last grapheme).
@@ -1548,7 +1574,6 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     else do
         -- Index from the start
         -- Here, indexG > 0
-        signedIndexG = indexG -- used in error messages
 
         -- Special case, to not raise an error when the user requests the grapheme exactly at graphemeCount position (last grapheme).
         -- This method is called internally with indexG == (graphemeCount + 1) and plus1 == .true
@@ -1602,6 +1627,44 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     return graphemeIndexes[indexG]
 
 
+-- Returns the grapheme index corresponding to byte index `indexB`.
+-- It is negative if the byte index is not aligned with a grapheme boundary.
+-- Performs a binary search.
+-- Supports negative byte indexes and sparse storage, even though the latter does not make much sense.
+::method graphemeIndexG
+    expose graphemeIndexes endGraphemeIndexes graphemeCount
+    use strict arg indexB
+
+    signedIndexB = indexB -- used in error messages
+    if indexB <= 0 then do
+        -- Index from the end
+        indexB = self~string~length - abs(indexB) + 1
+        if signedIndexB == 0 then raise syntax 88.900 array ("Invalid byte index:" signedIndexB)
+        if indexB <= 0 then raise syntax 88.900 array ("Invalid byte index:" signedIndexB "exceeds the byte string length" self~string~length)
+        if indexB > self~string~length then raise syntax 88.900 array ("Invalid byte index:" signedIndexB "exceeds the byte string length" self~string~length)
+    end
+    else do
+        -- Index from the start
+        -- Here, indexB > 0
+        if indexB > self~string~length then raise syntax 88.900 array ("Invalid byte index:" indexB "exceeds the byte string length" self~string~length)
+    end
+
+    indexG1 = 1
+    indexG2 = graphemeCount
+    do forever
+        if indexG1 > indexG2 then return -indexG2 -- -- negative when not aligned with the grapheme index
+        indexG = (indexG1 + indexG2) % 2
+        item = graphemeIndexes[indexG]
+        if .nil == item, .nil \== endGraphemeIndexes then item = endGraphemeIndexes[graphemeCount - indexG + 1]
+        if .nil == item then raise syntax 88.900 array ("Grapheme index" indexG "is not stored. Binary search for byte index" signedIndexB "requires unlimited storage")
+        item = abs(item) -- the stored index can be negative to indicate an invalid byte sequence
+        if item == indexB then return indexG
+        if item > indexB then indexG2 = indexG - 1
+                         else indexG1 = indexG + 1
+    end
+    return -- should never reach here
+
+
 -- Returns the grapheme at position indexG
 ::method graphemeAtIndexG
     expose string
@@ -1611,6 +1674,34 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     absStartB = abs(startB) -- startB can be negative (meaning current byte sequence is invalid)
     absNextB = abs(nextB) -- nextB can be negative (meaning next byte sequence is invalid)
     return string~substr(absStartB, absNextB - absStartB) -- yes, always the current byte sequence, even if invalid
+
+
+-- Returns a string providing information about the indexer's string
+::method info
+    use strict arg -- none
+
+    string = self~string
+    graphemeCount = self~graphemeCount
+    codepointCount = self~codepointCount
+    errorCount = self~errorCount
+
+    info =    "(" ||,
+              .RexxUnicode~stringIsASCII(string)~?("ASCII", "not-ASCII")"," -
+              graphemeCount "grapheme" || singularPlural(graphemeCount)"," -
+              codepointCount "codepoint" || singularPlural(codepointCount)"," -
+              string~length "byte" || singularPlural(string~length)"," -
+              errorCount "error" || singularPlural(errorCount) -
+              || ")"
+    return info
+
+
+-- Returns a RexxUnicodeStringIndexer instance created from `object`.
+-- If `object` is already a RexxUnicodeStringIndexer instance, returns it unchanged.
+::routine requestRexxUnicodeStringIndexer public
+    use strict arg object
+
+    if object~isA(.RexxUnicodeStringIndexer) then return object
+    return .RexxUnicodeStringIndexer~new(object)
 
 
 /******************************************************************************/

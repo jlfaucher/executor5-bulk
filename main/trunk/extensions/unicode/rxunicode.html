@@ -33,7 +33,7 @@ is a native class that exposes the Unicode services supported by
 href="https://juliastrings.github.io/utf8proc/"
 title="utf8proc"><code>utf8proc</code></a> library embedded in
 <code>ooRexx</code>.</p>
-<p><code>rxunicode.cls</code> is an optional package that defines:</p>
+<p><code>rxunicode.cls</code> is a package that defines:</p>
 <ul>
 <li>The <a href="#RexxUnicode"><code>RexxUnicode</code></a> class, a
 subclass of <code>RexxUnicodeServices</code>.</li>
@@ -92,6 +92,8 @@ form (when the expression ends with <code>=</code>) or in expanded form
 (when it ends with <code>==</code>). If you are using
 <code>rexxtry</code> or running a script, use
 <code>say expression</code> instead.</p>
+<p><strong>Note on feedback:</strong> <a href="feedback.png">As of
+2026</a>...</p>
 <!----------------------------------------------------------------------------->
 <p><a id="RexxUnicodeServices"></a></p>
 <h2 id="rexxunicodeservices-class">1.   RexxUnicodeServices Class</h2>
@@ -396,7 +398,7 @@ an enumeration value.</p>
 <p>The returned enumeration value is implementation-specific.<br />
 For portability, use refCode instead.</p>
 <p><strong>Enumeration values</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- first column: short name (from PropertyValueAliases.txt and DerivedBidiClass.txt)</span></code>
 <code lineno="2"><span class="rx-lncm">-- second column: long name (from PropertyValueAliases.txt and DerivedBidiClass.txt)</span></code>
 <code lineno="3"><span class="rx-lncm">-- third column: description (from https://www.unicode.org/reports/tr9/#Table_Bidirectional_Character_Types)</span></code>
@@ -426,7 +428,7 @@ For portability, use refCode instead.</p>
 </code></pre>
 </div>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointBidiClass</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str rx-ipart">0608</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">--  5; 'AL'; 'Arabic_Letter'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointBidiClass</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">FFFFFF</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">--  0; '?'; 'Code point not explicitly listed for Bidi_Class'</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointBidiClass</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">              </span><span class="rx-lncm">--  0; '?'; 'Code point not explicitly listed for Bidi_Class'</span></code>
@@ -452,7 +454,7 @@ title="Standard Annex #9 Unicode Bidirectional Algorithm - Mirroring">https://un
 <p>The returned enumeration value is implementation-specific.<br />
 For portability, use refCode instead.</p>
 <p><strong>Enumeration values</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries</span></code>
 <code lineno="2"><span class="rx-lncm">-- first column: short name (from PropertyValueAliases.txt)</span></code>
 <code lineno="3"><span class="rx-lncm">-- second column: long name (from PropertyValueAliases.txt and auxiliary/GraphemeBreakProperty.txt)</span></code>
@@ -486,7 +488,7 @@ For portability, use refCode instead.</p>
 </code></pre>
 </div>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointBoundClass</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">1F1E6</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 11; 'RI'; 'Regional_Indicator'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointBoundClass</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">FFFFFF</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">--  1; 'XX'; 'Other'</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointBoundClass</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">              </span><span class="rx-lncm">--  1; 'XX'; 'Other'</span></code>
@@ -505,7 +507,7 @@ For portability, use refCode instead.</p>
 <p>The returned enumeration value is implementation-specific.<br />
 For portability, use refCode instead.</p>
 <p><strong>Enumeration values</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-4/#G124142</span></code>
 <code lineno="2"><span class="rx-lncm">-- first column: short name</span></code>
 <code lineno="3"><span class="rx-lncm">-- second column: long name</span></code>
@@ -542,7 +544,7 @@ For portability, use refCode instead.</p>
 </code></pre>
 </div>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointCategory</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str rx-ipart">0903</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">--  7; 'Mc'; 'Spacing_Mark'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointCategory</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">FFFFFF</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">--  0; 'Cn'; 'Unassigned'</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointCategory</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">              </span><span class="rx-lncm">--  0; 'Cn'; 'Unassigned'</span></code>
@@ -576,7 +578,7 @@ values.<br />
 Some values have neither a <code>refCode</code> nor a
 <code>refLabel</code>.</p>
 <p><strong>Enumeration values</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- https://www.unicode.org/reports/tr44/#Canonical_Combining_Class_Values</span></code>
 <code lineno="2"><span class="rx-lncm">-- first column (numeric value) from PropertyValueAliases.txt</span></code>
 <code lineno="3"><span class="rx-lncm">-- second column (short name) from PropertyValueAliases.txt</span></code>
@@ -655,7 +657,7 @@ Some values have neither a <code>refCode</code> nor a
 </code></pre>
 </div>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointCombiningClass</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">031B</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">--  216; 'ATAR'; 'Attached_Above_Right'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointCombiningClass</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">FFFFFF</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">--  0; 'NR'; 'Not_Reordered'</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointCombiningClass</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">             </span><span class="rx-lncm">--  0; 'NR'; 'Not_Reordered'</span></code>
@@ -693,7 +695,7 @@ id="codepointdecompositiontype">1.1.8.   codepointDecompositionType</h4>
 <p>The returned enumeration value is implementation-specific.<br />
 For portability, use refCode instead.</p>
 <p><strong>Enumeration values</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- https://unicode.org/reports/tr15/</span></code>
 <code lineno="2"><span class="rx-lncm">-- first column: short name (from DerivedDecompositionType.txt)</span></code>
 <code lineno="3"><span class="rx-lncm">-- second column: long name (from DerivedDecompositionType.txt)</span></code>
@@ -716,7 +718,7 @@ For portability, use refCode instead.</p>
 </code></pre>
 </div>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointDecompositionType</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str rx-ipart">0000</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">--  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointDecompositionType</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">00A8</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">--  16; 'Compat'; 'Unspecified compatibility character'</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointDecompositionType</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">00BC</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">code</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">label</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">code</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">label</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">--  15; 'Fraction'; 'Vulgar fraction form'</span></code>
@@ -779,7 +781,7 @@ If <code>codepoint</code> has no uppercase mapping, returns
 <p>Returns <code>.true</code> if there is a grapheme break between the
 two consecutive codepoints passed in <code>array</code>.</p>
 <p><strong>Example:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- `state` is persistent state. Its initial value must be 0.</span></code>
 <code lineno="2"><span class="rx-lncm">-- `graphemeBreak` updates `state`.</span></code>
 <code lineno="3"><span class="rx-var">array</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-spe">(</span><span class="rx-var">previousCodepoint</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">currentCodepoint</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">state</span><span class="rx-spe">)</span></code>
@@ -801,7 +803,7 @@ has no instance.</p>
 <p>Returns the Unicode version supported by the <code>utf8proc</code>
 library.</p>
 <p><strong>Example:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">unicodeVersion</span><span class="rx-ws">        </span><span class="rx-lncm">-- 17.0.0 (for example)</span></code>
 <code lineno="2">
 </code></pre>
@@ -844,7 +846,7 @@ detailed description of the error.</p>
 - &quot;START_NON_SHORTEST_FORM&quot;         &quot;Invalid start byte %i (&#39;%02X&#39;x) (non-shortest form)&quot;
 - &quot;TRUNCATED&quot;                       &quot;Truncated, expected %i bytes&quot;</code></pre>
 <p><strong>Example:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- The decoding part of the CodePointSupplier class</span></code>
 <code lineno="2"><span class="rx-dir">::</span><span class="rx-dkw">method</span><span class="rx-ws"> </span><span class="rx-const rx-method">decode</span></code>
 <code lineno="3"><span class="rx-ws">    </span><span class="rx-kw">expose</span><span class="rx-ws"> </span><span class="rx-xvar">string</span><span class="rx-ws"> </span><span class="rx-xvar">indexB</span><span class="rx-ws"> </span><span class="rx-xvar">codepoint</span><span class="rx-ws"> </span><span class="rx-xvar">byteSequence</span><span class="rx-ws"> </span><span class="rx-xvar">error</span></code>
@@ -884,7 +886,7 @@ invalid in UTF-8.</p>
 <p>If provided, <code>refSizeB</code> receives the size of the encoded
 byte sequence (0..4).</p>
 <p><strong>Example:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-var">mb</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span></code>
 <code lineno="2"><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">codepoint</span><span class="rx-ws"> </span><span class="rx-skw">over</span><span class="rx-ws"> </span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">006F</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">00EB</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">20AC</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">1F385</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str rx-ipart">110000</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span></code>
 <code lineno="3"><span class="rx-ws">    </span><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8EncodeCodepoint</span><span class="rx-spe">(</span><span class="rx-var">codepoint</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">mb</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">size</span><span class="rx-spe">)</span></code>
@@ -907,7 +909,7 @@ byte sequence (0..4).</p>
 <pre><code>.RexxUnicodeServices~utf8procVersion</code></pre>
 <p>Returns the version of the <code>utf8proc</code> library.</p>
 <p><strong>Example:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8procVersion</span><span class="rx-ws">        </span><span class="rx-lncm">-- 2.11.3 (for example)</span></code>
 <code lineno="2">
 </code></pre>
@@ -975,7 +977,7 @@ U+007E  ~   &lt;-- tilde operator U+223C</code></pre>
 <p><a
 href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213"
 title="Newline Guidelines">https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213</a></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Value to pass as the 'nlf' argument to utf8Transform (default: 0 no transformation).</span></code>
 <code lineno="2"><span class="rx-lncm">-- These constants are declared in the RexxUnicode class.</span></code>
 <code lineno="3"><span class="rx-lncm">-- If rxunicode.cls is not loaded, use the numeric value directly..</span></code>
@@ -996,7 +998,7 @@ NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are
 converted to the Unicode Paragraph Separator (PS) codepoint.</p>
 <h5 id="normalization-argument">1.1.23.4.   'normalization'
 argument</h5>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).</span></code>
 <code lineno="2"><span class="rx-lncm">-- These constants are declared in the RexxUnicode class.</span></code>
 <code lineno="3"><span class="rx-lncm">-- If rxunicode.cls is not loaded, use the numeric value directly.</span></code>
@@ -1034,7 +1036,7 @@ categories:</p>
 Unassigned.</p>
 <h5 id="examples-of-transformations">1.1.23.9.   Examples of
 transformations</h5>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;control-0007&gt;}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n</span><span class="rx-str rx-cquo">"</span></code>
 <code lineno="2"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">)</span></code>
 <code lineno="3"></code>
@@ -1071,7 +1073,7 @@ transformations</h5>
 <code lineno="34">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 1</span></code>
 <code lineno="2"><span class="rx-lncm">-- Performs unicode case folding, to be able to do a case-insensitive string comparison.</span></code>
 <code lineno="3"><span class="rx-var">tstring</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8Transform</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*casefold:*/</span><span class="rx-ws"> </span><span class="rx-env">.true</span><span class="rx-spe">)</span></code>
@@ -1081,7 +1083,7 @@ transformations</h5>
 <code lineno="7">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 2</span></code>
 <code lineno="2"><span class="rx-lncm">-- Strip "default ignorable characters" such as SOFT-HYPHEN or ZERO-WIDTH-SPACE.</span></code>
 <code lineno="3"><span class="rx-var">tstring</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8Transform</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*casefold:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*lump:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*nlf:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*normalization:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*stripCC*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*stripIgnorable:*/</span><span class="rx-env">.true</span><span class="rx-spe">)</span></code>
@@ -1091,7 +1093,7 @@ transformations</h5>
 <code lineno="7">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 3</span></code>
 <code lineno="2"><span class="rx-lncm">-- Lumps certain characters together.</span></code>
 <code lineno="3"><span class="rx-var">tstring</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8Transform</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*casefold:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*lump:*/</span><span class="rx-ws"> </span><span class="rx-env">.true</span><span class="rx-spe">)</span></code>
@@ -1101,7 +1103,7 @@ transformations</h5>
 <code lineno="7">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 4</span></code>
 <code lineno="2"><span class="rx-lncm">-- NLF2LF: Convert LF, CRLF, CR and NEL into LF.</span></code>
 <code lineno="3"><span class="rx-var">tstring</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8Transform</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*casefold:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*lump:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*nlf:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span></code>
@@ -1111,7 +1113,7 @@ transformations</h5>
 <code lineno="7">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 5</span></code>
 <code lineno="2"><span class="rx-lncm">-- NLF2LS: Convert LF, CRLF, CR and NEL into LS (U+2028 Zl 0 "LINE SEPARATOR").</span></code>
 <code lineno="3"><span class="rx-var">tstring</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8Transform</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*casefold:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*lump:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*nlf:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span></code>
@@ -1121,7 +1123,7 @@ transformations</h5>
 <code lineno="7">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 6</span></code>
 <code lineno="2"><span class="rx-lncm">-- NLF2PS: convert LF, CRLF, CR and NEL into PS (U+2029 Zp 0 "PARAGRAPH SEPARATOR").</span></code>
 <code lineno="3"><span class="rx-var">tstring</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8Transform</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*casefold:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*lump:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*nlf:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">3</span><span class="rx-spe">)</span></code>
@@ -1131,7 +1133,7 @@ transformations</h5>
 <code lineno="7">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 7</span></code>
 <code lineno="2"><span class="rx-lncm">-- Strips and/or converts control characters.</span></code>
 <code lineno="3"><span class="rx-var">tstring</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8Transform</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*casefold:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*lump:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*nlf:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*normalization:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*stripCC*/</span><span class="rx-ws"> </span><span class="rx-env">.true</span><span class="rx-spe">)</span></code>
@@ -1141,7 +1143,7 @@ transformations</h5>
 <code lineno="7">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 8</span></code>
 <code lineno="2"><span class="rx-lncm">-- Strips all character markings.</span></code>
 <code lineno="3"><span class="rx-lncm">-- This includes non-spacing, spacing and enclosing (i.e. accents).</span></code>
@@ -1153,7 +1155,7 @@ transformations</h5>
 <code lineno="9">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 9</span></code>
 <code lineno="2"><span class="rx-lncm">-- Strips unassigned codepoints.</span></code>
 <code lineno="3"><span class="rx-var">tstring</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8Transform</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*casefold:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*lump:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*nlf:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*normalization:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*stripCC:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*stripIgnorable:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*stripMark:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*stripNA*/</span><span class="rx-ws"> </span><span class="rx-env">.true</span><span class="rx-spe">)</span></code>
@@ -1163,7 +1165,7 @@ transformations</h5>
 <code lineno="7">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 10</span></code>
 <code lineno="2"><span class="rx-lncm">-- Application of several options.</span></code>
 <code lineno="3"><span class="rx-var">tstring</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8Transform</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*casefold:*/</span><span class="rx-ws"> </span><span class="rx-env">.true</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*lump:*/</span><span class="rx-ws"> </span><span class="rx-env">.true</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*nlf:*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*normalization:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*stripCC:*/</span><span class="rx-ws"> </span><span class="rx-env">.true</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*stripIgnorable:*/</span><span class="rx-ws"> </span><span class="rx-env">.true</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*stripMark:*/</span><span class="rx-ws"> </span><span class="rx-env">.true</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*stripNA*/</span><span class="rx-ws"> </span><span class="rx-env">.true</span><span class="rx-spe">)</span></code>
@@ -1265,13 +1267,13 @@ href="#utf8EncodeCodepoint"><code>utf8EncodeCodepoint</code></a></li>
 <h3 id="constants">2.3.   Constants</h3>
 <p><a id="maxCodepoint"></a></p>
 <h4 id="maxcodepoint">2.3.1.   maxCodepoint</h4>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-dir">::</span><span class="rx-dkw">constant</span><span class="rx-ws"> </span><span class="rx-const rx-method">maxCodepoint</span><span class="rx-ws"> </span><span class="rx-const rx-constant-value">1114111</span>
 </code></pre>
 </div>
 <p><a id="NFC_NFD_NFKC_NFKD"></a></p>
 <h4 id="nfc-nfd-nfkc-nfkd">2.3.2.   NFC, NFD, NFKC, NFKD</h4>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization):</span></code>
 <code lineno="2"><span class="rx-dir">::</span><span class="rx-dkw">constant</span><span class="rx-ws"> </span><span class="rx-const rx-method">NFC</span><span class="rx-ws"> </span><span class="rx-const rx-constant-value">1</span></code>
 <code lineno="3"><span class="rx-dir">::</span><span class="rx-dkw">constant</span><span class="rx-ws"> </span><span class="rx-const rx-method">NFD</span><span class="rx-ws"> </span><span class="rx-const rx-constant-value">2</span></code>
@@ -1281,7 +1283,7 @@ href="#utf8EncodeCodepoint"><code>utf8EncodeCodepoint</code></a></li>
 </div>
 <p><a id="NLF2LF_NLF2LS_NLF2PS"></a></p>
 <h4 id="nlf2lf-nlf2ls-nlf2ps">2.3.3.   NLF2LF, NLF2LS, NLF2PS</h4>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Value to pass as the `nlf` argument to utf8Transform (default: 0 no transformation).</span></code>
 <code lineno="2"><span class="rx-dir">::</span><span class="rx-dkw">constant</span><span class="rx-ws"> </span><span class="rx-const rx-method">NLF2LF</span><span class="rx-ws"> </span><span class="rx-const rx-constant-value">1</span></code>
 <code lineno="3"><span class="rx-dir">::</span><span class="rx-dkw">constant</span><span class="rx-ws"> </span><span class="rx-const rx-method">NLF2LS</span><span class="rx-ws"> </span><span class="rx-const rx-constant-value">2</span></code>
@@ -1299,13 +1301,13 @@ for a description of these values.</p>
 <p>If a buffer is passed as an argument, the resulting string is
 appended to the buffer, and the buffer is returned.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2U</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Noël 🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                        </span><span class="rx-lncm">-- 'U+004E U+006F U+00EB U+006C U+0020 U+1F385'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2U</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Noël 🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- M'U+004E U+006F U+00EB U+006C U+0020 U+1F385'</span></code>
 <code lineno="3">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Invalid string</span></code>
 <code lineno="2"><span class="rx-lncm">-- U+FFFD Substitution of Maximal Subparts</span></code>
 <code lineno="3"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064</span></code>
@@ -1326,7 +1328,7 @@ The codepoints are separated by a single space.</p>
 <p>If a buffer is passed as an argument, the resulting string is
 appended to the buffer, and the buffer is returned.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2X</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Noël 🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                        </span><span class="rx-lncm">-- '4E 6F C3AB 6C 20 F09F8E85'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2X</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Noël 🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- M'4E 6F C3AB 6C 20 F09F8E85'</span></code>
 <code lineno="3">
@@ -1339,7 +1341,7 @@ appended to the buffer, and the buffer is returned.</p>
 See the <a href="#codepoint"><code>codepoint</code></a> method for a
 definition of "codepoint identifier".</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Search by decimal value</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">character</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">127877</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                 </span><span class="rx-lncm">-- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">character</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str rx-ipart">127877</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">               </span><span class="rx-lncm">-- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")</span></code>
@@ -1347,32 +1349,32 @@ definition of "codepoint identifier".</p>
 <code lineno="5">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Search by U+ notation</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">character</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+1F385</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">              </span><span class="rx-lncm">-- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")</span></code>
 <code lineno="3">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Search by name</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">character</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">FATHER CHRISTMAS</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")</span></code>
 <code lineno="3">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- search by loose name.</span></code>
 <code lineno="2"><span class="rx-lncm">-- https://unicode.org/reports/tr44/#UAX44-LM2</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">character</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"> Father christmas  </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">  </span><span class="rx-lncm">-- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")</span></code>
 <code lineno="4">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Search directly a character</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">character</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                   </span><span class="rx-lncm">-- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")</span></code>
 <code lineno="3">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Only -1 is supported as a special value</span></code>
 <code lineno="2"><span class="rx-lncm">-- All other negative codepoints are invalid</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">character</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                     </span><span class="rx-lncm">-- (An invalid character)</span></code>
@@ -1400,7 +1402,7 @@ value used in case of error).</p>
 <li>or a UTF-8 encoded character.</li>
 </ul>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Search by decimal value</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepoint</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">127877</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                 </span><span class="rx-lncm">-- 127877</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepoint</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str rx-ipart">127877</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">               </span><span class="rx-lncm">-- 127877</span></code>
@@ -1408,32 +1410,32 @@ value used in case of error).</p>
 <code lineno="5">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Search by U+ notation</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepoint</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+1F385</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">              </span><span class="rx-lncm">-- 127877</span></code>
 <code lineno="3">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Search by name</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepoint</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">FATHER CHRISTMAS</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 127877</span></code>
 <code lineno="3">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- search by loose name.</span></code>
 <code lineno="2"><span class="rx-lncm">-- https://unicode.org/reports/tr44/#UAX44-LM2</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepoint</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"> Father christmas  </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">  </span><span class="rx-lncm">-- 127877</span></code>
 <code lineno="4">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Search directly a character</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepoint</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                   </span><span class="rx-lncm">-- 127877</span></code>
 <code lineno="3">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Only -1 is supported as a special value</span></code>
 <code lineno="2"><span class="rx-lncm">-- All other negative codepoints are invalid</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepoint</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                     </span><span class="rx-lncm">-- -1</span></code>
@@ -1486,7 +1488,7 @@ error.</p>
 <pre class="rexx"><code>.RexxUnicode~codepointExtendedCharName(2448~x2d)=   -- &#39;OCR DASH&#39;
 .RexxUnicode~codepointExtendedCharName(&quot;D800&quot;~x2d)= -- &#39;&lt;lead surrogate-D800&gt;&#39;
 </code></pre>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- The special value -1 has no extended name</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointExtendedCharName</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- ''</span></code>
 <code lineno="3">
@@ -1509,14 +1511,14 @@ width of 1.</li>
 <li>Other codepoints are considered printable.</li>
 </ul>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIsPrintable</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">             </span><span class="rx-lncm">-- 0</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIsPrintable</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">65</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- 1</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIsPrintable</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 0</span></code>
 <code lineno="4">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- The special value -1 is not printable</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIsPrintable</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- 0</span></code>
 <code lineno="3">
@@ -1534,14 +1536,14 @@ escape notation.</p>
 <p>If a buffer is passed as an argument, the resulting string is
 appended to the buffer, and the buffer is returned.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '\u0000'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">65</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- 'A'</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">  </span><span class="rx-lncm">-- '\uD800'</span></code>
 <code lineno="4">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Since the special value -1 is not printable, it is represented using Unicode escape notation.</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '\UFFFFFFFF'</span></code>
 <code lineno="3">
@@ -1556,14 +1558,14 @@ id="codepointunicodeescapenotation">2.4.11.   codepointUnicodeEscapeNotation<
 <p>If a buffer is passed as an argument, the resulting string is
 appended to the buffer, and the buffer is returned.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUnicodeEscapeNotation</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '\uD800'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUnicodeEscapeNotation</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">1F385</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- '\U0001F385'</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUnicodeEscapeNotation</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- '\UFFFFFFFF'</span></code>
 <code lineno="4">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUnicodeEscapeNotation</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- M'\uD800'</span></code>
 <code lineno="2">
 </code></pre>
@@ -1575,7 +1577,7 @@ appended to the buffer, and the buffer is returned.</p>
 <p>If a buffer is passed as an argument, the resulting string is
 appended to the buffer, and the buffer is returned.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUTF8Encoding</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- 00</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUTF8Encoding</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">65</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- 41</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUTF8Encoding</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2448</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- 'E29188'</span></code>
@@ -1598,7 +1600,7 @@ though the resulting value is not a valid Unicode scalar value</p>
 href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083"
 title="Typographic Conventions - Code Points">https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083</a></p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">D2U</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">235</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                              </span><span class="rx-lncm">-- 'U+00EB'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">D2U</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">235</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- M'U+00EB'</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">D2U</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">127877</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                           </span><span class="rx-lncm">-- 'U+1F385'</span></code>
@@ -1617,12 +1619,12 @@ title="Typographic Conventions - Code Points">https://www.unicode.org/versions/U
 if registered, or to <code>.RexxUnicode~UAX44_LM2</code> (slower, but
 always available).</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">h_UAX44_LM2</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"> MICR on US SYMBOL</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 'micronussymbol'</span></code>
 <code lineno="2">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- ASCII name only</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">h_UAX44_LM2</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Père Noël</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">              </span><span class="rx-lncm">-- Name must be an ASCII string; found "Père Noël".</span></code>
 <code lineno="3">
@@ -1634,7 +1636,7 @@ always available).</p>
 <p>Returns a <code>StringTable</code> containing information about the
 Unicode environment.</p>
 <p><strong>Example output</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span></code>
 <code lineno="2"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="3"><span class="rx-cm">    a StringTable (5 items)</span></code>
@@ -1665,14 +1667,14 @@ otherwise, Unicode escape notation (<code>\uXXXX</code> or
 <p>If a buffer is passed as an argument, the resulting string is
 appended to the buffer, and the buffer is returned.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringEscape</span><span class="rx-spe">(</span><span class="rx-const rx-bif-func">xrange</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">00</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">FF</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&amp;''()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'</span></code>
 <code lineno="2"></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringEscape</span><span class="rx-spe">(</span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+10FFF</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- '\U00010FFF'</span></code>
 <code lineno="4">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringEscape</span><span class="rx-spe">(</span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;lead surrogate-D800&gt;}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '\xED\xA0\x80'</span></code>
 <code lineno="2"><span class="rx-cm">/*</span></code>
 <code lineno="3"><span class="rx-cm">A lead surrogate is invalid in a UTF-8 string (would be valid in a WTF-8 string).</span></code>
@@ -1704,7 +1706,7 @@ appended to the buffer, and the buffer is returned.</p>
 <p>If provided, <code>indexer</code> receives a
 <code>RexxUnicodeStringIndexer</code> instance.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"></span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">e</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">é</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'</span></code>
@@ -1714,7 +1716,7 @@ appended to the buffer, and the buffer is returned.</p>
 <code lineno="7">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Invalid string</span></code>
 <code lineno="2"><span class="rx-lncm">-- U+FFFD Substitution of Maximal Subparts</span></code>
 <code lineno="3"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202</span></code>
@@ -1736,7 +1738,7 @@ appended to the buffer, and the buffer is returned.</p>
 <p>Returns <code>.true</code> if the given string contains only
 characters &lt;= "7F"x</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringIsASCII</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Noel</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 1</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringIsASCII</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Noël</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 0</span></code>
 <code lineno="3">
@@ -1750,7 +1752,7 @@ transformations applied.</p>
 <p>See the <a href="#utf8Transform"><code>utf8Transform</code></a>
 method for a description of the optional transformation parameters.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringToNFC</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">äöü äöü x̂ ϔ ﷺ baﬄe ß ς</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- 'äöü äöü x̂ ϔ ﷺ baﬄe ß ς'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2X</span><span class="rx-spe">(</span><span class="rx-var">result</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                                  </span><span class="rx-lncm">-- 'C3A4 C3B6 C3BC 20 C3A4 C3B6 C3BC 20 78 CC82 20 CF94 20 EFB7BA 20 62 61 EFAC84 65 20 C39F 20 CF82'</span></code>
 <code lineno="3">
@@ -1764,7 +1766,7 @@ transformations applied.</p>
 <p>See the <a href="#utf8Transform"><code>utf8Transform</code></a>
 method for a description of the optional transformation parameters.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringToNFD</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">äöü äöü x̂ ϔ ﷺ baﬄe ß ς</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- 'äöü äöü x̂ ϔ ﷺ baﬄe ß ς'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2X</span><span class="rx-spe">(</span><span class="rx-var">result</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                                   </span><span class="rx-lncm">-- '61 CC88 6F CC88 75 CC88 20 61 CC88 6F CC88 75 CC88 20 78 CC82 20 CF92 CC88 20 EFB7BA 20 62 61 EFAC84 65 20 C39F 20 CF82'</span></code>
 <code lineno="3">
@@ -1778,7 +1780,7 @@ transformations applied.</p>
 <p>See the <a href="#utf8Transform"><code>utf8Transform</code></a>
 method for a description of the optional transformation parameters.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringToNFKC</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">äöü äöü x̂ ϔ ﷺ baﬄe ß ς</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- 'äöü äöü x̂ Ϋ صلى الله عليه وسلم baffle ß ς'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2X</span><span class="rx-spe">(</span><span class="rx-var">result</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                                   </span><span class="rx-lncm">-- 'C3A4 C3B6 C3BC 20 C3A4 C3B6 C3BC 20 78 CC82 20 CEAB 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 C39F 20 CF82'</span></code>
 <code lineno="3">
@@ -1807,7 +1809,7 @@ NFKC retains these characters.</p>
 <p>See the <a href="#utf8Transform"><code>utf8Transform</code></a>
 method for a description of the optional transformation parameters.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringToNFKC_CF</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">äöü äöü x̂ ϔ ﷺ baﬄe ß ς</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- 'äöü äöü x̂ ϋ صلى الله عليه وسلم baffle ss σ'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2X</span><span class="rx-spe">(</span><span class="rx-var">result</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                                       </span><span class="rx-lncm">-- 'C3A4 C3B6 C3BC 20 C3A4 C3B6 C3BC 20 78 CC82 20 CF8B 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 73 73 20 CF83'</span></code>
 <code lineno="3">
@@ -1821,7 +1823,7 @@ transformations applied.</p>
 <p>See the <a href="#utf8Transform"><code>utf8Transform</code></a>
 method for a description of the optional transformation parameters.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringToNFKD</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">äöü äöü x̂ ϔ ﷺ baﬄe ß ς</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- 'äöü äöü x̂ Ϋ صلى الله عليه وسلم baffle ß ς'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">C2X</span><span class="rx-spe">(</span><span class="rx-var">result</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                                   </span><span class="rx-lncm">-- '61 CC88 6F CC88 75 CC88 20 61 CC88 6F CC88 75 CC88 20 78 CC82 20 CEA5 CC88 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 C39F 20 CF82'</span></code>
 <code lineno="3">
@@ -1853,7 +1855,7 @@ time. This method handles them at run time instead.</p>
 \x{X..X}            Arbitrary number of hex digits
 \xXX                One byte, exactly 2 hex digits</code></pre>
 <p><strong>Examples</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- '\'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a\\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- 'a\'</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\\b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '\b'</span></code>
@@ -1861,7 +1863,7 @@ time. This method handles them at run time instead.</p>
 <code lineno="5">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- M'\'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a\\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- M'a\'</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\\b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- M'\b'</span></code>
@@ -1869,7 +1871,7 @@ time. This method handles them at run time instead.</p>
 <code lineno="5">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\a</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 07</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 08</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\f</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '0C'</span></code>
@@ -1880,7 +1882,7 @@ time. This method handles them at run time instead.</p>
 <code lineno="8">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{OCR DASH}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                  </span><span class="rx-lncm">-- '⑈'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{MICR ON US SYMBOL}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- '⑈'</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;control-0000&gt;}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- '[00]'</span></code>
@@ -1888,7 +1890,7 @@ time. This method handles them at run time instead.</p>
 <code lineno="5">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- '𝓐B𝓒𝓓𝓔'</span></code>
 <code lineno="2">
 </code></pre>
@@ -1907,18 +1909,18 @@ If an error occurs, any characters appended during this call are
 discarded.</p>
 <p>The result is either a string or the buffer passed as argument.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+004E U+006F U+00EB U+006C U+0020 U+1F385</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                         </span><span class="rx-lncm">-- 'Noël 🎅'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+004E U+006F U+00EB U+006C U+0020 U+1F385</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- M'Noël 🎅'</span></code>
 <code lineno="3">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+004E U+006F U+FFFFFF U+00EB</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                                      </span><span class="rx-lncm">-- Cannot UTF-8 encode codepoint U+FFFFFF.</span></code>
 <code lineno="2">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- The update is atomic when passing a buffer:</span></code>
 <code lineno="2"><span class="rx-lncm">-- either all decoded characters are appended, or the buffer is left unchanged.</span></code>
 <code lineno="3"><span class="rx-var">b</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">🤶 </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span></code>
@@ -1940,7 +1942,7 @@ Otherwise UPlusCodepoint must be strictly <code>"U+"</code> followed by
 <p>Returns the decimal value if no error occurs.<br />
 Otherwise, returns -1 or, if requested, raises an error.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2D</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+00EB</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                                                                 </span><span class="rx-lncm">-- 235</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2D</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+00EB </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                                                                </span><span class="rx-lncm">-- -1</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2D</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+00EB </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*start*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*raiseError*/</span><span class="rx-ws"> </span><span class="rx-env">.true</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                             </span><span class="rx-lncm">-- Expected U+ or u+ followed by 4..6 hex digits; found "U+00EB ".</span></code>
@@ -1960,12 +1962,12 @@ title="Loose matching rule UAX44-LM2">loose matching rule UAX44-LM2</a>
 where case, whitespace, underscore ('_'), and all medial hyphens except
 the hyphen in <code>U+1180</code> HANGUL JUNGSEONG O-E are removed.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">UAX44_LM2</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"> MICR on US SYMBOL</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- 'micronussymbol'</span></code>
 <code lineno="2">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- ASCII name only</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">UAX44_LM2</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Père Noël</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                </span><span class="rx-lncm">-- Name must be an ASCII string; found "Père Noël".</span></code>
 <code lineno="3">
@@ -1980,14 +1982,14 @@ title="Loose matching rule UAX44-LM3">loose matching rule UAX44-LM3</a>
 where case, whitespace, underscore ('_'), hyphens, and any initial
 prefix string "is" are removed.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">UAX44_LM3</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Upper case</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">               </span><span class="rx-lncm">-- 'uppercase'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">UAX44_LM3</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"> Is Upper case</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- 'uppercase'</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">UAX44_LM3</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Is Pere Noel</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">             </span><span class="rx-lncm">-- 'perenoel'</span></code>
 <code lineno="4">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- ASCII name only</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">UAX44_LM3</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Is Père Noël</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">             </span><span class="rx-lncm">-- Name must be an ASCII string; found "Is Père Noël".</span></code>
 <code lineno="3">
@@ -2007,7 +2009,7 @@ created from a UTF-8 string and allows enumeration of the string's
 codepoints without indexer.</p>
 <p><code>::requires "rxunicode.cls"</code></p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 1</span></code>
 <code lineno="2"><span class="rx-lncm">-- the default index type is the codepoint index</span></code>
 <code lineno="3"><span class="rx-lncm">-- the default item type is the codepoint as a whole number</span></code>
@@ -2028,7 +2030,7 @@ codepoints without indexer.</p>
 <code lineno="18">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 2</span></code>
 <code lineno="2"><span class="rx-lncm">-- It's possible to get other types of index and item</span></code>
 <code lineno="3"><span class="rx-lncm">-- Here, we request the byte index and the codepoint byte sequence as hex digits</span></code>
@@ -2049,7 +2051,7 @@ codepoints without indexer.</p>
 <code lineno="18">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 3</span></code>
 <code lineno="2"><span class="rx-lncm">-- Codepoint supplier providing the default index and returning the codepoint escaped string</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
@@ -2069,7 +2071,7 @@ codepoints without indexer.</p>
 <code lineno="17">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 4</span></code>
 <code lineno="2"><span class="rx-lncm">-- Codepoint supplier providing the default index and returning the codepoint in U+ notation</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">u</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
@@ -2089,7 +2091,7 @@ codepoints without indexer.</p>
 <code lineno="17">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 5</span></code>
 <code lineno="2"><span class="rx-lncm">-- Codepoint supplier providing the default index and returning the codepoint as a RexxUnicodeCharacter</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
@@ -2109,7 +2111,7 @@ codepoints without indexer.</p>
 <code lineno="17">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 6</span></code>
 <code lineno="2"><span class="rx-lncm">-- Invalid string - U+FFFD Substitution of Maximal Subparts</span></code>
 <code lineno="3"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202</span></code>
@@ -2127,7 +2129,7 @@ codepoints without indexer.</p>
 <code lineno="15">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 7</span></code>
 <code lineno="2"><span class="rx-lncm">-- Codepoint supplier providing the byte index and returning the codepoint escaped string</span></code>
 <code lineno="3"><span class="rx-lncm">-- A negative byte index indicates an invalid byte sequence</span></code>
@@ -2143,7 +2145,7 @@ codepoints without indexer.</p>
 <code lineno="13">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 8</span></code>
 <code lineno="2"><span class="rx-lncm">-- Codepoint supplier providing the byte index and returning the error message</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">e</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
@@ -2259,7 +2261,7 @@ created from a UTF-8 string and allows enumeration of the string's
 graphemes without indexer.</p>
 <p><code>::requires "rxunicode.cls"</code></p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 1</span></code>
 <code lineno="2"><span class="rx-lncm">-- the default index type is the grapheme index</span></code>
 <code lineno="3"><span class="rx-lncm">-- the default item type is the grapheme as a string</span></code>
@@ -2276,7 +2278,7 @@ graphemes without indexer.</p>
 <code lineno="14">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 2</span></code>
 <code lineno="2"><span class="rx-lncm">-- Grapheme supplier providing the byte index and returning the grapheme byte sequence as hex digits</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">x</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
@@ -2292,7 +2294,7 @@ graphemes without indexer.</p>
 <code lineno="13">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 3</span></code>
 <code lineno="2"><span class="rx-lncm">-- Grapheme supplier providing the default index and returning the grapheme escaped string</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
@@ -2308,7 +2310,7 @@ graphemes without indexer.</p>
 <code lineno="13">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 4</span></code>
 <code lineno="2"><span class="rx-lncm">-- Grapheme supplier providing the default index and returning the grapheme codepoints in U+ notation</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">noël👨‍👩‍👧🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">u</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
@@ -2324,7 +2326,7 @@ graphemes without indexer.</p>
 <code lineno="13">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 5</span></code>
 <code lineno="2"><span class="rx-lncm">-- Invalid string - U+FFFD Substitution of Maximal Subparts</span></code>
 <code lineno="3"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202</span></code>
@@ -2342,7 +2344,7 @@ graphemes without indexer.</p>
 <code lineno="15">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 6</span></code>
 <code lineno="2"><span class="rx-lncm">-- Grapheme supplier providing the byte index and returning the grapheme escaped string</span></code>
 <code lineno="3"><span class="rx-lncm">-- A negative byte index indicates an invalid byte sequence</span></code>
@@ -2358,7 +2360,7 @@ graphemes without indexer.</p>
 <code lineno="13">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 7</span></code>
 <code lineno="2"><span class="rx-lncm">-- Grapheme supplier providing the byte index and returning the error message</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">e</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
@@ -2472,7 +2474,7 @@ access to codepoints and graphemes in a string.</p>
 indexer.</p>
 <p><code>::requires "rxunicode.cls"</code></p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 1</span></code>
 <code lineno="2"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span></code>
 <code lineno="3"><span class="rx-var">indexer</span><span class="rx-spe">=</span><span class="rx-ws">                            </span><span class="rx-lncm">-- (a👨‍👩‍👧b)</span></code>
@@ -2485,7 +2487,7 @@ indexer.</p>
 <code lineno="10">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 2</span></code>
 <code lineno="2"><span class="rx-lncm">-- U+FFFD Substitution of Maximal Subparts</span></code>
 <code lineno="3"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064</span></code>
@@ -2509,12 +2511,22 @@ indexer.</p>
 <code lineno="21">
 </code></pre>
 </div>
-<h3 id="class-methods-4">5.1.   Class methods</h3>
+<h3 id="routines">5.1.   Routines</h3>
+<p><a id="requestRexxUnicodeStringIndexer"></a></p>
+<h4
+id="requestrexxunicodestringindexer-routine">5.1.1.   requestRexxUnicodeStringIndexer
+routine</h4>
+<pre><code>requestRexxUnicodeStringIndexer(object)</code></pre>
+<p>Returns a <code>RexxUnicodeStringIndexer</code> instance created from
+<code>object</code>. If <code>object</code> is already a
+<code>RexxUnicodeStringIndexer</code> instance, returns it
+unchanged.</p>
+<h3 id="class-methods-4">5.2.   Class methods</h3>
 <p>The <code>RexxUnicodeStringIndexer</code> class defines no class
 methods of its own.</p>
-<h3 id="instance-methods-4">5.2.   Instance methods</h3>
+<h3 id="instance-methods-4">5.3.   Instance methods</h3>
 <p><a id="RexxUnicodeStringIndexer_codepointAtIndexC"></a></p>
-<h4 id="codepointatindexc-1">5.2.1.   codepointAtIndexC</h4>
+<h4 id="codepointatindexc-1">5.3.1.   codepointAtIndexC</h4>
 <pre><code>aRexxUnicodeStringIndexer~codepointAtIndexC(indexC)</code></pre>
 <p>Returns the codepoint at codepoint index <code>indexC</code> as a
 whole number.</p>
@@ -2527,16 +2539,17 @@ requested index is not stored in the indexer, an error is raised.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_codepointCount"></a></p>
-<h4 id="codepointcount">5.2.2.   codepointCount</h4>
+<h4 id="codepointcount">5.3.2.   codepointCount</h4>
 <pre><code>aRexxUnicodeStringIndexer~codepointCount</code></pre>
 <p>Returns the codepoint count calculated during the full scan performed
 when the indexer was initialized.<br />
 This result is not impacted by <code>codepointStorageLimit</code>.</p>
 <p><a id="RexxUnicodeStringIndexer_codepointIndexB"></a></p>
-<h4 id="codepointindexb">5.2.3.   codepointIndexB</h4>
+<h4 id="codepointindexb">5.3.3.   codepointIndexB</h4>
 <pre><code>aRexxUnicodeStringIndexer~codepointIndexB(indexC)</code></pre>
 <p>Returns the byte index corresponding to codepoint index
-<code>indexC</code>.</p>
+<code>indexC</code>.<br />
+It is negative if the codepoint's byte sequence is invalid.</p>
 <p><code>indexC</code> must be a positive or negative whole
 number.<br />
 If <code>indexC</code> is negative, the codepoint index is counted from
@@ -2545,29 +2558,96 @@ the end of the string.</p>
 requested index is not stored in the indexer, an error is raised.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
+<p><a id="RexxUnicodeStringIndexer_graphemeIndexG"></a></p>
+<h4 id="codepointindexc">5.3.4.   codepointIndexC</h4>
+<pre><code>aRexxUnicodeStringIndexer~codepointIndexC(indexB)</code></pre>
+<p>Returns the codepoint index corresponding to byte index
+<code>indexB</code>.<br />
+It is negative if the byte index is not aligned with a codepoint
+boundary.</p>
+<p><code>indexB</code> must be a positive or negative whole
+number.<br />
+If <code>indexB</code> is negative, the byte index is counted from the
+end of the string.</p>
+<p>If <code>abs(indexB)</code> exceeds the byte string length, an error
+is raised.</p>
+<p>Performs a binary search. With sparse storage, a binary search may
+fail if the requested index is not stored.</p>
+<p>For an explanation of storage, see <a
+href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
+<p><strong>Examples</strong></p>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span></code>
+<code lineno="2"><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-ws"> </span><span class="rx-skw">to</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">string</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-op">~</span><span class="rx-const rx-method">left</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIndexC</span><span class="rx-spe">(</span><span class="rx-var">i</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
+<code lineno="3"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="4"><span class="rx-cm">    1 : 1</span></code>
+<code lineno="5"><span class="rx-cm">    2 : 2</span></code>
+<code lineno="6"><span class="rx-cm">    3 : -2</span></code>
+<code lineno="7"><span class="rx-cm">    4 : -2</span></code>
+<code lineno="8"><span class="rx-cm">    5 : -2</span></code>
+<code lineno="9"><span class="rx-cm">    6 : 3</span></code>
+<code lineno="10"><span class="rx-cm">    7 : -3</span></code>
+<code lineno="11"><span class="rx-cm">    8 : -3</span></code>
+<code lineno="12"><span class="rx-cm">    9 : 4</span></code>
+<code lineno="13"><span class="rx-cm">    10: -4</span></code>
+<code lineno="14"><span class="rx-cm">    11: -4</span></code>
+<code lineno="15"><span class="rx-cm">    12: -4</span></code>
+<code lineno="16"><span class="rx-cm">    13: 5</span></code>
+<code lineno="17"><span class="rx-cm">    14: -5</span></code>
+<code lineno="18"><span class="rx-cm">    15: -5</span></code>
+<code lineno="19"><span class="rx-cm">    16: 6</span></code>
+<code lineno="20"><span class="rx-cm">    17: -6</span></code>
+<code lineno="21"><span class="rx-cm">    18: -6</span></code>
+<code lineno="22"><span class="rx-cm">    19: -6</span></code>
+<code lineno="23"><span class="rx-cm">    20: 7</span></code>
+<code lineno="24"><span class="rx-cm">    */</span></code>
+<code lineno="25">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Negative byte indexes are supported (negative index means "index from the end")</span></code>
+<code lineno="2"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span></code>
+<code lineno="3"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIndexC</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 7</span></code>
+<code lineno="4"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIndexC</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- -6</span></code>
+<code lineno="5"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIndexC</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">5</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 6</span></code>
+<code lineno="6">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Binary search for codeppoint indexes cannot work with sparse storage</span></code>
+<code lineno="2"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span></code>
+<code lineno="3"><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-ws"> </span><span class="rx-skw">to</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">string</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-op">~</span><span class="rx-const rx-method">left</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIndexC</span><span class="rx-spe">(</span><span class="rx-var">i</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
+<code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="5"><span class="rx-cm">    Codepoint index 4 is not stored. Binary search for byte index 1 requires unlimited storage.</span></code>
+<code lineno="6"><span class="rx-cm">    */</span></code>
+<code lineno="7">
+</code></pre>
+</div>
 <p><a id="RexxUnicodeStringIndexer_codepointIndexes"></a></p>
-<h4 id="codepointindexes">5.2.4.   codepointIndexes</h4>
+<h4 id="codepointindexes">5.3.5.   codepointIndexes</h4>
 <pre><code>aRexxUnicodeStringIndexer~codepointIndexes</code></pre>
 <p>Returns the array of stored codepoint indexes.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_codepointStorageLimit"></a></p>
-<h4 id="codepointstoragelimit">5.2.5.   codepointStorageLimit</h4>
+<h4 id="codepointstoragelimit">5.3.6.   codepointStorageLimit</h4>
 <pre><code>aRexxUnicodeStringIndexer~codepointStorageLimit</code></pre>
 <p>Returns the maximum number of codepoint indexes that can be stored in
 <code>codepointIndexes</code>.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_endCodepointIndexes"></a></p>
-<h4 id="endcodepointindexes">5.2.6.   endCodepointIndexes</h4>
+<h4 id="endcodepointindexes">5.3.7.   endCodepointIndexes</h4>
 <pre><code>aRexxUnicodeStringIndexer~endCodepointIndexes</code></pre>
-<p>Returns the array of codepoint indexes stored in the end storage.</p>
+<p>Returns the array of codepoint indexes stored in the end storage, or
+<code>.nil</code> if <code>endCodepointStorageSize</code> is
+<code>0</code>.</p>
 <p>Codepoint indexes are stored in reverse order: the first item is the
 last codepoint index.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><strong>Example</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">)</span></code>
 <code lineno="2"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIndexes</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- [ 1, 2, 6, 9, 13]</span></code>
 <code lineno="3"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">endCodepointIndexes</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- [ 20, 16, 13, 9, 6]</span></code>
@@ -2575,22 +2655,24 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 </code></pre>
 </div>
 <p><a id="RexxUnicodeStringIndexer_endCodepointStorageSize"></a></p>
-<h4 id="endcodepointstoragesize">5.2.7.   endCodepointStorageSize</h4>
+<h4 id="endcodepointstoragesize">5.3.8.   endCodepointStorageSize</h4>
 <pre><code>aRexxUnicodeStringIndexer~endCodepointStorageSize</code></pre>
 <p>Returns the maximum number of codepoint indexes that can be stored in
 <code>endCodepointIndexes</code>.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_endErrors"></a></p>
-<h4 id="enderrors">5.2.8.   endErrors</h4>
+<h4 id="enderrors">5.3.9.   endErrors</h4>
 <pre><code>aRexxUnicodeStringIndexer~endErrors</code></pre>
-<p>Returns the array of error messages stored in the end storage.</p>
+<p>Returns the array of error messages stored in the end storage, or
+<code>.nil</code> if <code>endErrorStorageSize</code> is
+<code>0</code>.</p>
 <p>Error messages are stored in reverse order: the first item
 corresponds to the last error encountered.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><strong>Example</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- U+FFFD Substitution of Maximal Subparts</span></code>
 <code lineno="2"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064</span></code>
 <code lineno="3"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">F4 91 92 93 FF 41 80 BF 42</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">)</span></code>
@@ -2617,22 +2699,24 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 </code></pre>
 </div>
 <p><a id="RexxUnicodeStringIndexer_endErrorStorageSize"></a></p>
-<h4 id="enderrorstoragesize">5.2.9.   endErrorStorageSize</h4>
+<h4 id="enderrorstoragesize">5.3.10.   endErrorStorageSize</h4>
 <pre><code>aRexxUnicodeStringIndexer~endErrorStorageSize</code></pre>
 <p>Returns the maximum number of error messages that can be stored in
 <code>endErrors</code>.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_endGraphemeIndexes"></a></p>
-<h4 id="endgraphemeindexes">5.2.10.   endGraphemeIndexes</h4>
+<h4 id="endgraphemeindexes">5.3.11.   endGraphemeIndexes</h4>
 <pre><code>aRexxUnicodeStringIndexer~endGraphemeIndexes</code></pre>
-<p>Returns the array of grapheme indexes stored in the end storage.</p>
+<p>Returns the array of grapheme indexes stored in the end storage, or
+<code>.nil</code> if <code>endGraphemeStorageSize</code> is
+<code>0</code>.</p>
 <p>Grapheme indexes are stored in reverse order: the first item is the
 last grapheme index.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><strong>Example</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">)</span></code>
 <code lineno="2"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeIndexes</span><span class="rx-spe">=</span><span class="rx-ws">        </span><span class="rx-lncm">-- [ 1, 2, 20]</span></code>
 <code lineno="3"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">endGraphemeIndexes</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- [ 20, 2, 1]</span></code>
@@ -2640,33 +2724,33 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 </code></pre>
 </div>
 <p><a id="RexxUnicodeStringIndexer_endGraphemeStorageSize"></a></p>
-<h4 id="endgraphemestoragesize">5.2.11.   endGraphemeStorageSize</h4>
+<h4 id="endgraphemestoragesize">5.3.12.   endGraphemeStorageSize</h4>
 <pre><code>aRexxUnicodeStringIndexer~endGraphemeStorageSize</code></pre>
 <p>Returns the maximum number of grapheme indexes that can be stored in
 <code>endGraphemeIndexes</code>.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_errorCount"></a></p>
-<h4 id="errorcount">5.2.12.   errorCount</h4>
+<h4 id="errorcount">5.3.13.   errorCount</h4>
 <pre><code>aRexxUnicodeStringIndexer~errorCount</code></pre>
 <p>Returns the error count calculated during the full scan performed
 when the indexer was initialized.</p>
 <p>This result is not impacted by <code>errorStorageLimit</code>.</p>
 <p><a id="RexxUnicodeStringIndexer_errors"></a></p>
-<h4 id="errors">5.2.13.   errors</h4>
+<h4 id="errors">5.3.14.   errors</h4>
 <pre><code>aRexxUnicodeStringIndexer~errors</code></pre>
 <p>Returns the array of stored error messages.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_errorStorageLimit"></a></p>
-<h4 id="errorstoragelimit">5.2.14.   errorStorageLimit</h4>
+<h4 id="errorstoragelimit">5.3.15.   errorStorageLimit</h4>
 <pre><code>aRexxUnicodeStringIndexer~errorStorageLimit</code></pre>
 <p>Returns the maximum number of error messages that can be stored in
 <code>errors</code>.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_graphemeAtIndexG"></a></p>
-<h4 id="graphemeatindexg-1">5.2.15.   graphemeAtIndexG</h4>
+<h4 id="graphemeatindexg-1">5.3.16.   graphemeAtIndexG</h4>
 <pre><code>aRexxUnicodeStringIndexer~graphemeAtIndexG(indexG)</code></pre>
 <p>Returns the grapheme at grapheme index <code>indexG</code> as a
 string.</p>
@@ -2679,16 +2763,17 @@ requested index is not stored in the indexer, an error is raised.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_graphemeCount"></a></p>
-<h4 id="graphemecount">5.2.16.   graphemeCount</h4>
+<h4 id="graphemecount">5.3.17.   graphemeCount</h4>
 <pre><code>aRexxUnicodeStringIndexer~graphemeCount</code></pre>
 <p>Returns the grapheme count calculated during the full scan performed
 when the indexer was initialized.</p>
 <p>This result is not affected by <code>graphemeStorageLimit</code>.</p>
 <p><a id="RexxUnicodeStringIndexer_graphemeIndexB"></a></p>
-<h4 id="graphemeindexb">5.2.17.   graphemeIndexB</h4>
+<h4 id="graphemeindexb">5.3.18.   graphemeIndexB</h4>
 <pre><code>aRexxUnicodeStringIndexer~graphemeIndexB(indexG)</code></pre>
 <p>Returns the byte index corresponding to grapheme index
-<code>indexG</code>.</p>
+<code>indexG</code>.<br />
+It is negative if the grapheme's byte sequence is invalid.</p>
 <p><code>indexG</code> must be a positive or negative whole
 number.<br />
 If <code>indexG</code> is negative, the grapheme index is counted from
@@ -2697,21 +2782,117 @@ the end of the string.</p>
 requested index is not stored in the indexer, an error is raised.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
+<p><a id="RexxUnicodeStringIndexer_graphemeIndexG"></a></p>
+<h4 id="graphemeindexg">5.3.19.   graphemeIndexG</h4>
+<pre><code>aRexxUnicodeStringIndexer~graphemeIndexG(indexB)</code></pre>
+<p>Returns the grapheme index corresponding to byte index
+<code>indexB</code>.<br />
+It is negative if the byte index is not aligned with a grapheme
+boundary.</p>
+<p><code>indexB</code> must be a positive or negative whole
+number.<br />
+If <code>indexB</code> is negative, the byte index is counted from the
+end of the string.</p>
+<p>If <code>abs(indexB)</code> exceeds the byte string length, an error
+is raised.</p>
+<p>Performs a binary search. With sparse storage, a binary search may
+fail if the requested index is not stored.</p>
+<p>For an explanation of storage, see <a
+href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
+<p><strong>Examples</strong></p>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span></code>
+<code lineno="2"><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-ws"> </span><span class="rx-skw">to</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">string</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-op">~</span><span class="rx-const rx-method">left</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeIndexG</span><span class="rx-spe">(</span><span class="rx-var">i</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
+<code lineno="3"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="4"><span class="rx-cm">    1 : 1</span></code>
+<code lineno="5"><span class="rx-cm">    2 : 2</span></code>
+<code lineno="6"><span class="rx-cm">    3 : -2</span></code>
+<code lineno="7"><span class="rx-cm">    4 : -2</span></code>
+<code lineno="8"><span class="rx-cm">    5 : -2</span></code>
+<code lineno="9"><span class="rx-cm">    6 : -2</span></code>
+<code lineno="10"><span class="rx-cm">    7 : -2</span></code>
+<code lineno="11"><span class="rx-cm">    8 : -2</span></code>
+<code lineno="12"><span class="rx-cm">    9 : -2</span></code>
+<code lineno="13"><span class="rx-cm">    10: -2</span></code>
+<code lineno="14"><span class="rx-cm">    11: -2</span></code>
+<code lineno="15"><span class="rx-cm">    12: -2</span></code>
+<code lineno="16"><span class="rx-cm">    13: -2</span></code>
+<code lineno="17"><span class="rx-cm">    14: -2</span></code>
+<code lineno="18"><span class="rx-cm">    15: -2</span></code>
+<code lineno="19"><span class="rx-cm">    16: -2</span></code>
+<code lineno="20"><span class="rx-cm">    17: -2</span></code>
+<code lineno="21"><span class="rx-cm">    18: -2</span></code>
+<code lineno="22"><span class="rx-cm">    19: -2</span></code>
+<code lineno="23"><span class="rx-cm">    20: 3</span></code>
+<code lineno="24"><span class="rx-cm">    */</span></code>
+<code lineno="25">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Negative byte indexes are supported (negative index means "index from the end")</span></code>
+<code lineno="2"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span></code>
+<code lineno="3"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeIndexG</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 3</span></code>
+<code lineno="4"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeIndexG</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- -2</span></code>
+<code lineno="5"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeIndexG</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">19</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- 2</span></code>
+<code lineno="6">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Binary search for grapheme indexes cannot work with sparse storage</span></code>
+<code lineno="2"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span></code>
+<code lineno="3"><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-ws"> </span><span class="rx-skw">to</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">string</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-op">~</span><span class="rx-const rx-method">left</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeIndexG</span><span class="rx-spe">(</span><span class="rx-var">i</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
+<code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="5"><span class="rx-cm">    Grapheme index 2 is not stored. Binary search for byte index 1 requires unlimited storage.</span></code>
+<code lineno="6"><span class="rx-cm">    */</span></code>
+<code lineno="7">
+</code></pre>
+</div>
 <p><a id="RexxUnicodeStringIndexer_graphemeIndexes"></a></p>
-<h4 id="graphemeindexes">5.2.18.   graphemeIndexes</h4>
+<h4 id="graphemeindexes">5.3.20.   graphemeIndexes</h4>
 <pre><code>aRexxUnicodeStringIndexer~graphemeIndexes</code></pre>
 <p>Returns the array of stored grapheme indexes.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_graphemeStorageLimit"></a></p>
-<h4 id="graphemestoragelimit">5.2.19.   graphemeStorageLimit</h4>
+<h4 id="graphemestoragelimit">5.3.21.   graphemeStorageLimit</h4>
 <pre><code>aRexxUnicodeStringIndexer~graphemeStorageLimit</code></pre>
 <p>Returns the maximum number of grapheme indexes that can be stored in
 <code>graphemeIndexes</code>.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
+<p><a id="RexxUnicodeStringIndexer_info"></a></p>
+<h4 id="info-1">5.3.22.   info</h4>
+<pre><code>aRexxUnicodeStringIndexer~info</code></pre>
+<p>Returns a string providing information about the indexer's
+string:</p>
+<ul>
+<li>Whether it is ASCII or non-ASCII</li>
+<li>Grapheme count</li>
+<li>Codepoint count</li>
+<li>Byte count</li>
+<li>Error count</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"></span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">e</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">é</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">€</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'</span></code>
+<code lineno="5"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'</span></code>
+<code lineno="6"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">👨‍👩‍👧</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'</span></code>
+<code lineno="7">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Invalid string</span></code>
+<code lineno="2"><span class="rx-lncm">-- U+FFFD Substitution of Maximal Subparts</span></code>
+<code lineno="3"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'</span></code>
+<code lineno="5">
+</code></pre>
+</div>
 <p><a id="RexxUnicodeStringIndexer_init"></a></p>
-<h4 id="init-2">5.2.20.   init</h4>
+<h4 id="init-2">5.3.23.   init</h4>
 <pre><code>aRexxUnicodeStringIndexer~init(
     string,
 
@@ -2756,7 +2937,7 @@ storage, where only the starting and ending indexes are stored.</p>
 specifying the corresponding storage limit, but doing so creates a
 redundant storage allocation.</p>
 <p><strong>Examples</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 1</span></code>
 <code lineno="2"><span class="rx-lncm">-- If the identifier is a valid UTF-8 string and is made of just one codepoint then return this codepoint.</span></code>
 <code lineno="3"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">identifier</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*codepointStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*graphemeStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*errorStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span></code>
@@ -2764,7 +2945,7 @@ redundant storage allocation.</p>
 <code lineno="5">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 2</span></code>
 <code lineno="2"><span class="rx-lncm">-- U+FFFD Substitution of Maximal Subparts</span></code>
 <code lineno="3"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064</span></code>
@@ -2798,7 +2979,7 @@ redundant storage allocation.</p>
 <code lineno="31">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 3</span></code>
 <code lineno="2"><span class="rx-lncm">-- Collect counters, no need to store indexes and errors</span></code>
 <code lineno="3"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">F4 91 92 93 FF 41 80 BF 42</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">Joyeux Noël 👨‍👩‍👧</span><span class="rx-str rx-cquo">"</span></code>
@@ -2809,7 +2990,7 @@ redundant storage allocation.</p>
 <code lineno="8">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 4</span></code>
 <code lineno="2"><span class="rx-lncm">-- Gets the five last grapheme indexes.</span></code>
 <code lineno="3"><span class="rx-lncm">-- In case of error, reports only the first error.</span></code>
@@ -2832,7 +3013,7 @@ redundant storage allocation.</p>
 </code></pre>
 </div>
 <p><a id="RexxUnicodeStringIndexer_string"></a></p>
-<h4 id="string">5.2.21.   string</h4>
+<h4 id="string">5.3.24.   string</h4>
 <pre><code>aRexxUnicodeStringIndexer~string</code></pre>
 <p>Returns the string passed when creating the indexer.</p>
 <!----------------------------------------------------------------------------->
@@ -2860,7 +3041,7 @@ property values.</p>
 <p>The <code>RexxUnicodeCharacter~info(codepoint)</code> method uses
 these property names to build a table of property-value.</p>
 <p><strong>Examples</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">properties</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="2"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="3"><span class="rx-cm">    an Array (shape [29], 26 items)</span></code>
@@ -2894,7 +3075,7 @@ these property names to build a table of property-value.</p>
 <code lineno="31">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-var">c</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">character</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">€</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">message</span><span class="rx-ws"> </span><span class="rx-skw">over</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">properties</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">message</span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">c</span><span class="rx-op">~</span><span class="rx-const rx-method">send</span><span class="rx-spe">(</span><span class="rx-var">message</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
 <code lineno="2"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="3"><span class="rx-cm">    bidiClass: ET</span></code>
@@ -2939,7 +3120,7 @@ character type</a> as its short enumeration name.</p>
 href="#codepointBidiClass"><code>.RexxUnicodeServices~codepointBidiClass</code></a>
 for the list of enumeration values.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str rx-ipart">0608</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">bidiClass</span><span class="rx-spe">=</span><span class="rx-ws">        </span><span class="rx-lncm">--  'AL'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">FFFFFF</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">bidiClass</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">bidiClass</span><span class="rx-spe">=</span><span class="rx-ws">                </span><span class="rx-lncm">--  '?'</span></code>
@@ -2957,7 +3138,7 @@ character type</a> as its long enumeration name.</p>
 href="#codepointBidiClass"><code>.RexxUnicodeServices~codepointBidiClass</code></a>
 for the list of enumeration values.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str rx-ipart">0608</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">bidiClassName</span><span class="rx-spe">=</span><span class="rx-ws">        </span><span class="rx-lncm">--  'Arabic_Letter'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">FFFFFF</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">bidiClassName</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">bidiClassName</span><span class="rx-spe">=</span><span class="rx-ws">                </span><span class="rx-lncm">--  '?'</span></code>
@@ -2983,7 +3164,7 @@ title="Standard Annex #29 Unicode Text Segmentation - Grapheme Cluster Boundarie
 href="#codepointBoundClass"><code>.RexxUnicodeServices~codepointBoundClass</code></a>
 for the list of enumeration values.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">1F1E6</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">boundClass</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">--  'RI'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">FFFFFF</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">boundClass</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">boundClass</span><span class="rx-spe">=</span><span class="rx-ws">               </span><span class="rx-lncm">--  '?'</span></code>
@@ -3002,7 +3183,7 @@ title="Standard Annex #29 Unicode Text Segmentation - Grapheme Cluster Boundarie
 href="#codepointBoundClass"><code>.RexxUnicodeServices~codepointBoundClass</code></a>
 for the list of enumeration values.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">1F1E6</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">boundClassName</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">--  'Regional_Indicator'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">FFFFFF</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">boundClassName</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">boundClassName</span><span class="rx-spe">=</span><span class="rx-ws">               </span><span class="rx-lncm">--  '?'</span></code>
@@ -3021,7 +3202,7 @@ title="Unicode Core Specification - General Category">https://www.unicode.org/ve
 href="#codepointCategory"><code>.RexxUnicodeServices~codepointCategory</code></a>
 for the list of enumeration values.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str rx-ipart">0903</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">category</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 'Mc'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">FFFFFF</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">category</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">category</span><span class="rx-spe">=</span><span class="rx-ws">             </span><span class="rx-lncm">--  'Cn'</span></code>
@@ -3040,7 +3221,7 @@ title="Unicode Core Specification - General Category">https://www.unicode.org/ve
 href="#codepointCategory"><code>.RexxUnicodeServices~codepointCategory</code></a>
 for the list of enumeration values.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str rx-ipart">0903</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">categoryName</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 'Spacing_Mark'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">FFFFFF</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">categoryName</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">categoryName</span><span class="rx-spe">=</span><span class="rx-ws">             </span><span class="rx-lncm">--  'Unassigned'</span></code>
@@ -3078,7 +3259,7 @@ returned.</p>
 href="#codepointCombiningClass"><code>.RexxUnicodeServices~codepointCombiningClass</code></a>
 for the list of enumeration values.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">031B</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">combiningClass</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">--  'ATAR'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">FFFFFF</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">combiningClass</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">combiningClass</span><span class="rx-spe">=</span><span class="rx-ws">               </span><span class="rx-lncm">--  '?'</span></code>
@@ -3104,7 +3285,7 @@ returned.</p>
 href="#codepointCombiningClass"><code>.RexxUnicodeServices~codepointCombiningClass</code></a>
 for the list of enumeration values.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">031B</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">combiningClassName</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">--  'Attached_Above_Right'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">FFFFFF</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">combiningClassName</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">combiningClassName</span><span class="rx-spe">=</span><span class="rx-ws">               </span><span class="rx-lncm">--  '?'</span></code>
@@ -3130,7 +3311,7 @@ Unicode values.</p>
 href="#codepointCombiningClass"><code>.RexxUnicodeServices~codepointCombiningClass</code></a>
 for the list of enumeration values.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">031B</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">combiningClassValue</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">--  216</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">FFFFFF</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">combiningClassValue</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">combiningClassValue</span><span class="rx-spe">=</span><span class="rx-ws">              </span><span class="rx-lncm">--  -1</span></code>
@@ -3147,7 +3328,7 @@ Instances are compared by codepoint value.</p>
 If the target codepoint is greater, 1 is returned.<br />
 If the target codepoint is less, -1 is returned.</p>
 <p><strong>Examples</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-var">c1</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">64</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">c2</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">64</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">c1</span><span class="rx-op">~</span><span class="rx-const rx-method">compareTo</span><span class="rx-spe">(</span><span class="rx-var">c2</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- 0</span></code>
 <code lineno="2"><span class="rx-var">c1</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">65</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">c2</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">64</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">c1</span><span class="rx-op">~</span><span class="rx-const rx-method">compareTo</span><span class="rx-spe">(</span><span class="rx-var">c2</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- 1</span></code>
 <code lineno="3"><span class="rx-var">c1</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">64</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">c2</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">65</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">c1</span><span class="rx-op">~</span><span class="rx-const rx-method">compareTo</span><span class="rx-spe">(</span><span class="rx-var">c2</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- -1</span></code>
@@ -3181,7 +3362,7 @@ title="Unicode Normalization Forms">https://unicode.org/reports/tr15/</a></p>
 href="#codepointDecompositionType"><code>.RexxUnicodeServices~codepointDecompositionType</code></a>
 for the list of enumeration values.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str rx-ipart">0000</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">decompositionType</span><span class="rx-spe">=</span><span class="rx-ws">        </span><span class="rx-lncm">--  'None'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">00A8</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">decompositionType</span><span class="rx-spe">=</span><span class="rx-ws">        </span><span class="rx-lncm">--  'Compat'</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">00BC</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">decompositionType</span><span class="rx-spe">=</span><span class="rx-ws">        </span><span class="rx-lncm">--  'Fraction'</span></code>
@@ -3201,7 +3382,7 @@ title="Unicode Normalization Forms">https://unicode.org/reports/tr15/</a></p>
 href="#codepointDecompositionType"><code>.RexxUnicodeServices~codepointDecompositionType</code></a>
 for the list of enumeration values.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str rx-ipart">0000</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">decompositionTypeName</span><span class="rx-spe">=</span><span class="rx-ws">        </span><span class="rx-lncm">--  'Code point not explicitly listed for Decomposition_Type'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">00A8</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">decompositionTypeName</span><span class="rx-spe">=</span><span class="rx-ws">        </span><span class="rx-lncm">--  'Unspecified compatibility character'</span></code>
 <code lineno="3"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">00BC</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">decompositionTypeName</span><span class="rx-spe">=</span><span class="rx-ws">        </span><span class="rx-lncm">--  'Vulgar fraction form'</span></code>
@@ -3227,13 +3408,13 @@ title="Standard Annex #11 East Asian Width">https://www.unicode.org/reports/tr11
 An extended name is either the standard name if defined, or a codepoint
 label algorithmically generated.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2448</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">extendedName</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- 'OCR DASH'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">extendedName</span><span class="rx-spe">=</span><span class="rx-ws"> </span><span class="rx-lncm">-- '&lt;lead surrogate-D800&gt;'</span></code>
 <code lineno="3">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- The special value -1 has no extended name</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">extendedName</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- ''</span></code>
 <code lineno="3">
@@ -3248,7 +3429,7 @@ label algorithmically generated.</p>
 href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G40025"
 title="Unicode Core Specification - Ignoring Characters in Processing">https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G40025</a></p>
 <p><a id="RexxUnicodeCharacter_info"></a></p>
-<h4 id="info-1">6.2.20.   info</h4>
+<h4 id="info-2">6.2.20.   info</h4>
 <pre><code>aRexxUnicodeCharacter~info</code></pre>
 <p>Returns a string table whose keys are property names returned by
 <code>.RexxUnicodeCharacter~properties</code>.<br />
@@ -3263,7 +3444,7 @@ corresponding property value from the Unicode character.</p>
 bytes.</li>
 </ul>
 <p><strong>Example</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">character</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">€</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span></code>
 <code lineno="2"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="3"><span class="rx-cm">    a StringTable (26 items)</span></code>
@@ -3320,13 +3501,13 @@ character has no Unicode standard name.</p>
 <p>This method requires the <code>ICU4ooRexx</code> class. If it is not
 loaded, the method also returns an empty string.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2448</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">name</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- 'OCR DASH'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">name</span><span class="rx-spe">=</span><span class="rx-ws"> </span><span class="rx-lncm">-- ''</span></code>
 <code lineno="3">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- The special value -1 has no name</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">name</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- ''</span></code>
 <code lineno="3">
@@ -3340,13 +3521,13 @@ has no Unicode name alias.</p>
 <p>This method requires the <code>ICU4ooRexx</code> class. If it is not
 loaded, the method also returns an empty string.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2448</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">nameAlias</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- 'MICR ON US SYMBOL'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">nameAlias</span><span class="rx-spe">=</span><span class="rx-ws"> </span><span class="rx-lncm">-- ''</span></code>
 <code lineno="3">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- The special value -1 has no name alias</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">nameAlias</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- ''</span></code>
 <code lineno="3">
@@ -3371,13 +3552,13 @@ codepoint.</li>
 href="#RexxUnicodeCharacter_preferredName"><code>preferredName</code></a>).</li>
 </ul>
 <p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2448</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">string</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- '"⑈" \x{E29188} U+2448 So Other_Symbol "OCR DASH"'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">string</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- '&lt;?&gt; \x{EDA080} U+D800 Cs Surrogate "&lt;lead surrogate-D800&gt;"'</span></code>
 <code lineno="3">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- The special codepoint value -1 has its own string representation</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">string</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- 'An invalid character'</span></code>
 <code lineno="3">
@@ -3506,7 +3687,7 @@ package.</li>
 <code>u_charFromName</code>.</li>
 </ul>
 <p><strong>Examples</strong></p>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 1</span></code>
 <code lineno="2"><span class="rx-lncm">-- Copied from the prolog of ICU4ooRexx.cls</span></code>
 <code lineno="3"></code>
@@ -3518,7 +3699,7 @@ package.</li>
 <code lineno="9">
 </code></pre>
 </div>
-<div class="highlight-rexx-vim-light-zellner">
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 2</span></code>
 <code lineno="2"><span class="rx-lncm">-- The ICU4ooRexx package is registered by the user.</span></code>
 <code lineno="3"></code>

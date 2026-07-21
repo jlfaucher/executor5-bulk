@@ -42,11 +42,229 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 16 Jul 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S120ceQ600003a04cc0
+</span><span style="font-weight:bold;color:green;">Input queue name: S9115Q600003a02940
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
+
+
+<span style="font-weight:bold;color:blue;">-- ===============================================================================
+</span><span style="font-weight:bold;color:blue;">-- 2026 July 21
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">[Unicode]
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Add aRexxUnicodeStringIndexer~codepointIndexC(indexB)
+</span><span style="font-weight:bold;color:blue;">    Returns the codepoint index corresponding to byte index `indexB`.
+</span><span style="font-weight:bold;color:blue;">    It is negative if the byte index is not aligned with a codepoint boundary.
+</span><span style="font-weight:bold;color:blue;">    Performs a binary search.
+</span><span style="font-weight:bold;color:blue;">    Supports negative byte indexes and sparse storage, even though the latter does not make much sense.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Add aRexxUnicodeStringIndexer~graphemeIndexG(indexB)
+</span><span style="font-weight:bold;color:blue;">    Returns the grapheme index corresponding to byte index `indexB`.
+</span><span style="font-weight:bold;color:blue;">    It is negative if the byte index is not aligned with a grapheme boundary.
+</span><span style="font-weight:bold;color:blue;">    Performs a binary search.
+</span><span style="font-weight:bold;color:blue;">    Supports negative byte indexes and sparse storage, even though the latter does not make much sense.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Add aRexxUnicodeStringIndexer~info
+</span><span style="font-weight:bold;color:blue;">    Returns a string providing information about the indexer's string.
+</span><span style="font-weight:bold;color:blue;">    Now .RexxUnicode~stringInfo delegates to this method.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Add routine requestRexxUnicodeStringIndexer(object)
+</span><span style="font-weight:bold;color:blue;">    Returns a RexxUnicodeStringIndexer instance created from `object`.
+</span><span style="font-weight:bold;color:blue;">    If `object` is already a RexxUnicodeStringIndexer instance, returns it unchanged.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Examples
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Binary search for codepoint indexes with unlimited storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~string~length; say i~left(2)&quot;:&quot; indexer~codepointIndexC(i); end</span>
+1 : 1
+2 : 2
+3 : -2
+4 : -2
+5 : -2
+6 : 3
+7 : -3
+8 : -3
+9 : 4
+10: -4
+11: -4
+12: -4
+13: 5
+14: -5
+15: -5
+16: 6
+17: -6
+18: -6
+19: -6
+20: 7
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    1 : 1
+</span><span style="font-weight:bold;color:blue;">    2 : 2
+</span><span style="font-weight:bold;color:blue;">    3 : -2
+</span><span style="font-weight:bold;color:blue;">    4 : -2
+</span><span style="font-weight:bold;color:blue;">    5 : -2
+</span><span style="font-weight:bold;color:blue;">    6 : 3
+</span><span style="font-weight:bold;color:blue;">    7 : -3
+</span><span style="font-weight:bold;color:blue;">    8 : -3
+</span><span style="font-weight:bold;color:blue;">    9 : 4
+</span><span style="font-weight:bold;color:blue;">    10: -4
+</span><span style="font-weight:bold;color:blue;">    11: -4
+</span><span style="font-weight:bold;color:blue;">    12: -4
+</span><span style="font-weight:bold;color:blue;">    13: 5
+</span><span style="font-weight:bold;color:blue;">    14: -5
+</span><span style="font-weight:bold;color:blue;">    15: -5
+</span><span style="font-weight:bold;color:blue;">    16: 6
+</span><span style="font-weight:bold;color:blue;">    17: -6
+</span><span style="font-weight:bold;color:blue;">    18: -6
+</span><span style="font-weight:bold;color:blue;">    19: -6
+</span><span style="font-weight:bold;color:blue;">    20: 7
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Negative byte indexes are supported (negative index means &quot;index from the end&quot;)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexC(-1)=    </span><span style="font-weight:bold;color:blue;">-- 7</span>
+ 7
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexC(-2)=    </span><span style="font-weight:bold;color:blue;">-- -6</span>
+-6
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexC(-5)=    </span><span style="font-weight:bold;color:blue;">-- 6</span>
+ 6
+
+<span style="font-weight:bold;color:blue;">-- Invalid byte indexes
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexC(100)=   </span><span style="font-weight:bold;color:blue;">-- Invalid byte index: 100 exceeds the byte string length 20.</span>
+<span style="font-weight:bold;color:red;">Invalid byte index: 100 exceeds the byte string length 20.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexC(0)=     </span><span style="font-weight:bold;color:blue;">-- Invalid byte index: 0.</span>
+<span style="font-weight:bold;color:red;">Invalid byte index: 0.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexC(-100)=  </span><span style="font-weight:bold;color:blue;">-- Invalid byte index: -100 exceeds the byte string length 20.</span>
+<span style="font-weight:bold;color:red;">Invalid byte index: -100 exceeds the byte string length 20.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>
+<span style="font-weight:bold;color:blue;">-- Binary search for codepoint indexes cannot work with sparse storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 1, 0, 0, 1)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~string~length; say i~left(2)&quot;:&quot; indexer~codepointIndexC(i); end</span>
+<span style="font-weight:bold;color:red;">Codepoint index 4 is not stored. Binary search for byte index 1 requires unlimited storage.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span><span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    Codepoint index 4 is not stored. Binary search for byte index 1 requires unlimited storage.
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">-- Binary search for grapheme index with unlimited storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~string~length; say i~left(2)&quot;:&quot; indexer~graphemeIndexG(i); end</span>
+1 : 1
+2 : 2
+3 : -2
+4 : -2
+5 : -2
+6 : -2
+7 : -2
+8 : -2
+9 : -2
+10: -2
+11: -2
+12: -2
+13: -2
+14: -2
+15: -2
+16: -2
+17: -2
+18: -2
+19: -2
+20: 3
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    1 : 1
+</span><span style="font-weight:bold;color:blue;">    2 : 2
+</span><span style="font-weight:bold;color:blue;">    3 : -2
+</span><span style="font-weight:bold;color:blue;">    4 : -2
+</span><span style="font-weight:bold;color:blue;">    5 : -2
+</span><span style="font-weight:bold;color:blue;">    6 : -2
+</span><span style="font-weight:bold;color:blue;">    7 : -2
+</span><span style="font-weight:bold;color:blue;">    8 : -2
+</span><span style="font-weight:bold;color:blue;">    9 : -2
+</span><span style="font-weight:bold;color:blue;">    10: -2
+</span><span style="font-weight:bold;color:blue;">    11: -2
+</span><span style="font-weight:bold;color:blue;">    12: -2
+</span><span style="font-weight:bold;color:blue;">    13: -2
+</span><span style="font-weight:bold;color:blue;">    14: -2
+</span><span style="font-weight:bold;color:blue;">    15: -2
+</span><span style="font-weight:bold;color:blue;">    16: -2
+</span><span style="font-weight:bold;color:blue;">    17: -2
+</span><span style="font-weight:bold;color:blue;">    18: -2
+</span><span style="font-weight:bold;color:blue;">    19: -2
+</span><span style="font-weight:bold;color:blue;">    20: 3
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Negative byte indexes are supported (negative index means &quot;index from the end&quot;)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexG(-1)=    </span><span style="font-weight:bold;color:blue;">-- 3</span>
+ 3
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexG(-2)=    </span><span style="font-weight:bold;color:blue;">-- -2</span>
+-2
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexG(-19)=   </span><span style="font-weight:bold;color:blue;">-- 2</span>
+ 2
+
+<span style="font-weight:bold;color:blue;">-- Invalid byte indexes
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexG(100)=    </span><span style="font-weight:bold;color:blue;">-- Invalid byte index: 100 exceeds the byte string length 20.</span>
+<span style="font-weight:bold;color:red;">Invalid byte index: 100 exceeds the byte string length 20.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexG(0)=      </span><span style="font-weight:bold;color:blue;">-- Invalid byte index: 0.</span>
+<span style="font-weight:bold;color:red;">Invalid byte index: 0.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexG(-100)=   </span><span style="font-weight:bold;color:blue;">-- Invalid byte index: -100 exceeds the byte string length 20.</span>
+<span style="font-weight:bold;color:red;">Invalid byte index: -100 exceeds the byte string length 20.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>
+<span style="font-weight:bold;color:blue;">-- Binary search for grapheme index cannot work with sparse storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 0, 1, 0, 0, 1)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~string~length; say i~left(2)&quot;:&quot; indexer~graphemeIndexG(i); end</span>
+<span style="font-weight:bold;color:red;">Grapheme index 2 is not stored. Binary search for byte index 1 requires unlimited storage.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span><span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    Grapheme index 2 is not stored. Binary search for byte index 1 requires unlimited storage.
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">-- Returns a string providing information about the indexer's string.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;&quot;)~info=            </span><span style="font-weight:bold;color:blue;">-- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'</span>
+'(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;e&quot;)~info=           </span><span style="font-weight:bold;color:blue;">-- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'</span>
+'(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;é&quot;)~info=           </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'</span>
+'(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;€&quot;)~info=           </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'</span>
+'(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;🎅&quot;)~info=          </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'</span>
+'(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;👨‍👩‍👧&quot;)~info=          </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'</span>
+'(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+
+<span style="font-weight:bold;color:blue;">-- Invalid string
+</span><span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts
+</span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x)~info=    </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'</span>
+'(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+
+
+<span style="font-weight:bold;color:blue;">-- Returns a RexxUnicodeStringIndexer instance.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">requestRexxUnicodeStringIndexer(&quot;a string&quot;)=            </span><span style="font-weight:bold;color:blue;">-- (a string)</span>
+(a string)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">requestRexxUnicodeStringIndexer(&quot;a string&quot;)~class=      </span><span style="font-weight:bold;color:blue;">-- (The RexxUnicodeStringIndexer class)</span>
+(The RexxUnicodeStringIndexer class)
+
+<span style="font-weight:bold;color:blue;">-- A RexxUnicodeStringIndexer instance is returned unchanged.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a string&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">requestRexxUnicodeStringIndexer(indexer) == indexer=    </span><span style="font-weight:bold;color:blue;">-- 1</span>
+ 1
 
 
 <span style="font-weight:bold;color:blue;">-- ===============================================================================

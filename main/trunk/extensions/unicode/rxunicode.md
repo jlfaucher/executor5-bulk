@@ -5,7 +5,7 @@ supported by `ooRexx`. Its current implementation is based on the [`utf8proc`][u
 library embedded in `ooRexx`.
 
 
-`rxunicode.cls` is an optional package that defines:
+`rxunicode.cls` is a package that defines:
 
 - The [`RexxUnicode`](#RexxUnicode) class, a subclass of `RexxUnicodeServices`.
 - The [`RexxUnicodeCodepointSupplier`](#RexxUnicodeCodepointSupplier) class.
@@ -48,6 +48,7 @@ Collections are displayed either in compact form (when the expression ends with 
 or in expanded form (when it ends with `==`).
 If you are using `rexxtry` or running a script, use `say expression` instead.
 
+**Note on feedback:** [As of 2026](feedback.png)...
 
 
 
@@ -2642,16 +2643,28 @@ indexer~graphemeAtIndexG(3)~c2x=    -- 92 (use ~c2x to not display an invalid by
 ```
 
 
-### 5.1.   Class methods
+### 5.1.   Routines
+
+<a id="requestRexxUnicodeStringIndexer"></a>
+
+#### 5.1.1.   requestRexxUnicodeStringIndexer routine
+
+    requestRexxUnicodeStringIndexer(object)
+
+Returns a `RexxUnicodeStringIndexer` instance created from `object`.
+If `object` is already a `RexxUnicodeStringIndexer` instance, returns it unchanged.
+
+
+### 5.2.   Class methods
 
 The `RexxUnicodeStringIndexer` class defines no class methods of its own.
 
 
-### 5.2.   Instance methods
+### 5.3.   Instance methods
 
 <a id="RexxUnicodeStringIndexer_codepointAtIndexC"></a>
 
-#### 5.2.1.   codepointAtIndexC
+#### 5.3.1.   codepointAtIndexC
 
     aRexxUnicodeStringIndexer~codepointAtIndexC(indexC)
 
@@ -2667,7 +2680,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_codepointCount"></a>
 
-#### 5.2.2.   codepointCount
+#### 5.3.2.   codepointCount
 
     aRexxUnicodeStringIndexer~codepointCount
 
@@ -2677,11 +2690,12 @@ This result is not impacted by `codepointStorageLimit`.
 
 <a id="RexxUnicodeStringIndexer_codepointIndexB"></a>
 
-#### 5.2.3.   codepointIndexB
+#### 5.3.3.   codepointIndexB
 
     aRexxUnicodeStringIndexer~codepointIndexB(indexC)
 
-Returns the byte index corresponding to codepoint index `indexC`.
+Returns the byte index corresponding to codepoint index `indexC`.  
+It is negative if the codepoint's byte sequence is invalid.
 
 `indexC` must be a positive or negative whole number.  
 If `indexC` is negative, the codepoint index is counted from the end of the string.
@@ -2691,9 +2705,78 @@ If `abs(indexC)` exceeds the codepoint count, or if the requested index is not s
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
 
+<a id="RexxUnicodeStringIndexer_graphemeIndexG"></a>
+
+#### 5.3.4.   codepointIndexC
+
+    aRexxUnicodeStringIndexer~codepointIndexC(indexB)
+
+Returns the codepoint index corresponding to byte index `indexB`.  
+It is negative if the byte index is not aligned with a codepoint boundary.
+
+`indexB` must be a positive or negative whole number.  
+If `indexB` is negative, the byte index is counted from the end of the string.
+
+If `abs(indexB)` exceeds the byte string length, an error is raised.
+
+Performs a binary search.
+With sparse storage, a binary search may fail if the requested index is not stored.
+
+For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+
+**Examples**
+
+```rexx
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
+    /*
+    1 : 1
+    2 : 2
+    3 : -2
+    4 : -2
+    5 : -2
+    6 : 3
+    7 : -3
+    8 : -3
+    9 : 4
+    10: -4
+    11: -4
+    12: -4
+    13: 5
+    14: -5
+    15: -5
+    16: 6
+    17: -6
+    18: -6
+    19: -6
+    20: 7
+    */
+
+```
+
+```rexx
+-- Negative byte indexes are supported (negative index means "index from the end")
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+indexer~codepointIndexC(-1)=    -- 7
+indexer~codepointIndexC(-2)=    -- -6
+indexer~codepointIndexC(-5)=    -- 6
+
+```
+
+```rexx
+-- Binary search for codeppoint indexes cannot work with sparse storage
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
+do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
+    /*
+    Codepoint index 4 is not stored. Binary search for byte index 1 requires unlimited storage.
+    */
+
+```
+
+
 <a id="RexxUnicodeStringIndexer_codepointIndexes"></a>
 
-#### 5.2.4.   codepointIndexes
+#### 5.3.5.   codepointIndexes
 
     aRexxUnicodeStringIndexer~codepointIndexes
 
@@ -2704,7 +2787,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_codepointStorageLimit"></a>
 
-#### 5.2.5.   codepointStorageLimit
+#### 5.3.6.   codepointStorageLimit
 
     aRexxUnicodeStringIndexer~codepointStorageLimit
 
@@ -2715,11 +2798,11 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_endCodepointIndexes"></a>
 
-#### 5.2.6.   endCodepointIndexes
+#### 5.3.7.   endCodepointIndexes
 
     aRexxUnicodeStringIndexer~endCodepointIndexes
 
-Returns the array of codepoint indexes stored in the end storage.
+Returns the array of codepoint indexes stored in the end storage, or `.nil` if `endCodepointStorageSize` is `0`.
 
 Codepoint indexes are stored in reverse order: the first item is the last codepoint index.
 
@@ -2737,7 +2820,7 @@ indexer~endCodepointIndexes=    -- [ 20, 16, 13, 9, 6]
 
 <a id="RexxUnicodeStringIndexer_endCodepointStorageSize"></a>
 
-#### 5.2.7.   endCodepointStorageSize
+#### 5.3.8.   endCodepointStorageSize
 
     aRexxUnicodeStringIndexer~endCodepointStorageSize
 
@@ -2748,11 +2831,11 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_endErrors"></a>
 
-#### 5.2.8.   endErrors
+#### 5.3.9.   endErrors
 
     aRexxUnicodeStringIndexer~endErrors
 
-Returns the array of error messages stored in the end storage.
+Returns the array of error messages stored in the end storage, or `.nil` if `endErrorStorageSize` is `0`.
 
 Error messages are stored in reverse order: the first item corresponds to the last error encountered.
 
@@ -2789,7 +2872,7 @@ indexer~endErrors==
 
 <a id="RexxUnicodeStringIndexer_endErrorStorageSize"></a>
 
-#### 5.2.9.   endErrorStorageSize
+#### 5.3.10.   endErrorStorageSize
 
     aRexxUnicodeStringIndexer~endErrorStorageSize
 
@@ -2800,11 +2883,11 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_endGraphemeIndexes"></a>
 
-#### 5.2.10.   endGraphemeIndexes
+#### 5.3.11.   endGraphemeIndexes
 
     aRexxUnicodeStringIndexer~endGraphemeIndexes
 
-Returns the array of grapheme indexes stored in the end storage.
+Returns the array of grapheme indexes stored in the end storage, or `.nil` if `endGraphemeStorageSize` is `0`.
 
 Grapheme indexes are stored in reverse order: the first item is the last grapheme index.
 
@@ -2822,7 +2905,7 @@ indexer~endGraphemeIndexes=     -- [ 20, 2, 1]
 
 <a id="RexxUnicodeStringIndexer_endGraphemeStorageSize"></a>
 
-#### 5.2.11.   endGraphemeStorageSize
+#### 5.3.12.   endGraphemeStorageSize
 
     aRexxUnicodeStringIndexer~endGraphemeStorageSize
 
@@ -2833,7 +2916,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_errorCount"></a>
 
-#### 5.2.12.   errorCount
+#### 5.3.13.   errorCount
 
     aRexxUnicodeStringIndexer~errorCount
 
@@ -2844,7 +2927,7 @@ This result is not impacted by `errorStorageLimit`.
 
 <a id="RexxUnicodeStringIndexer_errors"></a>
 
-#### 5.2.13.   errors
+#### 5.3.14.   errors
 
     aRexxUnicodeStringIndexer~errors
 
@@ -2855,7 +2938,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_errorStorageLimit"></a>
 
-#### 5.2.14.   errorStorageLimit
+#### 5.3.15.   errorStorageLimit
 
     aRexxUnicodeStringIndexer~errorStorageLimit
 
@@ -2866,7 +2949,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_graphemeAtIndexG"></a>
 
-#### 5.2.15.   graphemeAtIndexG
+#### 5.3.16.   graphemeAtIndexG
 
     aRexxUnicodeStringIndexer~graphemeAtIndexG(indexG)
 
@@ -2882,7 +2965,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_graphemeCount"></a>
 
-#### 5.2.16.   graphemeCount
+#### 5.3.17.   graphemeCount
 
     aRexxUnicodeStringIndexer~graphemeCount
 
@@ -2893,11 +2976,12 @@ This result is not affected by `graphemeStorageLimit`.
 
 <a id="RexxUnicodeStringIndexer_graphemeIndexB"></a>
 
-#### 5.2.17.   graphemeIndexB
+#### 5.3.18.   graphemeIndexB
 
     aRexxUnicodeStringIndexer~graphemeIndexB(indexG)
 
-Returns the byte index corresponding to grapheme index `indexG`.
+Returns the byte index corresponding to grapheme index `indexG`.  
+It is negative if the grapheme's byte sequence is invalid.
 
 `indexG` must be a positive or negative whole number.  
 If `indexG` is negative, the grapheme index is counted from the end of the string.
@@ -2907,9 +2991,78 @@ If `abs(indexG)` exceeds the grapheme count, or if the requested index is not st
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
 
+<a id="RexxUnicodeStringIndexer_graphemeIndexG"></a>
+
+#### 5.3.19.   graphemeIndexG
+
+    aRexxUnicodeStringIndexer~graphemeIndexG(indexB)
+
+Returns the grapheme index corresponding to byte index `indexB`.  
+It is negative if the byte index is not aligned with a grapheme boundary.
+
+`indexB` must be a positive or negative whole number.  
+If `indexB` is negative, the byte index is counted from the end of the string.
+
+If `abs(indexB)` exceeds the byte string length, an error is raised.
+
+Performs a binary search.
+With sparse storage, a binary search may fail if the requested index is not stored.
+
+For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+
+**Examples**
+
+```rexx
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
+    /*
+    1 : 1
+    2 : 2
+    3 : -2
+    4 : -2
+    5 : -2
+    6 : -2
+    7 : -2
+    8 : -2
+    9 : -2
+    10: -2
+    11: -2
+    12: -2
+    13: -2
+    14: -2
+    15: -2
+    16: -2
+    17: -2
+    18: -2
+    19: -2
+    20: 3
+    */
+
+```
+
+```rexx
+-- Negative byte indexes are supported (negative index means "index from the end")
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+indexer~graphemeIndexG(-1)=    -- 3
+indexer~graphemeIndexG(-2)=    -- -2
+indexer~graphemeIndexG(-19)=   -- 2
+
+```
+
+```rexx
+-- Binary search for grapheme indexes cannot work with sparse storage
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
+do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
+    /*
+    Grapheme index 2 is not stored. Binary search for byte index 1 requires unlimited storage.
+    */
+
+```
+
+
 <a id="RexxUnicodeStringIndexer_graphemeIndexes"></a>
 
-#### 5.2.18.   graphemeIndexes
+#### 5.3.20.   graphemeIndexes
 
     aRexxUnicodeStringIndexer~graphemeIndexes
 
@@ -2920,7 +3073,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_graphemeStorageLimit"></a>
 
-#### 5.2.19.   graphemeStorageLimit
+#### 5.3.21.   graphemeStorageLimit
 
     aRexxUnicodeStringIndexer~graphemeStorageLimit
 
@@ -2929,9 +3082,44 @@ Returns the maximum number of grapheme indexes that can be stored in `graphemeIn
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
 
+<a id="RexxUnicodeStringIndexer_info"></a>
+
+#### 5.3.22.   info
+
+    aRexxUnicodeStringIndexer~info
+
+Returns a string providing information about the indexer's string:
+
+- Whether it is ASCII or non-ASCII
+- Grapheme count
+- Codepoint count
+- Byte count
+- Error count
+
+**Examples:**
+
+```rexx
+.RexxUnicodeStringIndexer~new("")~info=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
+.RexxUnicodeStringIndexer~new("e")~info=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+.RexxUnicodeStringIndexer~new("é")~info=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
+.RexxUnicodeStringIndexer~new("€")~info=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
+.RexxUnicodeStringIndexer~new("🎅")~info=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+.RexxUnicodeStringIndexer~new("👨‍👩‍👧")~info=          -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+
+```
+
+```rexx
+-- Invalid string
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+.RexxUnicodeStringIndexer~new("E1 80 E2 F0 91 92 F1 BF 41"x)~info=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+
+```
+
+
 <a id="RexxUnicodeStringIndexer_init"></a>
 
-#### 5.2.20.   init
+#### 5.3.23.   init
 
 ```
 aRexxUnicodeStringIndexer~init(
@@ -3050,7 +3238,7 @@ do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~gra
 
 <a id="RexxUnicodeStringIndexer_string"></a>
 
-#### 5.2.21.   string
+#### 5.3.24.   string
 
     aRexxUnicodeStringIndexer~string
 

@@ -7,6 +7,152 @@ demo on
 
 
 -- ===============================================================================
+-- 2026 July 21
+
+/*
+[Unicode]
+
+Add aRexxUnicodeStringIndexer~codepointIndexC(indexB)
+    Returns the codepoint index corresponding to byte index `indexB`.
+    It is negative if the byte index is not aligned with a codepoint boundary.
+    Performs a binary search.
+    Supports negative byte indexes and sparse storage, even though the latter does not make much sense.
+
+Add aRexxUnicodeStringIndexer~graphemeIndexG(indexB)
+    Returns the grapheme index corresponding to byte index `indexB`.
+    It is negative if the byte index is not aligned with a grapheme boundary.
+    Performs a binary search.
+    Supports negative byte indexes and sparse storage, even though the latter does not make much sense.
+
+Add aRexxUnicodeStringIndexer~info
+    Returns a string providing information about the indexer's string.
+    Now .RexxUnicode~stringInfo delegates to this method.
+
+
+Add routine requestRexxUnicodeStringIndexer(object)
+    Returns a RexxUnicodeStringIndexer instance created from `object`.
+    If `object` is already a RexxUnicodeStringIndexer instance, returns it unchanged.
+
+
+Examples
+*/
+
+-- Binary search for codepoint indexes with unlimited storage
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
+/*
+    1 : 1
+    2 : 2
+    3 : -2
+    4 : -2
+    5 : -2
+    6 : 3
+    7 : -3
+    8 : -3
+    9 : 4
+    10: -4
+    11: -4
+    12: -4
+    13: 5
+    14: -5
+    15: -5
+    16: 6
+    17: -6
+    18: -6
+    19: -6
+    20: 7
+*/
+
+-- Negative byte indexes are supported (negative index means "index from the end")
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+indexer~codepointIndexC(-1)=    -- 7
+indexer~codepointIndexC(-2)=    -- -6
+indexer~codepointIndexC(-5)=    -- 6
+
+-- Invalid byte indexes
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+indexer~codepointIndexC(100)=   -- Invalid byte index: 100 exceeds the byte string length 20.
+indexer~codepointIndexC(0)=     -- Invalid byte index: 0.
+indexer~codepointIndexC(-100)=  -- Invalid byte index: -100 exceeds the byte string length 20.
+
+-- Binary search for codepoint indexes cannot work with sparse storage
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 1, 0, 0, 1)
+do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
+/*
+    Codepoint index 4 is not stored. Binary search for byte index 1 requires unlimited storage.
+*/
+
+
+-- Binary search for grapheme index with unlimited storage
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
+/*
+    1 : 1
+    2 : 2
+    3 : -2
+    4 : -2
+    5 : -2
+    6 : -2
+    7 : -2
+    8 : -2
+    9 : -2
+    10: -2
+    11: -2
+    12: -2
+    13: -2
+    14: -2
+    15: -2
+    16: -2
+    17: -2
+    18: -2
+    19: -2
+    20: 3
+*/
+
+-- Negative byte indexes are supported (negative index means "index from the end")
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+indexer~graphemeIndexG(-1)=    -- 3
+indexer~graphemeIndexG(-2)=    -- -2
+indexer~graphemeIndexG(-19)=   -- 2
+
+-- Invalid byte indexes
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+indexer~graphemeIndexG(100)=    -- Invalid byte index: 100 exceeds the byte string length 20.
+indexer~graphemeIndexG(0)=      -- Invalid byte index: 0.
+indexer~graphemeIndexG(-100)=   -- Invalid byte index: -100 exceeds the byte string length 20.
+
+-- Binary search for grapheme index cannot work with sparse storage
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
+do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
+/*
+    Grapheme index 2 is not stored. Binary search for byte index 1 requires unlimited storage.
+*/
+
+
+-- Returns a string providing information about the indexer's string.
+.RexxUnicodeStringIndexer~new("")~info=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
+.RexxUnicodeStringIndexer~new("e")~info=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+.RexxUnicodeStringIndexer~new("é")~info=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
+.RexxUnicodeStringIndexer~new("€")~info=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
+.RexxUnicodeStringIndexer~new("🎅")~info=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+.RexxUnicodeStringIndexer~new("👨‍👩‍👧")~info=          -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+
+-- Invalid string
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+.RexxUnicodeStringIndexer~new("E1 80 E2 F0 91 92 F1 BF 41"x)~info=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+
+
+-- Returns a RexxUnicodeStringIndexer instance.
+requestRexxUnicodeStringIndexer("a string")=            -- (a string)
+requestRexxUnicodeStringIndexer("a string")~class=      -- (The RexxUnicodeStringIndexer class)
+
+-- A RexxUnicodeStringIndexer instance is returned unchanged.
+indexer = .RexxUnicodeStringIndexer~new("a string")
+requestRexxUnicodeStringIndexer(indexer) == indexer=    -- 1
+
+
+-- ===============================================================================
 -- 2026 July 15
 
 /*
