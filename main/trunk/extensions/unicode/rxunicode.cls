@@ -711,6 +711,7 @@ How other languages are supporting escape characters for Unicode:
 -- This method handles them at run time instead.
 ::method StringUnescape class
     use strict arg string, buffer=.nil
+    string = requestBaseString(string, "string")
     pos = string~pos("\")
     if pos == 0 then do
         -- don't create intermediate buffer if nothing to unescape
@@ -874,6 +875,7 @@ How other languages are supporting escape characters for Unicode:
 
 ::method stringEscape class
     use strict arg string, buffer=.nil
+    string = requestBaseString(string, "string")
 
     returnBuffer = .nil \== buffer
     if .nil == buffer then buffer = .MutableBuffer~new(, string~length)
