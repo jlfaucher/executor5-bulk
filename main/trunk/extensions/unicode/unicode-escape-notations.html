@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Unicode Escape Notations</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <style>body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  max-width: 880px;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+  line-height: 1.55;
+  color: #1c1c1c;
+}
+h1 { font-size: 1.6rem; border-bottom: 2px solid #2c3e50; padding-bottom: 0.4rem; }
+h2 { font-size: 1.2rem; margin-top: 2rem; color: #2c3e50; }
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0 1.5rem;
+  font-size: 0.92rem;
+}
+th, td {
+  border: 1px solid #d0d4d8;
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+  vertical-align: top;
+}
+th { background: #2c3e50; color: #fff; }
+tr:nth-child(even) { background: #f6f8fa; }
+code {
+  background: #eef1f4;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+}
+hr { border: none; border-top: 1px solid #d0d4d8; margin: 2rem 0; }
+ul { padding-left: 1.3rem; }
+li { margin-bottom: 0.7rem; }
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Unicode Escape Notations</h1>
+</header>
+<h1 id="unicode-escape-character-notations-across-languages">Unicode
+Escape Character Notations Across Languages</h1>
+<h2 id="named-character-escapes">Named character escapes</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Notation</th>
+<th>Meaning</th>
+<th>Languages</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>\N{Unicode name}</code></td>
+<td>Character name in the Unicode database</td>
+<td>Python, Perl, C++23</td>
+</tr>
+<tr class="even">
+<td><code>\&amp;name;</code></td>
+<td>HTML5 named character entity (different convention —
+semicolon-terminated, not braced)</td>
+<td>D</td>
+</tr>
+<tr class="odd">
+<td><code>\c[NAME]</code> / <code>\c[U+XXXX]</code></td>
+<td>Named or numeric character (square brackets, not braces)</td>
+<td>Raku (Perl 6)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="arbitrary-length-hex-octal-escapes">Arbitrary-length hex / octal
+escapes</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Notation</th>
+<th>Meaning</th>
+<th>Languages</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>\o{X..X}</code></td>
+<td>Arbitrary number of octal digits</td>
+<td>C++23</td>
+</tr>
+<tr class="even">
+<td><code>\x{X..X}</code></td>
+<td>Arbitrary number of hex digits</td>
+<td>C++23, Perl</td>
+</tr>
+<tr class="odd">
+<td><code>\u{X..X}</code></td>
+<td>Unicode scalar value, 1–8 hex digits</td>
+<td>C++23, Swift</td>
+</tr>
+<tr class="even">
+<td><code>\u{X..X}</code></td>
+<td>Unicode scalar value, 1–6 hex digits (only brace-hex form Rust has —
+no <code>\x{...}</code>)</td>
+<td>Rust</td>
+</tr>
+<tr class="odd">
+<td><code>\u{X..X}</code></td>
+<td>Unicode scalar value, 1+ hex digits (beyond
+<code>\uFFFF</code>)</td>
+<td>JavaScript (ES2015+)</td>
+</tr>
+<tr class="even">
+<td><code>\u{X..X}</code></td>
+<td>Unicode scalar value, hex digits, UTF-8 encoded</td>
+<td>Zig, PHP (PHP 7+)</td>
+</tr>
+<tr class="odd">
+<td><code>\u{nnnn ...}</code></td>
+<td>One or more Unicode characters, each 1–6 hex digits,
+space-separated</td>
+<td>Ruby</td>
+</tr>
+<tr class="even">
+<td><code>\xH..H</code></td>
+<td>Variable-length hex digits (1–4), <em>not</em> fixed-width like the
+row below</td>
+<td>C#</td>
+</tr>
+</tbody>
+</table>
+<h2 id="fixed-width-hex-escapes">Fixed-width hex escapes</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Notation</th>
+<th>Meaning</th>
+<th>Languages</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>\uXXXX</code></td>
+<td>Unicode scalar value, exactly 4 hex digits</td>
+<td>C, C++ (pre-C++23), C#, D, Go, Java, JavaScript, JSON, Julia,
+Netrexx, Python, Ruby</td>
+</tr>
+<tr class="even">
+<td><code>\UXXXXXXXX</code></td>
+<td>Unicode scalar value, exactly 8 hex digits</td>
+<td>C, C++ (pre-C++23), C#, D, Go, Julia, Python</td>
+</tr>
+<tr class="odd">
+<td><code>\xNN</code></td>
+<td>1 byte, exactly 2 hex digits</td>
+<td>D, Go, JavaScript, Netrexx, Python, Ruby, Zig</td>
+</tr>
+<tr class="even">
+<td><code>\xNN</code></td>
+<td>1 byte, exactly 2 hex digits, ASCII range only
+(<code>0x00</code>–<code>0x7F</code>)</td>
+<td>Rust</td>
+</tr>
+</tbody>
+</table>
+<h2 id="octal-escapes">Octal escapes</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Notation</th>
+<th>Meaning</th>
+<th>Languages</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>\NNN</code></td>
+<td>Character/byte denoted by up to 3 octal digits (terminates early at
+first non-octal digit)</td>
+<td>C, C++, D, Go, Python, Ruby</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Why is there no <code>\XNNNN</code> (uppercase
+<code>X</code>, hex digits)?</strong> Not just an oversight — uppercase
+<code>\X</code> is already a reserved symbol in most Unicode-aware regex
+engines (Perl, PCRE-derived engines, R/ICU-based regex, and others),
+where it means “match a whole extended grapheme cluster” — a
+user-perceived character that may span several combined code points
+(e.g. a base letter plus accent marks). Reusing <code>\X</code> as a
+hex-digit escape would collide with that established meaning, so no
+language has claimed it for that purpose.</li>
+<li><strong>Why isn’t <code>U+XXXX</code> a row in this table?</strong>
+<code>U+XXXX</code> (conventionally 4–6 hex digits) is the Unicode
+Standard’s own notation for referring to code points in <em>prose and
+documentation</em> — not a string/character escape sequence in any
+programming language. The 4–6 digit range simply reflects the code point
+space: U+0000–U+FFFF (the original Basic Multilingual Plane) needs 4
+digits, U+10000–U+10FFFF (the supplementary planes) needs 5–6. No
+language lets you write <code>U+1F600</code> inside a string literal;
+each one wraps that same numeric value in its own escape grammar instead
+(<code>\u{1F600}</code>, <code>\U0001F600</code>, etc.), which is why
+every row above is either fixed-width or has its own distinct bound —
+none of them is <em>specifically</em> “4 to 6.”</li>
+<li><strong><code>\u{Unicode name}</code> /
+<code>\U{Unicode name}</code></strong> (from the original draft) don’t
+correspond to any known language feature. Every language that supports
+<em>named</em> escapes uses <code>\N{name}</code> (or D’s
+<code>\&amp;name;</code>, or Raku’s <code>\c[NAME]</code>) — the
+<code>\u{...}</code>/<code>\U{...}</code> brace forms are reserved for
+hex digits everywhere they appear. These two entries were likely
+leftover placeholders and can be dropped.</li>
+<li>D’s named-entity escape is its own family: it uses HTML5 entity
+names (e.g. <code>\&amp;euro;</code> → €, <code>\&amp;copy;</code> → ©)
+rather than Unicode character names, and is delimited with
+<code>&amp;...;</code> rather than braces.</li>
+<li>Raku’s bracket convention (<code>[...]</code>) is distinct from both
+the brace (<code>{...}</code>) and ampersand-semicolon
+(<code>&amp;...;</code>) conventions used elsewhere.</li>
+<li>C#’s <code>\xH..H</code> is unusual in being hex but
+<em>variable</em>-length (1–4 digits) rather than fixed — it doesn’t
+cleanly belong in either the “arbitrary-length” or “fixed-width”
+buckets, but it’s closer to the fixed-width family in spirit
+(Unicode-codepoint-only) and limited compared to C++23’s truly unbounded
+<code>\x{...}</code>.</li>
+</ul>
+</body>
+</html>
