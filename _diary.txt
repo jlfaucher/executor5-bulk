@@ -22,6 +22,54 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 July 26
+
+[Unicode]
+
+RexxUnicodeStringIndexer: Test a specific CircularArray class.
+The durations are INCOMPREHENSIBLE!
+CircularArray is sometimes faster, sometimes slower than CircularQueue.
+Conclusion:
+Keep CircularQueue, because the implementation of CircularArray is specific and makes RexxUnicodeStringIndexer more complex.
+
+-- Tests with CircularQueue and CircularArray.
+-- Tested from ooRexxShell: one session with CircularQueue, one session with CircularArray.
+tutor off
+string = "Family 👨‍👩‍👧" || "*"~copies(10000000) || "🤶 and 🎅."
+-- Duration 0.03 s.
+-- The activity monitor shows 143.9 MB for the rexx process (2nd session: 144.1 MB).
+indexer = .RexxUnicodeStringIndexer~new(string, 0, 10, 0, 0, 10)
+-- The rexx process memory remains stable at 143.9 MB (2nd session: 144.1 MB)
+-- CircularQueue    Duration 14.46 s, 14.39 s, 14.45
+-- CircularArray    Duration 13.58 s, 13.64 s, 13.60 s
+indexer = .RexxUnicodeStringIndexer~new(string, 0, 100, 0, 0, 100)
+-- The rexx process memory remains stable at 143.9 MB (2nd session: 144.1 MB)
+-- CircularQueue    Duration 14.73 s, 14.77 s, 14.77 s
+-- CircularArray    Duration 14.08s, 14.09 s, 14.03 s
+indexer = .RexxUnicodeStringIndexer~new(string, 0, 1000, 0, 0, 1000)
+-- The rexx process memory remains stable at 143.9 MB (2nd session: 144.1 MB)
+-- CircularQueue    Duration 15.41 s, 15.84 s, 15.99 s
+-- CircularArray    Duration 15.34s, 15.73 s, 15.83 s
+-- CircularArray    Duration 32.49 s, 8.01 s, 7.64 s        -- ??? incomprehensible!
+indexer = .RexxUnicodeStringIndexer~new(string, 0, 10000, 0, 0, 10000)
+-- The rexx process memory increases at 148 MB (2nd session: 144.4 MB, 147.4 MB)
+-- CircularQueue    Duration 25.71 s, 25.67 s, 23.60 s
+-- CircularArray    Duration 22.45 s, 18.95 s, 17.85 s      -- STRANGE! Why so faster?
+-- CircularArray    Duration 14.48 s, 7.78 s, 7.66 s        -- Still faster!
+-- CircularArray    Duration 7.71 s, 7.75 s, 7.69 s         -- Still faster!
+indexer = .RexxUnicodeStringIndexer~new(string, 0, 100000, 0, 0, 100000)
+-- The rexx process memory increases at 195.7 MB, 241.6 MB, 245.6 MB (2nd session: 235.5 MB, 240.5 MB)
+-- CircularQueue    Duration 28.95 s, 27.90 s, 33.24 s
+-- CircularArray    Duration 28.08 s, 27.47 s, 33.74 s, 33.71 s
+-- CircularArray    Duration 7.94s, 8.39 s, 8.47 s          -- STRANGE! Why so faster? maybe because process memory is 1.24 GB
+indexer = .RexxUnicodeStringIndexer~new(string, 0, 1000000, 0, 0, 1000000)
+-- The rexx process memory increases at 742.9 MB, 1.20 GB, 1.24 GB (2nd session: 737.3 MB, 1.20 GB, 1.24 GB)
+-- CircularQueue    Duration 29.11 s, 29.61 s, 35.69 s
+-- CircularArray    Duration 28.95 s, 28.02 s, 35.64 s
+-- CircularArray    Duration 51.56 s, 43.84 s, 57.66 s      -- STRANGE! Why so slow?
+
+
+===============================================================================
 2026 July 21
 
 [Unicode]
