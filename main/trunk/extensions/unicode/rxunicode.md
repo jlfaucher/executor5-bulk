@@ -1761,10 +1761,10 @@ If provided, `indexer` receives a `RexxUnicodeStringIndexer` instance.
 indexer~errors==
     /*
     an Array (shape [4], 4 items)
-     1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'
+     1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
      2 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
-     3 : 'start byte position 4 : Invalid continuation byte 145 (''91''x) at byte position 7'
-     4 : 'start byte position 7 : Invalid continuation byte 191 (''BF''x) at byte position 9'
+     3 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+     4 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
     */
 
 ```
@@ -2249,10 +2249,10 @@ UTF-8 string and allows enumeration of the string's codepoints without indexer.
 .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
     /*
     a RexxUnicodeCodepointSupplier 
-    -1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'
+    -1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
     -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
-    -4 : 'start byte position 4 : Invalid continuation byte 145 (''91''x) at byte position 7'
-    -7 : 'start byte position 7 : Invalid continuation byte 191 (''BF''x) at byte position 9'
+    -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+    -7 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
      9 : ''
     */
 
@@ -2480,10 +2480,10 @@ UTF-8 string and allows enumeration of the string's graphemes without indexer.
 .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
     /*
     a RexxUnicodeGraphemeSupplier 
-    -1 : 'start byte position 1 : Invalid continuation byte 128 (''80''x) at byte position 3'
+    -1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
     -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
-    -4 : 'start byte position 4 : Invalid continuation byte 145 (''91''x) at byte position 7'
-    -7 : 'start byte position 7 : Invalid continuation byte 191 (''BF''x) at byte position 9'
+    -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+    -7 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
      9 : ''
     */
 
@@ -2597,7 +2597,7 @@ If no grapheme is available, that is, if `available` would return `.false`, the 
 
 <!----------------------------------------------------------------------------->
 
-A `RexxUnicodeStringIndexer` instance provides direct access to codepoints and graphemes in a string.
+A `RexxUnicodeStringIndexer` instance provides direct access to codepoints and graphemes in a UTF-8 string.
 
 This is a temporary implementation that will be replaced by a native indexer.
 

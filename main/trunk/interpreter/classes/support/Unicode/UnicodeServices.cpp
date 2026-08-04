@@ -305,7 +305,7 @@ utf8proc_ssize_t utf8proc_iterate_extended(
      if (uc == 0xe0 && *str < 0xa0) DECODE_ERROR_3(CONTINUATION_NON_SHORTEST_FORM, *str, *str, index + 1, -1); // case #2 — non-shortest form
 
      if (str + 1 >= end) DECODE_ERROR_1(TRUNCATED, 3, -2);
-     if (!utf_cont(str[1])) DECODE_ERROR_3(CONTINUATION, *str, *str, index + 2, -2)
+     if (!utf_cont(str[1])) DECODE_ERROR_3(CONTINUATION, str[1], str[1], index + 2, -2)
 
      // Check for surrogate chars
      // if (uc == 0xed && *str > 0x9f)
@@ -328,10 +328,10 @@ utf8proc_ssize_t utf8proc_iterate_extended(
   if (uc == 0xf4 && *str >= 0x90) DECODE_ERROR_3(CONTINUATION_ERROR_RANGE, *str, *str, index + 1, -1); // case #4
 
   if (str + 1 >= end) DECODE_ERROR_1(TRUNCATED, 4, -2);
-  if (!utf_cont(str[1])) DECODE_ERROR_3(CONTINUATION, *str, *str, index + 2, -2);
+  if (!utf_cont(str[1])) DECODE_ERROR_3(CONTINUATION, str[1], str[1], index + 2, -2);
 
   if (str + 2 >= end) DECODE_ERROR_1(TRUNCATED, 4, -3);
-  if (!utf_cont(str[2])) DECODE_ERROR_3(CONTINUATION, *str, *str, index + 3, -3);
+  if (!utf_cont(str[2])) DECODE_ERROR_3(CONTINUATION, str[2], str[2], index + 3, -3);
 
   // Make sure in correct range (0x10000 - 0x10ffff)
   // if (uc == 0xf0) {

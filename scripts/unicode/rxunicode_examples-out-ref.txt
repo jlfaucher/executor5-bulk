@@ -1,0 +1,1968 @@
+
+/*
+Examples in rxunicode.md
+Regression tests
+*/
+
+ooRexx> tutor off
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeServices~codepointBidiClass
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeServices~codepointBidiClass("0608"~x2d, >code, >label)=; code=; label=      --  5; 'AL'; 'Arabic_Letter'
+ 5
+'AL'
+'Arabic_Letter'
+ooRexx> .RexxUnicodeServices~codepointBidiClass("FFFFFF"~x2d, >code, >label)=; code=; label=    --  0; '?'; 'Code point not explicitly listed for Bidi_Class'
+ 0
+'?'
+'Code point not explicitly listed for Bidi_Class'
+ooRexx> .RexxUnicodeServices~codepointBidiClass(-1, >code, >label)=; code=; label=              --  0; '?'; 'Code point not explicitly listed for Bidi_Class'
+ 0
+'?'
+'Code point not explicitly listed for Bidi_Class'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeServices~codepointBoundClass
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeServices~codepointBoundClass("1F1E6"~x2d, >code, >label)=; code=; label=     --  11; 'RI'; 'Regional_Indicator'
+ 11
+'RI'
+'Regional_Indicator'
+ooRexx> .RexxUnicodeServices~codepointBoundClass("FFFFFF"~x2d, >code, >label)=; code=; label=    --  1; 'XX'; 'Other'
+ 1
+'XX'
+'Other'
+ooRexx> .RexxUnicodeServices~codepointBoundClass(-1, >code, >label)=; code=; label=              --  1; 'XX'; 'Other'
+ 1
+'XX'
+'Other'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeServices~codepointCategory
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeServices~codepointCategory("0903"~x2d, >code, >label)=; code=; label=      --  7; 'Mc'; 'Spacing_Mark'
+ 7
+'Mc'
+'Spacing_Mark'
+ooRexx> .RexxUnicodeServices~codepointCategory("FFFFFF"~x2d, >code, >label)=; code=; label=    --  0; 'Cn'; 'Unassigned'
+ 0
+'Cn'
+'Unassigned'
+ooRexx> .RexxUnicodeServices~codepointCategory(-1, >code, >label)=; code=; label=              --  0; 'Cn'; 'Unassigned'
+ 0
+'Cn'
+'Unassigned'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeServices~codepointCombiningClass
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~codepointCombiningClass("031B"~x2d, >code, >label)=; code=; label=     --  216; 'ATAR'; 'Attached_Above_Right'
+ 216
+'ATAR'
+'Attached_Above_Right'
+ooRexx> .RexxUnicode~codepointCombiningClass("FFFFFF"~x2d, >code, >label)=; code=; label=   --  0; 'NR'; 'Not_Reordered'
+ 0
+'NR'
+'Not_Reordered'
+ooRexx> .RexxUnicode~codepointCombiningClass(-1, >code, >label)=; code=; label=             --  0; 'NR'; 'Not_Reordered'
+ 0
+'NR'
+'Not_Reordered'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeServices~codepointDecompositionType
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~codepointDecompositionType("0000"~x2d, >code, >label)=; code=; label=      --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
+ 0
+'None'
+'Code point not explicitly listed for Decomposition_Type'
+ooRexx> .RexxUnicode~codepointDecompositionType("00A8"~x2d, >code, >label)=; code=; label=      --  16; 'Compat'; 'Unspecified compatibility character'
+ 16
+'Compat'
+'Unspecified compatibility character'
+ooRexx> .RexxUnicode~codepointDecompositionType("00BC"~x2d, >code, >label)=; code=; label=      --  15; 'Fraction'; 'Vulgar fraction form'
+ 15
+'Fraction'
+'Vulgar fraction form'
+ooRexx> .RexxUnicode~codepointDecompositionType("FFFFFF"~x2d, >code, >label)=; code=; label=    --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
+ 0
+'None'
+'Code point not explicitly listed for Decomposition_Type'
+ooRexx> .RexxUnicode~codepointDecompositionType(-1, >code, >label)=; code=; label=              --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
+ 0
+'None'
+'Code point not explicitly listed for Decomposition_Type'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeServices~utf8Transform
+--------------------------------------------------------------------------------
+
+ooRexx> string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n"
+ooRexx> string = .RexxUnicode~stringUnescape(string)
+
+ooRexx> .RexxUnicodeCodepointSupplier~new(string, , .RexxUnicodeCharacter)==
+a RexxUnicodeCodepointSupplier 
+ 1  : (<?> \x07 U+0007 Cc Control "<control-0007>")
+ 2  : ("L" \x4C U+004C Lu Uppercase_Letter "LATIN CAPITAL LETTER L")
+ 3  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+ 4  : ("　" \x{E38080} U+3000 Zs Space_Separator "IDEOGRAPHIC SPACE")
+ 5  : (" " \x{E19A80} U+1680 Zs Space_Separator "OGHAM SPACE MARK")
+ 6  : (<?> \x{E2808B} U+200B Cf Format "ZERO WIDTH SPACE")
+ 7  : ("P" \x50 U+0050 Lu Uppercase_Letter "LATIN CAPITAL LETTER P")
+ 8  : ("è" \x{C3A8} U+00E8 Ll Lowercase_Letter "LATIN SMALL LETTER E WITH GRAVE")
+ 9  : ("r" \x72 U+0072 Ll Lowercase_Letter "LATIN SMALL LETTER R")
+ 10 : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+ 11 : (<?> \x09 U+0009 Cc Control "<control-0009>")
+ 12 : ("‐" \x{E28090} U+2010 Pd Dash_Punctuation "HYPHEN")
+ 13 : ("­" \x{C2AD} U+00AD Cf Format "SOFT HYPHEN")
+ 14 : ("–" \x{E28093} U+2013 Pd Dash_Punctuation "EN DASH")
+ 15 : ("—" \x{E28094} U+2014 Pd Dash_Punctuation "EM DASH")
+ 16 : ("N" \x4E U+004E Lu Uppercase_Letter "LATIN CAPITAL LETTER N")
+ 17 : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
+ 18 : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")
+ 19 : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+ 20 : (<?> \x{EFB790} U+FDD0 Cn Unassigned "<noncharacter-FDD0>")
+ 21 : (<?> \x0D U+000D Cc Control "<control-000D>")
+ 22 : (<?> \x0A U+000A Cc Control "<control-000A>")
+/*
+    an Array (shape [22], 22 items)
+     1  : (<?> \x07 U+0007 Cc Control "<control-0007>")                                     <-- removable with STRIPCC:.true
+     2  : ("L" \x4C U+004C Lu Uppercase_Letter "LATIN CAPITAL LETTER L")
+     3  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+     4  : ("　" \x{E38080} U+3000 Zs Space_Separator "IDEOGRAPHIC SPACE")                   <-- replaceable by " " with LUMP:.true
+     5  : (" " \x{E19A80} U+1680 Zs Space_Separator "OGHAM SPACE MARK")                     <-- replaceable by " " with LUMP:.true
+     6  : (<?> \x{E2808B} U+200B Cf Format "ZERO WIDTH SPACE")                              <-- removable by STRIPIGNORABLE:.TRUE
+     7  : ("P" \x50 U+0050 Lu Uppercase_Letter "LATIN CAPITAL LETTER P")
+     8  : ("è" \x{C3A8} U+00E8 Ll Lowercase_Letter "LATIN SMALL LETTER E WITH GRAVE")
+     9  : ("r" \x72 U+0072 Ll Lowercase_Letter "LATIN SMALL LETTER R")
+     10 : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+     11 : (<?> \x09 U+0009 Cc Control "<control-0009>")                                     <-- replaceable by " " with STRIPCC:.true
+     12 : ("‐" \x{E28090} U+2010 Pd Dash_Punctuation "HYPHEN")                              <-- replaceable by "-" with LUMP:.true
+     13 : (<?> \x{C2AD} U+00AD Cf Format "SOFT HYPHEN")                                     <-- removable by STRIPIGNORABLE:.true
+     14 : ("–" \x{E28093} U+2013 Pd Dash_Punctuation "EN DASH")                             <-- replaceable by "-" with LUMP:.true
+     15 : ("—" \x{E28094} U+2014 Pd Dash_Punctuation "EM DASH")                             <-- replaceable by "-" with LUMP:.true
+     16 : ("N" \x4E U+004E Lu Uppercase_Letter "LATIN CAPITAL LETTER N")
+     17 : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
+     18 : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")
+     19 : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+     20 : (<?> \x{EFB790} U+FDD0 Cn Unassigned "<noncharacter-FDD0>")                       <-- removeable with STRIPNA:.true
+     21 : (<?> \x0D U+000D Cc Control "<control-000D>")
+     22 : (<?> \x0A U+000A Cc Control "<control-000A>")                                     <-- CR+LF replaceable by " " with STRIPCC:.true
+*/
+
+ooRexx> string=; .RexxUnicode~C2U(string)=
+'[07]Le　 ​Père[09]‐­–—Noël﷐[0D0A]'
+'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+000D U+000A'
+-- '[07]Le　 ​Père[09]‐­–—Noël﷐[0D0A]'
+-- 'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+000D U+000A'
+
+
+-- Example 1
+-- Performs unicode case folding, to be able to do a case-insensitive string comparison.
+ooRexx> tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/ .true)
+ooRexx> tstring=; .RexxUnicode~C2U(tstring)=
+'[07]le　 ​père[09]‐­–—noël﷐[0D0A]'
+'U+0007 U+006C U+0065 U+3000 U+1680 U+200B U+0070 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+006E U+006F U+00EB U+006C U+FDD0 U+000D U+000A'
+-- '[07]le　 ​père[09]‐­–—noël﷐[0D0A]'
+-- 'U+0007 U+006C U+0065 U+3000 U+1680 U+200B U+0070 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+006E U+006F U+00EB U+006C U+FDD0 U+000D U+000A'
+
+
+-- Example 2
+-- Strip "default ignorable characters" such as SOFT-HYPHEN or ZERO-WIDTH-SPACE.
+ooRexx> tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/, /*normalization:*/, /*stripCC*/, /*stripIgnorable:*/.true)
+ooRexx> tstring=; .RexxUnicode~C2U(tstring)=
+'[07]Le　 Père[09]‐–—Noël﷐[0D0A]'
+'U+0007 U+004C U+0065 U+3000 U+1680 U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+000D U+000A'
+-- '[07]Le　 Père[09]‐–—Noël﷐[0D0A]'
+-- 'U+0007 U+004C U+0065 U+3000 U+1680 U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+000D U+000A'
+
+
+-- Example 3
+-- Lumps certain characters together.
+ooRexx> tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/, /*lump:*/ .true)
+ooRexx> tstring=; .RexxUnicode~C2U(tstring)=
+'[07]Le  ​Père[09]-­--Noël﷐[0D0A]'
+'U+0007 U+004C U+0065 U+0020 U+0020 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+002D U+00AD U+002D U+002D U+004E U+006F U+00EB U+006C U+FDD0 U+000D U+000A'
+-- '[07]Le  ​Père[09]-­--Noël﷐[0D0A]'
+-- 'U+0007 U+004C U+0065 U+0020 U+0020 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+002D U+00AD U+002D U+002D U+004E U+006F U+00EB U+006C U+FDD0 U+000D U+000A'
+
+
+-- Example 4
+-- NLF2LF: Convert LF, CRLF, CR and NEL into LF.
+ooRexx> tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/ 1)
+ooRexx> tstring=; .RexxUnicode~C2U(tstring)=
+'[07]Le　 ​Père[09]‐­–—Noël﷐[0A]'
+'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+000A'
+-- '[07]Le　 ​Père[09]‐­–—Noël﷐[0A]'
+-- 'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+000A'
+
+
+-- Example 5
+-- NLF2LS: Convert LF, CRLF, CR and NEL into LS (U+2028 Zl 0 "LINE SEPARATOR").
+ooRexx> tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/ 2)
+ooRexx> tstring=; .RexxUnicode~C2U(tstring)=
+'[07]Le　 ​Père[09]‐­–—Noël﷐ '
+'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+2028'
+-- '[07]Le　 ​Père[09]‐­–—Noël﷐'
+-- 'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+2028'
+
+
+-- Example 6
+-- NLF2PS: convert LF, CRLF, CR and NEL into PS (U+2029 Zp 0 "PARAGRAPH SEPARATOR").
+ooRexx> tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/ 3)
+ooRexx> tstring=; .RexxUnicode~C2U(tstring)=
+'[07]Le　 ​Père[09]‐­–—Noël﷐ '
+'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+2029'
+-- '[07]Le　 ​Père[09]‐­–—Noël﷐ '
+-- 'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+2029'
+
+
+-- Example 7
+-- Strips and/or converts control characters.
+ooRexx> tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/, /*normalization:*/, /*stripCC*/ .true)
+ooRexx> tstring=; .RexxUnicode~C2U(tstring)=
+'Le　 ​Père ‐­–—Noël﷐ '
+'U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0020 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+0020'
+-- 'Le　 ​Père ‐­–—Noël﷐ '
+-- 'U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0020 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+FDD0 U+0020'
+
+
+-- Example 8
+-- Strips all character markings.
+-- This includes non-spacing, spacing and enclosing (i.e. accents).
+-- This option works only with normalization.
+ooRexx> tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/, /*normalization:*/ 1, /*stripCC:*/, /*stripIgnorable:*/, /*stripMark:*/ .true)
+ooRexx> tstring=; .RexxUnicode~C2U(tstring)=
+'[07]Le　 ​Pere[09]‐­–—Noel﷐[0D0A]'
+'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+0065 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+0065 U+006C U+FDD0 U+000D U+000A'
+-- '[07]Le　 ​Pere[09]‐­–—Noel﷐[0D0A]'
+-- 'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+0065 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+0065 U+006C U+FDD0 U+000D U+000A'
+
+
+-- Example 9
+-- Strips unassigned codepoints.
+ooRexx> tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/, /*lump:*/, /*nlf:*/, /*normalization:*/, /*stripCC:*/, /*stripIgnorable:*/, /*stripMark:*/, /*stripNA*/ .true)
+ooRexx> tstring=; .RexxUnicode~C2U(tstring)=
+'[07]Le　 ​Père[09]‐­–—Noël[0D0A]'
+'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+000D U+000A'
+-- '[07]Le　 ​Père[09]‐­–—Noël[0D0A]'
+-- 'U+0007 U+004C U+0065 U+3000 U+1680 U+200B U+0050 U+00E8 U+0072 U+0065 U+0009 U+2010 U+00AD U+2013 U+2014 U+004E U+006F U+00EB U+006C U+000D U+000A'
+
+
+-- Example 10
+-- Application of several options.
+ooRexx> tstring = .RexxUnicodeServices~utf8Transform(string, /*casefold:*/ .true, /*lump:*/ .true, /*nlf:*/, /*normalization:*/ 1, /*stripCC:*/ .true, /*stripIgnorable:*/ .true, /*stripMark:*/ .true, /*stripNA*/ .true)
+ooRexx> tstring=; .RexxUnicode~C2U(tstring)=
+'le  pere ---noel '
+'U+006C U+0065 U+0020 U+0020 U+0070 U+0065 U+0072 U+0065 U+0020 U+002D U+002D U+002D U+006E U+006F U+0065 U+006C U+0020'
+-- 'le  pere ---noel '
+-- 'U+006C U+0065 U+0020 U+0020 U+0070 U+0065 U+0072 U+0065 U+0020 U+002D U+002D U+002D U+006E U+006F U+0065 U+006C U+0020'
+
+ooRexx> .RexxUnicodeCodepointSupplier~new(tstring, , .RexxUnicodeCharacter)==
+a RexxUnicodeCodepointSupplier 
+ 1  : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+ 2  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+ 3  : (" " \x20 U+0020 Zs Space_Separator "SPACE")
+ 4  : (" " \x20 U+0020 Zs Space_Separator "SPACE")
+ 5  : ("p" \x70 U+0070 Ll Lowercase_Letter "LATIN SMALL LETTER P")
+ 6  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+ 7  : ("r" \x72 U+0072 Ll Lowercase_Letter "LATIN SMALL LETTER R")
+ 8  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+ 9  : (" " \x20 U+0020 Zs Space_Separator "SPACE")
+ 10 : ("-" \x2D U+002D Pd Dash_Punctuation "HYPHEN-MINUS")
+ 11 : ("-" \x2D U+002D Pd Dash_Punctuation "HYPHEN-MINUS")
+ 12 : ("-" \x2D U+002D Pd Dash_Punctuation "HYPHEN-MINUS")
+ 13 : ("n" \x6E U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
+ 14 : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
+ 15 : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+ 16 : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+ 17 : (" " \x20 U+0020 Zs Space_Separator "SPACE")
+/*
+     1  : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+     2  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+     3  : (" " \x20 U+0020 Zs Space_Separator "SPACE")                    <-- LUMP (was IDEOGRAPHIC SPACE)
+     4  : (" " \x20 U+0020 Zs Space_Separator "SPACE")                    <-- LUMP (was OGHAM SPACE MARK)
+     5  : ("p" \x70 U+0070 Ll Lowercase_Letter "LATIN SMALL LETTER P")
+     6  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+     7  : ("r" \x72 U+0072 Ll Lowercase_Letter "LATIN SMALL LETTER R")
+     8  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+     9  : (" " \x20 U+0020 Zs Space_Separator "SPACE")                    <-- STRIPCC (was TAB)
+     10 : ("-" \x2D U+002D Pd Dash_Punctuation "HYPHEN-MINUS")            <-- LUMP (was HYPHEN)
+     11 : ("-" \x2D U+002D Pd Dash_Punctuation "HYPHEN-MINUS")            <-- LUMP (was EN DASH)
+     12 : ("-" \x2D U+002D Pd Dash_Punctuation "HYPHEN-MINUS")            <-- LUMP (was EM DASH)
+     13 : ("n" \x6E U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
+     14 : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
+     15 : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
+     16 : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+     17 : (" " \x20 U+0020 Zs Space_Separator "SPACE")                    <-- STRIPCC (was CR+LF)
+*/
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~C2U
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~C2U("Noël 🎅")=                        -- 'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
+'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
+ooRexx> .RexxUnicode~C2U("Noël 🎅", .MutableBuffer~new)=    -- M'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
+M'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
+
+
+-- Invalid string
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+ooRexx> .RexxUnicode~C2U("F4 91 92 93 FF 41 80 BF 42"x)=    -- 'U+FFFD U+FFFD U+FFFD U+FFFD U+FFFD U+0041 U+FFFD U+FFFD U+0042'
+'U+FFFD U+FFFD U+FFFD U+FFFD U+FFFD U+0041 U+FFFD U+FFFD U+0042'
+ooRexx> .RexxUnicode~C2X("F4 91 92 93 FF 41 80 BF 42"x)=    -- 'F4 91 92 93 FF 41 80 BF 42'
+'F4 91 92 93 FF 41 80 BF 42'
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+ooRexx> .RexxUnicode~C2U("E1 80 E2 F0 91 92 F1 BF 41"x)=    -- 'U+FFFD U+FFFD U+FFFD U+FFFD U+0041'
+'U+FFFD U+FFFD U+FFFD U+FFFD U+0041'
+ooRexx> .RexxUnicode~C2X("E1 80 E2 F0 91 92 F1 BF 41"x)=    -- 'E180 E2 F09192 F1BF 41'
+'E180 E2 F09192 F1BF 41'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~C2X
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~C2X("Noël 🎅")=                        -- '4E 6F C3AB 6C 20 F09F8E85'
+'4E 6F C3AB 6C 20 F09F8E85'
+ooRexx> .RexxUnicode~C2X("Noël 🎅", .MutableBuffer~new)=    -- M'4E 6F C3AB 6C 20 F09F8E85'
+M'4E 6F C3AB 6C 20 F09F8E85'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~character
+--------------------------------------------------------------------------------
+
+-- Search by decimal value
+ooRexx> .RexxUnicode~character(127877)=                 -- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+ooRexx> .RexxUnicode~character("127877")=               -- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+ooRexx> .RexxUnicode~character("1F385"~x2d)=            -- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+
+
+-- Search by U+ notation
+ooRexx> .RexxUnicode~character("U+1F385")=              -- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+
+
+-- Search by name
+ooRexx> .RexxUnicode~character("FATHER CHRISTMAS")=     -- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+
+
+-- search by loose name.
+-- https://unicode.org/reports/tr44/#UAX44-LM2
+ooRexx> .RexxUnicode~character(" Father christmas  ")=  -- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+
+
+-- Search directly a character
+ooRexx> .RexxUnicode~character("🎅")=                   -- ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+
+
+-- Only -1 is supported as a special value
+-- All other negative codepoints are invalid
+ooRexx> .RexxUnicode~character(-1)=                     -- (An invalid character)
+(An invalid character)
+ooRexx> .RexxUnicode~character(-2)=                     -- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: -2; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~codepoint
+--------------------------------------------------------------------------------
+
+-- Search by decimal value
+ooRexx> .RexxUnicode~codepoint(127877)=                 -- 127877
+ 127877
+ooRexx> .RexxUnicode~codepoint("127877")=               -- 127877
+ 127877
+ooRexx> .RexxUnicode~codepoint("1F385"~x2d)=            -- 127877
+ 127877
+
+
+-- Search by U+ notation
+ooRexx> .RexxUnicode~codepoint("U+1F385")=              -- 127877
+ 127877
+
+
+-- Search by name
+ooRexx> .RexxUnicode~codepoint("FATHER CHRISTMAS")=     -- 127877
+ 127877
+
+
+-- search by loose name.
+-- https://unicode.org/reports/tr44/#UAX44-LM2
+ooRexx> .RexxUnicode~codepoint(" Father christmas  ")=  -- 127877
+ 127877
+
+
+-- Search directly a character
+ooRexx> .RexxUnicode~codepoint("🎅")=                   -- 127877
+ 127877
+
+
+-- Only -1 is supported as a special value
+-- All other negative codepoints are invalid
+ooRexx> .RexxUnicode~codepoint(-1)=                     -- -1
+-1
+ooRexx> .RexxUnicode~codepoint(-2)=                     -- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: -2; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~codepointCharName
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~codepointCharName(2448~x2d)=       -- 'OCR DASH'
+'OCR DASH'
+ooRexx> .RexxUnicode~codepointCharName("D800"~x2d)=     -- ''
+''
+
+-- The special value -1 has no name
+ooRexx> .RexxUnicode~codepointCharName(-1)=             -- ''
+''
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~codepointCharNameAlias
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~codepointCharNameAlias(2448~x2d)=      -- 'MICR ON US SYMBOL'
+'MICR ON US SYMBOL'
+ooRexx> .RexxUnicode~codepointCharNameAlias("D800"~x2d)=    -- ''
+''
+
+-- The special value -1 has no name alias
+ooRexx> .RexxUnicode~codepointCharNameAlias(-1)=            -- ''
+''
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~codepointExtendedCharName
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~codepointExtendedCharName(2448~x2d)=   -- 'OCR DASH'
+'OCR DASH'
+ooRexx> .RexxUnicode~codepointExtendedCharName("D800"~x2d)= -- '<lead surrogate-D800>'
+'<lead surrogate-D800>'
+
+-- The special value -1 has no extended name
+ooRexx> .RexxUnicode~codepointExtendedCharName(-1)=         -- ''
+''
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~codepointIsPrintable
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~codepointIsPrintable(0)=             -- 0
+ 0
+ooRexx> .RexxUnicode~codepointIsPrintable(65)=            -- 1
+ 1
+ooRexx> .RexxUnicode~codepointIsPrintable("D800"~x2d)=    -- 0
+ 0
+
+
+-- The special value -1 is not printable
+ooRexx> .RexxUnicode~codepointIsPrintable(-1)=            -- 0
+ 0
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~codepointPrintableString
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~codepointPrintableString(0)=           -- '\u0000'
+'\u0000'
+ooRexx> .RexxUnicode~codepointPrintableString(65)=          -- 'A'
+'A'
+ooRexx> .RexxUnicode~codepointPrintableString("D800"~x2d)=  -- '\uD800'
+'\uD800'
+
+
+-- Since the special value -1 is not printable, it is represented using Unicode escape notation.
+ooRexx> .RexxUnicode~codepointPrintableString(-1)=          -- '\UFFFFFFFF'
+'\UFFFFFFFF'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~codepointUnicodeEscapeNotation
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~codepointUnicodeEscapeNotation("D800"~x2d)=    -- '\uD800'
+'\uD800'
+ooRexx> .RexxUnicode~codepointUnicodeEscapeNotation("1F385"~x2d)=   -- '\U0001F385'
+'\U0001F385'
+ooRexx> .RexxUnicode~codepointUnicodeEscapeNotation(-1)=            -- '\UFFFFFFFF'
+'\UFFFFFFFF'
+
+
+ooRexx> .RexxUnicode~codepointUnicodeEscapeNotation("D800"~x2d, .MutableBuffer~new)=    -- M'\uD800'
+M'\uD800'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~codepointUTF8Encoding
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~codepointUTF8Encoding(0)~c2x=          -- 00
+ 00
+ooRexx> .RexxUnicode~codepointUTF8Encoding(65)~c2x=         -- 41
+ 41
+ooRexx> .RexxUnicode~codepointUTF8Encoding(2448~x2d)~c2x=   -- 'E29188'
+'E29188'
+
+
+ooRexx> .RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint)~c2x=      -- 'F48FBFBF'
+'F48FBFBF'
+ooRexx> .RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  -- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~D2U
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~D2U(235)=                              -- 'U+00EB'
+'U+00EB'
+ooRexx> .RexxUnicode~D2U(235, .MutableBuffer~new)=          -- M'U+00EB'
+M'U+00EB'
+ooRexx> .RexxUnicode~D2U(127877)=                           -- 'U+1F385'
+'U+1F385'
+ooRexx> .RexxUnicode~D2U(127877, .MutableBuffer~new)=       -- M'U+1F385'
+M'U+1F385'
+
+
+ooRexx> .RexxUnicode~D2U(.RexxUnicode~maxCodepoint)=        -- 'U+10FFFF'
+'U+10FFFF'
+ooRexx> .RexxUnicode~D2U(.RexxUnicode~maxCodepoint + 1)=    -- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicode~D2U(-1)=                               -- 'U+FFFFFF'
+'U+FFFFFF'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~h_UAX44_LM2
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~h_UAX44_LM2(" MICR on US SYMBOL")=     -- 'micronussymbol'
+'micronussymbol'
+
+
+-- ASCII name only
+ooRexx> .RexxUnicode~h_UAX44_LM2("Père Noël")=              -- Name must be an ASCII string; found "Père Noël".
+[ICU4ooRexx] Name must be an ASCII string; found "Père Noël".
+Error code= 93.900
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~stringEscape
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~stringEscape(xrange("00"x, "FF"x))=          -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'
+'\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'
+
+ooRexx> .RexxUnicode~stringEscape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF'
+'\U00010FFF'
+
+
+ooRexx> .RexxUnicode~stringEscape(.RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}"))=    -- '\xED\xA0\x80'
+'\xED\xA0\x80'
+/*
+A lead surrogate is invalid in a UTF-8 string (would be valid in a WTF-8 string).
+(<?> \x{EDA080} U+D800 Cs Surrogate "<lead surrogate-D800>")
+A codepoint supplier returns 3 codepoints for U+D800:
+    1 : 'U+FFFD'
+    2 : 'U+FFFD'
+    3 : 'U+FFFD'
+Codepoint byte sequence as hexadecimal digits (option "h):
+    1 : '\xED'
+    2 : '\xA0'
+    3 : '\x80'
+Escaping U+D800 is '\xED\xA0\x80' because \x{EDA080} can't be UTF-8 decoded as U+D800.
+*/
+
+
+--------------------------------------------------------------------------------
+--  .RexxUnicode~stringInfo
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~stringInfo("")=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
+'(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
+ooRexx> .RexxUnicode~stringInfo("e")=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+'(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+ooRexx> .RexxUnicode~stringInfo("é")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
+'(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
+ooRexx> .RexxUnicode~stringInfo("€")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
+'(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
+ooRexx> .RexxUnicode~stringInfo("🎅")=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+'(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+ooRexx> .RexxUnicode~stringInfo("👨‍👩‍👧")=          -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+'(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+
+
+-- Invalid string
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+ooRexx> .RexxUnicode~stringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >indexer)=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+'(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+ooRexx> indexer~errors==
+an Array (shape [4], 4 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
+ 2 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+ 3 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+ 4 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
+/*
+    an Array (shape [4], 4 items)
+     1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
+     2 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
+     3 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
+     4 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'
+*/
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~stringIsASCII
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~stringIsASCII("Noel")=     -- 1
+ 1
+ooRexx> .RexxUnicode~stringIsASCII("Noël")=     -- 0
+ 0
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~stringToNFC
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~stringToNFC("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=      -- 'äöü äöü x̂ ϔ ﷺ baﬄe ß ς'
+'äöü äöü x̂ ϔ ﷺ baﬄe ß ς'
+ooRexx> .RexxUnicode~C2X(result)=                                  -- 'C3A4 C3B6 C3BC 20 C3A4 C3B6 C3BC 20 78 CC82 20 CF94 20 EFB7BA 20 62 61 EFAC84 65 20 C39F 20 CF82'
+'C3A4 C3B6 C3BC 20 C3A4 C3B6 C3BC 20 78 CC82 20 CF94 20 EFB7BA 20 62 61 EFAC84 65 20 C39F 20 CF82'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~stringToNFD
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~stringToNFD("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=       -- 'äöü äöü x̂ ϔ ﷺ baﬄe ß ς'
+'äöü äöü x̂ ϔ ﷺ baﬄe ß ς'
+ooRexx> .RexxUnicode~C2X(result)=                                   -- '61 CC88 6F CC88 75 CC88 20 61 CC88 6F CC88 75 CC88 20 78 CC82 20 CF92 CC88 20 EFB7BA 20 62 61 EFAC84 65 20 C39F 20 CF82'
+'61 CC88 6F CC88 75 CC88 20 61 CC88 6F CC88 75 CC88 20 78 CC82 20 CF92 CC88 20 EFB7BA 20 62 61 EFAC84 65 20 C39F 20 CF82'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~stringToNFKC
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~stringToNFKC("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=      -- 'äöü äöü x̂ Ϋ صلى الله عليه وسلم baffle ß ς'
+'äöü äöü x̂ Ϋ صلى الله عليه وسلم baffle ß ς'
+ooRexx> .RexxUnicode~C2X(result)=                                   -- 'C3A4 C3B6 C3BC 20 C3A4 C3B6 C3BC 20 78 CC82 20 CEAB 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 C39F 20 CF82'
+'C3A4 C3B6 C3BC 20 C3A4 C3B6 C3BC 20 78 CC82 20 CEAB 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 C39F 20 CF82'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~stringToNFKC_CF
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~stringToNFKC_CF("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=       -- 'äöü äöü x̂ ϋ صلى الله عليه وسلم baffle ss σ'
+'äöü äöü x̂ ϋ صلى الله عليه وسلم baffle ss σ'
+ooRexx> .RexxUnicode~C2X(result)=                                       -- 'C3A4 C3B6 C3BC 20 C3A4 C3B6 C3BC 20 78 CC82 20 CF8B 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 73 73 20 CF83'
+'C3A4 C3B6 C3BC 20 C3A4 C3B6 C3BC 20 78 CC82 20 CF8B 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 73 73 20 CF83'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~stringToNFKD
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~stringToNFKD("äöü äöü x̂ ϔ ﷺ baﬄe ß ς")=      -- 'äöü äöü x̂ Ϋ صلى الله عليه وسلم baffle ß ς'
+'äöü äöü x̂ Ϋ صلى الله عليه وسلم baffle ß ς'
+ooRexx> .RexxUnicode~C2X(result)=                                   -- '61 CC88 6F CC88 75 CC88 20 61 CC88 6F CC88 75 CC88 20 78 CC82 20 CEA5 CC88 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 C39F 20 CF82'
+'61 CC88 6F CC88 75 CC88 20 61 CC88 6F CC88 75 CC88 20 78 CC82 20 CEA5 CC88 20 D8B5 D984 D989 20 D8A7 D984 D984 D987 20 D8B9 D984 D98A D987 20 D988 D8B3 D984 D985 20 62 61 66 66 6C 65 20 C39F 20 CF82'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~stringUnescape
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~stringUnescape("\\")=            -- '\'
+'\'
+ooRexx> .RexxUnicode~stringUnescape("a\\")=           -- 'a\'
+'a\'
+ooRexx> .RexxUnicode~stringUnescape("\\b")=           -- '\b'
+'\b'
+ooRexx> .RexxUnicode~stringUnescape("a\\b")=          -- 'a\b'
+'a\b'
+
+
+ooRexx> .RexxUnicode~stringUnescape("\\", .MutableBuffer~new)=            -- M'\'
+M'\'
+ooRexx> .RexxUnicode~stringUnescape("a\\", .MutableBuffer~new)=           -- M'a\'
+M'a\'
+ooRexx> .RexxUnicode~stringUnescape("\\b", .MutableBuffer~new)=           -- M'\b'
+M'\b'
+ooRexx> .RexxUnicode~stringUnescape("a\\b", .MutableBuffer~new)=          -- M'a\b'
+M'a\b'
+
+
+ooRexx> .RexxUnicode~stringUnescape("\a")~c2x=    -- 07
+ 07
+ooRexx> .RexxUnicode~stringUnescape("\b")~c2x=    -- 08
+ 08
+ooRexx> .RexxUnicode~stringUnescape("\f")~c2x=    -- '0C'
+'0C'
+ooRexx> .RexxUnicode~stringUnescape("\n")~c2x=    -- '0A'
+'0A'
+ooRexx> .RexxUnicode~stringUnescape("\r")~c2x=    -- '0D'
+'0D'
+ooRexx> .RexxUnicode~stringUnescape("\t")~c2x=    -- 09
+ 09
+ooRexx> .RexxUnicode~stringUnescape("\v")~c2x=    -- '0B'
+'0B'
+
+
+ooRexx> .RexxUnicode~stringUnescape("\N{OCR DASH}")=                  -- '⑈'
+'⑈'
+ooRexx> .RexxUnicode~stringUnescape("\N{MICR ON US SYMBOL}")=         -- '⑈'
+'⑈'
+ooRexx> .RexxUnicode~stringUnescape("\N{<control-0000>}")=            -- '[00]'
+'[00]'
+ooRexx> .RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}")~c2x= -- 'EDA080' (use ~c2x to not display an invalid byte sequence)
+'EDA080'
+
+
+ooRexx> .RexxUnicode~stringUnescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
+'𝓐B𝓒𝓓𝓔'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~U2C
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385")=                         -- 'Noël 🎅'
+'Noël 🎅'
+ooRexx> .RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385", .MutableBuffer~new)=     -- M'Noël 🎅'
+M'Noël 🎅'
+
+
+ooRexx> .RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB")=                                      -- Cannot UTF-8 encode codepoint U+FFFFFF.
+Cannot UTF-8 encode code point U+FFFFFF.
+Error code= 98.900
+
+
+-- The update is atomic when passing a buffer:
+-- either all decoded characters are appended, or the buffer is left unchanged.
+ooRexx> b = .MutableBuffer~new("🤶 ")
+ooRexx> .RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB", b)=   -- Cannot UTF-8 encode codepoint U+FFFFFF.
+Cannot UTF-8 encode code point U+FFFFFF.
+Error code= 98.900
+ooRexx> b=                                                      -- M'🤶 '
+M'🤶 '
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~U2D
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~U2D("U+00EB")=                                                                 -- 235
+ 235
+ooRexx> .RexxUnicode~U2D("U+00EB ")=                                                                -- -1
+-1
+ooRexx> .RexxUnicode~U2D("U+00EB ", /*start*/ 1, /*raiseError*/ .true)=                             -- Expected U+ or u+ followed by 4..6 hex digits; found "U+00EB ".
+Expected U+ or u+ followed by 4..6 hex digits; found "U+00EB ".
+Error code= 23.900
+ooRexx> .RexxUnicode~U2D("U+00EB ", /*start*/ 1, /*raiseError*/ .true, >length)=; length=           -- 235; 6
+ 235
+ 6
+ooRexx> .RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .false)=                    -- -1
+-1
+ooRexx> .RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .true, >length)=; length=   -- Expected U+ or u+ followed by 4..6 hex digits; found " U+1F385 ".
+Expected U+ or u+ followed by 4..6 hex digits; found " U+1F385 ".
+Error code= 23.900
+ooRexx> .RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 8, /*raiseError*/ .true, >length)=; length=   -- 127877; 7
+ 127877
+ 7
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~UAX44_LM2
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~UAX44_LM2(" MICR on US SYMBOL")=       -- 'micronussymbol'
+'micronussymbol'
+
+
+-- ASCII name only
+ooRexx> .RexxUnicode~UAX44_LM2("Père Noël")=                -- Name must be an ASCII string; found "Père Noël".
+Name must be an ASCII string; found "Père Noël".
+Error code= 22.900
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicode~UAX44_LM3
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~UAX44_LM3("Upper case")=               -- 'uppercase'
+'uppercase'
+ooRexx> .RexxUnicode~UAX44_LM3(" Is Upper case")=           -- 'uppercase'
+'uppercase'
+ooRexx> .RexxUnicode~UAX44_LM3("Is Pere Noel")=             -- 'perenoel'
+'perenoel'
+
+
+-- ASCII name only
+ooRexx> .RexxUnicode~UAX44_LM3("Is Père Noël")=             -- Name must be an ASCII string; found "Is Père Noël".
+Name must be an ASCII string; found "Is Père Noël".
+Error code= 22.900
+
+
+--------------------------------------------------------------------------------
+-- RexxUnicodeCodepointSupplier Class
+--------------------------------------------------------------------------------
+
+-- Example 1
+-- the default index type is the codepoint index
+-- the default item type is the codepoint as a whole number
+ooRexx> .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅")==
+a RexxUnicodeCodepointSupplier 
+ 1  :  110
+ 2  :  111
+ 3  :  235
+ 4  :  108
+ 5  :  128104
+ 6  :  8205
+ 7  :  128105
+ 8  :  8205
+ 9  :  128103
+ 10 :  127877
+/*
+    a RexxUnicodeCodepointSupplier
+     1  :  110
+     2  :  111
+     3  :  235
+     4  :  108
+     5  :  128104
+     6  :  8205
+     7  :  128105
+     8  :  8205
+     9  :  128103
+     10 :  127877
+*/
+
+
+-- Example 2
+-- It's possible to get other types of index and item
+-- Here, we request the byte index and the codepoint byte sequence as hex digits
+ooRexx> .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", "b", "x")==
+a RexxUnicodeCodepointSupplier 
+ 1  : '\x6E'
+ 2  : '\x6F'
+ 3  : '\x{C3AB}'
+ 5  : '\x6C'
+ 6  : '\x{F09F91A8}'
+ 10 : '\x{E2808D}'
+ 13 : '\x{F09F91A9}'
+ 17 : '\x{E2808D}'
+ 20 : '\x{F09F91A7}'
+ 24 : '\x{F09F8E85}'
+/*
+    a RexxUnicodeCodepointSupplier
+     1  : '\x6E'
+     2  : '\x6F'
+     3  : '\x{C3AB}'
+     5  : '\x6C'
+     6  : '\x{F09F91A8}'
+     10 : '\x{E2808D}'
+     13 : '\x{F09F91A9}'
+     17 : '\x{E2808D}'
+     20 : '\x{F09F91A7}'
+     24 : '\x{F09F8E85}'
+*/
+
+
+-- Example 3
+-- Codepoint supplier providing the default index and returning the codepoint escaped string
+ooRexx> .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , "\")==
+a RexxUnicodeCodepointSupplier 
+ 1  : 'n'
+ 2  : 'o'
+ 3  : 'ë'
+ 4  : 'l'
+ 5  : '👨'
+ 6  : '\u200D'
+ 7  : '👩'
+ 8  : '\u200D'
+ 9  : '👧'
+ 10 : '🎅'
+/*
+    a RexxUnicodeCodepointSupplier
+     1  : 'n'
+     2  : 'o'
+     3  : 'ë'
+     4  : 'l'
+     5  : '👨'
+     6  : '\u200D'
+     7  : '👩'
+     8  : '\u200D'
+     9  : '👧'
+     10 : '🎅'
+*/
+
+
+-- Example 4
+-- Codepoint supplier providing the default index and returning the codepoint in U+ notation
+ooRexx> .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , "u")==
+a RexxUnicodeCodepointSupplier 
+ 1  : 'U+006E'
+ 2  : 'U+006F'
+ 3  : 'U+00EB'
+ 4  : 'U+006C'
+ 5  : 'U+1F468'
+ 6  : 'U+200D'
+ 7  : 'U+1F469'
+ 8  : 'U+200D'
+ 9  : 'U+1F467'
+ 10 : 'U+1F385'
+/*
+    a RexxUnicodeCodepointSupplier
+     1  : 'U+006E'
+     2  : 'U+006F'
+     3  : 'U+00EB'
+     4  : 'U+006C'
+     5  : 'U+1F468'
+     6  : 'U+200D'
+     7  : 'U+1F469'
+     8  : 'U+200D'
+     9  : 'U+1F467'
+     10 : 'U+1F385'
+*/
+
+
+-- Example 5
+-- Codepoint supplier providing the default index and returning the codepoint as a RexxUnicodeCharacter
+ooRexx> .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , .RexxUnicodeCharacter)==
+a RexxUnicodeCodepointSupplier 
+ 1  : ("n" \x6E U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
+ 2  : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
+ 3  : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")
+ 4  : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+ 5  : ("👨" \x{F09F91A8} U+1F468 So Other_Symbol "MAN")
+ 6  : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+ 7  : ("👩" \x{F09F91A9} U+1F469 So Other_Symbol "WOMAN")
+ 8  : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+ 9  : ("👧" \x{F09F91A7} U+1F467 So Other_Symbol "GIRL")
+ 10 : ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+/*
+    a RexxUnicodeCodepointSupplier
+     1  : ("n" \x6E U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
+     2  : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
+     3  : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")
+     4  : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+     5  : ("👨" \x{F09F91A8} U+1F468 So Other_Symbol "MAN")
+     6  : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+     7  : ("👩" \x{F09F91A9} U+1F469 So Other_Symbol "WOMAN")
+     8  : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+     9  : ("👧" \x{F09F91A7} U+1F467 So Other_Symbol "GIRL")
+     10 : ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+*/
+
+
+-- Example 6
+-- Invalid string - U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+
+-- Codepoint supplier providing the codepoint index and returning the codepoint as a whole number
+ooRexx> .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x)==
+a RexxUnicodeCodepointSupplier 
+ 1 :  65533
+ 2 :  65533
+ 3 :  65533
+ 4 :  65533
+ 5 :  65
+/*
+    a RexxUnicodeCodepointSupplier
+     1 :  65533
+     2 :  65533
+     3 :  65533
+     4 :  65533
+     5 :  65
+*/
+
+
+-- Example 7
+-- Codepoint supplier providing the byte index and returning the codepoint escaped string
+-- A negative byte index indicates an invalid byte sequence
+ooRexx> .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
+a RexxUnicodeCodepointSupplier 
+-1 : '\x{E180}'
+-3 : '\xE2'
+-4 : '\x{F09192}'
+-7 : '\x{F1BF}'
+ 9 : 'A'
+/*
+    a RexxUnicodeCodepointSupplier
+    -1 : '\x{E180}'
+    -3 : '\xE2'
+    -4 : '\x{F09192}'
+    -7 : '\x{F1BF}'
+     9 : 'A'
+*/
+
+
+-- Example 8
+-- Codepoint supplier providing the byte index and returning the error message
+ooRexx> .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
+a RexxUnicodeCodepointSupplier 
+-1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
+-3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+-4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+-7 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
+ 9 : ''
+/*
+    a RexxUnicodeCodepointSupplier
+    -1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
+    -3 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
+    -4 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
+    -7 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'
+     9 : ''
+*/
+
+
+--------------------------------------------------------------------------------
+-- RexxUnicodeGraphemeSupplier Class
+--------------------------------------------------------------------------------
+
+-- Example 1
+-- the default index type is the grapheme index
+-- the default item type is the grapheme as a string
+ooRexx> .RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅")==
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'n'
+ 2 : 'o'
+ 3 : 'ë'
+ 4 : 'l'
+ 5 : '👨‍👩‍👧'
+ 6 : '🎅'
+/*
+    a RexxUnicodeGraphemeSupplier
+     1 : 'n'
+     2 : 'o'
+     3 : 'ë'
+     4 : 'l'
+     5 : '👨‍👩‍👧'
+     6 : '🎅'
+*/
+
+
+-- Example 2
+-- Grapheme supplier providing the byte index and returning the grapheme byte sequence as hex digits
+ooRexx> .RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", "b", "x")==
+a RexxUnicodeGraphemeSupplier 
+ 1  : '\x6E'
+ 2  : '\x6F'
+ 3  : '\x{C3AB}'
+ 5  : '\x6C'
+ 6  : '\x{F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
+ 24 : '\x{F09F8E85}'
+/*
+    a RexxUnicodeGraphemeSupplier
+     1  : '\x6E'
+     2  : '\x6F'
+     3  : '\x{C3AB}'
+     5  : '\x6C'
+     6  : '\x{F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
+     24 : '\x{F09F8E85}'
+*/
+
+
+-- Example 3
+-- Grapheme supplier providing the default index and returning the grapheme escaped string
+ooRexx> .RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", , "\")==
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'n'
+ 2 : 'o'
+ 3 : 'ë'
+ 4 : 'l'
+ 5 : '👨\u200D👩\u200D👧'
+ 6 : '🎅'
+/*
+    a RexxUnicodeGraphemeSupplier
+     1 : 'n'
+     2 : 'o'
+     3 : 'ë'
+     4 : 'l'
+     5 : '👨\u200D👩\u200D👧'
+     6 : '🎅'
+*/
+
+
+-- Example 4
+-- Grapheme supplier providing the default index and returning the grapheme codepoints in U+ notation
+ooRexx> .RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", , "u")==
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+006E'
+ 2 : 'U+006F'
+ 3 : 'U+00EB'
+ 4 : 'U+006C'
+ 5 : 'U+1F468 U+200D U+1F469 U+200D U+1F467'
+ 6 : 'U+1F385'
+/*
+    a RexxUnicodeGraphemeSupplier
+     1 : 'U+006E'
+     2 : 'U+006F'
+     3 : 'U+00EB'
+     4 : 'U+006C'
+     5 : 'U+1F468 U+200D U+1F469 U+200D U+1F467'
+     6 : 'U+1F385'
+*/
+
+
+-- Example 5
+-- Invalid string - U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+
+-- Grapheme supplier providing the grapheme index and returning the grapheme escaped string
+ooRexx> .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, , "\")==
+a RexxUnicodeGraphemeSupplier 
+ 1 : '\x{E180}'
+ 2 : '\xE2'
+ 3 : '\x{F09192}'
+ 4 : '\x{F1BF}'
+ 5 : 'A'
+/*
+    a RexxUnicodeGraphemeSupplier
+     1 : '\x{E180}'
+     2 : '\xE2'
+     3 : '\x{F09192}'
+     4 : '\x{F1BF}'
+     5 : 'A'
+*/
+
+
+-- Example 6
+-- Grapheme supplier providing the byte index and returning the grapheme escaped string
+-- A negative byte index indicates an invalid byte sequence
+ooRexx> .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
+a RexxUnicodeGraphemeSupplier 
+-1 : '\x{E180}'
+-3 : '\xE2'
+-4 : '\x{F09192}'
+-7 : '\x{F1BF}'
+ 9 : 'A'
+/*
+    a RexxUnicodeGraphemeSupplier
+    -1 : '\x{E180}'
+    -3 : '\xE2'
+    -4 : '\x{F09192}'
+    -7 : '\x{F1BF}'
+     9 : 'A'
+*/
+
+
+-- Example 7
+-- Grapheme supplier providing the byte index and returning the error message
+ooRexx> .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
+a RexxUnicodeGraphemeSupplier 
+-1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
+-3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+-4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+-7 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
+ 9 : ''
+/*
+    a RexxUnicodeGraphemeSupplier
+    -1 : 'start byte-position 1 : Invalid continuation byte 128 (''80''x) at byte-position 3'
+    -3 : 'start byte-position 3 : Invalid continuation byte 240 (''F0''x) at byte-position 4'
+    -4 : 'start byte-position 4 : Invalid continuation byte 145 (''91''x) at byte-position 7'
+    -7 : 'start byte-position 7 : Invalid continuation byte 191 (''BF''x) at byte-position 9'
+     9 : ''
+*/
+
+
+--------------------------------------------------------------------------------
+-- RexxUnicodeStringIndexer Class
+--------------------------------------------------------------------------------
+
+-- Example 1
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+ooRexx> indexer=                            -- (a👨‍👩‍👧b)
+(a👨‍👩‍👧b)
+ooRexx> indexer~codepointIndexes=           -- [ 1, 2, 6, 9, 13, 16, 20]
+[ 1, 2, 6, 9, 13, 16, 20]
+ooRexx> indexer~graphemeIndexes=            -- [ 1, 2, 20]
+[ 1, 2, 20]
+ooRexx> indexer~errors=                     -- an Array (no shape, 0 items)
+an Array (no shape, 0 items)
+ooRexx> indexer~codepointAtIndexC(3)=       -- 8205
+ 8205
+ooRexx> .RexxUnicodeCharacter~new(8205)=    -- (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+(<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+ooRexx> indexer~graphemeAtIndexG(3)=        -- 'b'
+'b'
+
+
+-- Example 2
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x)
+ooRexx> indexer~codepointIndexes=           -- [-1,-2,-3,-4,-5, 6,-7,-8, 9]
+[-1,-2,-3,-4,-5, 6,-7,-8, 9]
+ooRexx> indexer~graphemeIndexes=            -- [-1,-2,-3,-4,-5, 6,-7,-8, 9]
+[-1,-2,-3,-4,-5, 6,-7,-8, 9]
+ooRexx> indexer~errors==
+an Array (shape [7], 7 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+ 2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+ 3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+ 4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+ 5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+ 6 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+ 7 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+/*
+    an Array (shape [7], 7 items)
+     1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
+     2 : 'start byte-position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+     3 : 'start byte-position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+     4 : 'start byte-position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+     5 : 'start byte-position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+     6 : 'start byte-position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+     7 : 'start byte-position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+*/
+ooRexx> indexer~codepointAtIndexC(3)=       -- 65533
+ 65533
+ooRexx> .RexxUnicodeCharacter~new(65533)=   -- ("�" \x{EFBFBD} U+FFFD So Other_Symbol "REPLACEMENT CHARACTER")
+("�" \x{EFBFBD} U+FFFD So Other_Symbol "REPLACEMENT CHARACTER")
+ooRexx> indexer~graphemeAtIndexG(3)~c2x=    -- 92 (use ~c2x to not display an invalid byte sequence)
+ 92
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeStringIndexer~codepointIndexC
+--------------------------------------------------------------------------------
+
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+ooRexx> do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
+1 : 1
+2 : 2
+3 : -2
+4 : -2
+5 : -2
+6 : 3
+7 : -3
+8 : -3
+9 : 4
+10: -4
+11: -4
+12: -4
+13: 5
+14: -5
+15: -5
+16: 6
+17: -6
+18: -6
+19: -6
+20: 7
+/*
+    1 : 1
+    2 : 2
+    3 : -2
+    4 : -2
+    5 : -2
+    6 : 3
+    7 : -3
+    8 : -3
+    9 : 4
+    10: -4
+    11: -4
+    12: -4
+    13: 5
+    14: -5
+    15: -5
+    16: 6
+    17: -6
+    18: -6
+    19: -6
+    20: 7
+*/
+
+
+-- Negative byte indexes are supported (negative index means "index from the end")
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+ooRexx> indexer~codepointIndexC(-1)=    -- 7
+ 7
+ooRexx> indexer~codepointIndexC(-2)=    -- -6
+-6
+ooRexx> indexer~codepointIndexC(-5)=    -- 6
+ 6
+
+
+-- Binary search for codepoint indexes cannot work with sparse storage
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
+ooRexx> do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
+Codepoint index 4 is not stored. Binary search for byte index 1 requires unlimited storage.
+Error code= 88.900
+/*
+    Codepoint index 4 is not stored. Binary search for byte index 1 requires unlimited storage.
+*/
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeStringIndexer~endCodepointIndexes
+--------------------------------------------------------------------------------
+
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 5, 0, 0, 5)
+ooRexx> indexer~codepointIndexes=       -- [ 1, 2, 6, 9, 13]
+[ 1, 2, 6, 9, 13]
+ooRexx> indexer~endCodepointIndexes=    -- [ 20, 16, 13, 9, 6]
+[ 20, 16, 13, 9, 6]
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeStringIndexer~endErrors
+--------------------------------------------------------------------------------
+
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x, 0, 0, 5, 0, 0, 5)
+ooRexx> indexer~errors==
+an Array (shape [5], 5 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+ 2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+ 3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+ 4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+ 5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+/*
+    an Array (shape [5], 5 items)
+     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+     3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+     5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+*/
+
+
+ooRexx> indexer~endErrors==
+an Array (shape [5], 5 items)
+ 1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+ 2 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+ 3 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+ 4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+ 5 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+/*
+    an Array (shape [5], 5 items)
+     1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+     2 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+     3 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+     5 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+*/
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeStringIndexer~endGraphemeIndexes
+--------------------------------------------------------------------------------
+
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 5, 0, 0, 5)
+ooRexx> indexer~graphemeIndexes=        -- [ 1, 2, 20]
+[ 1, 2, 20]
+ooRexx> indexer~endGraphemeIndexes=     -- [ 20, 2, 1]
+[ 20, 2, 1]
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeStringIndexer~graphemeIndexG
+--------------------------------------------------------------------------------
+
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+ooRexx> do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
+1 : 1
+2 : 2
+3 : -2
+4 : -2
+5 : -2
+6 : -2
+7 : -2
+8 : -2
+9 : -2
+10: -2
+11: -2
+12: -2
+13: -2
+14: -2
+15: -2
+16: -2
+17: -2
+18: -2
+19: -2
+20: 3
+/*
+    1 : 1
+    2 : 2
+    3 : -2
+    4 : -2
+    5 : -2
+    6 : -2
+    7 : -2
+    8 : -2
+    9 : -2
+    10: -2
+    11: -2
+    12: -2
+    13: -2
+    14: -2
+    15: -2
+    16: -2
+    17: -2
+    18: -2
+    19: -2
+    20: 3
+*/
+
+
+-- Negative byte indexes are supported (negative index means "index from the end")
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
+ooRexx> indexer~graphemeIndexG(-1)=    -- 3
+ 3
+ooRexx> indexer~graphemeIndexG(-2)=    -- -2
+-2
+ooRexx> indexer~graphemeIndexG(-19)=   -- 2
+ 2
+
+
+-- Binary search for grapheme indexes cannot work with sparse storage
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
+ooRexx> do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
+Grapheme index 2 is not stored. Binary search for byte index 1 requires unlimited storage.
+Error code= 88.900
+/*
+    Grapheme index 2 is not stored. Binary search for byte index 1 requires unlimited storage.
+*/
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeStringIndexer~init
+--------------------------------------------------------------------------------
+
+-- Modified for regression test
+-- Example 1
+-- If the identifier is a valid UTF-8 string and is made of just one codepoint then return this codepoint.
+ooRexx> identifier = "€"
+ooRexx> indexer = .RexxUnicodeStringIndexer~new(identifier, /*codepointStorageLimit:*/ 1, /*graphemeStorageLimit:*/ 0, /*errorStorageLimit:*/ 0)
+ooRexx> if indexer~errorCount == 0, indexer~codepointCount == 1 then say indexer~codepointAtIndexC(1)
+8364
+
+
+-- Modified for regression test
+-- Example 2
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x, /*codepointStorageLimit:*/ 4, /*graphemeStorageLimit:*/ 2, /*errorStorageLimit:*/ 1)
+
+-- The specified codepoint storage limit is 4
+ooRexx> indexer~codepointCount=             -- 9
+ 9
+ooRexx> indexer~codepointStorageLimit=      -- 4
+ 4
+ooRexx> indexer~codepointIndexes=           -- [-1,-2,-3,-4]
+[-1,-2,-3,-4]
+ooRexx> indexer~codepointAtIndexC(3)=       -- 65533
+ 65533
+ooRexx> indexer~codepointAtIndexC(5)=       -- Code point index 5 is not stored.
+Code point index 5 is not stored.
+Error code= 88.900
+
+-- The specified grapheme storage limit is 2
+ooRexx> indexer~graphemeCount=              -- 9
+ 9
+ooRexx> indexer~graphemeStorageLimit=       -- 2
+ 2
+ooRexx> indexer~graphemeIndexes=            -- [-1,-2]
+[-1,-2]
+ooRexx> indexer~graphemeAtIndexG(2)~c2x=    -- 91 (use ~c2x to not display an invalid byte sequence)
+ 91
+ooRexx> indexer~graphemeAtIndexG(3)~c2x=    -- Grapheme index 3 is not stored.
+Grapheme index 3 is not stored.
+Error code= 88.900
+
+-- The specified error storage limit is 1
+ooRexx> indexer~errorCount=                 -- 7
+ 7
+ooRexx> indexer~errorStorageLimit=          -- 1
+ 1
+ooRexx> indexer~errors==
+an Array (shape [1], 1 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+/*
+    an Array (shape [1], 1 items)
+     1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
+*/
+
+
+-- Example 3
+-- Collect counters, no need to store indexes and errors
+ooRexx> string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
+ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, 0, 0, 0)
+ooRexx> indexer~graphemeCount=      -- 22
+ 22
+ooRexx> indexer~codepointCount=     -- 26
+ 26
+ooRexx> indexer~errorCount=         -- 7
+ 7
+
+
+-- Example 4
+-- Gets the five last grapheme indexes.
+-- In case of error, reports only the first error.
+ooRexx> string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
+ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, /*codepointStorageLimit:*/ 0, /*graphemeStorageLimit:*/ 0, /*errorStorageLimit:*/ 1, /*endCodepointStorageSize:*/ 0, /*endGraphemeStorageSize:*/ 5)
+ooRexx> indexer~errorCount=         -- 7
+ 7
+ooRexx> indexer~errors~items=       -- 1
+ 1
+ooRexx> indexer~errors[1]=          -- 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
+'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+ooRexx> indexer~endGraphemeIndexes= -- [ 23, 22, 21, 19, 18]
+[ 23, 22, 21, 19, 18]
+-- Pass -endIndexG, where a negative index means "index from the end"
+ooRexx> do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~graphemeAtIndexG(-endIndexG); end
+1: 👨‍👩‍👧
+2:  
+3: l
+4: ë
+5: o
+/*
+    1: 👨‍👩‍👧
+    2:
+    3: l
+    4: ë
+    5: o
+*/
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeCharacter~properties
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~properties==
+an Array (shape [29], 26 items)
+ 1  : 'bidiClass'
+ 2  : 'bidiClassName'
+ 3  : 'bidiMirrored'
+ 4  : 'boundClass'
+ 5  : 'boundClassName'
+ 6  : 'category'
+ 7  : 'categoryName'
+ 8  : 'charWidth'
+ 9  : 'codepoint'
+ 10 : 'combiningClass'
+ 11 : 'combiningClassName'
+ 12 : 'combiningClassValue'
+ 13 : 'controlBoundary'
+ 14 : 'decompositionTypeName'
+ 15 : 'decompositionType'
+ 16 : 'eastAsianWidthIsAmbiguous'
+ 17 : 'extendedName'
+ 18 : 'ignorable'
+ 19 : 'isLower'
+ 20 : 'isUpper'
+ 21 : 'name'
+ 22 : 'nameAlias'
+ 23 : 'toLower'
+ 25 : 'toTitle'
+ 27 : 'toUpper'
+ 29 : 'UTF8'
+/*
+    an Array (shape [29], 26 items)
+     1  : 'bidiClass'
+     2  : 'bidiClassName'
+     3  : 'bidiMirrored'
+     4  : 'boundClass'
+     5  : 'boundClassName'
+     6  : 'category'
+     7  : 'categoryName'
+     8  : 'charWidth'
+     9  : 'codepoint'
+     10 : 'combiningClass'
+     11 : 'combiningClassName'
+     12 : 'combiningClassValue'
+     13 : 'controlBoundary'
+     14 : 'decompositionTypeName'
+     15 : 'decompositionType'
+     16 : 'eastAsianWidthIsAmbiguous'
+     17 : 'extendedName'
+     18 : 'ignorable'
+     19 : 'isLower'
+     20 : 'isUpper'
+     21 : 'name'
+     22 : 'nameAlias'
+     23 : 'toLower'
+     25 : 'toTitle'
+     27 : 'toUpper'
+     29 : 'UTF8'
+*/
+
+
+ooRexx> c = .RexxUnicode~character("€"); do message over .RexxUnicodeCharacter~properties; say message":" c~send(message); end
+bidiClass: ET
+bidiClassName: European_Terminator
+bidiMirrored: 0
+boundClass: XX
+boundClassName: Other
+category: Sc
+categoryName: Currency_Symbol
+charWidth: 1
+codepoint: 8364
+combiningClass: NR
+combiningClassName: Not_Reordered
+combiningClassValue: 0
+controlBoundary: 0
+decompositionTypeName: Code point not explicitly listed for Decomposition_Type
+decompositionType: None
+eastAsianWidthIsAmbiguous: 1
+extendedName: EURO SIGN
+ignorable: 0
+isLower: 0
+isUpper: 0
+name: EURO SIGN
+nameAlias: 
+toLower: 8364
+toTitle: 8364
+toUpper: 8364
+UTF8: €
+/*
+    bidiClass: ET
+    bidiClassName: European_Terminator
+    bidiMirrored: 0
+    boundClass: XX
+    boundClassName: Other
+    category: Sc
+    categoryName: Currency_Symbol
+    charWidth: 1
+    codepoint: 8364
+    combiningClass: NR
+    combiningClassName: Not_Reordered
+    combiningClassValue: 0
+    controlBoundary: 0
+    decompositionTypeName: Code point not explicitly listed for Decomposition_Type
+    decompositionType: None
+    eastAsianWidthIsAmbiguous: 1
+    extendedName: EURO SIGN
+    ignorable: 0
+    isLower: 0
+    isUpper: 0
+    name: EURO SIGN
+    nameAlias:
+    toLower: 8364
+    toTitle: 8364
+    toUpper: 8364
+    UTF8: €
+*/
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~bidiClass
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new("0608"~x2d)~bidiClass=        --  'AL'
+'AL'
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~bidiClass=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicodeCharacter~new(-1)~bidiClass=                --  '?'
+'?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~bidiClassName
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new("0608"~x2d)~bidiClassName=        --  'Arabic_Letter'
+'Arabic_Letter'
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~bidiClassName=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicodeCharacter~new(-1)~bidiClassName=                --  '?'
+'?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~boundClass
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new("1F1E6"~x2d)~boundClass=      --  'RI'
+'RI'
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~boundClass=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicodeCharacter~new(-1)~boundClass=               --  '?'
+'?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~boundClassName
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new("1F1E6"~x2d)~boundClassName=      --  'Regional_Indicator'
+'Regional_Indicator'
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~boundClassName=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicodeCharacter~new(-1)~boundClassName=               --  '?'
+'?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~category
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new("0903"~x2d)~category=     -- 'Mc'
+'Mc'
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~category=   --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicodeCharacter~new(-1)~category=             --  'Cn'
+'Cn'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~categoryName
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new("0903"~x2d)~categoryName=     -- 'Spacing_Mark'
+'Spacing_Mark'
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~categoryName=   --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicodeCharacter~new(-1)~categoryName=             --  'Unassigned'
+'Unassigned'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~combiningClass
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new("031B"~x2d)~combiningClass=       --  'ATAR'
+'ATAR'
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClass=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicodeCharacter~new(-1)~combiningClass=               --  '?'
+'?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~combiningClassName
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new("031B"~x2d)~combiningClassName=       --  'Attached_Above_Right'
+'Attached_Above_Right'
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClassName=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicodeCharacter~new(-1)~combiningClassName=               --  '?'
+'?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~combiningClassValue
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new("031B"~x2d)~combiningClassValue=      --  216
+ 216
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClassValue=    --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicodeCharacter~new(-1)~combiningClassValue=              --  -1
+-1
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~compareTo(otherUnicodeCharacter)
+--------------------------------------------------------------------------------
+
+ooRexx> c1 = .RexxUnicodeCharacter~new(64); c2 = .RexxUnicodeCharacter~new(64); c1~compareTo(c2)=   -- 0
+ 0
+ooRexx> c1 = .RexxUnicodeCharacter~new(65); c2 = .RexxUnicodeCharacter~new(64); c1~compareTo(c2)=   -- 1
+ 1
+ooRexx> c1 = .RexxUnicodeCharacter~new(64); c2 = .RexxUnicodeCharacter~new(65); c1~compareTo(c2)=   -- -1
+-1
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~decompositionType
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new("0000"~x2d)~decompositionType=        --  'None'
+'None'
+ooRexx> .RexxUnicodeCharacter~new("00A8"~x2d)~decompositionType=        --  'Compat'
+'Compat'
+ooRexx> .RexxUnicodeCharacter~new("00BC"~x2d)~decompositionType=        --  'Fraction'
+'Fraction'
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~decompositionType=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicodeCharacter~new(-1)~decompositionType=                --  '?'
+'?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~decompositionTypeName
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new("0000"~x2d)~decompositionTypeName=        --  'Code point not explicitly listed for Decomposition_Type'
+'Code point not explicitly listed for Decomposition_Type'
+ooRexx> .RexxUnicodeCharacter~new("00A8"~x2d)~decompositionTypeName=        --  'Unspecified compatibility character'
+'Unspecified compatibility character'
+ooRexx> .RexxUnicodeCharacter~new("00BC"~x2d)~decompositionTypeName=        --  'Vulgar fraction form'
+'Vulgar fraction form'
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~decompositionTypeName=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicodeCharacter~new(-1)~decompositionTypeName=                --  '?'
+'?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~extendedName
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new(2448~x2d)~extendedName=   -- 'OCR DASH'
+'OCR DASH'
+ooRexx> .RexxUnicodeCharacter~new("D800"~x2d)~extendedName= -- '<lead surrogate-D800>'
+'<lead surrogate-D800>'
+
+
+-- The special value -1 has no extended name
+ooRexx> .RexxUnicodeCharacter~new(-1)~extendedName=         -- ''
+''
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~info
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~character("€")~info=
+a StringTable (26 items)
+'bidiClass'                 : 'ET'
+'bidiClassName'             : 'European_Terminator'
+'bidiMirrored'              :  0
+'boundClass'                : 'XX'
+'boundClassName'            : 'Other'
+'category'                  : 'Sc'
+'categoryName'              : 'Currency_Symbol'
+'charWidth'                 :  1
+'codepoint'                 : 'U+20AC'
+'combiningClass'            : 'NR'
+'combiningClassName'        : 'Not_Reordered'
+'combiningClassValue'       :  0
+'controlBoundary'           :  0
+'decompositionType'         : 'None'
+'decompositionTypeName'     : 'Code point not explicitly listed for Decomposition_Type'
+'eastAsianWidthIsAmbiguous' :  1
+'extendedName'              : 'EURO SIGN'
+'ignorable'                 :  0
+'isLower'                   :  0
+'isUpper'                   :  0
+'name'                      : 'EURO SIGN'
+'nameAlias'                 : ''
+'toLower'                   : 'U+20AC'
+'toTitle'                   : 'U+20AC'
+'toUpper'                   : 'U+20AC'
+'UTF8'                      : '\x{E282AC}'
+/*
+    a StringTable (26 items)
+    'bidiClass'                 : 'ET'
+    'bidiClassName'             : 'European_Terminator'
+    'bidiMirrored'              :  0
+    'boundClass'                : 'XX'
+    'boundClassName'            : 'Other'
+    'category'                  : 'Sc'
+    'categoryName'              : 'Currency_Symbol'
+    'charWidth'                 :  1
+    'codepoint'                 : 'U+20AC'
+    'combiningClass'            : 'NR'
+    'combiningClassName'        : 'Not_Reordered'
+    'combiningClassValue'       :  0
+    'controlBoundary'           :  0
+    'decompositionType'         : 'None'
+    'decompositionTypeName'     : 'Code point not explicitly listed for Decomposition_Type'
+    'eastAsianWidthIsAmbiguous' :  1
+    'extendedName'              : 'EURO SIGN'
+    'ignorable'                 :  0
+    'isLower'                   :  0
+    'isUpper'                   :  0
+    'name'                      : 'EURO SIGN'
+    'nameAlias'                 : ''
+    'toLower'                   : 'U+20AC'
+    'toTitle'                   : 'U+20AC'
+    'toUpper'                   : 'U+20AC'
+    'UTF8'                      : '\x{E282AC}'
+*/
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~name
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new(2448~x2d)~name=   -- 'OCR DASH'
+'OCR DASH'
+ooRexx> .RexxUnicodeCharacter~new("D800"~x2d)~name= -- ''
+''
+
+
+-- The special value -1 has no name
+ooRexx> .RexxUnicodeCharacter~new(-1)~name=         -- ''
+''
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~nameAlias
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new(2448~x2d)~nameAlias=   -- 'MICR ON US SYMBOL'
+'MICR ON US SYMBOL'
+ooRexx> .RexxUnicodeCharacter~new("D800"~x2d)~nameAlias= -- ''
+''
+
+
+-- The special value -1 has no name alias
+ooRexx> .RexxUnicodeCharacter~new(-1)~nameAlias=         -- ''
+''
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~string
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new(2448~x2d)~string=     -- '"⑈" \x{E29188} U+2448 So Other_Symbol "OCR DASH"'
+'"⑈" \x{E29188} U+2448 So Other_Symbol "OCR DASH"'
+ooRexx> .RexxUnicodeCharacter~new("D800"~x2d)~string=   -- '<?> \x{EDA080} U+D800 Cs Surrogate "<lead surrogate-D800>"'
+'<?> \x{EDA080} U+D800 Cs Surrogate "<lead surrogate-D800>"'
+
+
+-- The special codepoint value -1 has its own string representation
+ooRexx> .RexxUnicodeCharacter~new(-1)~string=         -- 'An invalid character'
+'An invalid character'
+ooRexx> RC = 0
