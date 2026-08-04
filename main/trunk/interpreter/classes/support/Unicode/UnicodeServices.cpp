@@ -344,6 +344,99 @@ utf8proc_ssize_t utf8proc_iterate_extended(
 }
 
 
+/**
+ * utf8proc_iterate_extended_backward — backward counterpart to utf8proc_iterate_extended,
+ * with exact error-code/message parity with a full forward pass.
+ *
+ * Decodes the single subpart (valid code point, or maximal ill-formed subpart per
+ * "U+FFFD Substitution of Maximal Subparts") that ends immediately before `str_end`.
+ *
+ * str_start   lower bound of the whole buffer (never read before this).
+ * str_end     ONE PAST the last byte of the subpart to decode. To decode the very
+ *             last code point of a Rexx string, pass str_end = string + stringLength.
+ *             Chain successive calls with: next_str_end = str_end - abs(return value).
+ * buffer_end  ONE PAST the last byte of the WHOLE buffer (str_start + full length).
+ *             Constant across a backward iteration; used only to give
+ *             utf8proc_iterate_extended the same trailing context a forward pass
+ *             would have had, so TRUNCATED vs CONTINUATION-type errors are reported
+ *             identically to forward decoding. Equal to str_end on the first call.
+ * end_index   1-based Rexx-string index str_end would have if it addressed an actual
+ *             byte (one more than the 1-based index of str_end[-1]).
+ *
+ * Precondition: str_end must be a genuine subpart boundary as produced by a real
+ * forward pass over [str_start, buffer_end) — e.g. buffer_end itself, or a value
+ * returned by chaining this function. Passing an arbitrary str_end is undefined
+ * with respect to message accuracy (length/boundary logic remains safe regardless,
+ * by the argument below, but is only meaningful under this precondition).
+ *
+ * Return value: same convention as utf8proc_iterate_extended.
+ */
+utf8proc_ssize_t utf8proc_iterate_extended_backward(
+  const utf8proc_uint8_t *str_start,
+  const utf8proc_uint8_t *str_end,
+  const utf8proc_uint8_t *buffer_end,
+  utf8proc_int32_t *dst,
+  size_t end_index,
+  char errcode[], size_t errcodeSize,
+  char errmsg[], size_t errmsgSize
+) {
+  const utf8proc_uint8_t *anchor;
+  int back;
+  utf8proc_ssize_t result;
+  size_t anchor_index;
+
+  *dst = -1;
+  *errcode = '\0';
+  *errmsg = '\0';
+
+  if (str_end <= str_start) return 0;
+
+  /*
+   * Scan back from str_end-1 over continuation bytes (10xxxxxx), at most 3
+   * positions: no subpart is ever longer than 4 bytes (1 lead + up to 3
+   * continuations). Every byte we step over here is, by this very condition,
+   * confirmed to be a continuation-pattern byte (0x80-0xBF) — this fact is
+   * relied on below.
+   */
+  anchor = str_end - 1;
+  back = 0;
+  while (anchor > str_start && back < 3 && utf_cont(*anchor)) {
+    anchor--;
+    back++;
+  }
+
+  /* Decode from anchor with the REAL remaining buffer, not just up to str_end,
+   * so any TRUNCATED/CONTINUATION-type message matches what a forward pass
+   * over the whole buffer would have produced at this position. */
+  anchor_index = end_index - (size_t)(str_end - anchor);
+  result = utf8proc_iterate_extended(anchor, buffer_end - anchor, dst,
+                                      anchor_index, errcode, errcodeSize,
+                                      errmsg, errmsgSize);
+
+  if (anchor + (result >= 0 ? result : -result) == str_end) {
+    /* anchor's subpart lands exactly on str_end: this is the real subpart. */
+    return result;
+  }
+
+  /*
+   * Mismatch: anchor's subpart ends before str_end. Every byte strictly
+   * between anchor and str_end is confirmed continuation-pattern (0x80-0xBF)
+   * by the scan above, and such bytes can never be valid lead bytes -- so
+   * str_end-1 is necessarily an isolated 1-byte subpart of its own. Decode
+   * it standalone, still with full buffer_end context for message accuracy
+   * (though for a continuation-pattern byte this never actually needs
+   * lookahead, since it always fails the uc < 0xc2 check immediately).
+   */
+  anchor = str_end - 1;
+  anchor_index = end_index - 1;
+  result = utf8proc_iterate_extended(anchor, buffer_end - anchor, dst,
+                                      anchor_index, errcode, errcodeSize,
+                                      errmsg, errmsgSize);
+
+  return result;
+}
+
+
 /******************************************************************************/
 /*                                                                            */
 /* UTF8Proc Services                                                          */
@@ -384,8 +477,8 @@ RexxString *RexxUnicodeServicesClass::unicodeVersion()
 /**
  * Given a string and a byte index, return a codepoint and its size in bytes.
  *
- * @param rexxString    (in) An UTF-8 string.
- * @param rexxIndexB    (in) The byte index (1-based) of the encoded codepoint in rexxString
+ * @param string        (in)  A UTF-8 string.
+ * @param indexB        (in)  The byte index (1-based) of the encoded codepoint in rexxString
  * @param refSizeB      (out) The number of bytes read to decode the codepoint (negative if error),
  *                            or 0 if rexxIndexB is outside the rexxString index range.
  * @param refErrorCode  (out) The null string "" if a valid codepoint could be read,
@@ -412,7 +505,8 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodeCodepoint(RexxString *string, R
     }
     // if (string->classObject() != TheStringClass) reportException(Error_Invalid_argument_noclass, "string", TheStringClass->getId());
 
-    size_t index = positionArgument(indexB, "indexB"); // 1-based, range 1..n
+    size_t index = positionArgument(indexB, "indexB"); // 1-based, range 1..length+1
+    if (index > string->getLength() + 1) reportException(Error_Incorrect_method_position, index); // length+1 is accepted, but not beyond
     if (refSizeB != OREF_NULL) classArgument(refSizeB, TheVariableReferenceClass, "refSizeB");
     if (refErrorCode != OREF_NULL) classArgument(refErrorCode, TheVariableReferenceClass, "refErrorCode");
     if (refErrorMsg != OREF_NULL) classArgument(refErrorMsg, TheVariableReferenceClass, "refErrorMsg");
@@ -434,6 +528,93 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodeCodepoint(RexxString *string, R
     const size_t errmsgSize = 200;
     char errmsg[errmsgSize];
     utf8proc_ssize_t size = utf8proc_iterate_extended(str + pos, remainingLength, &codepoint, index, errcode, errcodeSize, errmsg, errmsgSize);
+
+    if (refSizeB != OREF_NULL && refSizeB != 0)
+    {
+        RexxInteger *rexxSize = new_integer(size); // Protected<RexxInteger> not needed
+        refSizeB->setValue(rexxSize);
+    }
+
+    if (refErrorCode != OREF_NULL && *errcode != '\0' )
+    {
+        RexxString *rexxErrcode = new_string(errcode); // Protected<RexxString> not needed
+        refErrorCode->setValue(rexxErrcode);
+    }
+
+    if (refErrorMsg != OREF_NULL && *errmsg != '\0')
+    {
+        RexxString *rexxErrmsg = new_string(errmsg); // Protected<RexxString> not needed
+        refErrorMsg->setValue(rexxErrmsg);
+    }
+
+    return new_integer(codepoint);
+}
+
+
+/**
+ * Given a string and a byte index treated as a boundary, return the codepoint
+ * immediately preceding that boundary, and its size in bytes.
+ *
+ * The index has the same meaning as in utf8DecodeCodepoint: the 1-based byte
+ * position of a codepoint's first byte. This method returns whatever codepoint's
+ * bytes lie immediately before that position -- so passing the same indexB value
+ * to utf8DecodeCodepoint and utf8DecodePreviousCodepoint gives you "this codepoint"
+ * and "the one right before it" respectively. Passing rexxIndexB = length+1 returns
+ * the last codepoint of the string.
+ *
+ * @param string        (in)  A UTF-8 string.
+ * @param indexB        (in)  The byte index (1-based) of the boundary before which
+ *                            to decode. Valid range: 1..length+1. (1 means "nothing
+ *                            precedes the start of the string".)
+ * @param refSizeB      (out) The number of bytes read to decode the codepoint (negative if error),
+ *                            or 0 if rexxIndexB is outside the valid boundary range.
+ * @param refErrorCode  (out) The null string "" if a valid codepoint could be read,
+ *                            or the error code otherwise.
+ * @param refErrorMsg   (out) The null string "" if a valid codepoint could be read,
+ *                            or the error message otherwise.
+ *
+ * @return The codepoint if a valid codepoint could be read,
+ *         or -1 otherwise.
+ */
+RexxInteger *RexxUnicodeServicesClass::utf8DecodePreviousCodepoint(RexxString *string, RexxInteger *indexB, VariableReference *refSizeB, VariableReference *refErrorCode, VariableReference *refErrorMsg)
+{
+    // Check arguments
+
+    requiredArgument(string, "string");
+    if (string->classObject() != TheStringClass)
+    {
+        Protected<RexxString> errmsg = new_string("Argument string class: expected String, found ");
+        errmsg = errmsg->concat(string->classObject()->getId());
+        reportException(Error_Invalid_argument_user_defined, errmsg);
+    }
+
+    size_t index = positionArgument(indexB, "indexB"); // 1-based; boundary, not a byte offset
+    if (index > string->getLength() + 1) reportException(Error_Incorrect_method_position, index); // length+1 is accepted, but not beyond
+    if (refSizeB != OREF_NULL) classArgument(refSizeB, TheVariableReferenceClass, "refSizeB");
+    if (refErrorCode != OREF_NULL) classArgument(refErrorCode, TheVariableReferenceClass, "refErrorCode");
+    if (refErrorMsg != OREF_NULL) classArgument(refErrorMsg, TheVariableReferenceClass, "refErrorMsg");
+
+    // Default output values
+    if (refSizeB != OREF_NULL) refSizeB->setValue(RexxInteger::integerZero);
+    if (refErrorCode != OREF_NULL) refErrorCode->setValue(GlobalNames::NULLSTRING);
+    if (refErrorMsg != OREF_NULL) refErrorMsg->setValue(GlobalNames::NULLSTRING);
+
+    // Cannot happen, already caught when checking the arguments
+    // if (index > string->getLength() + 1) return RexxInteger::integerMinusOne;
+
+    // Note: index == 1 (nothing precedes the start) is handled naturally below:
+    // str_end == str_start makes utf8proc_iterate_extended_backward return 0.
+
+    const utf8proc_uint8_t *str = (const utf8proc_uint8_t *) string->getStringData();
+    const utf8proc_uint8_t *str_start  = str;
+    const utf8proc_uint8_t *buffer_end = str + string->getLength();
+    const utf8proc_uint8_t *str_end    = str + (index - 1); // 0-based boundary
+    utf8proc_int32_t codepoint;
+    const size_t errcodeSize = 50;
+    char errcode[errcodeSize];
+    const size_t errmsgSize = 200;
+    char errmsg[errmsgSize];
+    utf8proc_ssize_t size = utf8proc_iterate_extended_backward(str_start, str_end, buffer_end, &codepoint, index, errcode, errcodeSize, errmsg, errmsgSize);
 
     if (refSizeB != OREF_NULL && refSizeB != 0)
     {

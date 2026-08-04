@@ -713,11 +713,12 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 .RexxUnicodeServices~utf8DecodeCodepoint(
     string,         -- (in)             A UTF-8 string.
     indexB,         -- (in)             The byte index (1-based) of the encoded codepoint in string.
+                    --                  Valid range: 1..length+1.
     >refSizeB,      -- (out, optional)  The number of bytes read to decode the codepoint:
                     --                      > 0 if no error,
                     --                      < 0 if error,
-                    --                      or 0 if indexB is outside the string index range.
-    >refErrorCode   -- (out, optional)  The null string "" if a valid codepoint could be read,
+                    --                      or 0 if indexB is at the end of the string (value length+1).
+    >refErrorCode,  -- (out, optional)  The null string "" if a valid codepoint could be read,
                     --                  or the error code otherwise.
     >refErrorMsg    -- (out, optional)  The null string "" if a valid codepoint could be read,
                     --                  or the error message otherwise.
@@ -725,11 +726,13 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 
 ```
 
-Returns the next codepoint (a whole number) at byte index `indexB` of `string`, or -1 in case of error.
+Returns the next codepoint (a whole number) at byte index `indexB` of `string`, or `-1` in case of decoding error.
 
 `refSizeB` receives the size in bytes of the decoded codepoint.  
-If `indexB` is outside the `string` index range, the received size is 0.  
-In case of error, the received size is negative, indicating the number of bytes to skip
+`refSizeB` is `0` when the end of the string has been reached.  
+If `indexB > length+1`, an error `"Argument indexB is an invalid position value"` is raised.  
+If `indexB <= 0`, an error `"Argument indexB is an invalid position value"` is raised.  
+In case of decoding error, the received size is negative, indicating the number of bytes to skip
 to follow the `U+FFFD` Substitution of Maximal Subparts.  
 `refErrorCode` and `refErrorMsg` receive a detailed description of the error.
 
@@ -771,9 +774,127 @@ to follow the `U+FFFD` Substitution of Maximal Subparts.
 ```
 
 
+<a id="utf8DecodePreviousCodepoint"></a>
+
+#### 1.1.21.   utf8DecodePreviousCodepoint
+
+```
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, [, [>refSizeB] [, [>refErrorCode] [, >refErrorMsg]]])
+
+
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(
+    string,         -- (in)             A UTF-8 string.
+    indexB,         -- (in)             The byte index (1-based) of the boundary before which to decode.
+                    --                  Valid range: 1..length+1.
+                    --                  1 means "nothing precedes the start of the string".
+    >refSizeB,      -- (out, optional)  The number of bytes read to decode the codepoint:
+                    --                      > 0 if no error,
+                    --                      < 0 if error,
+                    --                      or 0 if indexB is at the beginning of the string (value 1).
+    >refErrorCode,  -- (out, optional)  The null string "" if a valid codepoint could be read,
+                    --                  or the error code otherwise.
+    >refErrorMsg    -- (out, optional)  The null string "" if a valid codepoint could be read,
+                    --                  or the error message otherwise.
+    )
+
+```
+
+Returns the codepoint (a whole number) immediately preceding the boundary at `indexB`,
+or `-1` in case of decoding error.
+
+The index has the same meaning as in `utf8DecodeCodepoint`: the 1-based byte position of a codepoint's first byte.  
+This method returns whatever codepoint's bytes lie immediately before that position,
+so passing the same `indexB` value to `utf8DecodeCodepoint` and `utf8DecodePreviousCodepoint`
+gives you "this codepoint" and "the one right before it" respectively.  
+Passing `indexB = length+1` returns the last codepoint of the string.
+
+`refSizeB` receives the size in bytes of the decoded codepoint.  
+`refSizeB` is `0` when the beginning of the string has been reached.  
+If `indexB > length+1`, an error `"Argument indexB is an invalid position value"` is raised.  
+If `indexB <= 0`, an error `"Argument indexB is an invalid position value"` is raised.  
+In case of decoding error, the received size is negative, indicating the number of
+bytes to skip to follow the `U+FFFD` Substitution of Maximal Subparts.  
+`refErrorCode` and `refErrorMsg` receive a detailed description of the error.
+
+**Error codes and messages:**
+
+Same as `utf8DecodeCodepoint`.
+
+**Examples:**
+
+```rexx
+-- Example 1
+-- Empty string, correct call with indexB == length+1
+.RexxUnicodeServices~utf8DecodePreviousCodepoint("", 1, >size, >errorCode, >errorMsg)=; size=; errorCode=; errorMsg=    -- -1; 0; ''; ''
+-- Empty string, out of range call with indexB == 0
+.RexxUnicodeServices~utf8DecodePreviousCodepoint("", 0, >size, >errorCode, >errorMsg)=; size=; errorCode=; errorMsg=    -- Argument indexB is an invalid position value; found "0".
+
+```
+
+```rexx
+-- Example 2
+string = "eé€🎅"
+indexB = string~length + 1; indexB=                                                 -- 11
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size)=; size=     -- 127877; 4
+indexB -= abs(size); indexB=                                                        -- 7
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size)=; size=     -- 8364; 3
+indexB -= abs(size); indexB=                                                        -- 4
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size)=; size=     -- 233; 2
+indexB -= abs(size); indexB=                                                        -- 2
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size)=; size=     -- 101; 1
+indexB -= abs(size); indexB=                                                        -- 1        beginning of string
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size)=; size=     -- -1; 0    size == 0
+
+-- indexB outside the string range 1..length+1
+string = "eé€🎅"
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, 100)=      -- Invalid position argument specified; found "100".
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, 12)=       -- Invalid position argument specified; found "12".
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, 0)=        -- Invalid position argument specified; found "0".
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, -100)=     -- Argument indexB is an invalid position value; found "-100".
+
+```
+
+```rexx
+-- Example 3
+-- Invalid string
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+string = "E1 80 E2 F0 91 92 F1 BF 41"x
+indexB = string~length + 1; indexB=                                                                                             -- 10
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size, >errorCode, >errorMsg)=; size=; errorCode=; errorMsg=   -- 65; 1; ''; ''
+indexB -= abs(size); indexB=                                                                                                    -- 9
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size, >errorCode, >errorMsg)=; size=; errorCode=; errorMsg=   -- -1; -2
+/*
+    -- 'CONTINUATION'
+    -- 'Invalid continuation byte 65 (''41''x) at byte position 9'
+*/
+indexB -= abs(size); indexB=                                                                                                    -- 7
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size, >errorCode, >errorMsg)=; size=; errorCode=; errorMsg=   -- -1; -3
+/*
+    -- 'CONTINUATION'
+    -- 'Invalid continuation byte 241 (''F1''x) at byte position 7'
+*/
+indexB -= abs(size); indexB=                                                                                                    -- 4
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size, >errorCode, >errorMsg)=; size=; errorCode=; errorMsg=   -- -1; -1
+/*
+    -- 'CONTINUATION'
+    -- 'Invalid continuation byte 240 (''F0''x) at byte position 4'
+*/
+indexB -= abs(size); indexB=                                                                                                    -- 3
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size, >errorCode, >errorMsg)=; size=; errorCode=; errorMsg=   -- -1; -2
+/*
+    -- 'CONTINUATION'
+    -- 'Invalid continuation byte 226 (''E2''x) at byte position 3'
+*/
+indexB -= abs(size); indexB=                                                                                                    -- 1                                                                                                  -- 3
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size, >errorCode, >errorMsg)=; size=; errorCode=; errorMsg=   -- -1; 0; ''; ''
+
+```
+
+
 <a id="utf8EncodeCodepoint"></a>
 
-#### 1.1.21.   utf8EncodeCodepoint
+#### 1.1.22.   utf8EncodeCodepoint
 
 ```
 .RexxUnicodeServices~utf8EncodeCodepoint(codepoint, destination [, >refSizeB])
@@ -817,7 +938,7 @@ Append the UTF-8 encoding of 1114112 to mb: size = 0 mb = oë€🎅
 
 <a id="utf8procVersion"></a>
 
-#### 1.1.22.   utf8procVersion
+#### 1.1.23.   utf8procVersion
 
     .RexxUnicodeServices~utf8procVersion
 
@@ -833,7 +954,7 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 
 <a id="utf8Transform"></a>
 
-#### 1.1.23.   utf8Transform
+#### 1.1.24.   utf8Transform
 
 ```
 .RexxUnicodeServices~utf8Transform(string [, casefold = .false [, lump= .false [, nlf = 0 [, normalization = 0 [, stripCC = .false [, stripIgnorable= .false [, stripMark = .false [, stripNA = .false]]]]]]]])
@@ -853,13 +974,13 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 
 Returns the transformed string.
 
-##### 1.1.23.1.   'caseFold' argument
+##### 1.1.24.1.   'caseFold' argument
 
 Performs unicode case folding, to be able to do a case-insensitive
 string comparison.
 
 
-##### 1.1.23.2.   'lump' argument
+##### 1.1.24.2.   'lump' argument
 
 Maps certain characters to a common representative (i.e., several distinct characters produce the same output character).  
 All the concerned characters become the same character, but still remain distinct characters.
@@ -901,7 +1022,7 @@ Mapping rules:
     U+007E  ~   <-- tilde operator U+223C
 
 
-##### 1.1.23.3.   'nlf' argument
+##### 1.1.24.3.   'nlf' argument
 
 [https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213][newline_guidelines]
 
@@ -928,7 +1049,7 @@ NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are converted
 to the Unicode Paragraph Separator (PS) codepoint.
 
 
-##### 1.1.23.4.   'normalization' argument
+##### 1.1.24.4.   'normalization' argument
 
 ```rexx
 -- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).
@@ -943,7 +1064,7 @@ to the Unicode Paragraph Separator (PS) codepoint.
 If `normalization` is not `0`, apply the requested normalization.
 
 
-##### 1.1.23.5.   'stripCC' argument
+##### 1.1.24.5.   'stripCC' argument
 
 Strips and/or converts control characters.
 
@@ -954,13 +1075,13 @@ are treated as a NLF-sequence in this case.
 All other control characters are simply removed.
 
 
-##### 1.1.23.6.   'stripIgnorable' argument
+##### 1.1.24.6.   'stripIgnorable' argument
 
 Strips the characters whose property `Default_Ignorable_Code_Point` is true,
 such as `SOFT-HYPHEN` or `ZERO-WIDTH-SPACE`.
 
 
-##### 1.1.23.7.   'stripMark' argument
+##### 1.1.24.7.   'stripMark' argument
 
 Strips all character markings.
 
@@ -973,12 +1094,12 @@ This includes non-spacing, spacing and enclosing (i.e. accents) categories:
 This option works only with a normalization applied.
 
 
-##### 1.1.23.8.   'stripNA' argument
+##### 1.1.24.8.   'stripNA' argument
 
 Strips the characters whose category is `Cn` Unassigned.
 
 
-##### 1.1.23.9.   Examples of transformations
+##### 1.1.24.9.   Examples of transformations
 
 ```rexx
 string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n"

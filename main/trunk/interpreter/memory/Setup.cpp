@@ -1737,6 +1737,7 @@ StartClassDefinition(RexxUnicodeServices)
         AddClassUnguardedMethod("UTF8ProcVersion", RexxUnicodeServicesClass::utf8procVersion, 0);
         AddClassUnguardedMethod("UnicodeVersion", RexxUnicodeServicesClass::unicodeVersion, 0);
         AddClassUnguardedMethod("UTF8DecodeCodepoint", RexxUnicodeServicesClass::utf8DecodeCodepoint, 5);
+        AddClassUnguardedMethod("UTF8DecodePreviousCodepoint", RexxUnicodeServicesClass::utf8DecodePreviousCodepoint, 5);
         AddClassUnguardedMethod("UTF8EncodeCodepoint", RexxUnicodeServicesClass::utf8EncodeCodepoint, 3);
         AddClassUnguardedMethod("UTF8Transform", RexxUnicodeServicesClass::utf8Transform, A_COUNT);
         AddClassUnguardedMethod("GraphemeBreak", RexxUnicodeServicesClass::graphemeBreak, 1);

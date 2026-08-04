@@ -816,25 +816,33 @@ library.</p>
 .RexxUnicodeServices~utf8DecodeCodepoint(
     string,         -- (in)             A UTF-8 string.
     indexB,         -- (in)             The byte index (1-based) of the encoded codepoint in string.
+                    --                  Valid range: 1..length+1.
     &gt;refSizeB,      -- (out, optional)  The number of bytes read to decode the codepoint:
                     --                      &gt; 0 if no error,
                     --                      &lt; 0 if error,
-                    --                      or 0 if indexB is outside the string index range.
-    &gt;refErrorCode   -- (out, optional)  The null string &quot;&quot; if a valid codepoint could be read,
+                    --                      or 0 if indexB is at the end of the string (value length+1).
+    &gt;refErrorCode,  -- (out, optional)  The null string &quot;&quot; if a valid codepoint could be read,
                     --                  or the error code otherwise.
     &gt;refErrorMsg    -- (out, optional)  The null string &quot;&quot; if a valid codepoint could be read,
                     --                  or the error message otherwise.
     )
 </code></pre>
 <p>Returns the next codepoint (a whole number) at byte index
-<code>indexB</code> of <code>string</code>, or -1 in case of error.</p>
+<code>indexB</code> of <code>string</code>, or <code>-1</code> in case
+of decoding error.</p>
 <p><code>refSizeB</code> receives the size in bytes of the decoded
 codepoint.<br />
-If <code>indexB</code> is outside the <code>string</code> index range,
-the received size is 0.<br />
-In case of error, the received size is negative, indicating the number
-of bytes to skip to follow the <code>U+FFFD</code> Substitution of
-Maximal Subparts.<br />
+<code>refSizeB</code> is <code>0</code> when the end of the string has
+been reached.<br />
+If <code>indexB &gt; length+1</code>, an error
+<code>"Argument indexB is an invalid position value"</code> is
+raised.<br />
+If <code>indexB &lt;= 0</code>, an error
+<code>"Argument indexB is an invalid position value"</code> is
+raised.<br />
+In case of decoding error, the received size is negative, indicating the
+number of bytes to skip to follow the <code>U+FFFD</code> Substitution
+of Maximal Subparts.<br />
 <code>refErrorCode</code> and <code>refErrorMsg</code> receive a
 detailed description of the error.</p>
 <p><strong>Error codes and messages:</strong></p>
@@ -869,8 +877,129 @@ detailed description of the error.</p>
 <code lineno="19">
 </code></pre>
 </div>
+<p><a id="utf8DecodePreviousCodepoint"></a></p>
+<h4
+id="utf8decodepreviouscodepoint">1.1.21.   utf8DecodePreviousCodepoint</h4>
+<pre><code>.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, [, [&gt;refSizeB] [, [&gt;refErrorCode] [, &gt;refErrorMsg]]])
+
+
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(
+    string,         -- (in)             A UTF-8 string.
+    indexB,         -- (in)             The byte index (1-based) of the boundary before which to decode.
+                    --                  Valid range: 1..length+1.
+                    --                  1 means &quot;nothing precedes the start of the string&quot;.
+    &gt;refSizeB,      -- (out, optional)  The number of bytes read to decode the codepoint:
+                    --                      &gt; 0 if no error,
+                    --                      &lt; 0 if error,
+                    --                      or 0 if indexB is at the beginning of the string (value 1).
+    &gt;refErrorCode,  -- (out, optional)  The null string &quot;&quot; if a valid codepoint could be read,
+                    --                  or the error code otherwise.
+    &gt;refErrorMsg    -- (out, optional)  The null string &quot;&quot; if a valid codepoint could be read,
+                    --                  or the error message otherwise.
+    )
+</code></pre>
+<p>Returns the codepoint (a whole number) immediately preceding the
+boundary at <code>indexB</code>, or <code>-1</code> in case of decoding
+error.</p>
+<p>The index has the same meaning as in
+<code>utf8DecodeCodepoint</code>: the 1-based byte position of a
+codepoint's first byte.<br />
+This method returns whatever codepoint's bytes lie immediately before
+that position, so passing the same <code>indexB</code> value to
+<code>utf8DecodeCodepoint</code> and
+<code>utf8DecodePreviousCodepoint</code> gives you "this codepoint" and
+"the one right before it" respectively.<br />
+Passing <code>indexB = length+1</code> returns the last codepoint of the
+string.</p>
+<p><code>refSizeB</code> receives the size in bytes of the decoded
+codepoint.<br />
+<code>refSizeB</code> is <code>0</code> when the beginning of the string
+has been reached.<br />
+If <code>indexB &gt; length+1</code>, an error
+<code>"Argument indexB is an invalid position value"</code> is
+raised.<br />
+If <code>indexB &lt;= 0</code>, an error
+<code>"Argument indexB is an invalid position value"</code> is
+raised.<br />
+In case of decoding error, the received size is negative, indicating the
+number of bytes to skip to follow the <code>U+FFFD</code> Substitution
+of Maximal Subparts.<br />
+<code>refErrorCode</code> and <code>refErrorMsg</code> receive a
+detailed description of the error.</p>
+<p><strong>Error codes and messages:</strong></p>
+<p>Same as <code>utf8DecodeCodepoint</code>.</p>
+<p><strong>Examples:</strong></p>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Example 1</span></code>
+<code lineno="2"><span class="rx-lncm">-- Empty string, correct call with indexB == length+1</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"></span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">size</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorCode</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorMsg</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">size</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorCode</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorMsg</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- -1; 0; ''; ''</span></code>
+<code lineno="4"><span class="rx-lncm">-- Empty string, out of range call with indexB == 0</span></code>
+<code lineno="5"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"></span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">size</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorCode</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorMsg</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">size</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorCode</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorMsg</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- Argument indexB is an invalid position value; found "0".</span></code>
+<code lineno="6">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Example 2</span></code>
+<code lineno="2"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">eé€🎅</span><span class="rx-str rx-cquo">"</span></code>
+<code lineno="3"><span class="rx-var">indexB</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-var">string</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-ws"> </span><span class="rx-op">+</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">=</span><span class="rx-ws">                                                 </span><span class="rx-lncm">-- 11</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">size</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">size</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 127877; 4</span></code>
+<code lineno="5"><span class="rx-var">indexB</span><span class="rx-ws"> </span><span class="rx-asg">-</span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-const rx-bif-func">abs</span><span class="rx-spe">(</span><span class="rx-var">size</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">=</span><span class="rx-ws">                                                        </span><span class="rx-lncm">-- 7</span></code>
+<code lineno="6"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">size</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">size</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 8364; 3</span></code>
+<code lineno="7"><span class="rx-var">indexB</span><span class="rx-ws"> </span><span class="rx-asg">-</span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-const rx-bif-func">abs</span><span class="rx-spe">(</span><span class="rx-var">size</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">=</span><span class="rx-ws">                                                        </span><span class="rx-lncm">-- 4</span></code>
+<code lineno="8"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">size</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">size</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 233; 2</span></code>
+<code lineno="9"><span class="rx-var">indexB</span><span class="rx-ws"> </span><span class="rx-asg">-</span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-const rx-bif-func">abs</span><span class="rx-spe">(</span><span class="rx-var">size</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">=</span><span class="rx-ws">                                                        </span><span class="rx-lncm">-- 2</span></code>
+<code lineno="10"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">size</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">size</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 101; 1</span></code>
+<code lineno="11"><span class="rx-var">indexB</span><span class="rx-ws"> </span><span class="rx-asg">-</span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-const rx-bif-func">abs</span><span class="rx-spe">(</span><span class="rx-var">size</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">=</span><span class="rx-ws">                                                        </span><span class="rx-lncm">-- 1        beginning of string</span></code>
+<code lineno="12"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">size</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">size</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- -1; 0    size == 0</span></code>
+<code lineno="13"></code>
+<code lineno="14"><span class="rx-lncm">-- indexB outside the string range 1..length+1</span></code>
+<code lineno="15"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">eé€🎅</span><span class="rx-str rx-cquo">"</span></code>
+<code lineno="16"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">100</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- Invalid position argument specified; found "100".</span></code>
+<code lineno="17"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">12</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- Invalid position argument specified; found "12".</span></code>
+<code lineno="18"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">        </span><span class="rx-lncm">-- Invalid position argument specified; found "0".</span></code>
+<code lineno="19"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">-</span><span class="rx-int rx-ipart">100</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- Argument indexB is an invalid position value; found "-100".</span></code>
+<code lineno="20">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Example 3</span></code>
+<code lineno="2"><span class="rx-lncm">-- Invalid string</span></code>
+<code lineno="3"><span class="rx-lncm">-- U+FFFD Substitution of Maximal Subparts</span></code>
+<code lineno="4"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202</span></code>
+<code lineno="5"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span></code>
+<code lineno="6"><span class="rx-var">indexB</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-var">string</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-ws"> </span><span class="rx-op">+</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">=</span><span class="rx-ws">                                                                                             </span><span class="rx-lncm">-- 10</span></code>
+<code lineno="7"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">size</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorCode</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorMsg</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">size</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorCode</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorMsg</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- 65; 1; ''; ''</span></code>
+<code lineno="8"><span class="rx-var">indexB</span><span class="rx-ws"> </span><span class="rx-asg">-</span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-const rx-bif-func">abs</span><span class="rx-spe">(</span><span class="rx-var">size</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">=</span><span class="rx-ws">                                                                                                    </span><span class="rx-lncm">-- 9</span></code>
+<code lineno="9"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">size</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorCode</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorMsg</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">size</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorCode</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorMsg</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- -1; -2</span></code>
+<code lineno="10"><span class="rx-cm">/*</span></code>
+<code lineno="11"><span class="rx-cm">    -- 'CONTINUATION'</span></code>
+<code lineno="12"><span class="rx-cm">    -- 'Invalid continuation byte 65 (''41''x) at byte position 9'</span></code>
+<code lineno="13"><span class="rx-cm">*/</span></code>
+<code lineno="14"><span class="rx-var">indexB</span><span class="rx-ws"> </span><span class="rx-asg">-</span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-const rx-bif-func">abs</span><span class="rx-spe">(</span><span class="rx-var">size</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">=</span><span class="rx-ws">                                                                                                    </span><span class="rx-lncm">-- 7</span></code>
+<code lineno="15"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">size</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorCode</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorMsg</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">size</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorCode</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorMsg</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- -1; -3</span></code>
+<code lineno="16"><span class="rx-cm">/*</span></code>
+<code lineno="17"><span class="rx-cm">    -- 'CONTINUATION'</span></code>
+<code lineno="18"><span class="rx-cm">    -- 'Invalid continuation byte 241 (''F1''x) at byte position 7'</span></code>
+<code lineno="19"><span class="rx-cm">*/</span></code>
+<code lineno="20"><span class="rx-var">indexB</span><span class="rx-ws"> </span><span class="rx-asg">-</span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-const rx-bif-func">abs</span><span class="rx-spe">(</span><span class="rx-var">size</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">=</span><span class="rx-ws">                                                                                                    </span><span class="rx-lncm">-- 4</span></code>
+<code lineno="21"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">size</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorCode</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorMsg</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">size</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorCode</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorMsg</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- -1; -1</span></code>
+<code lineno="22"><span class="rx-cm">/*</span></code>
+<code lineno="23"><span class="rx-cm">    -- 'CONTINUATION'</span></code>
+<code lineno="24"><span class="rx-cm">    -- 'Invalid continuation byte 240 (''F0''x) at byte position 4'</span></code>
+<code lineno="25"><span class="rx-cm">*/</span></code>
+<code lineno="26"><span class="rx-var">indexB</span><span class="rx-ws"> </span><span class="rx-asg">-</span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-const rx-bif-func">abs</span><span class="rx-spe">(</span><span class="rx-var">size</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">=</span><span class="rx-ws">                                                                                                    </span><span class="rx-lncm">-- 3</span></code>
+<code lineno="27"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">size</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorCode</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorMsg</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">size</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorCode</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorMsg</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- -1; -2</span></code>
+<code lineno="28"><span class="rx-cm">/*</span></code>
+<code lineno="29"><span class="rx-cm">    -- 'CONTINUATION'</span></code>
+<code lineno="30"><span class="rx-cm">    -- 'Invalid continuation byte 226 (''E2''x) at byte position 3'</span></code>
+<code lineno="31"><span class="rx-cm">*/</span></code>
+<code lineno="32"><span class="rx-var">indexB</span><span class="rx-ws"> </span><span class="rx-asg">-</span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-const rx-bif-func">abs</span><span class="rx-spe">(</span><span class="rx-var">size</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">=</span><span class="rx-ws">                                                                                                    </span><span class="rx-lncm">-- 1                                                                                                  -- 3</span></code>
+<code lineno="33"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8DecodePreviousCodepoint</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">indexB</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">size</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorCode</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">errorMsg</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">size</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorCode</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">errorMsg</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- -1; 0; ''; ''</span></code>
+<code lineno="34">
+</code></pre>
+</div>
 <p><a id="utf8EncodeCodepoint"></a></p>
-<h4 id="utf8encodecodepoint">1.1.21.   utf8EncodeCodepoint</h4>
+<h4 id="utf8encodecodepoint">1.1.22.   utf8EncodeCodepoint</h4>
 <pre><code>.RexxUnicodeServices~utf8EncodeCodepoint(codepoint, destination [, &gt;refSizeB])
 
 .RexxUnicodeServices~utf8EncodeCodepoint(
@@ -906,7 +1035,7 @@ byte sequence (0..4).</p>
 </code></pre>
 </div>
 <p><a id="utf8procVersion"></a></p>
-<h4 id="utf8procversion">1.1.22.   utf8procVersion</h4>
+<h4 id="utf8procversion">1.1.23.   utf8procVersion</h4>
 <pre><code>.RexxUnicodeServices~utf8procVersion</code></pre>
 <p>Returns the version of the <code>utf8proc</code> library.</p>
 <p><strong>Example:</strong></p>
@@ -916,7 +1045,7 @@ byte sequence (0..4).</p>
 </code></pre>
 </div>
 <p><a id="utf8Transform"></a></p>
-<h4 id="utf8transform">1.1.23.   utf8Transform</h4>
+<h4 id="utf8transform">1.1.24.   utf8Transform</h4>
 <pre><code>.RexxUnicodeServices~utf8Transform(string [, casefold = .false [, lump= .false [, nlf = 0 [, normalization = 0 [, stripCC = .false [, stripIgnorable= .false [, stripMark = .false [, stripNA = .false]]]]]]]])
 
 .RexxUnicodeServices~utf8Transform(
@@ -931,10 +1060,10 @@ byte sequence (0..4).</p>
     stripNA = .false        -- Strips unassigned codepoints
     )</code></pre>
 <p>Returns the transformed string.</p>
-<h5 id="casefold-argument">1.1.23.1.   'caseFold' argument</h5>
+<h5 id="casefold-argument">1.1.24.1.   'caseFold' argument</h5>
 <p>Performs unicode case folding, to be able to do a case-insensitive
 string comparison.</p>
-<h5 id="lump-argument">1.1.23.2.   'lump' argument</h5>
+<h5 id="lump-argument">1.1.24.2.   'lump' argument</h5>
 <p>Maps certain characters to a common representative (i.e., several
 distinct characters produce the same output character).<br />
 All the concerned characters become the same character, but still remain
@@ -974,7 +1103,7 @@ U+005F  _   &lt;-- all connector characters (general category Pc),
 U+0060  `   &lt;-- modifier letter grave accent U+02CB
 U+007C  |   &lt;-- divides U+2223
 U+007E  ~   &lt;-- tilde operator U+223C</code></pre>
-<h5 id="nlf-argument">1.1.23.3.   'nlf' argument</h5>
+<h5 id="nlf-argument">1.1.24.3.   'nlf' argument</h5>
 <p><a
 href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213"
 title="Newline Guidelines">https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213</a></p>
@@ -997,7 +1126,7 @@ converted to the Unicode Line Separator (LS) codepoint.</p>
 Converts LF, CRLF, CR and NEL into PS.<br />
 NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are
 converted to the Unicode Paragraph Separator (PS) codepoint.</p>
-<h5 id="normalization-argument">1.1.23.4.   'normalization'
+<h5 id="normalization-argument">1.1.24.4.   'normalization'
 argument</h5>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).</span></code>
@@ -1011,18 +1140,18 @@ argument</h5>
 </div>
 <p>If <code>normalization</code> is not <code>0</code>, apply the
 requested normalization.</p>
-<h5 id="stripcc-argument">1.1.23.5.   'stripCC' argument</h5>
+<h5 id="stripcc-argument">1.1.24.5.   'stripCC' argument</h5>
 <p>Strips and/or converts control characters.</p>
 <p>NLF-sequences are transformed into space, except if one of the
 NLF2LS/PS/LF options is given. HorizontalTab (HT) and FormFeed (FF) are
 treated as a NLF-sequence in this case.</p>
 <p>All other control characters are simply removed.</p>
-<h5 id="stripignorable-argument">1.1.23.6.   'stripIgnorable'
+<h5 id="stripignorable-argument">1.1.24.6.   'stripIgnorable'
 argument</h5>
 <p>Strips the characters whose property
 <code>Default_Ignorable_Code_Point</code> is true, such as
 <code>SOFT-HYPHEN</code> or <code>ZERO-WIDTH-SPACE</code>.</p>
-<h5 id="stripmark-argument">1.1.23.7.   'stripMark' argument</h5>
+<h5 id="stripmark-argument">1.1.24.7.   'stripMark' argument</h5>
 <p>Strips all character markings.</p>
 <p>This includes non-spacing, spacing and enclosing (i.e. accents)
 categories:</p>
@@ -1032,10 +1161,10 @@ categories:</p>
 <li><code>Mn</code> Nonspacing Mark</li>
 </ul>
 <p>This option works only with a normalization applied.</p>
-<h5 id="stripna-argument">1.1.23.8.   'stripNA' argument</h5>
+<h5 id="stripna-argument">1.1.24.8.   'stripNA' argument</h5>
 <p>Strips the characters whose category is <code>Cn</code>
 Unassigned.</p>
-<h5 id="examples-of-transformations">1.1.23.9.   Examples of
+<h5 id="examples-of-transformations">1.1.24.9.   Examples of
 transformations</h5>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;control-0007&gt;}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n</span><span class="rx-str rx-cquo">"</span></code>
