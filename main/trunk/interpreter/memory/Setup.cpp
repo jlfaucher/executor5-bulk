@@ -1747,6 +1747,7 @@ StartClassDefinition(RexxUnicodeServices)
         AddClassUnguardedMethod("CodepointBidiMirrored", RexxUnicodeServicesClass::codepointBidiMirrored, 1);
         AddClassUnguardedMethod("CodepointDecompositionType", RexxUnicodeServicesClass::codepointDecompositionType, 3);
         AddClassUnguardedMethod("CodepointIgnorable", RexxUnicodeServicesClass::codepointIgnorable, 1);
+        AddClassUnguardedMethod("CodepointIndicConjunctBreak", RexxUnicodeServicesClass::codepointIndicConjunctBreak, 3);
         AddClassUnguardedMethod("CodepointControlBoundary", RexxUnicodeServicesClass::codepointControlBoundary, 1);
         AddClassUnguardedMethod("CodepointBoundClass", RexxUnicodeServicesClass::codepointBoundClass, 3);
         AddClassUnguardedMethod("CodepointCharWidth", RexxUnicodeServicesClass::codepointCharWidth, 1);

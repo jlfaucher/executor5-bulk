@@ -106,6 +106,36 @@ ooRexx> .RexxUnicode~codepointDecompositionType(-1, >code, >label)=; code=; labe
 
 
 --------------------------------------------------------------------------------
+-- .RexxUnicodeServices~codepointIndicConjunctBreak
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicode~codepointIndicConjunctBreak("0000"~x2d, >code, >label)=; code=; label=     --  0; 'None'; 'None'
+ 0
+'None'
+'None'
+ooRexx> .RexxUnicode~codepointIndicConjunctBreak("0300"~x2d, >code, >label)=; code=; label=     --  3; 'Extend'; 'Extend'
+ 3
+'Extend'
+'Extend'
+ooRexx> .RexxUnicode~codepointIndicConjunctBreak("0915"~x2d, >code, >label)=; code=; label=     --  2; 'Consonant'; 'Consonant'
+ 2
+'Consonant'
+'Consonant'
+ooRexx> .RexxUnicode~codepointIndicConjunctBreak("094D"~x2d, >code, >label)=; code=; label=     --  1; 'Linker'; 'Linker'
+ 1
+'Linker'
+'Linker'
+ooRexx> .RexxUnicode~codepointIndicConjunctBreak("FFFFFF"~x2d, >code, >label)=; code=; label=   --  0; 'None'; 'None'
+ 0
+'None'
+'None'
+ooRexx> .RexxUnicode~codepointIndicConjunctBreak(-1, >code, >label)=; code=; label=             --  0; 'None'; 'None'
+ 0
+'None'
+'None'
+
+
+--------------------------------------------------------------------------------
 -- .RexxUnicodeServices~utf8DecodePreviousCodepoint
 --------------------------------------------------------------------------------
 
@@ -1692,7 +1722,7 @@ ooRexx> do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" ind
 --------------------------------------------------------------------------------
 
 ooRexx> .RexxUnicodeCharacter~properties==
-an Array (shape [29], 26 items)
+an Array (shape [27], 27 items)
  1  : 'bidiClass'
  2  : 'bidiClassName'
  3  : 'bidiMirrored'
@@ -1711,14 +1741,15 @@ an Array (shape [29], 26 items)
  16 : 'eastAsianWidthIsAmbiguous'
  17 : 'extendedName'
  18 : 'ignorable'
- 19 : 'isLower'
- 20 : 'isUpper'
- 21 : 'name'
- 22 : 'nameAlias'
- 23 : 'toLower'
+ 19 : 'indicConjunctBreak'
+ 20 : 'isLower'
+ 21 : 'isUpper'
+ 22 : 'name'
+ 23 : 'nameAlias'
+ 24 : 'toLower'
  25 : 'toTitle'
- 27 : 'toUpper'
- 29 : 'UTF8'
+ 26 : 'toUpper'
+ 27 : 'UTF8'
 /*
     an Array (shape [29], 26 items)
      1  : 'bidiClass'
@@ -1769,6 +1800,7 @@ decompositionType: None
 eastAsianWidthIsAmbiguous: 1
 extendedName: EURO SIGN
 ignorable: 0
+indicConjunctBreak: None
 isLower: 0
 isUpper: 0
 name: EURO SIGN
@@ -1986,11 +2018,49 @@ ooRexx> .RexxUnicodeCharacter~new(-1)~extendedName=         -- ''
 
 
 --------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~indicConjunctBreak
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new("0000"~x2d)~indicConjunctBreak=           --  'None'
+'None'
+ooRexx> .RexxUnicodeCharacter~new("0300"~x2d)~indicConjunctBreak=           --  'Extend'
+'Extend'
+ooRexx> .RexxUnicodeCharacter~new("0915"~x2d)~indicConjunctBreak=           --  'Consonant'
+'Consonant'
+ooRexx> .RexxUnicodeCharacter~new("094D"~x2d)~indicConjunctBreak=           --  'Linker'
+'Linker'
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreak=         --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicodeCharacter~new(-1)~indicConjunctBreak=                   --  '?'
+'?'
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeCharacter~indicConjunctBreakName
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeCharacter~new("0000"~x2d)~indicConjunctBreakName=       --  'None'
+'None'
+ooRexx> .RexxUnicodeCharacter~new("0300"~x2d)~indicConjunctBreakName=       --  'Extend'
+'Extend'
+ooRexx> .RexxUnicodeCharacter~new("0915"~x2d)~indicConjunctBreakName=       --  'Consonant'
+'Consonant'
+ooRexx> .RexxUnicodeCharacter~new("094D"~x2d)~indicConjunctBreakName=       --  'Linker'
+'Linker'
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreakName=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicodeCharacter~new(-1)~indicConjunctBreakName=               --  '?'
+'?'
+
+
+--------------------------------------------------------------------------------
 -- aRexxUnicodeCharacter~info
 --------------------------------------------------------------------------------
 
 ooRexx> .RexxUnicode~character("€")~info=
-a StringTable (26 items)
+a StringTable (27 items)
 'bidiClass'                 : 'ET'
 'bidiClassName'             : 'European_Terminator'
 'bidiMirrored'              :  0
@@ -2009,6 +2079,7 @@ a StringTable (26 items)
 'eastAsianWidthIsAmbiguous' :  1
 'extendedName'              : 'EURO SIGN'
 'ignorable'                 :  0
+'indicConjunctBreak'        : 'None'
 'isLower'                   :  0
 'isUpper'                   :  0
 'name'                      : 'EURO SIGN'

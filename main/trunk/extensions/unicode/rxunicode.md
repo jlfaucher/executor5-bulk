@@ -163,6 +163,13 @@ Method-to-Unicode property mapping (PropertyAliases.txt):
         <td></td>
       </tr>
       <tr>
+        <td><small><small><a href="#codepointIndicConjunctBreak">codepointIndicConjunctBreak</a></small></small></td>
+        <td><small><small>Enumerated</small></small></td>
+        <td><small><small>InCB</small></small></td>
+        <td><small><small>Indic_Conjunct_Break</small></small></td>
+        <td></td>
+      </tr>
+      <tr>
         <td><small><small><a href="#codepointIsLower">codepointIsLower</a></small></small></td>
         <td><small><small>Binary</small></small></td>
         <td><small><small>Lower</small></small></td>
@@ -593,9 +600,48 @@ Returns `.true` if the `East_Asian_Width` property value of `codepoint` is `"A"`
 Returns the `Default_Ignorable_Code_Point` property value of `codepoint` (boolean value).
 
 
+<a id="codepointIndicConjunctBreak"></a>
+
+#### 1.1.11.   codepointIndicConjunctBreak
+
+    .RexxUnicodeServices~codepointIndicConjunctBreak(codepoint [, [>refCode] [, >refLabel]])
+
+Returns the `Indic_Conjunct_Break (InCB)` property value of `codepoint` as an enumeration value.
+
+- If provided, `refCode` receives the short name or `"None"`.
+- If provided, `refLabel` receives the long name or `"None"`.
+
+The returned enumeration value is implementation-specific.  
+For portability, use refCode instead.
+
+**Enumeration values**
+
+```rexx
+-- https://www.unicode.org/reports/tr44/#Derivation_InCB
+-- first column: short name
+-- second column: long name
+"None",         "None"
+"Linker",       "Linker"
+"Consonant",    "Consonant"
+"Extend",       "Extend"
+```
+
+**Examples:**
+
+```rexx
+.RexxUnicode~codepointIndicConjunctBreak("0000"~x2d, >code, >label)=; code=; label=     --  0; 'None'; 'None'
+.RexxUnicode~codepointIndicConjunctBreak("0300"~x2d, >code, >label)=; code=; label=     --  3; 'Extend'; 'Extend'
+.RexxUnicode~codepointIndicConjunctBreak("0915"~x2d, >code, >label)=; code=; label=     --  2; 'Consonant'; 'Consonant'
+.RexxUnicode~codepointIndicConjunctBreak("094D"~x2d, >code, >label)=; code=; label=     --  1; 'Linker'; 'Linker'
+.RexxUnicode~codepointIndicConjunctBreak("FFFFFF"~x2d, >code, >label)=; code=; label=   --  0; 'None'; 'None'
+.RexxUnicode~codepointIndicConjunctBreak(-1, >code, >label)=; code=; label=             --  0; 'None'; 'None'
+
+```
+
+
 <a id="codepointIsLower"></a>
 
-#### 1.1.11.   codepointIsLower
+#### 1.1.12.   codepointIsLower
 
     .RexxUnicodeServices~codepointIsLower(codepoint)
 
@@ -606,7 +652,7 @@ and `.false` otherwise.
 
 <a id="codepointIsUpper"></a>
 
-#### 1.1.12.   codepointIsUpper
+#### 1.1.13.   codepointIsUpper
 
     .RexxUnicodeServices~codepointIsUpper(codepoint)
 
@@ -616,7 +662,7 @@ and `.false` otherwise.
 
 <a id="codepointToLower"></a>
 
-#### 1.1.13.   codepointToLower
+#### 1.1.14.   codepointToLower
 
     .RexxUnicodeServices~codepointToLower(codepoint)
 
@@ -629,7 +675,7 @@ and always returns a single codepoint.
 
 <a id="codepointToTitle"></a>
 
-#### 1.1.14.   codepointToTitle
+#### 1.1.15.   codepointToTitle
 
     .RexxUnicodeServices~codepointToTitle(codepoint)
 
@@ -642,7 +688,7 @@ and always returns a single codepoint.
 
 <a id="codepointToUpper"></a>
 
-#### 1.1.15.   codepointToUpper
+#### 1.1.16.   codepointToUpper
 
     .RexxUnicodeServices~codepointToUpper(codepoint)
 
@@ -655,7 +701,7 @@ and always returns a single codepoint.
 
 <a id="graphemeBreak"></a>
 
-#### 1.1.16.   graphemeBreak
+#### 1.1.17.   graphemeBreak
 
     .RexxUnicodeServices~graphemeBreak(array)
 
@@ -673,14 +719,14 @@ break = .RexxUnicodeServices~graphemeBreak(array) -- true or false
 
 <a id="RexxUnicodeServices_new"></a>
 
-#### 1.1.17.   new
+#### 1.1.18.   new
 
 This method raises an error because `RexxUnicodeServices` has no instance.
 
 
 <a id="systemIsLittleEndian"></a>
 
-#### 1.1.18.   systemIsLittleEndian
+#### 1.1.19.   systemIsLittleEndian
 
     .RexxUnicodeServices~systemIsLittleEndian
 
@@ -689,7 +735,7 @@ Returns `.true` if the system is little-endian.
 
 <a id="unicodeVersion"></a>
 
-#### 1.1.19.   unicodeVersion
+#### 1.1.20.   unicodeVersion
 
     .RexxUnicodeServices~unicodeVersion
 
@@ -705,7 +751,7 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 
 <a id="utf8DecodeCodepoint"></a>
 
-#### 1.1.20.   utf8DecodeCodepoint
+#### 1.1.21.   utf8DecodeCodepoint
 
 ```
 .RexxUnicodeServices~utf8DecodeCodepoint(string, indexB [, [>refSizeB] [, [>refErrorCode] [, >refErrorMsg]]])
@@ -776,7 +822,7 @@ to follow the `U+FFFD` Substitution of Maximal Subparts.
 
 <a id="utf8DecodePreviousCodepoint"></a>
 
-#### 1.1.21.   utf8DecodePreviousCodepoint
+#### 1.1.22.   utf8DecodePreviousCodepoint
 
 ```
 .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, [, [>refSizeB] [, [>refErrorCode] [, >refErrorMsg]]])
@@ -894,7 +940,7 @@ indexB -= abs(size); indexB=                                                    
 
 <a id="utf8EncodeCodepoint"></a>
 
-#### 1.1.22.   utf8EncodeCodepoint
+#### 1.1.23.   utf8EncodeCodepoint
 
 ```
 .RexxUnicodeServices~utf8EncodeCodepoint(codepoint, destination [, >refSizeB])
@@ -938,7 +984,7 @@ Append the UTF-8 encoding of 1114112 to mb: size = 0 mb = oë€🎅
 
 <a id="utf8procVersion"></a>
 
-#### 1.1.23.   utf8procVersion
+#### 1.1.24.   utf8procVersion
 
     .RexxUnicodeServices~utf8procVersion
 
@@ -954,7 +1000,7 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 
 <a id="utf8Transform"></a>
 
-#### 1.1.24.   utf8Transform
+#### 1.1.25.   utf8Transform
 
 ```
 .RexxUnicodeServices~utf8Transform(string [, casefold = .false [, lump= .false [, nlf = 0 [, normalization = 0 [, stripCC = .false [, stripIgnorable= .false [, stripMark = .false [, stripNA = .false]]]]]]]])
@@ -974,13 +1020,13 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 
 Returns the transformed string.
 
-##### 1.1.24.1.   'caseFold' argument
+##### 1.1.25.1.   'caseFold' argument
 
 Performs unicode case folding, to be able to do a case-insensitive
 string comparison.
 
 
-##### 1.1.24.2.   'lump' argument
+##### 1.1.25.2.   'lump' argument
 
 Maps certain characters to a common representative (i.e., several distinct characters produce the same output character).  
 All the concerned characters become the same character, but still remain distinct characters.
@@ -1022,7 +1068,7 @@ Mapping rules:
     U+007E  ~   <-- tilde operator U+223C
 
 
-##### 1.1.24.3.   'nlf' argument
+##### 1.1.25.3.   'nlf' argument
 
 [https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213][newline_guidelines]
 
@@ -1049,7 +1095,7 @@ NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are converted
 to the Unicode Paragraph Separator (PS) codepoint.
 
 
-##### 1.1.24.4.   'normalization' argument
+##### 1.1.25.4.   'normalization' argument
 
 ```rexx
 -- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).
@@ -1064,7 +1110,7 @@ to the Unicode Paragraph Separator (PS) codepoint.
 If `normalization` is not `0`, apply the requested normalization.
 
 
-##### 1.1.24.5.   'stripCC' argument
+##### 1.1.25.5.   'stripCC' argument
 
 Strips and/or converts control characters.
 
@@ -1075,13 +1121,13 @@ are treated as a NLF-sequence in this case.
 All other control characters are simply removed.
 
 
-##### 1.1.24.6.   'stripIgnorable' argument
+##### 1.1.25.6.   'stripIgnorable' argument
 
 Strips the characters whose property `Default_Ignorable_Code_Point` is true,
 such as `SOFT-HYPHEN` or `ZERO-WIDTH-SPACE`.
 
 
-##### 1.1.24.7.   'stripMark' argument
+##### 1.1.25.7.   'stripMark' argument
 
 Strips all character markings.
 
@@ -1094,12 +1140,12 @@ This includes non-spacing, spacing and enclosing (i.e. accents) categories:
 This option works only with a normalization applied.
 
 
-##### 1.1.24.8.   'stripNA' argument
+##### 1.1.25.8.   'stripNA' argument
 
 Strips the characters whose category is `Cn` Unassigned.
 
 
-##### 1.1.24.9.   Examples of transformations
+##### 1.1.25.9.   Examples of transformations
 
 ```rexx
 string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n"
@@ -1311,6 +1357,7 @@ Inherited methods:
 - [`codepointDecompositionType`](#codepointDecompositionType)
 - [`codepointEastAsianWidthIsAmbiguous`](#codepointEastAsianWidthIsAmbiguous)
 - [`codepointIgnorable`](#codepointIgnorable)
+- [`codepointIndicConjunctBreak`](#codepointIndicConjunctBreak)
 - [`codepointIsLower`](#codepointIsLower)
 - [`codepointIsUpper`](#codepointIsUpper)
 - [`codepointToLower`](#codepointToLower)
@@ -1320,6 +1367,7 @@ Inherited methods:
 - [`systemIsLittleEndian`](#systemIsLittleEndian)
 - [`unicodeVersion`](#unicodeVersion)
 - [`utf8DecodeCodepoint`](#utf8DecodeCodepoint)
+- [`utf8DecodePreviousCodepoint`](#utf8DecodePreviousCodepoint)
 - [`utf8EncodeCodepoint`](#utf8EncodeCodepoint)
 - [`utf8procVersion`](#utf8procVersion)
 - [`utf8Transform`](#utf8Transform)
@@ -3797,9 +3845,9 @@ See [`.RexxUnicodeServices~codepointDecompositionType`](#codepointDecompositionT
 ```
 
 
-<a id="RexxUnicodeCharacter_codepointEastAsianWidthIsAmbiguous"></a>
+<a id="RexxUnicodeCharacter_eastAsianWidthIsAmbiguous"></a>
 
-#### 6.2.17.   codepointEastAsianWidthIsAmbiguous
+#### 6.2.17.   eastAsianWidthIsAmbiguous
 
     aRexxUnicodeCharacter~eastAsianWidthIsAmbiguous
 
@@ -3845,9 +3893,59 @@ Returns the `Default_Ignorable_Code_Point` property value (boolean value).
 [https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G40025][unicode_core_spec_ignoring_characters]
 
 
+<a id="RexxUnicodeCharacter_indicConjunctBreak"></a>
+
+#### 6.2.20.   indicConjunctBreak
+
+    aRexxUnicodeCharacter~indicConjunctBreak
+
+Returns the `Indic_Conjunct_Break (InCB)` property value as its short enumeration name.
+
+[https://www.unicode.org/reports/tr44/#Derivation_InCB][unicode_standard_annex_44_derivation_incb]
+
+See [`.RexxUnicodeServices~codepointIndicConjunctBreak`](#codepointIndicConjunctBreak) for the list of enumeration values.
+
+**Examples:**
+
+```rexx
+.RexxUnicodeCharacter~new("0000"~x2d)~indicConjunctBreak=           --  'None'
+.RexxUnicodeCharacter~new("0300"~x2d)~indicConjunctBreak=           --  'Extend'
+.RexxUnicodeCharacter~new("0915"~x2d)~indicConjunctBreak=           --  'Consonant'
+.RexxUnicodeCharacter~new("094D"~x2d)~indicConjunctBreak=           --  'Linker'
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreak=         --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new(-1)~indicConjunctBreak=                   --  '?'
+
+```
+
+
+<a id="RexxUnicodeCharacter_indicConjunctBreakName"></a>
+
+#### 6.2.21.   indicConjunctBreakName
+
+    aRexxUnicodeCharacter~indicConjunctBreakName
+
+Returns the `Indic_Conjunct_Break (InCB)` property value as its long enumeration name.
+
+[https://www.unicode.org/reports/tr44/#Derivation_InCB][unicode_standard_annex_44_derivation_incb]
+
+See [`.RexxUnicodeServices~codepointIndicConjunctBreak`](#codepointIndicConjunctBreak) for the list of enumeration values.
+
+**Examples:**
+
+```rexx
+.RexxUnicodeCharacter~new("0000"~x2d)~indicConjunctBreakName=       --  'None'
+.RexxUnicodeCharacter~new("0300"~x2d)~indicConjunctBreakName=       --  'Extend'
+.RexxUnicodeCharacter~new("0915"~x2d)~indicConjunctBreakName=       --  'Consonant'
+.RexxUnicodeCharacter~new("094D"~x2d)~indicConjunctBreakName=       --  'Linker'
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreakName=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new(-1)~indicConjunctBreakName=               --  '?'
+
+```
+
+
 <a id="RexxUnicodeCharacter_info"></a>
 
-#### 6.2.20.   info
+#### 6.2.22.   info
 
     aRexxUnicodeCharacter~info
 
@@ -3898,7 +3996,7 @@ The following properties have a special representation:
 
 <a id="RexxUnicodeCharacter_init"></a>
 
-#### 6.2.21.   init
+#### 6.2.23.   init
 
     aRexxUnicodeCharacter~init(codepoint)
 
@@ -3907,7 +4005,7 @@ Initializes a `RexxUnicodeCharacter` instance with the specified `codepoint`.
 
 <a id="RexxUnicodeCharacter_isLower"></a>
 
-#### 6.2.22.   isLower
+#### 6.2.24.   isLower
 
     aRexxUnicodeCharacter~isLower
 
@@ -3917,7 +4015,7 @@ and `.false` otherwise.
 
 <a id="RexxUnicodeCharacter_isUpper"></a>
 
-#### 6.2.23.   isUpper
+#### 6.2.25.   isUpper
 
     aRexxUnicodeCharacter~isUpper
 
@@ -3927,7 +4025,7 @@ and `.false` otherwise.
 
 <a id="RexxUnicodeCharacter_name"></a>
 
-#### 6.2.24.   name
+#### 6.2.26.   name
 
     aRexxUnicodeCharacter~name
 
@@ -3952,7 +4050,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method als
 
 <a id="RexxUnicodeCharacter_nameAlias"></a>
 
-#### 6.2.25.   nameAlias
+#### 6.2.27.   nameAlias
 
     aRexxUnicodeCharacter~nameAlias
 
@@ -3977,7 +4075,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method als
 
 <a id="RexxUnicodeCharacter_string"></a>
 
-#### 6.2.26.   string
+#### 6.2.28.   string
 
     aRexxUnicodeCharacter~string
 
@@ -4009,7 +4107,7 @@ Fields displayed in the string representation:
 
 <a id="RexxUnicodeCharacter_toLower"></a>
 
-#### 6.2.27.   toLower
+#### 6.2.29.   toLower
 
     aRexxUnicodeCharacter~toLower
 
@@ -4022,7 +4120,7 @@ and always returns a single codepoint.
 
 <a id="RexxUnicodeCharacter_toLowerFull"></a>
 
-#### 6.2.28.   toLowerFull (not supported)
+#### 6.2.30.   toLowerFull (not supported)
 
     aRexxUnicodeCharacter~toLowerFull
 
@@ -4037,7 +4135,7 @@ Since `utf8proc` does not expose full case mappings, this method returns an arra
 
 <a id="RexxUnicodeCharacter_toTitle"></a>
 
-#### 6.2.29.   toTitle
+#### 6.2.31.   toTitle
 
     aRexxUnicodeCharacter~toTitle
 
@@ -4050,7 +4148,7 @@ and always returns a single codepoint.
 
 <a id="RexxUnicodeCharacter_toTitleFull"></a>
 
-#### 6.2.30.   toTitleFull (not supported)
+#### 6.2.32.   toTitleFull (not supported)
 
     aRexxUnicodeCharacter~toTitleFull
 
@@ -4065,7 +4163,7 @@ Since `utf8proc` does not expose full case mappings, this method returns an arra
 
 <a id="RexxUnicodeCharacter_toUpper"></a>
 
-#### 6.2.31.   toUpper
+#### 6.2.33.   toUpper
 
     aRexxUnicodeCharacter~toUpper
 
@@ -4078,7 +4176,7 @@ and always returns a single codepoint.
 
 <a id="RexxUnicodeCharacter_toUpperFull"></a>
 
-#### 6.2.32.   toUpperFull (not supported)
+#### 6.2.34.   toUpperFull (not supported)
 
     aRexxUnicodeCharacter~toUpperFull
 
@@ -4093,7 +4191,7 @@ Since `utf8proc` does not expose full case mappings, this method returns an arra
 
 <a id="RexxUnicodeCharacter_preferredName"></a>
 
-#### 6.2.33.   preferredName
+#### 6.2.35.   preferredName
 
     aRexxUnicodeCharacter~preferredName
 
@@ -4108,7 +4206,7 @@ This preferred Unicode name is used in the string representation of the characte
 
 <a id="RexxUnicodeCharacter_UTF8"></a>
 
-#### 6.2.34.   UTF8
+#### 6.2.36.   UTF8
 
     aRexxUnicodeCharacter~UTF8
 
@@ -4218,6 +4316,11 @@ The `ICU4ooRexxInterface` class defines no instance methods of its own.
 [icu4oorexx_library]: https://github.com/jlfaucher/icu4oorexx "ICU4ooRexx Library"
 [newline_guidelines]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213 "Newline Guidelines"
 [typographic_conventions_code_points]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083 "Typographic Conventions - Code Points"
+[uax44_lm2]: https://unicode.org/reports/tr44/#UAX44-LM2 "Loose matching rule UAX44-LM2"
+[uax44_lm3]: https://unicode.org/reports/tr44/#UAX44-LM3 "Loose matching rule UAX44-LM3"
+[unicode_core_spec_combining_classes]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-4/#G32493 "Unicode Core Specification - Combining Classes"
+[unicode_core_spec_general_category]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-4/#G124142 "Unicode Core Specification - General Category"
+[unicode_core_spec_ignoring_characters]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G40025 "Unicode Core Specification - Ignoring Characters in Processing"
 [unicode_standard_annex_9_bidirectional_character_types]: https://www.unicode.org/reports/tr9/#Bidirectional_Character_Types "Standard Annex #9 Unicode Bidirectional Algorithm - Bidirectional Character Types"
 [unicode_standard_annex_9_mirroring]: https://unicode.org/reports/tr9/#Mirroring "Standard Annex #9 Unicode Bidirectional Algorithm - Mirroring"
 [unicode_standard_annex_11]: https://www.unicode.org/reports/tr11/ "Standard Annex #11 East Asian Width"
@@ -4225,10 +4328,5 @@ The `ICU4ooRexxInterface` class defines no instance methods of its own.
 [unicode_standard_annex_29]: https://www.unicode.org/reports/tr29/ "Standard Annex #29 Unicode Text Segmentation"
 [unicode_standard_annex_29_grapheme_cluster_boundaries]: https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries "Standard Annex #29 Unicode Text Segmentation - Grapheme Cluster Boundaries"
 [unicode_standard_annex_44_canonical_combining_class_values]: https://www.unicode.org/reports/tr44/#Canonical_Combining_Class_Values "Unicode Character Database - Canonical Combining Class Values"
-[uax44_lm2]: https://unicode.org/reports/tr44/#UAX44-LM2 "Loose matching rule UAX44-LM2"
-[uax44_lm3]: https://unicode.org/reports/tr44/#UAX44-LM3 "Loose matching rule UAX44-LM3"
-[unicode_core_spec_combining_classes]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-4/#G32493 "Unicode Core Specification - Combining Classes"
-[unicode_core_spec_general_category]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-4/#G124142 "Unicode Core Specification - General Category"
-[unicode_core_spec_ignoring_characters]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G40025 "Unicode Core Specification - Ignoring Characters in Processing"
+[unicode_standard_annex_44_derivation_incb]: https://www.unicode.org/reports/tr44/#Derivation_InCB "Unicode Character Database - Derivation of Indic_Conjunct_Break"
 [utf8proc]: https://juliastrings.github.io/utf8proc/ "utf8proc"
-

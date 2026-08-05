@@ -1230,6 +1230,53 @@ RexxInteger *RexxUnicodeServicesClass::codepointDecompositionType(RexxInteger *r
 }
 
 
+// Indic_Conjunct_Break property. (TR44)
+// This property defines values used in Grapheme Cluster Break algorithm in [UAX29].
+// https://unicode.org/reports/tr29/
+// See Derivation of Indic_Conjunct_Break for an explanation of its derivation.
+// https://www.unicode.org/reports/tr44/#Derivation_InCB
+// The default value for InCB is None
+const char *Indic_Conjunct_Break[]=
+{
+    "None", "None",
+    "Linker", "Linker",
+    "Consonant", "Consonant",
+    "Extend", "Extend"
+};
+
+RexxInteger *RexxUnicodeServicesClass::codepointIndicConjunctBreak(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel)
+{
+    requiredArgument(rexxCodepoint, "codepoint");
+    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    if (refCode != OREF_NULL) classArgument(refCode, TheVariableReferenceClass, "refCode");
+    if (refLabel != OREF_NULL) classArgument(refLabel, TheVariableReferenceClass, "refLabel");
+
+    const utf8proc_property_t *property = utf8proc_get_property(codepoint);
+    utf8proc_propval_t indic_conjunct_break = property->indic_conjunct_break; // 0..3
+    utf8proc_propval_t index = indic_conjunct_break;
+
+    // Check array out-of-bounds
+    int count = sizeof(Indic_Conjunct_Break) / sizeof(Indic_Conjunct_Break[0]);
+    bool rangeOk = index >= 0 && index < count/2;
+
+    if (refCode != OREF_NULL)
+    {
+        const char *strCode = rangeOk ? Indic_Conjunct_Break[2 * index] : "None";
+        RexxString *rexxCode = new_string(strCode); // Protected<RexxString> not needed
+        refCode->setValue(rexxCode);
+    }
+
+    if (refLabel != OREF_NULL)
+    {
+        const char *strLabel = rangeOk ? Indic_Conjunct_Break[1 + 2 * index] : "None";
+        RexxString *rexxLabel = new_string(strLabel); // Protected<RexxString> not needed
+        refLabel->setValue(rexxLabel);
+    }
+
+    return new_integer(indic_conjunct_break); // see utf8proc_indic_conjunct_break_t
+}
+
+
 RexxInteger *RexxUnicodeServicesClass::codepointIgnorable(RexxInteger *rexxCodepoint)
 {
     requiredArgument(rexxCodepoint, "codepoint");

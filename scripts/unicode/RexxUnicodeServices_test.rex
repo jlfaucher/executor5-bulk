@@ -26,6 +26,7 @@ Native methods of RexxUnicodeServices
     RexxInteger *codepointDecompositionType(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
     RexxInteger *codepointEastAsianWidthIsAmbiguous(RexxInteger *rexxCodepoint); // boolean
     RexxInteger *codepointIgnorable(RexxInteger *rexxCodepoint); // boolean
+    RexxInteger *codepointIndicConjunctBreak(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
 
     RexxInteger *codepointIsLower(RexxInteger *rexxCodepoint);
     RexxInteger *codepointIsUpper(RexxInteger *rexxCodepoint);

@@ -73,6 +73,7 @@ Native methods of RexxUnicodeServices
     RexxInteger *codepointDecompositionType(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
     RexxInteger *codepointEastAsianWidthIsAmbiguous(RexxInteger *rexxCodepoint); // boolean
     RexxInteger *codepointIgnorable(RexxInteger *rexxCodepoint); // boolean
+    RexxInteger *codepointIndicConjunctBreak(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
 
     RexxInteger *codepointIsLower(RexxInteger *rexxCodepoint);
     RexxInteger *codepointIsUpper(RexxInteger *rexxCodepoint);
@@ -1916,6 +1917,24 @@ otherwise use the extended name (never empty)
     return label
 
 
+-- https://www.unicode.org/reports/tr44/#Derivation_InCB
+::method indicConjunctBreak
+    expose codepoint
+    use strict arg -- none
+    if codepoint == -1 then return "?"
+    .RexxUnicode~codepointIndicConjunctBreak(codepoint, >code)
+    return code
+
+
+-- https://www.unicode.org/reports/tr44/#Derivation_InCB
+::method indicConjunctBreakName
+    expose codepoint
+    use strict arg -- none
+    if codepoint == -1 then return "?"
+    .RexxUnicode~codepointIndicConjunctBreak(codepoint, , >label)
+    return label
+
+
 -- Simple case mappings in UnicodeData.txt, returns a single codepoint
 ::method toLower
     expose codepoint
@@ -2004,16 +2023,17 @@ otherwise use the extended name (never empty)
         "eastAsianWidthIsAmbiguous",,
         "extendedName",,
         "ignorable",,
+        "indicConjunctBreak",,
         "isLower",,
         "isUpper",,
         "name",,
         "nameAlias",,
         "toLower",,
-        ,, -- "toLowerFull",,
+        /*"toLowerFull"*/,
         "toTitle",,
-        ,, -- "toTitleFull",,
+        /*"toTitleFull"*/,
         "toUpper",,
-        ,, -- "toUpperFull",,
+        /*"toUpperFull"*/,
         "UTF8"
     return properties
 

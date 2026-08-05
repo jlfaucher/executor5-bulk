@@ -22,6 +22,39 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 Aug 05
+
+[Unicode enums]
+
+Add .RexxUnicode~codepointIndicConjunctBreak
+Add .RexxUnicodeCharacter~indicConjunctBreak
+Add .RexxUnicodeCharacter~indicConjunctBreakName
+
+Examples
+
+    .RexxUnicode~codepointIndicConjunctBreak("0000"~x2d, >code, >label)=; code=; label=     --  0; 'None'; 'None'
+    .RexxUnicode~codepointIndicConjunctBreak("0300"~x2d, >code, >label)=; code=; label=     --  3; 'Extend'; 'Extend'
+    .RexxUnicode~codepointIndicConjunctBreak("0915"~x2d, >code, >label)=; code=; label=     --  2; 'Consonant'; 'Consonant'
+    .RexxUnicode~codepointIndicConjunctBreak("094D"~x2d, >code, >label)=; code=; label=     --  1; 'Linker'; 'Linker'
+    .RexxUnicode~codepointIndicConjunctBreak("FFFFFF"~x2d, >code, >label)=; code=; label=   --  0; 'None'; 'None'
+    .RexxUnicode~codepointIndicConjunctBreak(-1, >code, >label)=; code=; label=             --  0; 'None'; 'None'
+
+    .RexxUnicodeCharacter~new("0000"~x2d)~indicConjunctBreak=           --  'None'
+    .RexxUnicodeCharacter~new("0300"~x2d)~indicConjunctBreak=           --  'Extend'
+    .RexxUnicodeCharacter~new("0915"~x2d)~indicConjunctBreak=           --  'Consonant'
+    .RexxUnicodeCharacter~new("094D"~x2d)~indicConjunctBreak=           --  'Linker'
+    .RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreak=         --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+    .RexxUnicodeCharacter~new(-1)~indicConjunctBreak=                   --  '?'
+
+    .RexxUnicodeCharacter~new("0000"~x2d)~indicConjunctBreakName=       --  'None'
+    .RexxUnicodeCharacter~new("0300"~x2d)~indicConjunctBreakName=       --  'Extend'
+    .RexxUnicodeCharacter~new("0915"~x2d)~indicConjunctBreakName=       --  'Consonant'
+    .RexxUnicodeCharacter~new("094D"~x2d)~indicConjunctBreakName=       --  'Linker'
+    .RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreakName=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+    .RexxUnicodeCharacter~new(-1)~indicConjunctBreakName=               --  '?'
+
+
+===============================================================================
 2026 Aug 04
 
 [Unicode]

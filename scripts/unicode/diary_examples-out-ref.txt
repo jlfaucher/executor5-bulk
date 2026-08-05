@@ -5,6 +5,73 @@ ooRexx> tutor off
 
 
 -- ===============================================================================
+-- 2026 Aug 05
+
+/*
+[Unicode enums]
+
+Add .RexxUnicode~codepointIndicConjunctBreak
+Add .RexxUnicodeCharacter~indicConjunctBreak
+Add .RexxUnicodeCharacter~indicConjunctBreakName
+
+Examples
+*/
+
+ooRexx> .RexxUnicode~codepointIndicConjunctBreak("0000"~x2d, >code, >label)=; code=; label=     --  0; 'None'; 'None'
+ 0
+'None'
+'None'
+ooRexx> .RexxUnicode~codepointIndicConjunctBreak("0300"~x2d, >code, >label)=; code=; label=     --  3; 'Extend'; 'Extend'
+ 3
+'Extend'
+'Extend'
+ooRexx> .RexxUnicode~codepointIndicConjunctBreak("0915"~x2d, >code, >label)=; code=; label=     --  2; 'Consonant'; 'Consonant'
+ 2
+'Consonant'
+'Consonant'
+ooRexx> .RexxUnicode~codepointIndicConjunctBreak("094D"~x2d, >code, >label)=; code=; label=     --  1; 'Linker'; 'Linker'
+ 1
+'Linker'
+'Linker'
+ooRexx> .RexxUnicode~codepointIndicConjunctBreak("FFFFFF"~x2d, >code, >label)=; code=; label=   --  0; 'None'; 'None'
+ 0
+'None'
+'None'
+ooRexx> .RexxUnicode~codepointIndicConjunctBreak(-1, >code, >label)=; code=; label=             --  0; 'None'; 'None'
+ 0
+'None'
+'None'
+
+ooRexx> .RexxUnicodeCharacter~new("0000"~x2d)~indicConjunctBreak=           --  'None'
+'None'
+ooRexx> .RexxUnicodeCharacter~new("0300"~x2d)~indicConjunctBreak=           --  'Extend'
+'Extend'
+ooRexx> .RexxUnicodeCharacter~new("0915"~x2d)~indicConjunctBreak=           --  'Consonant'
+'Consonant'
+ooRexx> .RexxUnicodeCharacter~new("094D"~x2d)~indicConjunctBreak=           --  'Linker'
+'Linker'
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreak=         --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicodeCharacter~new(-1)~indicConjunctBreak=                   --  '?'
+'?'
+
+ooRexx> .RexxUnicodeCharacter~new("0000"~x2d)~indicConjunctBreakName=       --  'None'
+'None'
+ooRexx> .RexxUnicodeCharacter~new("0300"~x2d)~indicConjunctBreakName=       --  'Extend'
+'Extend'
+ooRexx> .RexxUnicodeCharacter~new("0915"~x2d)~indicConjunctBreakName=       --  'Consonant'
+'Consonant'
+ooRexx> .RexxUnicodeCharacter~new("094D"~x2d)~indicConjunctBreakName=       --  'Linker'
+'Linker'
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreakName=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+Error code= 88.900
+ooRexx> .RexxUnicodeCharacter~new(-1)~indicConjunctBreakName=               --  '?'
+'?'
+
+
+-- ===============================================================================
 -- 2026 Aug 04
 
 /*
@@ -1342,7 +1409,7 @@ ooRexx> .RexxUnicode~character(-1)=                         -- (An invalid chara
 ooRexx> .RexxUnicode~character(-1)~class=                   -- (The RexxUnicodeCharacter class)
 (The RexxUnicodeCharacter class)
 ooRexx> .RexxUnicode~character(-1)~info=
-a StringTable (26 items)
+a StringTable (27 items)
 'bidiClass'                 : '?'
 'bidiClassName'             : '?'
 'bidiMirrored'              :  0
@@ -1361,6 +1428,7 @@ a StringTable (26 items)
 'eastAsianWidthIsAmbiguous' :  0
 'extendedName'              : ''
 'ignorable'                 :  1
+'indicConjunctBreak'        : '?'
 'isLower'                   :  0
 'isUpper'                   :  0
 'name'                      : ''
@@ -2674,7 +2742,7 @@ ooRexx> .RexxUnicode~character("🎅")=                   -- ("🎅" 0xF09F8E85 
 
 -- Properties of a character
 ooRexx> .RexxUnicode~character("🎅")~info=
-a StringTable (26 items)
+a StringTable (27 items)
 'bidiClass'                 : 'ON'
 'bidiClassName'             : 'Other_Neutral'
 'bidiMirrored'              :  0
@@ -2693,6 +2761,7 @@ a StringTable (26 items)
 'eastAsianWidthIsAmbiguous' :  0
 'extendedName'              : 'FATHER CHRISTMAS'
 'ignorable'                 :  0
+'indicConjunctBreak'        : 'None'
 'isLower'                   :  0
 'isUpper'                   :  0
 'name'                      : 'FATHER CHRISTMAS'

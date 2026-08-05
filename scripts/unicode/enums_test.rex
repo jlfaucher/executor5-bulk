@@ -11,6 +11,7 @@ boundClasses = .Directory~new
 categories = .Directory~new
 combiningClasses = .Directory~new
 decompositionTypes = .Directory~new
+indicConjunctBreaks = .Directory~new
 
 loop codepoint = 0 to .RexxUnicode~maxCodepoint
     .RexxUnicode~codepointBidiClass(codepoint, >code, >label)
@@ -27,6 +28,9 @@ loop codepoint = 0 to .RexxUnicode~maxCodepoint
 
     .RexxUnicode~codepointDecompositionType(codepoint, >code, >label)
     if \ decompositionTypes~hasIndex(code) then decompositionTypes[code] = .RexxUnicodeCharacter~new(codepoint)
+
+    .RexxUnicode~codepointIndicConjunctBreak(codepoint, >code, >label)
+    if \ indicConjunctBreaks~hasIndex(code) then indicConjunctBreaks[code] = .RexxUnicodeCharacter~new(codepoint)
 end
 
 call sayCollection bidiClasses, "bidiClasses"
@@ -34,6 +38,7 @@ call sayCollection boundClasses, "boundClasses"
 call sayCollection categories, "categories"
 call sayCollection combiningClasses, "combiningClasses"
 call sayCollection decompositionTypes, "decompositionTypes"
+call sayCollection indicConjunctBreaks, "indicConjunctBreaks"
 
 
 ::routine sayCollection

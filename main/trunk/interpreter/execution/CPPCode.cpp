@@ -1346,6 +1346,7 @@ PCPPM CPPCode::exportedMethods[] =
     CPPM(RexxUnicodeServicesClass::codepointBidiMirrored),
     CPPM(RexxUnicodeServicesClass::codepointDecompositionType),
     CPPM(RexxUnicodeServicesClass::codepointIgnorable),
+    CPPM(RexxUnicodeServicesClass::codepointIndicConjunctBreak),
     CPPM(RexxUnicodeServicesClass::codepointControlBoundary),
     CPPM(RexxUnicodeServicesClass::codepointBoundClass),
     CPPM(RexxUnicodeServicesClass::codepointCharWidth),
