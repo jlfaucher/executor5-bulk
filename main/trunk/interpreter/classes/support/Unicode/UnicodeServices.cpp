@@ -480,7 +480,7 @@ RexxString *RexxUnicodeServicesClass::unicodeVersion()
  * @param string        (in)  A UTF-8 string.
  * @param indexB        (in)  The byte index (1-based) of the encoded codepoint in rexxString
  * @param refSizeB      (out) The number of bytes read to decode the codepoint (negative if error),
- *                            or 0 if rexxIndexB is outside the rexxString index range.
+ *                            or 0 if indexB is at the end of the string (indexB == length+1).
  * @param refErrorCode  (out) The null string "" if a valid codepoint could be read,
  *                            or the error code otherwise.
  * @param refErrorMsg   (out) The null string "" if a valid codepoint could be read,
@@ -559,7 +559,7 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodeCodepoint(RexxString *string, R
  * position of a codepoint's first byte. This method returns whatever codepoint's
  * bytes lie immediately before that position -- so passing the same indexB value
  * to utf8DecodeCodepoint and utf8DecodePreviousCodepoint gives you "this codepoint"
- * and "the one right before it" respectively. Passing rexxIndexB = length+1 returns
+ * and "the one right before it" respectively. Passing indexB = length+1 returns
  * the last codepoint of the string.
  *
  * @param string        (in)  A UTF-8 string.
@@ -567,7 +567,7 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodeCodepoint(RexxString *string, R
  *                            to decode. Valid range: 1..length+1. (1 means "nothing
  *                            precedes the start of the string".)
  * @param refSizeB      (out) The number of bytes read to decode the codepoint (negative if error),
- *                            or 0 if rexxIndexB is outside the valid boundary range.
+ *                            or 0 if indexB is at the begining of the string (indexB == 1).
  * @param refErrorCode  (out) The null string "" if a valid codepoint could be read,
  *                            or the error code otherwise.
  * @param refErrorMsg   (out) The null string "" if a valid codepoint could be read,
@@ -675,6 +675,13 @@ MutableBuffer *RexxUnicodeServicesClass::utf8EncodeCodepoint(RexxInteger *rexxCo
 
 
 /**
+ * @deprecated Using an array for the persistent state can lead to subtle bugs
+ *             when copying an object that uses such an array internally.
+ *             By default, the copy is shallow, so both the original object and
+ *             its copies refer to the same internal array. As a result, the
+ *             state may be corrupted, depending on the sequence of calls made
+ *             on the original object and its copies.
+ *
  * Given a pair of consecutive codepoints, return whether a grapheme break is
  * permitted between them.
  *
@@ -696,6 +703,35 @@ RexxInteger *RexxUnicodeServicesClass::graphemeBreak(ArrayClass *array)
     utf8proc_int32_t state =      (utf8proc_int32_t)integerRange((RexxObject *)array->get(3), 0, SSIZE_MAX, Error_Invalid_argument_user_defined, "GraphemeBreak:The state must be a non negative integer");
     utf8proc_bool graphemeBreak = utf8proc_grapheme_break_stateful(codepoint1, codepoint2, &state);
     array->put(new_integer(state), 3); // Output argument
+    return graphemeBreak ? TheTrueObject : TheFalseObject;
+}
+
+
+/**
+ * Given a pair of consecutive codepoints, return whether a grapheme break is
+ * permitted between them.
+ *
+ * @param codepoint1 [IN]     The first codepoint.
+ * @param codepoint2 [IN]     The second codepoint.
+ * @param refState   [IN OUT] Initial value must be 0.
+ *
+ * @return .true if a grapheme break is permitted, .false otherwise.
+ */
+RexxInteger *RexxUnicodeServicesClass::graphemeBreak3(RexxInteger *rexxCodepoint1, RexxInteger *rexxCodepoint2, VariableReference *refState)
+{
+    requiredArgument(rexxCodepoint1, "codepoint1");
+    utf8proc_int32_t codepoint1 = (utf8proc_int32_t)integer(rexxCodepoint1, "codepoint1 must be an integer");
+
+    requiredArgument(rexxCodepoint2, "codepoint2");
+    utf8proc_int32_t codepoint2 = (utf8proc_int32_t)integer(rexxCodepoint2, "codepoint2 must be an integer");
+
+    classArgument(refState, TheVariableReferenceClass, "refState");
+    utf8proc_int32_t state = (utf8proc_int32_t)integerRange(refState->getValue(), 0, SSIZE_MAX, Error_Invalid_argument_user_defined, "GraphemeBreak:The state must be a non negative integer");
+
+    utf8proc_bool graphemeBreak = utf8proc_grapheme_break_stateful(codepoint1, codepoint2, &state);
+
+    RexxInteger *rexxState = new_integer(state); // Protected<RexxInteger> not needed
+    refState->setValue(rexxState);
     return graphemeBreak ? TheTrueObject : TheFalseObject;
 }
 

@@ -60,7 +60,8 @@ Native methods of RexxUnicodeServices
     RexxString *utf8Transform(RexxObject **arguments, size_t argCount);
     // use strict arg string, casefold = .false, lump= .false, nlf = 0, normalization = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false
 
-    RexxInteger *graphemeBreak(ArrayClass *);
+    RexxInteger *graphemeBreak(ArrayClass *array); // deprecated
+    RexxInteger *graphemeBreak3(RexxInteger *rexxCodepoint1, RexxInteger *rexxCodepoint2, VariableReference *refState);
 
     RexxInteger *codepointBidiClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
     RexxInteger *codepointBidiMirrored(RexxInteger *rexxCodepoint); // boolean
@@ -913,10 +914,8 @@ How other languages are supporting escape characters for Unicode:
 
 
 /******************************************************************************/
-::class "RexxUnicodeCodepointSupplier" public subclass Supplier
+::class "CodepointSupplierHelper" private mixinclass Supplier
 /******************************************************************************/
-
--- Codepoint supplier for UTF-8 strings without pre-indexing
 
 ::method getIndexType class private
     use strict arg type
@@ -933,12 +932,101 @@ How other languages are supporting escape characters for Unicode:
     raise syntax 88.900 array ("Expected an empty item type or one starting with 'B', 'E', 'U', 'X', or '\', or a Class object; found" quoted(type))
 
 
+::method setDefaultIndexType
+    expose defaultIndexType
+    use strict arg indexType
+    defaultIndexType = self~class~getIndexType(indexType)
+
+
+::method setDefaultItemType
+    expose defaultItemType
+    use strict arg itemType
+    defaultItemType = self~class~getItemType(itemType)
+
+
+::method available
+    use strict arg -- none
+    return .nil \== self~codepoint
+
+
+::method index
+    expose defaultIndexType
+    /*
+    Different index types can be returned:
+    - If `type`is `""`, the codepoint index is returned (the default index type).
+    - If `type` is `"b"`, the byte index is returned (it is negative if the byte sequence is invalid).
+    */
+    use strict arg type=(defaultIndexType)
+    if self~available then do
+        type = self~class~getIndexType(type)
+        if type == "" then return self~indexC
+        if type == "b" then return self~indexB -- can be negative
+    end
+    else raise syntax 93.937 -- No more supplier items available
+
+
+::method item
+    expose defaultItemType
+    /*
+    type serves both as:
+    - a helper for requesting different codepoint representations,
+    - and a workaround for the lack of higher-order functions such as ~each{...} when type is a class.
+
+    Possible values:
+    - "" to return the codepoint as a whole number (default)
+    - "b" to return the codepoint byte sequence as a string
+    - "e" to return the error message or ""
+    - "u" to return the codepoint in U+ notation
+    - "x" to return the codepoint byte sequence as hexadecimal digits
+    - "\" to return the codepoint byte sequence as an escaped string
+    - a class to return a new instance of that class, initialized with the result of item("")
+    */
+    use strict arg type=(defaultItemType)
+    if self~available then do
+        type = self~class~getItemType(type)
+        if type == "" then return self~codepoint
+        if type == "b" then return self~byteSequence -- YES! ALWAYS return the raw byte sequence
+        if type == "e" then return self~error
+        if type == "u" then return .RexxUnicode~D2U(self~codepoint)
+        if type == "x" then return escapedHexdigits(self~byteSequence~c2x)
+        if type == "\" then return .RexxUnicode~stringEscape(self~byteSequence)
+        if type~isa(.Class) then return type~new(self~codepoint)
+    end
+    else raise syntax 93.937 -- No more supplier items available
+
+
+-- Returns the codepoint at position indexC (can only advance)
+::method codepointAtIndexC
+    use strict arg index
+    if index < 0 then raise syntax 88.900 array ("Invalid code point index:" index"; negative indexes are not supported")
+    if index == 0 then raise syntax 88.900 array ("Invalid code point index:" index)
+    if index < self~indexC then raise syntax 88.900 array ("Invalid code point index:" index "is less than the current index" self~indexC "(the supplier can only advance)")
+    loop while self~indexC \== index
+        self~next
+    end
+    return self~item
+
+
+/******************************************************************************/
+::class "RexxUnicodeCodepointSupplier" public subclass Supplier -
+                                              inherit CodepointSupplierHelper
+/******************************************************************************/
+
+-- Codepoint supplier for UTF-8 strings without pre-indexing
+
+-- Using a mixin class requires giving access to these (normally) private variables.
+::attribute byteSequence get package    -- a string of length 1..4, or "" if no more codepoint available
+::attribute codepoint get package       -- a non-negative whole number, or .nil if no more codepoint available
+::attribute error get package           -- "" if no error, otherwise error description
+::attribute indexB get package          -- 1..length+1, counted from the beginning of the string, negative if the codepoint byte sequence is invalid
+::attribute indexC get package          -- 1-based, counted from the beginning of the string
+
 ::method init
-    expose string indexB indexC defaultIndexType defaultItemType
+    expose string indexB indexC
     use strict arg string, defaultIndexType="", defaultItemType=""
     string = requestBaseString(string, "string")
-    defaultIndexType = self~class~getIndexType(defaultIndexType)
-    defaultItemType = self~class~getItemType(defaultItemType)
+    self~setDefaultIndexType(defaultIndexType)
+    self~setDefaultItemType(defaultItemType)
 
     empty = .array~new(0) -- No need to create a copy, the string is immutable
     self~init:super(empty, empty)
@@ -960,62 +1048,10 @@ How other languages are supporting escape characters for Unicode:
         if sizeB < 0 then do
             error = "start byte position" indexB ":" errorMsg
             codepoint = "FFFD"~x2d -- the current byte sequence is invalid, return the replacement character
-            indexB = -indexB -- same convention as .RexxUnicodeStringIndexer; a negative index indicates an invalid byte sequence
+            indexB = -indexB -- same convention as .RexxUnicodeStringIndexer; a negative byte index indicates an invalid byte sequence
         end
         byteSequence = string~substr(abs(indexB), abs(sizeB))
     end
-
-
-::method available
-    expose codepoint
-    use strict arg -- none
-    return .nil \== codepoint
-
-
-::method index
-    expose indexB indexC defaultIndexType
-    /*
-    Different index types can be returned:
-    - If `type`is `""`, the codepoint index is returned (the default index type).
-    - If `type` is `"b"`, the byte index is returned (it is negative if the byte sequence is invalid).
-    */
-    use strict arg type=(defaultIndexType)
-    if self~available then do
-        type = self~class~getIndexType(type)
-        if type == "" then return indexC
-        if type == "b" then return indexB -- can be negative
-    end
-    else raise syntax 93.937 -- No more supplier items available
-
-
-::method item
-    expose codepoint byteSequence error defaultItemType
-    /*
-    type serves both as:
-    - a helper for requesting different codepoint representations,
-    - and a workaround for the lack of higher-order functions such as ~each{...} when type is a class.
-
-    Possible values:
-    - "" to return the codepoint as a whole number (default)
-    - "b" to return the codepoint byte sequence as a string
-    - "e" to return the error message or ""
-    - "u" to return the codepoint in U+ notation
-    - "x" to return the codepoint byte sequence as hexadecimal digits
-    - "\" to return the codepoint byte sequence as an escaped string
-    - a class to return a new instance of that class, initialized with the result of item("")
-    */
-    use strict arg type=(defaultItemType)
-    if self~available then do
-        type = self~class~getItemType(type)
-        if type == "" then return codepoint
-        if type == "b" then return byteSequence -- YES! ALWAYS return the raw byte sequence
-        if type == "e" then return error
-        if type == "u" then return .RexxUnicode~D2U(codepoint)
-        if type == "x" then return escapedHexdigits(byteSequence~c2x)
-        if type == "\" then return .RexxUnicode~stringEscape(byteSequence)
-        if type~isa(.Class) then return type~new(codepoint)
-    end
-    else raise syntax 93.937 -- No more supplier items available
 
 
 ::method next
@@ -1030,24 +1066,70 @@ How other languages are supporting escape characters for Unicode:
     else raise syntax 93.937 -- No more supplier items available
 
 
--- Returns the codepoint at position indexC (can only advance)
-::method codepointAtIndexC
-    expose indexC
-    use strict arg index
-    if index < 0 then raise syntax 88.900 array ("Invalid code point index:" index"; negative indexes are not supported")
-    if index == 0 then raise syntax 88.900 array ("Invalid code point index:" index)
-    if index < indexC then raise syntax 88.900 array ("Invalid code point index:" index "is less than the current index" indexC "(the supplier can only advance)")
-    loop while indexC \== index
-        self~next
+/******************************************************************************/
+::class "RexxUnicodeReverseCodepointSupplier" public subclass Supplier -
+                                                     inherit CodepointSupplierHelper
+/******************************************************************************/
+
+-- Reverse codepoint supplier for UTF-8 strings without pre-indexing
+
+-- Using a mixin class requires giving access to these (normally) private variables.
+::attribute byteSequence get package    -- a string of length 1..4, or "" if no more codepoint available
+::attribute codepoint get package       -- a non-negative whole number, or .nil if no more codepoint available
+::attribute error get package           -- "" if no error, otherwise error description
+::attribute indexB get package          -- 1..length+1, counted from the beginning of the string, negative if the codepoint byte sequence is invalid
+::attribute indexC get package          -- 1-based, counted from the end of the string
+
+::method init
+    expose string boundaryIndexB indexB indexC
+    use strict arg string, defaultIndexType="", defaultItemType=""
+    string = requestBaseString(string, "string")
+    self~setDefaultIndexType(defaultIndexType)
+    self~setDefaultItemType(defaultItemType)
+
+    empty = .array~new(0) -- No need to create a copy, the string is immutable
+    self~init:super(empty, empty)
+    boundaryIndexB = string~length + 1 -- The byte index from the begining (1-based) of the boundary before which to decode
+    indexB = boundaryIndexB -- indexB from the begining (yes!)
+    indexC = 1 -- indexC from the end
+    self~decodePrevious
+
+
+::method decodePrevious private
+    expose string boundaryIndexB indexB codepoint byteSequence error
+    use strict arg -- none
+    error = ""
+    codepoint = .RexxUnicode~utf8DecodePreviousCodepoint(string, boundaryIndexB, >sizeB, >errorCode, >errorMsg)
+    if sizeB == 0 then do
+        codepoint = .nil -- end of string
+        byteSequence = ""
     end
-    return self~item
+    else do
+        indexB = abs(indexB) - abs(sizeB)
+        if sizeB < 0 then do
+            error = "start byte position" indexB ":" errorMsg
+            codepoint = "FFFD"~x2d -- the current byte sequence is invalid, return the replacement character
+            indexB = -indexB -- same convention as .RexxUnicodeStringIndexer; a negative byte index indicates an invalid byte sequence
+        end
+        byteSequence = string~substr(abs(indexB), abs(sizeB))
+    end
+
+
+::method next
+    expose boundaryIndexB indexB indexC
+    use strict arg -- none
+    if self~available then do
+        -- boundaryIndexB -= byteSequence~length
+        boundaryIndexB = abs(indexB) -- move the right edge to the codepoint we just found
+        indexC += 1
+        self~decodePrevious
+    end
+    else raise syntax 93.937 -- No more supplier items available
 
 
 /******************************************************************************/
-::class "RexxUnicodeGraphemeSupplier" public subclass Supplier
+::class "GraphemeSupplierHelper" private mixinclass Supplier
 /******************************************************************************/
-
--- Grapheme supplier for UTF-8 strings without pre-indexing
 
 ::method getIndexType class private
     use strict arg type
@@ -1064,170 +1146,25 @@ How other languages are supporting escape characters for Unicode:
     raise syntax 88.900 array ("Expected an empty item type or one starting with 'B', 'E', 'U', 'X', or '\', or a Class object; found" quoted(type))
 
 
-::method init
-    expose string indexB indexG defaultIndexType defaultItemType -
-           /* coroutine internal state */ decodeNextStep
-    use strict arg string, defaultIndexType="", defaultItemType=""
-    string = requestBaseString(string, "string")
-    defaultIndexType = self~class~getIndexType(defaultIndexType)
-    defaultItemType = self~class~getItemType(defaultItemType)
-
-    empty = .array~new(0) -- No need to create a copy, the string is immutable
-    self~init:super(empty, empty)
-
-    indexB = 1
-    indexG = 1
-    decodeNextStep = "START"
-    self~decode
+::method setDefaultIndexType
+    expose defaultIndexType
+    use strict arg indexType
+    defaultIndexType = self~class~getIndexType(indexType)
 
 
-/*
-This method is called from ~init and from ~next.
-In both cases, nextGraphemeIndexB is set to .nil.
-
-This method is convoluted! I had difficulties to implement it...
-Using a coroutine design helped me to finalize the implementation.
-I keep the logic of .RexxUnicodeStringIndexer~init, but with several entry/exit.
-Maybe it can be simplified...
-*/
-::method decode private
-    expose string indexB grapheme graphemeIndexB nextGraphemeIndexB error nextError -
-           /* coroutine internal state */ -
-           decodeNextStep previousCodepoint graphemeBreakArgs -
-           codepoint sizeB errorCode errorMsg -
-           debug
-    use strict arg -- none
-    debug = .false -- keep it for the moment
-
-    -- coroutine
-    if debug then say "    signal value" decodeNextStep
-    signal value decodeNextStep
-
-    START:
-    graphemeIndexB = .nil
-    nextGraphemeIndexB = .nil
-    previousCodepoint = -1
-    graphemeBreakArgs = (-1, -1, 0) -- codepoint1, codepoint2, state. Will use the same array at each iteration.
-    error = ""
-    nextError = ""
-
-    forever:
-        if debug then say "    forever:"
-        if debug then say "        indexB ==" indexB
-        if debug then say "        graphemeIndexB ==" graphemeIndexB
-        if debug then say "        nextGraphemeIndexB ==" nextGraphemeIndexB
-        if debug then say "        error ==" error
-        if debug then say "        nextError ==" nextError
-        if .nil \== nextGraphemeIndexB then do
-            grapheme = string~substr(abs(graphemeIndexB), abs(nextGraphemeIndexB) - abs(graphemeIndexB))
-            if debug then say "    grapheme =" grapheme
-            decodeNextStep = "NEXT_CODEPOINT"
-            return -- grapheme, graphemeIndexB and error ready for use
-            -- on reentry from ~next, graphemeIndexB == nextGraphemeIndexB and nextGraphemeIndexB == .nil
-        end
-
-        NEXT_CODEPOINT:
-        -- here, nextGraphemeIndexB is necessarily .nil
-        if debug then say "    NEXT_CODEPOINT:"
-        if debug then say "        indexB ==" indexB
-        if debug then say "        graphemeIndexB ==" graphemeIndexB
-        if debug then say "        nextGraphemeIndexB ==" nextGraphemeIndexB
-        if debug then say "        error ==" error
-        if debug then say "        nextError ==" nextError
-        codepoint = .RexxUnicode~utf8DecodeCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
-        if sizeB == 0 then signal end_of_string
-        if sizeB < 0 then signal error
-
-        if previousCodepoint < 0 then call appendGraphemeIndex indexB -- First codepoint or Error recovery
-        else do
-            graphemeBreakArgs[1] = previousCodepoint
-            graphemeBreakArgs[2] = codepoint
-            if .RexxUnicode~graphemeBreak(graphemeBreakArgs) then call appendGraphemeIndex indexB
-        end
-        previousCodepoint = codepoint
-        indexB += sizeB
-        signal forever
-
-    END_OF_STRING:
-        -- here, nextGraphemeIndexB is necessarily .nil
-        -- but graphemeIndexB can be not .nil or .nil
-        if debug then say "    END_OF_STRING:"
-        if debug then say "        indexB ==" indexB
-        if debug then say "        graphemeIndexB ==" graphemeIndexB
-        if debug then say "        nextGraphemeIndexB ==" nextGraphemeIndexB
-        if debug then say "        error ==" error
-        if debug then say "        nextError ==" nextError
-        if .nil \== graphemeIndexB then grapheme = string~substr(abs(graphemeIndexB))
-        else grapheme = .nil -- ~next will no longer reenter because ~available will return .false
-        if debug then say "    grapheme =" grapheme
-        decodeNextStep = "END_OF_STRING"
-        return -- grapheme, graphemeIndexB and error ready for use
-        -- on reentry from ~next, graphemeIndexB == .nil and nextGraphemeIndexB == .nil
-
-    error:
-        -- here, nextGraphemeIndexB is necessarily .nil
-        if debug then say "    error:"
-        if debug then say "        on entry:"
-        if debug then say "            indexB ==" indexB
-        if debug then say "            previousCodepoint ==" previousCodepoint
-        if debug then say "            codepoint ==" codepoint
-        errorMsg = "start byte position" indexB ":" errorMsg
-        call appendGraphemeIndex -indexB, errorMsg -- a negative index means "error"
-        graphemeBreakArgs[3] = 0 -- reset the extended grapheme state
-        previousCodepoint = codepoint
-        indexB += abs(sizeB) -- skip the invalid bytes
-        if debug then say "    error:"
-        if debug then say "        on exit:"
-        if debug then say "            indexB =" indexB
-        if debug then say "            previousCodepoint ==" previousCodepoint
-        if debug then say "            codepoint ==" codepoint
-        signal forever
-
-    appendGraphemeIndex:
-        use strict arg newIndex, newError=""
-        if debug then say "    appendGraphemeIndex:"
-        if debug then say "        on entry:"
-        if debug then say "            newIndex ==" newIndex
-        if debug then say "            newError ==" newError
-        if debug then say "            indexB ==" indexB
-        if debug then say "            graphemeIndexB ==" graphemeIndexB
-        if debug then say "            nextGraphemeIndexB ==" nextGraphemeIndexB
-        if debug then say "            error ==" error
-        if debug then say "            nextError ==" nextError
-
-        if graphemeIndexB~isNil then do
-            graphemeIndexB = newIndex
-            error = newError
-        end
-        else if nextGraphemeIndexB~isNil then do
-            nextGraphemeIndexB = newIndex
-            nextError = newError
-        end
-        else do
-            -- shift
-            graphemeIndexB = nextGraphemeIndexB
-            nextGraphemeIndexB = newIndex
-            error = nextError
-            nextError = newError
-        end
-
-        if debug then say "    appendGraphemeIndex:"
-        if debug then say "        on exit:"
-        if debug then say "            graphemeIndexB =" graphemeIndexB
-        if debug then say "            nextGraphemeIndexB =" nextGraphemeIndexB
-        if debug then say "            error ==" error
-        if debug then say "            nextError ==" nextError
-        return
+::method setDefaultItemType
+    expose defaultItemType
+    use strict arg itemType
+    defaultItemType = self~class~getItemType(itemType)
 
 
 ::method available
-    expose grapheme
     use strict arg -- none
-    return .nil \== grapheme
+    return .nil \== self~grapheme
 
 
 ::method index
-    expose graphemeIndexB indexG defaultIndexType
+    expose defaultIndexType
     /*
     Different index types can be returned:
     - If `type`is `""`, the grapheme index is returned (the default index type).
@@ -1236,14 +1173,14 @@ Maybe it can be simplified...
     use strict arg type=(defaultIndexType)
     if self~available then do
         type = self~class~getIndexType(type)
-        if type == "" then return indexG
-        if type == "b" then return graphemeIndexB -- (can be negative)
+        if type == "" then return self~indexG
+        if type == "b" then return self~graphemeIndexB -- (can be negative)
     end
     else raise syntax 93.937 -- No more supplier items available
 
 
 ::method item
-    expose grapheme error defaultItemType
+    expose defaultItemType
     /*
     type serves both as:
     - a helper for requesting different grapheme representations,
@@ -1261,57 +1198,600 @@ Maybe it can be simplified...
     use strict arg type=(defaultItemType)
     if self~available then do
         type = self~class~getItemType(type)
-        if type == "" then return grapheme
-        if type == "b" then return grapheme -- YES! ALWAYS return the raw byte sequence
-        if type == "e" then return error
-        if type == "u" then return .RexxUnicode~C2U(grapheme)
-        if type == "x" then return escapedHexdigits(.RexxUnicode~C2X(grapheme))
-        if type == "\" then return .RexxUnicode~stringEscape(grapheme)
-        if type~isa(.Class) then return type~new(grapheme)
-    end
-    else raise syntax 93.937 -- No more supplier items available
-
-
-::method next
-    expose indexG graphemeIndexB nextGraphemeIndexB -
-           debug error nextError indexB - -- for debug
-    use strict arg -- none
-    if debug then say "    method next"
-    if debug then say "        on entry:"
-    if debug then say "            indexB ==" indexB
-    if debug then say "            graphemeIndexB ==" graphemeIndexB
-    if debug then say "            nextGraphemeIndexB ==" nextGraphemeIndexB
-    if debug then say "            error ==" error
-    if debug then say "            nextError ==" nextError
-    if self~available then do
-        indexG += 1
-        graphemeIndexB = nextGraphemeIndexB
-        nextGraphemeIndexB = .nil
-        error = nextError
-        nextError = ""
-        if debug then say "    method next"
-        if debug then say "        on exit:"
-        if debug then say "            indexB =" indexB
-        if debug then say "            graphemeIndexB =" graphemeIndexB
-        if debug then say "            nextGraphemeIndexB =" nextGraphemeIndexB
-        if debug then say "            error ==" error
-        if debug then say "            nextError ==" nextError
-        self~decode
+        if type == "" then return self~grapheme
+        if type == "b" then return self~grapheme -- YES! ALWAYS return the raw byte sequence
+        if type == "e" then return self~error
+        if type == "u" then return .RexxUnicode~C2U(self~grapheme)
+        if type == "x" then return escapedHexdigits(.RexxUnicode~C2X(self~grapheme))
+        if type == "\" then return .RexxUnicode~stringEscape(self~grapheme)
+        if type~isa(.Class) then return type~new(self~grapheme)
     end
     else raise syntax 93.937 -- No more supplier items available
 
 
 -- Returns the grapheme at position indexG (can only advance)
 ::method graphemeAtIndexG
-    expose indexG
     use strict arg index
     if index < 0 then raise syntax 88.900 array ("Invalid grapheme index:" index"; negative indexes are not supported")
     if index == 0 then raise syntax 88.900 array ("Invalid grapheme index:" index)
-    if index < indexG then raise syntax 88.900 array ("Invalid grapheme index:" index "is less than the current index" indexG "(the supplier can only advance)")
-    loop while indexG \== index
+    if index < self~indexG then raise syntax 88.900 array ("Invalid grapheme index:" index "is less than the current index" self~indexG "(the supplier can only advance)")
+    loop while self~indexG \== index
         self~next
     end
     return self~item
+
+
+/******************************************************************************/
+::class "RexxUnicodeGraphemeSupplier" public subclass Supplier -
+                                             inherit GraphemeSupplierHelper
+/******************************************************************************/
+
+-- Grapheme supplier for UTF-8 strings without pre-indexing
+
+-- Using a mixin class requires giving access to these (normally) private variables.
+::attribute error get package           -- "" if no error, otherwise error description
+::attribute grapheme get package        -- a string of length 1..n, or .nil if no more grapheme available
+::attribute graphemeIndexB get package  -- 1..length+1, counted from the beginning of the string, negative if the grapheme byte sequence is invalid
+::attribute indexG get package          -- 1-based, counted from the beginning of the string
+
+::method init
+    expose string indexB indexG -
+           /* coroutine internal state */ decodeNextStep
+
+    use strict arg string, defaultIndexType="", defaultItemType=""
+    string = requestBaseString(string, "string")
+    self~setDefaultIndexType(defaultIndexType)
+    self~setDefaultItemType(defaultItemType)
+
+    empty = .array~new(0) -- No need to create a copy, the string is immutable
+    self~init:super(empty, empty)
+
+    indexB = 1  -- current codepoint byte position
+    indexG = 1
+    decodeNextStep = "START"
+    self~decode
+
+
+/*
+This method is called from ~init and from ~next.
+In both cases, nextGraphemeIndexB is set to .nil.
+
+This method is convoluted! I had difficulties to implement it...
+Using a coroutine design helped me to finalize the implementation.
+I keep the logic of .RexxUnicodeStringIndexer~init, but with several entry/exit.
+Maybe it can be simplified...
+*/
+::method decode private
+    expose string indexB grapheme graphemeIndexB nextGraphemeIndexB error nextError -
+           /* coroutine internal state */ -
+           decodeNextStep previousCodepoint graphemeBreakState -
+           codepoint sizeB errorCode errorMsg
+    use strict arg -- none
+
+    -- coroutine
+    signal value decodeNextStep
+
+    START:
+    graphemeIndexB = .nil
+    nextGraphemeIndexB = .nil
+    previousCodepoint = -1
+    graphemeBreakState = 0
+    error = ""
+    nextError = ""
+
+    forever:
+        if .nil \== nextGraphemeIndexB then do
+            grapheme = string~substr(abs(graphemeIndexB), abs(nextGraphemeIndexB) - abs(graphemeIndexB))
+            decodeNextStep = "NEXT_CODEPOINT"
+            return -- grapheme, graphemeIndexB and error ready for use
+            -- on reentry from ~next, graphemeIndexB == nextGraphemeIndexB and nextGraphemeIndexB == .nil
+        end
+
+        NEXT_CODEPOINT:
+        -- here, nextGraphemeIndexB is necessarily .nil
+        codepoint = .RexxUnicode~utf8DecodeCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
+        if sizeB == 0 then signal end_of_string
+        if sizeB < 0 then signal error
+
+        if previousCodepoint < 0 then call appendGraphemeIndex indexB -- First codepoint or Error recovery
+        else do
+            graphemeBreak  = .RexxUnicode~graphemeBreak3(previousCodepoint, codepoint, >graphemeBreakState)
+            if graphemeBreak then call appendGraphemeIndex indexB
+        end
+        previousCodepoint = codepoint
+        indexB += sizeB
+        signal forever
+
+    END_OF_STRING:
+        -- here, nextGraphemeIndexB is necessarily .nil
+        -- but graphemeIndexB can be not .nil or .nil
+        if .nil \== graphemeIndexB then grapheme = string~substr(abs(graphemeIndexB))
+        else grapheme = .nil -- ~next will no longer reenter because ~available will return .false
+        decodeNextStep = "END_OF_STRING"
+        return -- grapheme, graphemeIndexB and error ready for use
+        -- on reentry from ~next, graphemeIndexB == .nil and nextGraphemeIndexB == .nil
+
+    error:
+        -- here, nextGraphemeIndexB is necessarily .nil
+        errorMsg = "start byte position" indexB ":" errorMsg
+        call appendGraphemeIndex -indexB, errorMsg -- same convention as .RexxUnicodeStringIndexer; a negative byte index indicates an invalid byte sequence
+        graphemeBreakState = 0 -- reset the extended grapheme state
+        previousCodepoint = codepoint
+        indexB += abs(sizeB) -- skip the invalid bytes
+        signal forever
+
+    appendGraphemeIndex:
+        use strict arg newIndex, newError=""
+
+        if graphemeIndexB~isNil then do
+            graphemeIndexB = newIndex
+            error = newError
+        end
+        else if nextGraphemeIndexB~isNil then do
+            nextGraphemeIndexB = newIndex
+            nextError = newError
+        end
+        else do
+            -- shift
+            graphemeIndexB = nextGraphemeIndexB
+            nextGraphemeIndexB = newIndex
+            error = nextError
+            nextError = newError
+        end
+
+        return
+
+
+::method next
+    expose error indexG graphemeIndexB nextError nextGraphemeIndexB
+
+    use strict arg -- none
+    if self~available then do
+        indexG += 1
+        graphemeIndexB = nextGraphemeIndexB
+        nextGraphemeIndexB = .nil
+        error = nextError
+        nextError = ""
+        self~decode
+    end
+    else raise syntax 93.937 -- No more supplier items available
+
+
+/******************************************************************************/
+::class "RexxUnicodeReverseGraphemeSupplier" public subclass Supplier -
+                                                    inherit GraphemeSupplierHelper
+/******************************************************************************/
+
+-- Reverse grapheme supplier for UTF-8 strings without pre-indexing.
+-- Initial code by Claude Sonnet 5 medium, reviewed and adapted.
+
+/*
+I'm assuming your .RexxUnicode class exposes (or you'll add, alongside graphemeBreak)
+a handful of property-query primitives, since I don't have visibility into your existing C-layer API surface for these:
+
+AI requirement:
+    .RexxUnicode~graphemeClusterBreakProperty(codepoint) → one of 'CR' 'LF' 'CONTROL' 'EXTEND' 'ZWJ' 'REGIONAL_INDICATOR' 'PREPEND' 'SPACINGMARK' 'L' 'V' 'T' 'LV' 'LVT' 'OTHER'
+replaced by:
+    .RexxUnicode~codepointBoundClass(codepoint, >boundClass)
+    boundClass values to test (on the right, if different):
+        'CR'
+        'LF'
+        'CONTROL'               'CN'
+        'EXTEND'                'EX'
+        'ZWJ'
+        'REGIONAL_INDICATOR'    'RI'
+        'PREPEND'               'PP'
+        'SPACINGMARK'           'SM'
+        'L'
+        'V'
+        'T'
+        'LV'
+        'LVT'
+        'OTHER'                 'XX'
+
+AI requirement:
+    .RexxUnicode~isExtendedPictographic(codepoint) → boolean
+replaced by:
+    .RexxUnicode~codepointBoundClass(codepoint, >boundClass)
+    boundClass == "EP" | boundClass == "EZWG"
+        "EP",       "Extended_Pictographic"
+        "EZWG",     "E_ZWG"
+
+AI requirement:
+    .RexxUnicode~isInCBConsonant(codepoint) → boolean
+replaced by:
+    .RexxUnicodeServices~codepointIndicConjunctBreak(codepoint, >indicConjunctBreak)
+    indicConjunctBreak == "Consonant"
+
+AI requirement:
+    .RexxUnicode~isInCBLinker(codepoint) → boolean
+replaced by:
+    .RexxUnicodeServices~codepointIndicConjunctBreak(codepoint, >indicConjunctBreak)
+    indicConjunctBreak == "Linker"
+*/
+
+/*
+UAX #29, Unicode Text Segmentation
+https://www.unicode.org/reports/tr29/
+https://www.unicode.org/reports/tr29/#Random_Access
+
+Iterates backward from a KNOWN boundary (default: one past the end of the
+string, i.e. the whole string's right edge). This is deliberately not a
+random-access primitive -- per UAX #29 6.4, starting from an arbitrary,
+unverified offset would require a separate "safe point" search. Starting
+from a genuine boundary avoids that; what remains is the residual cost
+described below.
+
+Rules GB3, GB6-GB9b are simple, direction-symmetric pairwise lookups: no
+lookback needed, forward or backward. Three rules are not:
+  GB9c  (Indic conjunct clusters)
+  GB11  (emoji ZWJ sequences)
+  GB12/13 (regional indicator / flag sequences)
+These are left-anchored: correctly resolving them going backward requires
+rescanning the run of Extend/Linker/RI scalars each time one is
+encountered, since (unlike forward iteration) there's no running "parity"
+or "seen a linker" state carried over from a previous step to reuse. This
+is not an implementation gap on our part -- Swift's stdlib has the exact
+same property and documents it as accepted, non-quadratic-in-practice
+behavior (see StringGraphemeBreaking.swift, _previousGraphemeClusterBoundary).
+https://github.com/swiftlang/swift/blob/main/stdlib/public/core/StringGraphemeBreaking.swift
+*/
+
+/*
+A few things worth flagging:
+
+JLF:
+There is no countPrecedingRegionalIndicators in the code.
+Is it precedingRIRunLengthIsOdd?
+
+countPrecedingRegionalIndicators intentionally counts starting from the scalar
+itself, not from scalar1's position — it's called with pos1, the end of scalar1
+(i.e. cursor before the step), so its first backward decode re-reads scalar1
+itself, folding it into the count. That matches the definition:
+parity is of "how many RI's including this one, back to the start of the run."
+
+Error handling mirrors your forward supplier exactly: a maximal ill-formed subpart
+is always its own grapheme, isolated from neighbors on both sides, and the three
+lookback helpers all treat hitting an error boundary as "run terminates, no match"
+— consistent with your forward code's graphemeBreakState = 0 reset on error.
+
+This is a plain sketch, not benchmarked — like Swift's version,
+precedingRIRunLengthIsOdd is O(run length) rather than O(1),
+so a string that's pathologically almost-all REGIONAL_INDICATOR scalars would
+make backward iteration quadratic over that stretch, same as forward would be
+fast but backward wouldn't. That's an accepted, documented trade-off in the
+reference implementation, not a bug to chase down — but worth a comment in your
+code so a future reader (including future-you) doesn't mistake it for an oversight.
+*/
+
+-- Using a mixin class requires giving access to these (normally) private variables.
+::attribute error get package           -- "" if no error, otherwise error description
+::attribute grapheme get package        -- a string of length 1..n, or .nil if no more grapheme available
+::attribute graphemeIndexB get package  -- 1..length+1, counted from the beginning of the string, negative if the grapheme byte sequence is invalid
+::attribute indexG get package          -- 1-based, counted from the end of the string
+
+::method init
+    expose string indexB indexG error
+    use strict arg string, defaultIndexType="", defaultItemType=""
+    string = requestBaseString(string, "string")
+    self~setDefaultIndexType(defaultIndexType)
+    self~setDefaultItemType(defaultItemType)
+
+    empty = .array~new(0) -- No need to create a copy, the string is immutable
+    self~init:super(empty, empty)
+
+    -- Unlike the reverse codepoint supplier, I don't use a variable named "boundaryIndexB".
+    -- "indexB" can be used, because the grapheme byte position is managed with "graphemeIndexB".
+    indexB = string~length + 1 -- boundary (1-based): the grapheme we decode ends just before this
+    indexG = 1 -- count from the end
+    error = ""
+    self~decodePrevious
+
+
+::method next
+    expose indexB indexG graphemeIndexB
+    use strict arg -- none
+    if self~available then do
+        indexB = abs(graphemeIndexB)   -- move the right edge to the grapheme we just found
+        indexG += 1
+        self~decodePrevious
+    end
+    else raise syntax 93.937 -- No more supplier items available
+
+
+-- Decode the grapheme cluster ending immediately before `indexB`, and set
+-- indexB's new left edge into graphemeIndexB. grapheme = .nil at start of text.
+::method decodePrevious private
+    expose string indexB grapheme graphemeIndexB error
+    use strict arg -- none
+
+    error = ""
+
+    -- ok, it's an alternative way to detect the beginning of string,
+    -- the other way being to test if sizeB == 0 after utf8DecodePreviousCodepoint.
+    if indexB <= 1 then do
+        grapheme = .nil
+        graphemeIndexB = .nil
+        return
+    end
+
+    codepoint2 = .RexxUnicode~utf8DecodePreviousCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
+    cursor = indexB - abs(sizeB)      -- start of the rightmost scalar so far
+
+    -- An ill-formed byte's maximal subpart is always its own grapheme cluster
+    -- (mirrors the forward supplier's error handling: no merging across an error).
+    if sizeB < 0 then do
+        graphemeIndexB = -cursor -- same convention as .RexxUnicodeStringIndexer; a negative byte index indicates an invalid byte sequence
+        grapheme = string~substr(cursor, indexB - cursor)
+        error = "start byte position" cursor ":" errorMsg
+        return
+    end
+
+    -- prop2 = .RexxUnicode~graphemeClusterBreakProperty(codepoint2)
+    .RexxUnicode~codepointBoundClass(codepoint2, >prop2)
+
+    loop
+        if cursor <= 1 then leave    -- start of text: always a boundary
+
+        codepoint1 = .RexxUnicode~utf8DecodePreviousCodepoint(string, cursor, >sizeB1, >errorCode1, >errorMsg1)
+        pos1 = cursor - abs(sizeB1)
+
+        if sizeB1 < 0 then leave    -- adjacent error is always its own cluster: break here
+
+        -- prop1 = .RexxUnicode~graphemeClusterBreakProperty(codepoint1)
+        .RexxUnicode~codepointBoundClass(codepoint1, >prop1)
+
+        if self~shouldBreakBackward(codepoint1, prop1, pos1, codepoint2, prop2) then leave
+
+        -- No break: extend the grapheme leftward and keep going
+        cursor = pos1
+        codepoint2 = codepoint1
+        prop2 = prop1
+    end
+
+    graphemeIndexB = cursor
+    grapheme = string~substr(cursor, indexB - cursor)
+    error = ""
+
+
+-- Direct-from-table pairwise rules (GB3, GB6-GB9b), plus dispatch to the
+-- three lookback-requiring rules (GB9c, GB11, GB12/13). Order matches rule
+-- precedence in UAX #29 3.1.1: first match wins.
+::method shouldBreakBackward private
+    expose string
+    use strict arg codepoint1, prop1, pos1, codepoint2, prop2
+
+    -- GB3: do not break CR x LF
+    if prop1 == "CR", prop2 == "LF" then return .false
+
+    -- GB4: break after Control | CR | LF
+    if prop1 == "CN" | prop1 == "CR" | prop1 == "LF" then return .true
+
+    -- GB5: break before Control | CR | LF
+    if prop2 == "CN" | prop2 == "CR" | prop2 == "LF" then return .true
+
+    -- GB6/7/8: do not break within Hangul syllable sequences
+    if prop1 == "L", (prop2 == "L" | prop2 == "V" | prop2 == "LV" | prop2 == "LVT") then return .false
+    if (prop1 == "LV" | prop1 == "V"), (prop2 == "V" | prop2 == "T") then return .false
+    if (prop1 == "LVT" | prop1 == "T"), prop2 == "T" then return .false
+
+    -- GB9: do not break before Extend | ZWJ
+    if prop2 == "EX" | prop2 == "ZWJ" then return .false
+
+    -- GB9a: do not break before SpacingMark
+    if prop2 == "SM" then return .false
+
+    -- GB9b: do not break after Prepend
+    if prop1 == "PP" then return .false
+
+    -- GB11: Extended_Pictographic Extend* ZWJ x Extended_Pictographic
+    if prop1 == "ZWJ", -
+       (prop2 == "EP" | prop2 == "EZWG") /*.RexxUnicode~isExtendedPictographic(codepoint2)*/ then -
+        return \self~isPictographicBeforeZwj(pos1)
+
+    -- GB9c: InCB=Consonant [Extend|Linker]* Linker [Extend|Linker]* x InCB=Consonant
+    .RexxUnicodeServices~codepointIndicConjunctBreak(codepoint2, >indicConjunctBreak2)
+    if indicConjunctBreak2 == "Consonant" /*.RexxUnicode~isInCBConsonant(codepoint2)*/ , -
+       (prop1 == "EX" | prop1 == "ZWJ"), -
+       self~isInCBExtendOrLinker(codepoint1) then -
+        return \self~isConsonantThroughLinkerRun(codepoint1, pos1)
+
+    -- GB12/13: do not break within RI RI if an odd number of RI precede the break
+    if prop1 == "RI", prop2 == "RI" then -
+        return self~precedingRIRunLengthIsOdd(pos1)
+
+    -- GB999: otherwise, break
+    return .true
+
+
+-- true if codepoint is InCB=Extend or InCB=Linker (i.e. Extend/ZWJ but not itself
+-- a Consonant or Linker) -- same derivation Swift uses for _isInCBExtend.
+::method isInCBExtendOrLinker private
+    use strict arg codepoint
+    .RexxUnicodeServices~codepointIndicConjunctBreak(codepoint, >indicConjunctBreak)
+    if indicConjunctBreak == "Linker" /*.RexxUnicode~isInCBLinker(codepoint)*/ then return .true
+    -- prop = .RexxUnicode~graphemeClusterBreakProperty(codepoint)
+    .RexxUnicode~codepointBoundClass(codepoint, >prop)
+    if prop \== "EX", prop \== "ZWJ" then return .false
+    -- return \.RexxUnicode~isInCBConsonant(codepoint)
+    return indicConjunctBreak \== "Consonant"
+
+
+-- GB11 lookback: walk left from the ZWJ (whose right boundary ends at zwjEndPos)
+-- over an Extend* run to see whether an Extended_Pictographic started it.
+::method isPictographicBeforeZwj private
+    expose string
+    use strict arg zwjEndPos
+    pos = zwjEndPos
+    loop
+        if pos <= 1 then return .false
+        cp = .RexxUnicode~utf8DecodePreviousCodepoint(string, pos, >sizeB)
+        if sizeB < 0 then return .false          -- an error boundary can't be pictographic
+
+        -- if .RexxUnicode~isExtendedPictographic(cp) then return .true
+        .RexxUnicode~codepointBoundClass(cp, >boundClass)
+        if boundClass == "EP" | boundClass == "EZWG" then return .true
+
+        -- prop = .RexxUnicode~graphemeClusterBreakProperty(cp)
+        .RexxUnicode~codepointBoundClass(cp, >prop)
+        if prop \== "EX" then return .false   -- run ended without finding one
+        pos = pos - abs(sizeB)
+    end
+
+
+-- GB9c lookback: walk left from the Extend/Linker run looking for an
+-- InCB=Consonant, requiring at least one InCB=Linker en route. `firstCodepoint`
+-- is codepoint1 itself (already confirmed Extend/Linker by the caller) and must
+-- be checked for Linker-ness too -- it's part of the run, not something to skip
+-- past before scanning starts.
+/*
+--------------------------------------------------------------------------------
+Bug 2 — isConsonantThroughLinkerRun: doesn't actually require a Linker
+    if indicConjunctBreak == "Consonant" then return .true
+
+GB9c requires at least one InCB=Linker between the two consonants —
+[Extend|Linker]* Linker [Extend|Linker]*, not just any run of Extend/Linker.
+The current code returns success the moment it finds a Consonant behind the run,
+without ever checking whether a Linker was actually part of that run.
+So U+0915 U+0951 U+0915 (consonant, Extend, consonant — no Linker at all) walks
+back from the Extend, immediately hits the first consonant, and reports
+"yes, conjunct" — merging everything, when it should report "no" and let GB999
+break there.
+
+It needs a flag, set only when a genuine Linker is seen, and the success return
+must be conditioned on it: seenLinker.
+
+This is why your other GB9c cases (the "kshi" example and the
+double-Extend-around-a-linker case) already passed despite the bug — they all
+happen to contain a genuine Linker, so the missing check never got exercised.
+Test #3 was specifically constructed as the negative case, and it's exactly the
+one that catches it — good test design, that's precisely what it was for.
+
+isPictographicBeforeZwj (GB11) doesn't have an analogous issue — it has no
+"must have seen X" requirement, just "walk back over Extend* until pictographic
+or non-Extend," so there's no missing-flag failure mode there, consistent with
+none of your GB11 cases showing up in the failures.
+*/
+/*
+--------------------------------------------------------------------------------
+Bug 3 - "U+0915 U+094D U+0937 U+093F" regression
+        a RexxUnicodeReverseGraphemeSupplier
+         7 : 'U+0937 U+093F'
+         1 : 'U+0915 U+094D'
+should be
+       a RexxUnicodeReverseGraphemeSupplier
+         1 : 'U+0915 U+094D U+0937 U+093F'
+
+it's in isConsonantThroughLinkerRun, and it's a boundary-condition bug rather
+than a logic-inversion like the last two: the function starts scanning before
+codepoint1, so it never actually checks whether codepoint1 itself is the Linker.
+
+Trace through U+0915 U+094D U+0937 U+093F (KA, Virama, SSA, vowel sign I):
+the backward walk reaches the pair codepoint1 = U+094D (the Linker),
+codepoint2 = U+0937 (Consonant). isInCBExtendOrLinker(codepoint1) correctly
+confirms U+094D qualifies, so the GB9c branch fires and calls:
+    return \self~isConsonantThroughLinkerRun(pos1)
+
+where pos1 is the position before U+094D — i.e., the scan starts by decoding
+past the Linker and lands straight on U+0915 (Consonant), having never inspected
+U+094D for Linker-ness at all. Since seenLinker is still .false at that point,
+it returns .false → forces a break right where there shouldn't be one. That's
+exactly the regression: 094D | 0937 splits.
+
+The fix is to seed seenLinker from codepoint1 itself before scanning further
+back, since codepoint1 is already known (by the caller) to be part of the run:
+    add `firstCodepoint` argument and test its IndicConjunctBreak property.
+    modify `shouldBreakBackward` to pass codepoint1.
+
+Retracing the "kshi" case with this fix:
+firstCodepoint = U+094D is checked first — Linker, so seenLinker = .true
+immediately — then the loop decodes back to U+0915, sees Consonant, and returns
+.true. No break. Matches forward.
+
+And it doesn't reopen the negative test you caught last time (U+0915 U+0951
+U+0915, no linker): there, firstCodepoint = U+0951 is Extend, not Linker, so
+seenLinker stays .false going in, the loop then hits U+0915 (Consonant) and
+correctly returns .false → break, as it should.
+
+I also re-traced the two-Extend-around-a-linker case (U+0915 U+0951 U+094D
+U+0951 U+0915) with this fix to make sure it doesn't regress — it still merges
+into one grapheme, since the Linker gets picked up on the second call to
+isConsonantThroughLinkerRun (this time seeded from a plain Extend codepoint,
+seenLinker = .false initially, but the scan then walks past the actual U+094D
+and sets it .true there before reaching the leading consonant).
+*/
+::method isConsonantThroughLinkerRun private
+    expose string
+    use strict arg firstCodepoint, runEndPos
+
+    .RexxUnicodeServices~codepointIndicConjunctBreak(firstCodepoint, >indicConjunctBreak)
+    seenLinker = (indicConjunctBreak == "Linker")
+
+    pos = runEndPos
+    loop
+        if pos <= 1 then return .false
+        cp = .RexxUnicode~utf8DecodePreviousCodepoint(string, pos, >sizeB)
+        if sizeB < 0 then return .false
+
+        -- if .RexxUnicode~isInCBConsonant(cp) then return .true
+        .RexxUnicodeServices~codepointIndicConjunctBreak(cp, >indicConjunctBreak)
+        if indicConjunctBreak == "Consonant" then return seenLinker   -- <-- was unconditional .true
+
+        if indicConjunctBreak == "Linker" then seenLinker = .true
+        else if \self~isInCBExtendOrLinker(cp) then return .false     -- run ended, no consonant
+
+        pos = pos - abs(sizeB)
+    end
+
+
+-- GB12/13 lookback: count the contiguous run of Regional_Indicator scalars
+-- ending at (and including) the scalar whose right edge is riEndPos.
+-- No-break holds iff that count is odd.
+--
+-- precedingRIRunLengthIsOdd is O(run length) rather than O(1),
+-- so a string that's pathologically almost-all REGIONAL_INDICATOR scalars would
+-- make backward iteration quadratic over that stretch.
+/*
+--------------------------------------------------------------------------------
+Bug 1 — precedingRIRunLengthIsOdd: the loop condition is inverted
+    if boundClass == "RI" then leave
+
+This says "stop counting as soon as you find an RI" — backwards. The whole point
+of the loop is to count the run of RI's; it should stop when it finds something
+that isn't RI (that's where the run ends), and increment the count while it is RI.
+
+As written, the loop almost always terminates on its very first decode (since
+that first decode very often is an RI, given it's being called at an RI/RI
+junction), so count stays near 0 regardless of the actual run length — which is
+why every RI test merged the whole run into a single grapheme instead of pairing
+it up: the parity check was comparing against a count that never reflected the
+real run.
+
+The rest of the RI logic is correct as-is, including the (unnegated) call site
+return self~precedingRIRunLengthIsOdd(pos1) — I checked that one carefully since
+it looked suspicious at first, but the parity math works out: pos1 is scalar1's
+start, so the count naturally excludes scalar1 itself, giving "how many RI
+precede scalar1"; break-iff-that's-odd is the correct condition once the loop
+itself is fixed. Tracing your test #3 (U+1F1EB U+1F1F7 U+1F1E9) through the
+corrected version end-to-end reproduces the forward result exactly, pair (a,b)
+then singleton c.
+*/
+::method precedingRIRunLengthIsOdd private
+    expose string
+    use strict arg riEndPos
+    pos = riEndPos
+    count = 0
+    loop
+        if pos <= 1 then leave
+        cp = .RexxUnicode~utf8DecodePreviousCodepoint(string, pos, >sizeB)
+        if sizeB < 0 then leave -- error
+        -- if .RexxUnicode~graphemeClusterBreakProperty(cp) \== "REGIONAL_INDICATOR" then leave
+        .RexxUnicode~codepointBoundClass(cp, >boundClass)
+        if boundClass \== "RI" then leave        -- <-- was "==": run ends here
+        count += 1
+        pos = pos - abs(sizeB)
+    end
+    return count // 2 == 1
 
 
 /******************************************************************************/
@@ -1394,7 +1874,7 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 
     indexB = 1
     previousCodepoint = -1
-    graphemeBreakArgs = (-1, -1, 0) -- codepoint1, codepoint2, state. Will use the same array at each iteration.
+    graphemeBreakState = 0
 
     forever:
         codepoint = .RexxUnicode~utf8DecodeCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
@@ -1424,9 +1904,7 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
             if endGraphemeStorageSize > 0 then endGraphemeIndexes~append(indexB)
         end
         else do
-            graphemeBreakArgs[1] = previousCodepoint
-            graphemeBreakArgs[2] = codepoint
-            if .RexxUnicode~graphemeBreak(graphemeBreakArgs) then do
+            if .RexxUnicode~graphemeBreak3(previousCodepoint, codepoint, >graphemeBreakState) then do
                 graphemeCount += 1
                 if graphemeCount <= graphemeStorageLimit then graphemeIndexes~append(indexB)
                 if graphemeCount == (graphemeStorageLimit + 1) then lastGraphemeSuccessorIndex = indexB
@@ -1452,7 +1930,7 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
         if graphemeCount == (graphemeStorageLimit + 1) then lastGraphemeSuccessorIndex = -indexB
         if endGraphemeStorageSize > 0 then endGraphemeIndexes~append(-indexB)
 
-        graphemeBreakArgs[3] = 0 -- reset the extended grapheme state
+        graphemeBreakState = 0 -- reset the extended grapheme state
         previousCodepoint = codepoint
         indexB += abs(sizeB) -- skip the invalid bytes
         signal forever

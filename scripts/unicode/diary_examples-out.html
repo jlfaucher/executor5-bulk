@@ -42,12 +42,1548 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
-</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 3 Aug 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S118e5Qbc4826640
+</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 5 Aug 2026
+</span><span style="font-weight:bold;color:green;">Input queue name: Se973Qbc4826040
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
+
+
+<span style="font-weight:bold;color:blue;">-- ===============================================================================
+</span><span style="font-weight:bold;color:blue;">-- 2026 Aug 07
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">[Unicode]
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Add .RexxUnicodeServices~graphemeBreak3(codepoint1, codepoint2, &gt;refState)
+</span><span style="font-weight:bold;color:blue;">Deprecate .RexxUnicodeServices~graphemeBreak(array)
+</span><span style="font-weight:bold;color:blue;">    Using an array for the persistent state can lead to subtle bugs
+</span><span style="font-weight:bold;color:blue;">    when copying an object that uses such an array internally.
+</span><span style="font-weight:bold;color:blue;">    By default, the copy is shallow, so both the original object and
+</span><span style="font-weight:bold;color:blue;">    its copies refer to the same internal array. As a result, the
+</span><span style="font-weight:bold;color:blue;">    state may be corrupted, depending on the sequence of calls made
+</span><span style="font-weight:bold;color:blue;">    on the original object and its copies.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Add reverse suppliers for codepoints and graphemes:
+</span><span style="font-weight:bold;color:blue;">- RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">- RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">Byte indexes are counted from the beginning of the string.
+</span><span style="font-weight:bold;color:blue;">Codepoint and grapheme indexes are counted from the end of the string.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Examples
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">refState = 0</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~graphemeBreak3(13, 10, &gt;refState)=     </span><span style="font-weight:bold;color:blue;">-- 0    CR + LF is a grapheme, no grapheme break inside</span>
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">refState=                                                   </span><span style="font-weight:bold;color:blue;">-- 3</span>
+ 3
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~graphemeBreak3(10, 65, &gt;refState)=     </span><span style="font-weight:bold;color:blue;">-- 1    There is a grapheme break between LF and 'A'</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">refState=                                                   </span><span style="font-weight:bold;color:blue;">-- 1</span>
+ 1
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0041 U+000D U+000A U+0042&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0041'
+ 2 : 'U+000D U+000A'
+ 4 : 'U+0042'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041'
+</span><span style="font-weight:bold;color:blue;">     2 : 'U+000D U+000A'
+</span><span style="font-weight:bold;color:blue;">     4 : 'U+0042'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">----------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- Reverse suppliers on valid UTF-8 string
+</span><span style="font-weight:bold;color:blue;">----------------------------------------------------------------------------
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse codepoint supplier
+</span><span style="font-weight:bold;color:blue;">-- the default index type is the codepoint index
+</span><span style="font-weight:bold;color:blue;">-- the default item type is the codepoint as a whole number
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseCodepointSupplier~new(&quot;noël👩‍👨‍👩‍👧🎅&quot;)==</span>
+a RexxUnicodeReverseCodepointSupplier 
+ 1  :  127877
+ 2  :  128103
+ 3  :  8205
+ 4  :  128105
+ 5  :  8205
+ 6  :  128104
+ 7  :  8205
+ 8  :  128105
+ 9  :  108
+ 10 :  235
+ 11 :  111
+ 12 :  110
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     1  :  127877
+</span><span style="font-weight:bold;color:blue;">     2  :  128103
+</span><span style="font-weight:bold;color:blue;">     3  :  8205
+</span><span style="font-weight:bold;color:blue;">     4  :  128105
+</span><span style="font-weight:bold;color:blue;">     5  :  8205
+</span><span style="font-weight:bold;color:blue;">     6  :  128104
+</span><span style="font-weight:bold;color:blue;">     7  :  8205
+</span><span style="font-weight:bold;color:blue;">     8  :  128105
+</span><span style="font-weight:bold;color:blue;">     9  :  108
+</span><span style="font-weight:bold;color:blue;">     10 :  235
+</span><span style="font-weight:bold;color:blue;">     11 :  111
+</span><span style="font-weight:bold;color:blue;">     12 :  110
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse grapheme supplier
+</span><span style="font-weight:bold;color:blue;">-- the default index type is the grapheme index
+</span><span style="font-weight:bold;color:blue;">-- the default item type is the grapheme as a string
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(&quot;noël👩‍👨‍👩‍👧🎅&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : '🎅'
+ 2 : '👩‍👨‍👩‍👧'
+ 3 : 'l'
+ 4 : 'ë'
+ 5 : 'o'
+ 6 : 'n'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : '🎅'
+</span><span style="font-weight:bold;color:blue;">     2 : '👩‍👨‍👩‍👧'
+</span><span style="font-weight:bold;color:blue;">     3 : 'l'
+</span><span style="font-weight:bold;color:blue;">     4 : 'ë'
+</span><span style="font-weight:bold;color:blue;">     5 : 'o'
+</span><span style="font-weight:bold;color:blue;">     6 : 'n'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse codepoint supplier
+</span><span style="font-weight:bold;color:blue;">-- It's possible to get other types of index and item
+</span><span style="font-weight:bold;color:blue;">-- Here, we request the byte index and the codepoint byte sequence as hex digits
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseCodepointSupplier~new(&quot;noël👩‍👨‍👩‍👧🎅&quot;, &quot;b&quot;, &quot;x&quot;)==</span>
+a RexxUnicodeReverseCodepointSupplier 
+ 31 : '\x{F09F8E85}'
+ 27 : '\x{F09F91A7}'
+ 24 : '\x{E2808D}'
+ 20 : '\x{F09F91A9}'
+ 17 : '\x{E2808D}'
+ 13 : '\x{F09F91A8}'
+ 10 : '\x{E2808D}'
+ 6  : '\x{F09F91A9}'
+ 5  : '\x6C'
+ 3  : '\x{C3AB}'
+ 2  : '\x6F'
+ 1  : '\x6E'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     31 : '\x{F09F8E85}'
+</span><span style="font-weight:bold;color:blue;">     27 : '\x{F09F91A7}'
+</span><span style="font-weight:bold;color:blue;">     24 : '\x{E2808D}'
+</span><span style="font-weight:bold;color:blue;">     20 : '\x{F09F91A9}'
+</span><span style="font-weight:bold;color:blue;">     17 : '\x{E2808D}'
+</span><span style="font-weight:bold;color:blue;">     13 : '\x{F09F91A8}'
+</span><span style="font-weight:bold;color:blue;">     10 : '\x{E2808D}'
+</span><span style="font-weight:bold;color:blue;">     6  : '\x{F09F91A9}'
+</span><span style="font-weight:bold;color:blue;">     5  : '\x6C'
+</span><span style="font-weight:bold;color:blue;">     3  : '\x{C3AB}'
+</span><span style="font-weight:bold;color:blue;">     2  : '\x6F'
+</span><span style="font-weight:bold;color:blue;">     1  : '\x6E'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse grapheme supplier providing the byte index and returning the grapheme byte sequence as hex digits
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(&quot;noël👩‍👨‍👩‍👧🎅&quot;, &quot;b&quot;, &quot;x&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 31 : '\x{F09F8E85}'
+ 6  : '\x{F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
+ 5  : '\x6C'
+ 3  : '\x{C3AB}'
+ 2  : '\x6F'
+ 1  : '\x6E'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     31 : '\x{F09F8E85}'
+</span><span style="font-weight:bold;color:blue;">     6  : '\x{F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
+</span><span style="font-weight:bold;color:blue;">     5  : '\x6C'
+</span><span style="font-weight:bold;color:blue;">     3  : '\x{C3AB}'
+</span><span style="font-weight:bold;color:blue;">     2  : '\x6F'
+</span><span style="font-weight:bold;color:blue;">     1  : '\x6E'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse codepoint supplier providing the default index and returning the codepoint escaped string
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseCodepointSupplier~new(&quot;noël👩‍👨‍👩‍👧🎅&quot;, , &quot;\&quot;)==</span>
+a RexxUnicodeReverseCodepointSupplier 
+ 1  : '🎅'
+ 2  : '👧'
+ 3  : '\u200D'
+ 4  : '👩'
+ 5  : '\u200D'
+ 6  : '👨'
+ 7  : '\u200D'
+ 8  : '👩'
+ 9  : 'l'
+ 10 : 'ë'
+ 11 : 'o'
+ 12 : 'n'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     1  : '🎅'
+</span><span style="font-weight:bold;color:blue;">     2  : '👧'
+</span><span style="font-weight:bold;color:blue;">     3  : '\u200D'
+</span><span style="font-weight:bold;color:blue;">     4  : '👩'
+</span><span style="font-weight:bold;color:blue;">     5  : '\u200D'
+</span><span style="font-weight:bold;color:blue;">     6  : '👨'
+</span><span style="font-weight:bold;color:blue;">     7  : '\u200D'
+</span><span style="font-weight:bold;color:blue;">     8  : '👩'
+</span><span style="font-weight:bold;color:blue;">     9  : 'l'
+</span><span style="font-weight:bold;color:blue;">     10 : 'ë'
+</span><span style="font-weight:bold;color:blue;">     11 : 'o'
+</span><span style="font-weight:bold;color:blue;">     12 : 'n'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse grapheme supplier providing the default index and returning the grapheme escaped string
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(&quot;noël👩‍👨‍👩‍👧🎅&quot;, , &quot;\&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : '🎅'
+ 2 : '👩\u200D👨\u200D👩\u200D👧'
+ 3 : 'l'
+ 4 : 'ë'
+ 5 : 'o'
+ 6 : 'n'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : '🎅'
+</span><span style="font-weight:bold;color:blue;">     2 : '👩\u200D👨\u200D👩\u200D👧'
+</span><span style="font-weight:bold;color:blue;">     3 : 'l'
+</span><span style="font-weight:bold;color:blue;">     4 : 'ë'
+</span><span style="font-weight:bold;color:blue;">     5 : 'o'
+</span><span style="font-weight:bold;color:blue;">     6 : 'n'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse codepoint supplier providing the default index and returning the codepoint in U+ notation
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseCodepointSupplier~new(&quot;noël👩‍👨‍👩‍👧🎅&quot;, , &quot;u&quot;)==</span>
+a RexxUnicodeReverseCodepointSupplier 
+ 1  : 'U+1F385'
+ 2  : 'U+1F467'
+ 3  : 'U+200D'
+ 4  : 'U+1F469'
+ 5  : 'U+200D'
+ 6  : 'U+1F468'
+ 7  : 'U+200D'
+ 8  : 'U+1F469'
+ 9  : 'U+006C'
+ 10 : 'U+00EB'
+ 11 : 'U+006F'
+ 12 : 'U+006E'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     1  : 'U+1F385'
+</span><span style="font-weight:bold;color:blue;">     2  : 'U+1F467'
+</span><span style="font-weight:bold;color:blue;">     3  : 'U+200D'
+</span><span style="font-weight:bold;color:blue;">     4  : 'U+1F469'
+</span><span style="font-weight:bold;color:blue;">     5  : 'U+200D'
+</span><span style="font-weight:bold;color:blue;">     6  : 'U+1F468'
+</span><span style="font-weight:bold;color:blue;">     7  : 'U+200D'
+</span><span style="font-weight:bold;color:blue;">     8  : 'U+1F469'
+</span><span style="font-weight:bold;color:blue;">     9  : 'U+006C'
+</span><span style="font-weight:bold;color:blue;">     10 : 'U+00EB'
+</span><span style="font-weight:bold;color:blue;">     11 : 'U+006F'
+</span><span style="font-weight:bold;color:blue;">     12 : 'U+006E'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse grapheme supplier providing the default index and returning the grapheme codepoints in U+ notation
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(&quot;noël👩‍👨‍👩‍👧🎅&quot;, , &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+1F385'
+ 2 : 'U+1F469 U+200D U+1F468 U+200D U+1F469 U+200D U+1F467'
+ 3 : 'U+006C'
+ 4 : 'U+00EB'
+ 5 : 'U+006F'
+ 6 : 'U+006E'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1F385'
+</span><span style="font-weight:bold;color:blue;">     2 : 'U+1F469 U+200D U+1F468 U+200D U+1F469 U+200D U+1F467'
+</span><span style="font-weight:bold;color:blue;">     3 : 'U+006C'
+</span><span style="font-weight:bold;color:blue;">     4 : 'U+00EB'
+</span><span style="font-weight:bold;color:blue;">     5 : 'U+006F'
+</span><span style="font-weight:bold;color:blue;">     6 : 'U+006E'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse codepoint supplier providing the default index and returning the codepoint as a RexxUnicodeCharacter
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseCodepointSupplier~new(&quot;noël👩‍👨‍👩‍👧🎅&quot;, , .RexxUnicodeCharacter)==</span>
+a RexxUnicodeReverseCodepointSupplier 
+ 1  : (&quot;🎅&quot; \x{F09F8E85} U+1F385 So Other_Symbol &quot;FATHER CHRISTMAS&quot;)
+ 2  : (&quot;👧&quot; \x{F09F91A7} U+1F467 So Other_Symbol &quot;GIRL&quot;)
+ 3  : (&lt;?&gt; \x{E2808D} U+200D Cf Format &quot;ZERO WIDTH JOINER&quot;)
+ 4  : (&quot;👩&quot; \x{F09F91A9} U+1F469 So Other_Symbol &quot;WOMAN&quot;)
+ 5  : (&lt;?&gt; \x{E2808D} U+200D Cf Format &quot;ZERO WIDTH JOINER&quot;)
+ 6  : (&quot;👨&quot; \x{F09F91A8} U+1F468 So Other_Symbol &quot;MAN&quot;)
+ 7  : (&lt;?&gt; \x{E2808D} U+200D Cf Format &quot;ZERO WIDTH JOINER&quot;)
+ 8  : (&quot;👩&quot; \x{F09F91A9} U+1F469 So Other_Symbol &quot;WOMAN&quot;)
+ 9  : (&quot;l&quot; \x6C U+006C Ll Lowercase_Letter &quot;LATIN SMALL LETTER L&quot;)
+ 10 : (&quot;ë&quot; \x{C3AB} U+00EB Ll Lowercase_Letter &quot;LATIN SMALL LETTER E WITH DIAERESIS&quot;)
+ 11 : (&quot;o&quot; \x6F U+006F Ll Lowercase_Letter &quot;LATIN SMALL LETTER O&quot;)
+ 12 : (&quot;n&quot; \x6E U+006E Ll Lowercase_Letter &quot;LATIN SMALL LETTER N&quot;)
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     1  : (&quot;🎅&quot; \x{F09F8E85} U+1F385 So Other_Symbol &quot;FATHER CHRISTMAS&quot;)
+</span><span style="font-weight:bold;color:blue;">     2  : (&quot;👧&quot; \x{F09F91A7} U+1F467 So Other_Symbol &quot;GIRL&quot;)
+</span><span style="font-weight:bold;color:blue;">     3  : (&lt;?&gt; \x{E2808D} U+200D Cf Format &quot;ZERO WIDTH JOINER&quot;)
+</span><span style="font-weight:bold;color:blue;">     4  : (&quot;👩&quot; \x{F09F91A9} U+1F469 So Other_Symbol &quot;WOMAN&quot;)
+</span><span style="font-weight:bold;color:blue;">     5  : (&lt;?&gt; \x{E2808D} U+200D Cf Format &quot;ZERO WIDTH JOINER&quot;)
+</span><span style="font-weight:bold;color:blue;">     6  : (&quot;👨&quot; \x{F09F91A8} U+1F468 So Other_Symbol &quot;MAN&quot;)
+</span><span style="font-weight:bold;color:blue;">     7  : (&lt;?&gt; \x{E2808D} U+200D Cf Format &quot;ZERO WIDTH JOINER&quot;)
+</span><span style="font-weight:bold;color:blue;">     8  : (&quot;👩&quot; \x{F09F91A9} U+1F469 So Other_Symbol &quot;WOMAN&quot;)
+</span><span style="font-weight:bold;color:blue;">     9  : (&quot;l&quot; \x6C U+006C Ll Lowercase_Letter &quot;LATIN SMALL LETTER L&quot;)
+</span><span style="font-weight:bold;color:blue;">     10 : (&quot;ë&quot; \x{C3AB} U+00EB Ll Lowercase_Letter &quot;LATIN SMALL LETTER E WITH DIAERESIS&quot;)
+</span><span style="font-weight:bold;color:blue;">     11 : (&quot;o&quot; \x6F U+006F Ll Lowercase_Letter &quot;LATIN SMALL LETTER O&quot;)
+</span><span style="font-weight:bold;color:blue;">     12 : (&quot;n&quot; \x6E U+006E Ll Lowercase_Letter &quot;LATIN SMALL LETTER N&quot;)
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">----------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- Reverse suppliers on invalid UTF-8 string - U+FFFD Substitution of Maximal Subparts
+</span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+</span><span style="font-weight:bold;color:blue;">----------------------------------------------------------------------------
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse codepoint supplier providing the codepoint index and returning the codepoint as a whole number
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseCodepointSupplier~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x)==</span>
+a RexxUnicodeReverseCodepointSupplier 
+ 1 :  66
+ 2 :  65533
+ 3 :  65533
+ 4 :  65
+ 5 :  65533
+ 6 :  65533
+ 7 :  65533
+ 8 :  65533
+ 9 :  65533
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     1 :  66
+</span><span style="font-weight:bold;color:blue;">     2 :  65533
+</span><span style="font-weight:bold;color:blue;">     3 :  65533
+</span><span style="font-weight:bold;color:blue;">     4 :  65
+</span><span style="font-weight:bold;color:blue;">     5 :  65533
+</span><span style="font-weight:bold;color:blue;">     6 :  65533
+</span><span style="font-weight:bold;color:blue;">     7 :  65533
+</span><span style="font-weight:bold;color:blue;">     8 :  65533
+</span><span style="font-weight:bold;color:blue;">     9 :  65533
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse grapheme supplier providing the grapheme index and returning the grapheme escaped string
+</span><span style="font-weight:bold;color:blue;">-- (don't display directly the graphemes because the output would be invalid UTF-8)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, , &quot;\&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'B'
+ 2 : '\xBF'
+ 3 : '\x80'
+ 4 : 'A'
+ 5 : '\xFF'
+ 6 : '\x93'
+ 7 : '\x92'
+ 8 : '\x91'
+ 9 : '\xF4'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'B'
+</span><span style="font-weight:bold;color:blue;">     2 : '\xBF'
+</span><span style="font-weight:bold;color:blue;">     3 : '\x80'
+</span><span style="font-weight:bold;color:blue;">     4 : 'A'
+</span><span style="font-weight:bold;color:blue;">     5 : '\xFF'
+</span><span style="font-weight:bold;color:blue;">     6 : '\x93'
+</span><span style="font-weight:bold;color:blue;">     7 : '\x92'
+</span><span style="font-weight:bold;color:blue;">     8 : '\x91'
+</span><span style="font-weight:bold;color:blue;">     9 : '\xF4'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse codepoint supplier providing the byte index and returning the codepoint escaped string
+</span><span style="font-weight:bold;color:blue;">-- A negative byte index indicates an invalid byte sequence
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseCodepointSupplier~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, &quot;b&quot;, &quot;\&quot;)==</span>
+a RexxUnicodeReverseCodepointSupplier 
+ 9 : 'B'
+-8 : '\xBF'
+-7 : '\x80'
+ 6 : 'A'
+-5 : '\xFF'
+-4 : '\x93'
+-3 : '\x92'
+-2 : '\x91'
+-1 : '\xF4'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     9 : 'B'
+</span><span style="font-weight:bold;color:blue;">    -8 : '\xBF'
+</span><span style="font-weight:bold;color:blue;">    -7 : '\x80'
+</span><span style="font-weight:bold;color:blue;">     6 : 'A'
+</span><span style="font-weight:bold;color:blue;">    -5 : '\xFF'
+</span><span style="font-weight:bold;color:blue;">    -4 : '\x93'
+</span><span style="font-weight:bold;color:blue;">    -3 : '\x92'
+</span><span style="font-weight:bold;color:blue;">    -2 : '\x91'
+</span><span style="font-weight:bold;color:blue;">    -1 : '\xF4'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse grapheme supplier providing the byte index and returning the grapheme escaped string
+</span><span style="font-weight:bold;color:blue;">-- A negative byte index indicates an invalid byte sequence
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, &quot;b&quot;, &quot;\&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 9 : 'B'
+-8 : '\xBF'
+-7 : '\x80'
+ 6 : 'A'
+-5 : '\xFF'
+-4 : '\x93'
+-3 : '\x92'
+-2 : '\x91'
+-1 : '\xF4'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     9 : 'B'
+</span><span style="font-weight:bold;color:blue;">    -8 : '\xBF'
+</span><span style="font-weight:bold;color:blue;">    -7 : '\x80'
+</span><span style="font-weight:bold;color:blue;">     6 : 'A'
+</span><span style="font-weight:bold;color:blue;">    -5 : '\xFF'
+</span><span style="font-weight:bold;color:blue;">    -4 : '\x93'
+</span><span style="font-weight:bold;color:blue;">    -3 : '\x92'
+</span><span style="font-weight:bold;color:blue;">    -2 : '\x91'
+</span><span style="font-weight:bold;color:blue;">    -1 : '\xF4'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse codepoint supplier providing the byte index and returning the error message
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseCodepointSupplier~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, &quot;b&quot;, &quot;e&quot;)==</span>
+a RexxUnicodeReverseCodepointSupplier 
+ 9 : ''
+-8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+-7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+ 6 : ''
+-5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+-4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+-3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+-2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+-1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     9 : ''
+</span><span style="font-weight:bold;color:blue;">    -8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     6 : ''
+</span><span style="font-weight:bold;color:blue;">    -5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">    -4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse grapheme supplier providing the byte index and returning the error message
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, &quot;b&quot;, &quot;e&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 9 : ''
+-8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+-7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+ 6 : ''
+-5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+-4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+-3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+-2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+-1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     9 : ''
+</span><span style="font-weight:bold;color:blue;">    -8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     6 : ''
+</span><span style="font-weight:bold;color:blue;">    -5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">    -4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse test case: the last codepoint byte sequence is invalid
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseCodepointSupplier~new(&quot;F4 91 92 93 FF 41 80 BF&quot;x, &quot;b&quot;, &quot;e&quot;)==</span>
+a RexxUnicodeReverseCodepointSupplier 
+-8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+-7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+ 6 : ''
+-5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+-4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+-3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+-2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+-1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">    -8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     6 : ''
+</span><span style="font-weight:bold;color:blue;">    -5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">    -4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse test case: the last grapheme byte sequence is invalid
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(&quot;F4 91 92 93 FF 41 80 BF&quot;x, &quot;b&quot;, &quot;e&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+-8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+-7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+ 6 : ''
+-5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+-4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+-3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+-2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+-1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">    -8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     6 : ''
+</span><span style="font-weight:bold;color:blue;">    -5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">    -4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">    -1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">----------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- Reverse suppliers on invalid UTF-8 string - U+FFFD Substitution of Maximal Subparts
+</span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+</span><span style="font-weight:bold;color:blue;">----------------------------------------------------------------------------
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse codepoint supplier providing the codepoint index and returning the codepoint as a whole number
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseCodepointSupplier~new(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x)==</span>
+a RexxUnicodeReverseCodepointSupplier 
+ 1 :  65
+ 2 :  65533
+ 3 :  65533
+ 4 :  65533
+ 5 :  65533
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     1 :  65
+</span><span style="font-weight:bold;color:blue;">     2 :  65533
+</span><span style="font-weight:bold;color:blue;">     3 :  65533
+</span><span style="font-weight:bold;color:blue;">     4 :  65533
+</span><span style="font-weight:bold;color:blue;">     5 :  65533
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse grapheme supplier providing the grapheme index and returning the grapheme escaped string
+</span><span style="font-weight:bold;color:blue;">-- (don't display directly the graphemes because the output would be invalid UTF-8)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x, , &quot;\&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'A'
+ 2 : '\x{F1BF}'
+ 3 : '\x{F09192}'
+ 4 : '\xE2'
+ 5 : '\x{E180}'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'A'
+</span><span style="font-weight:bold;color:blue;">     2 : '\x{F1BF}'
+</span><span style="font-weight:bold;color:blue;">     3 : '\x{F09192}'
+</span><span style="font-weight:bold;color:blue;">     4 : '\xE2'
+</span><span style="font-weight:bold;color:blue;">     5 : '\x{E180}'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse codepoint supplier providing the byte index and returning the codepoint escaped string
+</span><span style="font-weight:bold;color:blue;">-- A negative byte index indicates an invalid byte sequence
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseCodepointSupplier~new(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x, &quot;b&quot;, &quot;\&quot;)==</span>
+a RexxUnicodeReverseCodepointSupplier 
+ 9 : 'A'
+-7 : '\x{F1BF}'
+-4 : '\x{F09192}'
+-3 : '\xE2'
+-1 : '\x{E180}'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     9 : 'A'
+</span><span style="font-weight:bold;color:blue;">    -7 : '\x{F1BF}'
+</span><span style="font-weight:bold;color:blue;">    -4 : '\x{F09192}'
+</span><span style="font-weight:bold;color:blue;">    -3 : '\xE2'
+</span><span style="font-weight:bold;color:blue;">    -1 : '\x{E180}'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse grapheme supplier providing the byte index and returning the grapheme escaped string
+</span><span style="font-weight:bold;color:blue;">-- A negative byte index indicates an invalid byte sequence
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x, &quot;b&quot;, &quot;\&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 9 : 'A'
+-7 : '\x{F1BF}'
+-4 : '\x{F09192}'
+-3 : '\xE2'
+-1 : '\x{E180}'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     9 : 'A'
+</span><span style="font-weight:bold;color:blue;">    -7 : '\x{F1BF}'
+</span><span style="font-weight:bold;color:blue;">    -4 : '\x{F09192}'
+</span><span style="font-weight:bold;color:blue;">    -3 : '\xE2'
+</span><span style="font-weight:bold;color:blue;">    -1 : '\x{E180}'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse codepoint supplier providing the byte index and returning the error message
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseCodepointSupplier~new(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x, &quot;b&quot;, &quot;e&quot;)==</span>
+a RexxUnicodeReverseCodepointSupplier 
+ 9 : ''
+-7 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
+-4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+-3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+-1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     9 : ''
+</span><span style="font-weight:bold;color:blue;">    -7 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
+</span><span style="font-weight:bold;color:blue;">    -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+</span><span style="font-weight:bold;color:blue;">    -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+</span><span style="font-weight:bold;color:blue;">    -1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse grapheme supplier providing the byte index and returning the error message
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x, &quot;b&quot;, &quot;e&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 9 : ''
+-7 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
+-4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+-3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+-1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     9 : ''
+</span><span style="font-weight:bold;color:blue;">    -7 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
+</span><span style="font-weight:bold;color:blue;">    -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+</span><span style="font-weight:bold;color:blue;">    -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+</span><span style="font-weight:bold;color:blue;">    -1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse test case: the last codepoint byte sequence is invalid
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseCodepointSupplier~new(&quot;E1 80 E2 F0 91 92 F1 BF&quot;x, &quot;b&quot;, &quot;e&quot;)==</span>
+a RexxUnicodeReverseCodepointSupplier 
+-7 : 'start byte position 7 : Truncated, expected 4 bytes'
+-4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+-3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+-1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">    -7 : 'start byte position 7 : Truncated, expected 4 bytes'
+</span><span style="font-weight:bold;color:blue;">    -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+</span><span style="font-weight:bold;color:blue;">    -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+</span><span style="font-weight:bold;color:blue;">    -1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Reverse test case: the last grapheme byte sequence is invalid
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(&quot;E1 80 E2 F0 91 92 F1 BF&quot;x, &quot;b&quot;, &quot;e&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+-7 : 'start byte position 7 : Truncated, expected 4 bytes'
+-4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+-3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+-1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">    -7 : 'start byte position 7 : Truncated, expected 4 bytes'
+</span><span style="font-weight:bold;color:blue;">    -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+</span><span style="font-weight:bold;color:blue;">    -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+</span><span style="font-weight:bold;color:blue;">    -1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">----------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- Specific test cases for reverse grapheme supplier
+</span><span style="font-weight:bold;color:blue;">----------------------------------------------------------------------------
+</span>
+<span style="font-weight:bold;color:blue;">-- GB1/GB2 — start/end of text
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0041&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0041'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+0041'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">-- GB3 #1 — CR × LF
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+000D U+000A&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+000D U+000A'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+000D U+000A'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+000D U+000A'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+000D U+000A'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB3 #2 — CR × LF
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0041 U+000D U+000A U+0042&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0041'
+ 2 : 'U+000D U+000A'
+ 4 : 'U+0042'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041'
+</span><span style="font-weight:bold;color:blue;">     2 : 'U+000D U+000A'
+</span><span style="font-weight:bold;color:blue;">     4 : 'U+0042'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 4 : 'U+0042'
+ 2 : 'U+000D U+000A'
+ 1 : 'U+0041'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     4 : 'U+0042'
+</span><span style="font-weight:bold;color:blue;">     2 : 'U+000D U+000A'
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">-- GB4/GB5 #1 — breaks around Control
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0041 U+0000 U+0042&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0041'
+ 2 : 'U+0000'
+ 3 : 'U+0042'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041'
+</span><span style="font-weight:bold;color:blue;">     2 : 'U+0000'
+</span><span style="font-weight:bold;color:blue;">     3 : 'U+0042'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 3 : 'U+0042'
+ 2 : 'U+0000'
+ 1 : 'U+0041'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     3 : 'U+0042'
+</span><span style="font-weight:bold;color:blue;">     2 : 'U+0000'
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB4/GB5 #2 — breaks around Control
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0041 U+2028 U+0042&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0041'
+ 2 : 'U+2028'
+ 5 : 'U+0042'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041'
+</span><span style="font-weight:bold;color:blue;">     2 : 'U+2028'
+</span><span style="font-weight:bold;color:blue;">     5 : 'U+0042'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 5 : 'U+0042'
+ 2 : 'U+2028'
+ 1 : 'U+0041'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     5 : 'U+0042'
+</span><span style="font-weight:bold;color:blue;">     2 : 'U+2028'
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">-- GB6/GB7/GB8 #1 — Hangul
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+1100 U+1100&quot;)          </span><span style="font-weight:bold;color:blue;">-- (L × L)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+1100 U+1100'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1100 U+1100'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+1100 U+1100'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1100 U+1100'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB6/GB7/GB8 #2 — Hangul
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+1100 U+1161 U+11A8&quot;)   </span><span style="font-weight:bold;color:blue;">-- (L V T)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+1100 U+1161 U+11A8'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1100 U+1161 U+11A8'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+1100 U+1161 U+11A8'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1100 U+1161 U+11A8'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB6/GB7/GB8 #3 — Hangul
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+AC00 U+11A8&quot;)          </span><span style="font-weight:bold;color:blue;">-- (LV × T)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+AC00 U+11A8'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+AC00 U+11A8'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+AC00 U+11A8'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+AC00 U+11A8'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB6/GB7/GB8 #4 — Hangul
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+AC00 U+1161&quot;)          </span><span style="font-weight:bold;color:blue;">-- (LV × V)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+AC00 U+1161'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+AC00 U+1161'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+AC00 U+1161'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+AC00 U+1161'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB6/GB7/GB8 #5 — Hangul
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+AC01 U+11A8&quot;)          </span><span style="font-weight:bold;color:blue;">-- (LVT × T)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+AC01 U+11A8'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+AC01 U+11A8'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+AC01 U+11A8'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+AC01 U+11A8'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB6/GB7/GB8 #6 — Hangul
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+11A8 U+11A8&quot;)          </span><span style="font-weight:bold;color:blue;">-- (T × T)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+11A8 U+11A8'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+11A8 U+11A8'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+11A8 U+11A8'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+11A8 U+11A8'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">-- GB9 #1 — Extend / ZWJ, generic
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0067 U+0308&quot;)          </span><span style="font-weight:bold;color:blue;">-- (g + combining diaeresis)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0067 U+0308'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0067 U+0308'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+0067 U+0308'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0067 U+0308'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB9 #2 — Extend / ZWJ, generic
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0065 U+0301 U+0327&quot;)   </span><span style="font-weight:bold;color:blue;">-- (stacked combining marks)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0065 U+0301 U+0327'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0065 U+0301 U+0327'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+0065 U+0301 U+0327'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0065 U+0301 U+0327'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB9 #3 — Extend / ZWJ, generic
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0041 U+200D U+0042&quot;)   </span><span style="font-weight:bold;color:blue;">-- (ZWJ with non-pictographic neighbor — tests that GB9 still holds no-break before ZWJ even though GB11 won't apply after it)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0041 U+200D'
+ 5 : 'U+0042'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041 U+200D'
+</span><span style="font-weight:bold;color:blue;">     5 : 'U+0042'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 5 : 'U+0042'
+ 1 : 'U+0041 U+200D'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     5 : 'U+0042'
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041 U+200D'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">-- GB9a #1 — SpacingMark
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0BA8 U+0BBF&quot;)          </span><span style="font-weight:bold;color:blue;">-- (Tamil na + vowel sign i)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0BA8 U+0BBF'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0BA8 U+0BBF'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+0BA8 U+0BBF'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0BA8 U+0BBF'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB9a #2 — SpacingMark
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0937 U+093F&quot;)          </span><span style="font-weight:bold;color:blue;">-- (Devanagari ssa + vowel sign i)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0937 U+093F'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0937 U+093F'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+0937 U+093F'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0937 U+093F'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">-- GB9b #1 — Prepend
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0600 U+0041&quot;)          </span><span style="font-weight:bold;color:blue;">-- (Arabic number sign + A)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0600 U+0041'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0600 U+0041'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+0600 U+0041'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0600 U+0041'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB9b #2 — Prepend
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0600 U+0000&quot;)          </span><span style="font-weight:bold;color:blue;">-- (Prepend before Control — GB4/5 should still force a break here)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0600'
+ 3 : 'U+0000'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0600'
+</span><span style="font-weight:bold;color:blue;">     3 : 'U+0000'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 3 : 'U+0000'
+ 1 : 'U+0600'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     3 : 'U+0000'
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0600'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">-- GB9c #1 — Indic conjunct (InCB)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0915 U+094D U+0937 U+093F&quot;)            </span><span style="font-weight:bold;color:blue;">-- (ka + virama + ssa + vowel sign i — the &quot;kshi&quot; example, also exercises GB9a on the tail)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0915 U+094D U+0937 U+093F'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0915 U+094D U+0937 U+093F'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+0915 U+094D U+0937 U+093F'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0915 U+094D U+0937 U+093F'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB9c #2 — Indic conjunct (InCB)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0915 U+0951 U+094D U+0951 U+0915&quot;)     </span><span style="font-weight:bold;color:blue;">-- (consonant, Extend, Linker, Extend, consonant — Extend on both sides of the linker)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0915 U+0951 U+094D U+0951 U+0915'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0915 U+0951 U+094D U+0951 U+0915'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+0915 U+0951 U+094D U+0951 U+0915'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0915 U+0951 U+094D U+0951 U+0915'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB9c #3 — Indic conjunct (InCB)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0915 U+0951 U+0915&quot;)                   </span><span style="font-weight:bold;color:blue;">-- (consonant, Extend, consonant — no linker present: should break, negative test for the lookback)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0915 U+0951'
+ 7 : 'U+0915'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0915 U+0951'
+</span><span style="font-weight:bold;color:blue;">     7 : 'U+0915'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 7 : 'U+0915'
+ 1 : 'U+0915 U+0951'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     7 : 'U+0915'
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0915 U+0951'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">-- GB11 #1 — emoji ZWJ sequences
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+1F468 U+200D U+1F469 U+200D U+1F467&quot;)  </span><span style="font-weight:bold;color:blue;">-- (multi-hop ZWJ chain: man-woman-girl family)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+1F468 U+200D U+1F469 U+200D U+1F467'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1F468 U+200D U+1F469 U+200D U+1F467'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+1F468 U+200D U+1F469 U+200D U+1F467'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1F468 U+200D U+1F469 U+200D U+1F467'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB11 #2 — emoji ZWJ sequences
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+1F468 U+1F3FB U+200D U+1F469&quot;)         </span><span style="font-weight:bold;color:blue;">-- (pictographic + Extend modifier + ZWJ + pictographic — tests walking past Extend to find the pictographic)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+1F468 U+1F3FB U+200D U+1F469'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1F468 U+1F3FB U+200D U+1F469'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+1F468 U+1F3FB U+200D U+1F469'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1F468 U+1F3FB U+200D U+1F469'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB11 #3 — emoji ZWJ sequences
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+1F468 U+1F3FB U+1F3FB U+200D U+1F469&quot;) </span><span style="font-weight:bold;color:blue;">-- (two stacked Extend modifiers before ZWJ)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+1F468 U+1F3FB U+1F3FB U+200D U+1F469'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1F468 U+1F3FB U+1F3FB U+200D U+1F469'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+1F468 U+1F3FB U+1F3FB U+200D U+1F469'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1F468 U+1F3FB U+1F3FB U+200D U+1F469'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB11 #4 — emoji ZWJ sequences
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0041 U+200D U+1F600&quot;)                  </span><span style="font-weight:bold;color:blue;">-- (ZWJ preceded by non-pictographic — negative test, should break before the emoji)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0041 U+200D'
+ 5 : 'U+1F600'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041 U+200D'
+</span><span style="font-weight:bold;color:blue;">     5 : 'U+1F600'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 5 : 'U+1F600'
+ 1 : 'U+0041 U+200D'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     5 : 'U+1F600'
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041 U+200D'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">-- GB12/GB13 #1 — regional indicators (flags)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+1F1EB U+1F1F7&quot;)                                    </span><span style="font-weight:bold;color:blue;">-- (single flag, count=2, even)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+1F1EB U+1F1F7'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1F1EB U+1F1F7'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1 : 'U+1F1EB U+1F1F7'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1F1EB U+1F1F7'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB12/GB13 #2 — regional indicators (flags)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+1F1EB U+1F1F7 U+1F1E9 U+1F1EA&quot;)                    </span><span style="font-weight:bold;color:blue;">-- (two flags back to back, count=4)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+1F1EB U+1F1F7'
+ 9 : 'U+1F1E9 U+1F1EA'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1F1EB U+1F1F7'
+</span><span style="font-weight:bold;color:blue;">     9 : 'U+1F1E9 U+1F1EA'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 9 : 'U+1F1E9 U+1F1EA'
+ 1 : 'U+1F1EB U+1F1F7'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     9 : 'U+1F1E9 U+1F1EA'
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1F1EB U+1F1F7'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB12/GB13 #3 — regional indicators (flags)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+1F1EB U+1F1F7 U+1F1E9&quot;)                            </span><span style="font-weight:bold;color:blue;">-- (odd run of 3 — tests parity edge case)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+1F1EB U+1F1F7'
+ 9 : 'U+1F1E9'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1F1EB U+1F1F7'
+</span><span style="font-weight:bold;color:blue;">     9 : 'U+1F1E9'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 9 : 'U+1F1E9'
+ 1 : 'U+1F1EB U+1F1F7'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     9 : 'U+1F1E9'
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+1F1EB U+1F1F7'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB12/GB13 #4 — regional indicators (flags)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+1F1EB U+1F1F7 U+1F1E9 U+1F1EA U+1F1EE U+1F1F9&quot;)    </span><span style="font-weight:bold;color:blue;">-- (three flags, count=6)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1  : 'U+1F1EB U+1F1F7'
+ 9  : 'U+1F1E9 U+1F1EA'
+ 17 : 'U+1F1EE U+1F1F9'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1  : 'U+1F1EB U+1F1F7'
+</span><span style="font-weight:bold;color:blue;">     9  : 'U+1F1E9 U+1F1EA'
+</span><span style="font-weight:bold;color:blue;">     17 : 'U+1F1EE U+1F1F9'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 17 : 'U+1F1EE U+1F1F9'
+ 9  : 'U+1F1E9 U+1F1EA'
+ 1  : 'U+1F1EB U+1F1F7'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     17 : 'U+1F1EE U+1F1F9'
+</span><span style="font-weight:bold;color:blue;">     9  : 'U+1F1E9 U+1F1EA'
+</span><span style="font-weight:bold;color:blue;">     1  : 'U+1F1EB U+1F1F7'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB12/GB13 #5 — regional indicators (flags)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+1F1EB U+1F1F7 U+1F1E9 U+1F1EA U+1F1EE&quot;)            </span><span style="font-weight:bold;color:blue;">-- (five RI, odd — stresses longer backward lookback)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1  : 'U+1F1EB U+1F1F7'
+ 9  : 'U+1F1E9 U+1F1EA'
+ 17 : 'U+1F1EE'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1  : 'U+1F1EB U+1F1F7'
+</span><span style="font-weight:bold;color:blue;">     9  : 'U+1F1E9 U+1F1EA'
+</span><span style="font-weight:bold;color:blue;">     17 : 'U+1F1EE'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 17 : 'U+1F1EE'
+ 9  : 'U+1F1E9 U+1F1EA'
+ 1  : 'U+1F1EB U+1F1F7'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     17 : 'U+1F1EE'
+</span><span style="font-weight:bold;color:blue;">     9  : 'U+1F1E9 U+1F1EA'
+</span><span style="font-weight:bold;color:blue;">     1  : 'U+1F1EB U+1F1F7'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB12/GB13 #6 — regional indicators (flags)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0041 U+1F1EB U+1F1F7 U+0042&quot;)                      </span><span style="font-weight:bold;color:blue;">-- (RI run bounded by non-RI on both sides — tests run-boundary detection)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1  : 'U+0041'
+ 2  : 'U+1F1EB U+1F1F7'
+ 10 : 'U+0042'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1  : 'U+0041'
+</span><span style="font-weight:bold;color:blue;">     2  : 'U+1F1EB U+1F1F7'
+</span><span style="font-weight:bold;color:blue;">     10 : 'U+0042'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 10 : 'U+0042'
+ 2  : 'U+1F1EB U+1F1F7'
+ 1  : 'U+0041'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     10 : 'U+0042'
+</span><span style="font-weight:bold;color:blue;">     2  : 'U+1F1EB U+1F1F7'
+</span><span style="font-weight:bold;color:blue;">     1  : 'U+0041'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">-- GB999 #1 — default break
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0041 U+0042&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0041'
+ 2 : 'U+0042'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041'
+</span><span style="font-weight:bold;color:blue;">     2 : 'U+0042'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 2 : 'U+0042'
+ 1 : 'U+0041'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     2 : 'U+0042'
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- GB999 #2 — default break
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0041 U+0301 U+0042 U+0301&quot;)    </span><span style="font-weight:bold;color:blue;">-- (two independent base+Extend graphemes back to back — checks that a GB9 no-break doesn't bleed into the next cluster)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeGraphemeSupplier 
+ 1 : 'U+0041 U+0301'
+ 4 : 'U+0042 U+0301'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041 U+0301'
+</span><span style="font-weight:bold;color:blue;">     4 : 'U+0042 U+0301'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;u&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 4 : 'U+0042 U+0301'
+ 1 : 'U+0041 U+0301'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     4 : 'U+0042 U+0301'
+</span><span style="font-weight:bold;color:blue;">     1 : 'U+0041 U+0301'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">----------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- Advances the reverse suppliers to the specified position (sequential access, not direct access)
+</span><span style="font-weight:bold;color:blue;">----------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;F4 91 92 93 FF 41 80 BF 42&quot;x || &quot;Joyeux Noël 👨‍👩‍👧&quot;</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseCodepointSupplier = .RexxUnicodeReverseCodepointSupplier~new(string)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseCodepointSupplier~codepointAtIndexC(1)=     </span><span style="font-weight:bold;color:blue;">-- 128103</span>
+ 128103
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseCodepointSupplier~codepointAtIndexC(6)=     </span><span style="font-weight:bold;color:blue;">-- 32</span>
+ 32
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseCodepointSupplier~codepointAtIndexC(6)=     </span><span style="font-weight:bold;color:blue;">-- 32</span>
+ 32
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseCodepointSupplier~codepointAtIndexC(7)=     </span><span style="font-weight:bold;color:blue;">-- 108</span>
+ 108
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseCodepointSupplier~codepointAtIndexC(26)=    </span><span style="font-weight:bold;color:blue;">-- 65533</span>
+ 65533
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseCodepointSupplier~codepointAtIndexC(25)=    </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: 25 is less than the current index 26 (the supplier can only advance).</span>
+<span style="font-weight:bold;color:red;">Invalid code point index: 25 is less than the current index 26 (the supplier can only advance).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseCodepointSupplier~codepointAtIndexC(26)=    </span><span style="font-weight:bold;color:blue;">-- 65533</span>
+ 65533
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseCodepointSupplier~codepointAtIndexC(27)=    </span><span style="font-weight:bold;color:blue;">-- No more supplier items available.</span>
+<span style="font-weight:bold;color:red;">No more supplier items available.
+</span><span style="font-weight:bold;color:red;">Error code= 93.937
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseCodepointSupplier~codepointAtIndexC(26)=    </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: 26 is less than the current index 27 (the supplier can only advance).</span>
+<span style="font-weight:bold;color:red;">Invalid code point index: 26 is less than the current index 27 (the supplier can only advance).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseCodepointSupplier~codepointAtIndexC(0)=     </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: 0.</span>
+<span style="font-weight:bold;color:red;">Invalid code point index: 0.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseCodepointSupplier~codepointAtIndexC(-1)=    </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: -1; negative indexes are not supported.</span>
+<span style="font-weight:bold;color:red;">Invalid code point index: -1; negative indexes are not supported.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;F4 91 92 93 FF 41 80 BF 42&quot;x || &quot;Joyeux Noël 👨‍👩‍👧&quot;</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseCodepointSupplier = .RexxUnicodeReverseCodepointSupplier~new(string)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseCodepointSupplier==</span>
+a RexxUnicodeReverseCodepointSupplier 
+ 1  :  128103
+ 2  :  8205
+ 3  :  128105
+ 4  :  8205
+ 5  :  128104
+ 6  :  32
+ 7  :  108
+ 8  :  235
+ 9  :  111
+ 10 :  78
+ 11 :  32
+ 12 :  120
+ 13 :  117
+ 14 :  101
+ 15 :  121
+ 16 :  111
+ 17 :  74
+ 18 :  66
+ 19 :  65533
+ 20 :  65533
+ 21 :  65
+ 22 :  65533
+ 23 :  65533
+ 24 :  65533
+ 25 :  65533
+ 26 :  65533
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     1  :  128103
+</span><span style="font-weight:bold;color:blue;">     2  :  8205
+</span><span style="font-weight:bold;color:blue;">     3  :  128105
+</span><span style="font-weight:bold;color:blue;">     4  :  8205
+</span><span style="font-weight:bold;color:blue;">     5  :  128104
+</span><span style="font-weight:bold;color:blue;">     6  :  32
+</span><span style="font-weight:bold;color:blue;">     7  :  108
+</span><span style="font-weight:bold;color:blue;">     8  :  235
+</span><span style="font-weight:bold;color:blue;">     9  :  111
+</span><span style="font-weight:bold;color:blue;">     10 :  78
+</span><span style="font-weight:bold;color:blue;">     11 :  32
+</span><span style="font-weight:bold;color:blue;">     12 :  120
+</span><span style="font-weight:bold;color:blue;">     13 :  117
+</span><span style="font-weight:bold;color:blue;">     14 :  101
+</span><span style="font-weight:bold;color:blue;">     15 :  121
+</span><span style="font-weight:bold;color:blue;">     16 :  111
+</span><span style="font-weight:bold;color:blue;">     17 :  74
+</span><span style="font-weight:bold;color:blue;">     18 :  66
+</span><span style="font-weight:bold;color:blue;">     19 :  65533
+</span><span style="font-weight:bold;color:blue;">     20 :  65533
+</span><span style="font-weight:bold;color:blue;">     21 :  65
+</span><span style="font-weight:bold;color:blue;">     22 :  65533
+</span><span style="font-weight:bold;color:blue;">     23 :  65533
+</span><span style="font-weight:bold;color:blue;">     24 :  65533
+</span><span style="font-weight:bold;color:blue;">     25 :  65533
+</span><span style="font-weight:bold;color:blue;">     26 :  65533
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;F4 91 92 93 FF 41 80 BF 42&quot;x || &quot;Joyeux Noël 👨‍👩‍👧&quot;</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseGraphemeSupplier = .RexxUnicodeReverseGraphemeSupplier~new(string, &quot;&quot;, &quot;\&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseGraphemeSupplier~graphemeAtIndexG(1)=        </span><span style="font-weight:bold;color:blue;">-- '👨\u200D👩\u200D👧'</span>
+'👨\u200D👩\u200D👧'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseGraphemeSupplier~graphemeAtIndexG(6)=       </span><span style="font-weight:bold;color:blue;">-- 'N'</span>
+'N'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseGraphemeSupplier~graphemeAtIndexG(6)=       </span><span style="font-weight:bold;color:blue;">-- 'N'</span>
+'N'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseGraphemeSupplier~graphemeAtIndexG(7)=        </span><span style="font-weight:bold;color:blue;">-- ' '</span>
+' '
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseGraphemeSupplier~graphemeAtIndexG(22)=      </span><span style="font-weight:bold;color:blue;">-- '\xF4'</span>
+'\xF4'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseGraphemeSupplier~graphemeAtIndexG(21)=      </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: 21 is less than the current index 22 (the supplier can only advance).</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: 21 is less than the current index 22 (the supplier can only advance).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseGraphemeSupplier~graphemeAtIndexG(22)=      </span><span style="font-weight:bold;color:blue;">-- '\xF4'</span>
+'\xF4'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseGraphemeSupplier~graphemeAtIndexG(23)=      </span><span style="font-weight:bold;color:blue;">-- No more supplier items available.</span>
+<span style="font-weight:bold;color:red;">No more supplier items available.
+</span><span style="font-weight:bold;color:red;">Error code= 93.937
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseGraphemeSupplier~graphemeAtIndexG(22)=      </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: 22 is less than the current index 23 (the supplier can only advance).</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: 22 is less than the current index 23 (the supplier can only advance).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseGraphemeSupplier~graphemeAtIndexG(0)=       </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: 0.</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: 0.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseGraphemeSupplier~graphemeAtIndexG(-1)=      </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: -1; negative indexes are not supported.</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: -1; negative indexes are not supported.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;F4 91 92 93 FF 41 80 BF 42&quot;x || &quot;Joyeux Noël 👨‍👩‍👧&quot;</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseGraphemeSupplier = .RexxUnicodeReverseGraphemeSupplier~new(string, &quot;&quot;, &quot;\&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">reverseGraphemeSupplier==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 1  : '👨\u200D👩\u200D👧'
+ 2  : ' '
+ 3  : 'l'
+ 4  : 'ë'
+ 5  : 'o'
+ 6  : 'N'
+ 7  : ' '
+ 8  : 'x'
+ 9  : 'u'
+ 10 : 'e'
+ 11 : 'y'
+ 12 : 'o'
+ 13 : 'J'
+ 14 : 'B'
+ 15 : '\xBF'
+ 16 : '\x80'
+ 17 : 'A'
+ 18 : '\xFF'
+ 19 : '\x93'
+ 20 : '\x92'
+ 21 : '\x91'
+ 22 : '\xF4'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     1  : '👨\u200D👩\u200D👧'
+</span><span style="font-weight:bold;color:blue;">     2  : ' '
+</span><span style="font-weight:bold;color:blue;">     3  : 'l'
+</span><span style="font-weight:bold;color:blue;">     4  : 'ë'
+</span><span style="font-weight:bold;color:blue;">     5  : 'o'
+</span><span style="font-weight:bold;color:blue;">     6  : 'N'
+</span><span style="font-weight:bold;color:blue;">     7  : ' '
+</span><span style="font-weight:bold;color:blue;">     8  : 'x'
+</span><span style="font-weight:bold;color:blue;">     9  : 'u'
+</span><span style="font-weight:bold;color:blue;">     10 : 'e'
+</span><span style="font-weight:bold;color:blue;">     11 : 'y'
+</span><span style="font-weight:bold;color:blue;">     12 : 'o'
+</span><span style="font-weight:bold;color:blue;">     13 : 'J'
+</span><span style="font-weight:bold;color:blue;">     14 : 'B'
+</span><span style="font-weight:bold;color:blue;">     15 : '\xBF'
+</span><span style="font-weight:bold;color:blue;">     16 : '\x80'
+</span><span style="font-weight:bold;color:blue;">     17 : 'A'
+</span><span style="font-weight:bold;color:blue;">     18 : '\xFF'
+</span><span style="font-weight:bold;color:blue;">     19 : '\x93'
+</span><span style="font-weight:bold;color:blue;">     20 : '\x92'
+</span><span style="font-weight:bold;color:blue;">     21 : '\x91'
+</span><span style="font-weight:bold;color:blue;">     22 : '\xF4'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">-- ===============================================================================
+</span><span style="font-weight:bold;color:blue;">-- 2026 Aug 05
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">[Unicode enums]
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~codepointIndicConjunctBreak
+</span><span style="font-weight:bold;color:blue;">Add .RexxUnicodeCharacter~indicConjunctBreak
+</span><span style="font-weight:bold;color:blue;">Add .RexxUnicodeCharacter~indicConjunctBreakName
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Examples
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIndicConjunctBreak(&quot;0000&quot;~x2d, &gt;code, &gt;label)=; code=; label=     </span><span style="font-weight:bold;color:blue;">--  0; 'None'; 'None'</span>
+ 0
+'None'
+'None'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIndicConjunctBreak(&quot;0300&quot;~x2d, &gt;code, &gt;label)=; code=; label=     </span><span style="font-weight:bold;color:blue;">--  3; 'Extend'; 'Extend'</span>
+ 3
+'Extend'
+'Extend'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIndicConjunctBreak(&quot;0915&quot;~x2d, &gt;code, &gt;label)=; code=; label=     </span><span style="font-weight:bold;color:blue;">--  2; 'Consonant'; 'Consonant'</span>
+ 2
+'Consonant'
+'Consonant'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIndicConjunctBreak(&quot;094D&quot;~x2d, &gt;code, &gt;label)=; code=; label=     </span><span style="font-weight:bold;color:blue;">--  1; 'Linker'; 'Linker'</span>
+ 1
+'Linker'
+'Linker'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIndicConjunctBreak(&quot;FFFFFF&quot;~x2d, &gt;code, &gt;label)=; code=; label=   </span><span style="font-weight:bold;color:blue;">--  0; 'None'; 'None'</span>
+ 0
+'None'
+'None'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIndicConjunctBreak(-1, &gt;code, &gt;label)=; code=; label=             </span><span style="font-weight:bold;color:blue;">--  0; 'None'; 'None'</span>
+ 0
+'None'
+'None'
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0000&quot;~x2d)~indicConjunctBreak=           </span><span style="font-weight:bold;color:blue;">--  'None'</span>
+'None'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0300&quot;~x2d)~indicConjunctBreak=           </span><span style="font-weight:bold;color:blue;">--  'Extend'</span>
+'Extend'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0915&quot;~x2d)~indicConjunctBreak=           </span><span style="font-weight:bold;color:blue;">--  'Consonant'</span>
+'Consonant'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;094D&quot;~x2d)~indicConjunctBreak=           </span><span style="font-weight:bold;color:blue;">--  'Linker'</span>
+'Linker'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~indicConjunctBreak=         </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~indicConjunctBreak=                   </span><span style="font-weight:bold;color:blue;">--  '?'</span>
+'?'
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0000&quot;~x2d)~indicConjunctBreakName=       </span><span style="font-weight:bold;color:blue;">--  'None'</span>
+'None'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0300&quot;~x2d)~indicConjunctBreakName=       </span><span style="font-weight:bold;color:blue;">--  'Extend'</span>
+'Extend'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0915&quot;~x2d)~indicConjunctBreakName=       </span><span style="font-weight:bold;color:blue;">--  'Consonant'</span>
+'Consonant'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;094D&quot;~x2d)~indicConjunctBreakName=       </span><span style="font-weight:bold;color:blue;">--  'Linker'</span>
+'Linker'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~indicConjunctBreakName=     </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
+<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~indicConjunctBreakName=               </span><span style="font-weight:bold;color:blue;">--  '?'</span>
+'?'
 
 
 <span style="font-weight:bold;color:blue;">-- ===============================================================================
@@ -1388,7 +2924,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepoint(-
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(-1)~class=                   </span><span style="font-weight:bold;color:blue;">-- (The RexxUnicodeCharacter class)</span>
 (The RexxUnicodeCharacter class)
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(-1)~info=</span>
-a StringTable (26 items)
+a StringTable (27 items)
 'bidiClass'                 : '?'
 'bidiClassName'             : '?'
 'bidiMirrored'              :  0
@@ -1407,6 +2943,7 @@ a StringTable (26 items)
 'eastAsianWidthIsAmbiguous' :  0
 'extendedName'              : ''
 'ignorable'                 :  1
+'indicConjunctBreak'        : '?'
 'isLower'                   :  0
 'isUpper'                   :  0
 'name'                      : ''
@@ -2720,7 +4257,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&
 
 <span style="font-weight:bold;color:blue;">-- Properties of a character
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&quot;🎅&quot;)~info=</span>
-a StringTable (26 items)
+a StringTable (27 items)
 'bidiClass'                 : 'ON'
 'bidiClassName'             : 'Other_Neutral'
 'bidiMirrored'              :  0
@@ -2739,6 +4276,7 @@ a StringTable (26 items)
 'eastAsianWidthIsAmbiguous' :  0
 'extendedName'              : 'FATHER CHRISTMAS'
 'ignorable'                 :  0
+'indicConjunctBreak'        : 'None'
 'isLower'                   :  0
 'isUpper'                   :  0
 'name'                      : 'FATHER CHRISTMAS'

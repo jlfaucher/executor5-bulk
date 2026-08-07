@@ -10,6 +10,8 @@ library embedded in `ooRexx`.
 - The [`RexxUnicode`](#RexxUnicode) class, a subclass of `RexxUnicodeServices`.
 - The [`RexxUnicodeCodepointSupplier`](#RexxUnicodeCodepointSupplier) class.
 - The [`RexxUnicodeGraphemeSupplier`](#RexxUnicodeGraphemeSupplier) class.
+- The [`RexxUnicodeReverseCodepointSupplier`](#RexxUnicodeReverseCodepointSupplier) class.
+- The [`RexxUnicodeReverseGraphemeSupplier`](#RexxUnicodeReverseGraphemeSupplier) class.
 - The [`RexxUnicodeStringIndexer`](#RexxUnicodeStringIndexer) class.
 - The [`RexxUnicodeCharacter`](#RexxUnicodeCharacter) class.
 - The [`ICU4ooRexxInterface`](#ICU4ooRexxInterface) class.
@@ -137,7 +139,7 @@ Method-to-Unicode property mapping (PropertyAliases.txt):
       <tr>
         <td><small><small><a href="#codepointDecompositionType">codepointDecompositionType</a></small></small></td>
         <td><small><small>Enumerated</small></small></td>
-        <td><small><small>td</small></small></td>
+        <td><small><small>dt</small></small></td>
         <td><small><small>Decomposition_Type</small></small></td>
         <td></td>
       </tr>
@@ -707,6 +709,16 @@ and always returns a single codepoint.
 
 Returns `.true` if there is a grapheme break between the two consecutive codepoints passed in `array`.
 
+> [!WARNING]
+> This method is deprecated. Use [`graphemeBreak3`](#graphemeBreak3) instead.
+>
+> Using an array for the persistent state can lead to subtle bugs
+> when copying an object that uses such an array internally.
+> By default, the copy is shallow, so both the original object and
+> its copies refer to the same internal array. As a result, the
+> state may be corrupted, depending on the sequence of calls made
+> on the original object and its copies.
+
 **Example:**
 
 ```rexx
@@ -717,16 +729,39 @@ break = .RexxUnicodeServices~graphemeBreak(array) -- true or false
 
 ```
 
+
+<a id="graphemeBreak3"></a>
+
+#### 1.1.18.   graphemeBreak3
+
+    .RexxUnicodeServices~graphemeBreak3(codepoint1, codepoint2, >refState)
+
+Returns `.true` if there is a grapheme break between the two consecutive codepoints.
+
+**Example:**
+
+```rexx
+-- `state` is persistent state. Its initial value must be 0.
+-- `graphemeBreak3` updates `state`.
+state = 0
+.RexxUnicodeServices~graphemeBreak3(13, 10, >state)=    -- 0    CR + LF is a grapheme, no grapheme break inside
+state=                                                  -- 3
+.RexxUnicodeServices~graphemeBreak3(10, 65, >state)=    -- 1    There is a grapheme break between LF and 'A'
+state=                                                  -- 1
+
+```
+
+
 <a id="RexxUnicodeServices_new"></a>
 
-#### 1.1.18.   new
+#### 1.1.19.   new
 
 This method raises an error because `RexxUnicodeServices` has no instance.
 
 
 <a id="systemIsLittleEndian"></a>
 
-#### 1.1.19.   systemIsLittleEndian
+#### 1.1.20.   systemIsLittleEndian
 
     .RexxUnicodeServices~systemIsLittleEndian
 
@@ -735,7 +770,7 @@ Returns `.true` if the system is little-endian.
 
 <a id="unicodeVersion"></a>
 
-#### 1.1.20.   unicodeVersion
+#### 1.1.21.   unicodeVersion
 
     .RexxUnicodeServices~unicodeVersion
 
@@ -751,7 +786,7 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 
 <a id="utf8DecodeCodepoint"></a>
 
-#### 1.1.21.   utf8DecodeCodepoint
+#### 1.1.22.   utf8DecodeCodepoint
 
 ```
 .RexxUnicodeServices~utf8DecodeCodepoint(string, indexB [, [>refSizeB] [, [>refErrorCode] [, >refErrorMsg]]])
@@ -763,7 +798,7 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
     >refSizeB,      -- (out, optional)  The number of bytes read to decode the codepoint:
                     --                      > 0 if no error,
                     --                      < 0 if error,
-                    --                      or 0 if indexB is at the end of the string (value length+1).
+                    --                      or 0 if indexB is at the end of the string (indexB == length+1).
     >refErrorCode,  -- (out, optional)  The null string "" if a valid codepoint could be read,
                     --                  or the error code otherwise.
     >refErrorMsg    -- (out, optional)  The null string "" if a valid codepoint could be read,
@@ -822,7 +857,7 @@ to follow the `U+FFFD` Substitution of Maximal Subparts.
 
 <a id="utf8DecodePreviousCodepoint"></a>
 
-#### 1.1.22.   utf8DecodePreviousCodepoint
+#### 1.1.23.   utf8DecodePreviousCodepoint
 
 ```
 .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, [, [>refSizeB] [, [>refErrorCode] [, >refErrorMsg]]])
@@ -836,7 +871,7 @@ to follow the `U+FFFD` Substitution of Maximal Subparts.
     >refSizeB,      -- (out, optional)  The number of bytes read to decode the codepoint:
                     --                      > 0 if no error,
                     --                      < 0 if error,
-                    --                      or 0 if indexB is at the beginning of the string (value 1).
+                    --                      or 0 if indexB is at the beginning of the string (indexB == 1).
     >refErrorCode,  -- (out, optional)  The null string "" if a valid codepoint could be read,
                     --                  or the error code otherwise.
     >refErrorMsg    -- (out, optional)  The null string "" if a valid codepoint could be read,
@@ -940,7 +975,7 @@ indexB -= abs(size); indexB=                                                    
 
 <a id="utf8EncodeCodepoint"></a>
 
-#### 1.1.23.   utf8EncodeCodepoint
+#### 1.1.24.   utf8EncodeCodepoint
 
 ```
 .RexxUnicodeServices~utf8EncodeCodepoint(codepoint, destination [, >refSizeB])
@@ -984,7 +1019,7 @@ Append the UTF-8 encoding of 1114112 to mb: size = 0 mb = oë€🎅
 
 <a id="utf8procVersion"></a>
 
-#### 1.1.24.   utf8procVersion
+#### 1.1.25.   utf8procVersion
 
     .RexxUnicodeServices~utf8procVersion
 
@@ -1000,7 +1035,7 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 
 <a id="utf8Transform"></a>
 
-#### 1.1.25.   utf8Transform
+#### 1.1.26.   utf8Transform
 
 ```
 .RexxUnicodeServices~utf8Transform(string [, casefold = .false [, lump= .false [, nlf = 0 [, normalization = 0 [, stripCC = .false [, stripIgnorable= .false [, stripMark = .false [, stripNA = .false]]]]]]]])
@@ -1020,13 +1055,13 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 
 Returns the transformed string.
 
-##### 1.1.25.1.   'caseFold' argument
+##### 1.1.26.1.   'caseFold' argument
 
 Performs unicode case folding, to be able to do a case-insensitive
 string comparison.
 
 
-##### 1.1.25.2.   'lump' argument
+##### 1.1.26.2.   'lump' argument
 
 Maps certain characters to a common representative (i.e., several distinct characters produce the same output character).  
 All the concerned characters become the same character, but still remain distinct characters.
@@ -1068,7 +1103,7 @@ Mapping rules:
     U+007E  ~   <-- tilde operator U+223C
 
 
-##### 1.1.25.3.   'nlf' argument
+##### 1.1.26.3.   'nlf' argument
 
 [https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213][newline_guidelines]
 
@@ -1095,7 +1130,7 @@ NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are converted
 to the Unicode Paragraph Separator (PS) codepoint.
 
 
-##### 1.1.25.4.   'normalization' argument
+##### 1.1.26.4.   'normalization' argument
 
 ```rexx
 -- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).
@@ -1110,7 +1145,7 @@ to the Unicode Paragraph Separator (PS) codepoint.
 If `normalization` is not `0`, apply the requested normalization.
 
 
-##### 1.1.25.5.   'stripCC' argument
+##### 1.1.26.5.   'stripCC' argument
 
 Strips and/or converts control characters.
 
@@ -1121,13 +1156,13 @@ are treated as a NLF-sequence in this case.
 All other control characters are simply removed.
 
 
-##### 1.1.25.6.   'stripIgnorable' argument
+##### 1.1.26.6.   'stripIgnorable' argument
 
 Strips the characters whose property `Default_Ignorable_Code_Point` is true,
 such as `SOFT-HYPHEN` or `ZERO-WIDTH-SPACE`.
 
 
-##### 1.1.25.7.   'stripMark' argument
+##### 1.1.26.7.   'stripMark' argument
 
 Strips all character markings.
 
@@ -1140,12 +1175,12 @@ This includes non-spacing, spacing and enclosing (i.e. accents) categories:
 This option works only with a normalization applied.
 
 
-##### 1.1.25.8.   'stripNA' argument
+##### 1.1.26.8.   'stripNA' argument
 
 Strips the characters whose category is `Cn` Unassigned.
 
 
-##### 1.1.25.9.   Examples of transformations
+##### 1.1.26.9.   Examples of transformations
 
 ```rexx
 string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n"
@@ -2270,7 +2305,19 @@ The `RexxUnicode` class defines no instance methods of its own.
 <!----------------------------------------------------------------------------->
 
 A `RexxUnicodeCodepointSupplier` instance is an iterator created from a 
-UTF-8 string and allows enumeration of the string's codepoints without indexer.
+UTF-8 string that allows enumeration of the string's codepoints without an indexer.
+
+Byte indexes are counted from the beginning of the string.  
+They can be used with `String` methods and string builtin functions.
+
+Codepoint indexes are counted from the beginning of the string.  
+
+- They can be used with [`aRexxUnicodeCodepointSupplier~codepointAtIndexC`](#RexxUnicodeCodepointSupplier_codepointAtIndexC),
+provided that the supplier can only be advanced sequentially with `next`.
+- They can be used with [`aRexxUnicodeStringIndexer~codepointAtIndexC`](#RexxUnicodeStringIndexer_codepointAtIndexC).
+
+See [`RexxUnicodeReverseCodepointSupplier`](#RexxUnicodeReverseCodepointSupplier)
+for a supplier that enumerates codepoints in reverse order.
 
 `::requires "rxunicode.cls"`
 
@@ -2476,6 +2523,9 @@ The following index types are supported:
 
 The default index type is specified when the supplier is created.
 
+Byte indexes are counted from the beginning of the string.  
+Codepoint indexes are counted from the beginning of the string.
+
 
 <a id="RexxUnicodeCodepointSupplier_init"></a>
 
@@ -2538,7 +2588,19 @@ If no codepoint is available, that is, if `available` would return `.false`, the
 <!----------------------------------------------------------------------------->
 
 A `RexxUnicodeGraphemeSupplier` instance is an iterator created from a 
-UTF-8 string and allows enumeration of the string's graphemes without indexer.
+UTF-8 string that allows enumeration of the string's graphemes without an indexer.
+
+Byte indexes are counted from the beginning of the string.  
+They can be used with `String` methods and string builtin functions.
+
+Grapheme indexes are counted from the beginning of the string.  
+
+- They can be used with [`aRexxUnicodeGraphemeSupplier~graphemeAtIndexG`](#RexxUnicodeGraphemeSupplier_graphemeAtIndexG),
+provided that the supplier can only be advanced sequentially with `next`.
+- They can be used with [`aRexxUnicodeStringIndexer~graphemeAtIndexG`](#RexxUnicodeStringIndexer_graphemeAtIndexG).
+
+See [`RexxUnicodeReverseGraphemeSupplier`](#RexxUnicodeReverseGraphemeSupplier)
+for a supplier that enumerates graphemes in reverse order.
 
 `::requires "rxunicode.cls"`
 
@@ -2705,6 +2767,9 @@ The following index types are supported:
 
 The default index type is specified when the supplier is created.
 
+Byte indexes are counted from the beginning of the string.  
+Grapheme indexes are counted from the beginning of the string.
+
 
 <a id="RexxUnicodeGraphemeSupplier_init"></a>
 
@@ -2760,9 +2825,548 @@ If no grapheme is available, that is, if `available` would return `.false`, the 
 
 <!----------------------------------------------------------------------------->
 
+<a id="RexxUnicodeReverseCodepointSupplier"></a>
+
+## 5.   RexxUnicodeReverseCodepointSupplier Class
+
+<!----------------------------------------------------------------------------->
+
+A `RexxUnicodeReverseCodepointSupplier` instance is an iterator created from a 
+UTF-8 string that allows enumeration of the string's codepoints in reverse order
+without an indexer.
+
+Byte indexes are counted from the beginning of the string.  
+They can be used with `String` methods and string builtin functions.
+
+Codepoint indexes are counted from the end of the string.  
+
+- They can be used with [`aRexxUnicodeReverseCodepointSupplier~codepointAtIndexC`](#RexxUnicodeReverseCodepointSupplier_codepointAtIndexC),
+provided that the supplier can only be advanced sequentially with `next`. Here, "advance"
+refers to moving the supplier cursor, not the direction in the original string.
+- They can be used with [`aRexxUnicodeStringIndexer~codepointAtIndexC`](#RexxUnicodeStringIndexer_codepointAtIndexC)
+by passing them as negated values.
+
+See [`RexxUnicodeCodepointSupplier`](#RexxUnicodeCodepointSupplier)
+for a supplier that enumerates codepoints in forward order.
+
+`::requires "rxunicode.cls"`
+
+**Examples:**
+
+```rexx
+-- Example 1
+-- the default index type is the codepoint index
+-- the default item type is the codepoint as a whole number
+.RexxUnicodeReverseCodepointSupplier~new("noël👨‍👩‍👧🎅")==
+    /*
+    a RexxUnicodeReverseCodepointSupplier 
+     1  :  127877
+     2  :  128103
+     3  :  8205
+     4  :  128105
+     5  :  8205
+     6  :  128104
+     7  :  108
+     8  :  235
+     9  :  111
+     10 :  110
+    */
+
+```
+
+```rexx
+-- Example 2
+-- It's possible to get other types of index and item
+-- Here, we request the byte index and the codepoint byte sequence as hex digits
+.RexxUnicodeReverseCodepointSupplier~new("noël👨‍👩‍👧🎅", "b", "x")==
+    /*
+    a RexxUnicodeReverseCodepointSupplier 
+     24 : '\x{F09F8E85}'
+     20 : '\x{F09F91A7}'
+     17 : '\x{E2808D}'
+     13 : '\x{F09F91A9}'
+     10 : '\x{E2808D}'
+     6  : '\x{F09F91A8}'
+     5  : '\x6C'
+     3  : '\x{C3AB}'
+     2  : '\x6F'
+     1  : '\x6E'
+    */
+
+```
+
+```rexx
+-- Example 3
+-- Codepoint supplier providing the default index and returning the codepoint escaped string
+.RexxUnicodeReverseCodepointSupplier~new("noël👨‍👩‍👧🎅", , "\")==
+    /*
+    a RexxUnicodeReverseCodepointSupplier 
+     1  : '🎅'
+     2  : '👧'
+     3  : '\u200D'
+     4  : '👩'
+     5  : '\u200D'
+     6  : '👨'
+     7  : 'l'
+     8  : 'ë'
+     9  : 'o'
+     10 : 'n'
+    */
+
+```
+
+```rexx
+-- Example 4
+-- Codepoint supplier providing the default index and returning the codepoint in U+ notation
+.RexxUnicodeReverseCodepointSupplier~new("noël👨‍👩‍👧🎅", , "u")==
+    /*
+    a RexxUnicodeReverseCodepointSupplier 
+     1  : 'U+1F385'
+     2  : 'U+1F467'
+     3  : 'U+200D'
+     4  : 'U+1F469'
+     5  : 'U+200D'
+     6  : 'U+1F468'
+     7  : 'U+006C'
+     8  : 'U+00EB'
+     9  : 'U+006F'
+     10 : 'U+006E'
+    */
+
+```
+
+```rexx
+-- Example 5
+-- Codepoint supplier providing the default index and returning the codepoint as a RexxUnicodeCharacter
+.RexxUnicodeReverseCodepointSupplier~new("noël👨‍👩‍👧🎅", , .RexxUnicodeCharacter)==
+    /*
+    a RexxUnicodeReverseCodepointSupplier 
+     1  : ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+     2  : ("👧" \x{F09F91A7} U+1F467 So Other_Symbol "GIRL")
+     3  : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+     4  : ("👩" \x{F09F91A9} U+1F469 So Other_Symbol "WOMAN")
+     5  : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+     6  : ("👨" \x{F09F91A8} U+1F468 So Other_Symbol "MAN")
+     7  : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+     8  : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")
+     9  : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
+     10 : ("n" \x6E U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
+    */
+
+```
+
+```rexx
+-- Example 6
+-- Invalid string - U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+
+-- Codepoint supplier providing the codepoint index and returning the codepoint as a whole number
+.RexxUnicodeReverseCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x)==
+    /*
+    a RexxUnicodeReverseCodepointSupplier 
+     1 :  65
+     2 :  65533
+     3 :  65533
+     4 :  65533
+     5 :  65533
+    */
+
+```
+
+```rexx
+-- Example 7
+-- Codepoint supplier providing the byte index and returning the codepoint escaped string
+-- A negative byte index indicates an invalid byte sequence
+.RexxUnicodeReverseCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
+    /*
+    a RexxUnicodeReverseCodepointSupplier 
+     9 : 'A'
+    -7 : '\x{F1BF}'
+    -4 : '\x{F09192}'
+    -3 : '\xE2'
+    -1 : '\x{E180}'
+    */
+
+```
+
+```rexx
+-- Example 8
+-- Codepoint supplier providing the byte index and returning the error message
+.RexxUnicodeReverseCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
+    /*
+    a RexxUnicodeReverseCodepointSupplier 
+     9 : ''
+    -7 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
+    -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+    -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+    -1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
+    */
+
+```
+
+### 5.1.   Class methods
+
+The `RexxUnicodeReverseCodepointSupplier` class defines no class methods of its own.
+
+
+### 5.2.   Instance methods
+
+<a id="RexxUnicodeReverseCodepointSupplier_available"></a>
+
+#### 5.2.1.   available
+
+    aRexxUnicodeReverseCodepointSupplier~available
+
+Returns `.true` if a codepoint is available from the supplier (that is, if the `item` method would return a value).  
+Returns `.false` if the supplier has already enumerated all codepoints.
+
+
+<a id="RexxUnicodeReverseCodepointSupplier_codepointAtIndexC"></a>
+
+#### 5.2.2.   codepointAtIndexC
+
+    aRexxUnicodeReverseCodepointSupplier~codepointAtIndexC(indexC)
+
+Convenience method.  
+Advances the supplier to codepoint index `indexC` and returns the corresponding codepoint as a whole number.  
+Here, "advance" refers to moving the supplier cursor, not the direction in the original string.  
+`indexC` must be a positive whole number.  
+If `indexC` is less than the current codepoint index, the supplier raises an error (can only advance).
+
+This method does not support negative indexes (counting from the beginning of the string).
+
+See also [`aRexxUnicodeStringIndexer~codepointAtIndexC`](#RexxUnicodeStringIndexer_codepointAtIndexC).
+
+
+<a id="RexxUnicodeReverseCodepointSupplier_index"></a>
+
+#### 5.2.3.   index
+
+    aRexxUnicodeReverseCodepointSupplier~index(type=defaultIndexType)
+
+Returns the index of the current codepoint in the string.  
+If no codepoint is available, that is, if `available` would return `.false`, the supplier raises an error.
+
+The following index types are supported:
+
+- If `type`is `""`, the codepoint index is returned.
+- If `type` is `"b"`, the byte index is returned (it is negative if the byte sequence is invalid).
+
+The default index type is specified when the supplier is created.
+
+Byte indexes are counted from the beginning of the string.  
+Codepoint indexes are counted from the end of the string.
+
+
+<a id="RexxUnicodeReverseCodepointSupplier_init"></a>
+
+#### 5.2.4.   init
+
+    aRexxUnicodeReverseCodepointSupplier~init(string, defaultIndexType="", defaultItemType="")
+
+Initializes a `RexxUnicodeReverseCodepointSupplier` instance with the UTF-8 string `string`.
+
+If specified, `defaultIndexType` defines the default index type returned by the `index` method.  
+The default is `""` (codepoint index).  
+See the [`index`](#RexxUnicodeReverseCodepointSupplier_index) method for the list of possible values.
+
+If specified, `defaultItemType` defines the default item type returned by the `item` method.  
+The default value is `""` (codepoint as a whole number).  
+See the [`item`](#RexxUnicodeReverseCodepointSupplier_item) method for the list of possible values.
+
+
+<a id="RexxUnicodeReverseCodepointSupplier_item"></a>
+
+#### 5.2.5.   item
+
+    aRexxUnicodeReverseCodepointSupplier~item(type=defaultItemType)
+
+Returns the current codepoint in the string.  
+If no codepoint is available, that is, if `available` would return `.false`, the supplier raises an error.
+
+The following item types are supported:
+
+- If `type` is `""`, the codepoint is returned as a whole number.
+- If `type` is `"b"`, the codepoint byte sequence is returned as a string.
+- If `type` is `"e"`, the error message is returned (an empty string if there is no error).
+- If `type` is `"u"`, the codepoint is returned in `U+` notation.
+- If `type` is `"x"`, the codepoint byte sequence is returned as hexadecimal digits.
+- If `type` is `"\"`, the codepoint byte sequence is returned as an escaped string.
+- If `type` is a class, a new instance of that class is returned, initialized with the result of `item("")`.
+
+The default item type is specified when the supplier is created.
+
+
+<a id="RexxUnicodeReverseCodepointSupplier_next"></a>
+
+#### 5.2.6.   next
+
+    aRexxUnicodeReverseCodepointSupplier~next
+
+Moves to the next codepoint in the string, in reverse order.  
+By repeatedly sending `next` to the supplier (as long as `available` returns
+`.true`), you can enumerate all codepoints in the string, in reverse order.  
+If no codepoint is available, that is, if `available` would return `.false`,
+the supplier raises an error.
+
+
+
+
+<!----------------------------------------------------------------------------->
+
+<a id="RexxUnicodeReverseGraphemeSupplier"></a>
+
+## 6.   RexxUnicodeReverseGraphemeSupplier Class
+
+<!----------------------------------------------------------------------------->
+
+A `RexxUnicodeReverseGraphemeSupplier` instance is an iterator created from a 
+UTF-8 string that allows enumeration of the string's graphemes in reverse order
+without an indexer.
+
+Byte indexes are counted from the beginning of the string.  
+They can be used with `String` methods and string builtin functions.
+
+Grapheme indexes are counted from the end of the string.  
+
+- They can be used with [`aRexxUnicodeReverseGraphemeSupplier~graphemeAtIndexG`](#RexxUnicodeReverseGraphemeSupplier_graphemeAtIndexG),
+provided that the supplier can only be advanced sequentially with `next`. Here,
+"advance" refers to moving the supplier cursor, not the direction in the original
+string.
+- They can be used with [`aRexxUnicodeStringIndexer~graphemeAtIndexG`](#RexxUnicodeStringIndexer_graphemeAtIndexG).
+
+See [`RexxUnicodeGraphemeSupplier`](#RexxUnicodeGraphemeSupplier)
+for a supplier that enumerates graphemes in forward order.
+
+`::requires "rxunicode.cls"`
+
+**Examples:**
+
+```rexx
+-- Example 1
+-- the default index type is the grapheme index
+-- the default item type is the grapheme as a string
+.RexxUnicodeReverseGraphemeSupplier~new("noël👨‍👩‍👧🎅")==
+    /*
+    a RexxUnicodeReverseGraphemeSupplier 
+     1 : '🎅'
+     2 : '👨‍👩‍👧'
+     3 : 'l'
+     4 : 'ë'
+     5 : 'o'
+     6 : 'n'
+    */
+
+```
+
+```rexx
+-- Example 2
+-- Grapheme supplier providing the byte index and returning the grapheme byte sequence as hex digits
+.RexxUnicodeReverseGraphemeSupplier~new("noël👨‍👩‍👧🎅", "b", "x")==
+    /*
+    a RexxUnicodeReverseGraphemeSupplier 
+     24 : '\x{F09F8E85}'
+     6  : '\x{F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
+     5  : '\x6C'
+     3  : '\x{C3AB}'
+     2  : '\x6F'
+     1  : '\x6E'
+    */
+
+```
+
+```rexx
+-- Example 3
+-- Grapheme supplier providing the default index and returning the grapheme escaped string
+.RexxUnicodeReverseGraphemeSupplier~new("noël👨‍👩‍👧🎅", , "\")==
+    /*
+    a RexxUnicodeReverseGraphemeSupplier 
+     1 : '🎅'
+     2 : '👨\u200D👩\u200D👧'
+     3 : 'l'
+     4 : 'ë'
+     5 : 'o'
+     6 : 'n'
+    */
+
+```
+
+```rexx
+-- Example 4
+-- Grapheme supplier providing the default index and returning the grapheme codepoints in U+ notation
+.RexxUnicodeReverseGraphemeSupplier~new("noël👨‍👩‍👧🎅", , "u")==
+    /*
+    a RexxUnicodeReverseGraphemeSupplier 
+     1 : 'U+1F385'
+     2 : 'U+1F468 U+200D U+1F469 U+200D U+1F467'
+     3 : 'U+006C'
+     4 : 'U+00EB'
+     5 : 'U+006F'
+     6 : 'U+006E'
+    */
+
+```
+
+```rexx
+-- Example 5
+-- Invalid string - U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+
+-- Grapheme supplier providing the grapheme index and returning the grapheme escaped string
+.RexxUnicodeReverseGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, , "\")==
+    /*
+    a RexxUnicodeReverseGraphemeSupplier 
+     1 : 'A'
+     2 : '\x{F1BF}'
+     3 : '\x{F09192}'
+     4 : '\xE2'
+     5 : '\x{E180}'
+    */
+
+```
+
+```rexx
+-- Example 6
+-- Grapheme supplier providing the byte index and returning the grapheme escaped string
+-- A negative byte index indicates an invalid byte sequence
+.RexxUnicodeReverseGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
+    /*
+    a RexxUnicodeReverseGraphemeSupplier 
+     9 : 'A'
+    -7 : '\x{F1BF}'
+    -4 : '\x{F09192}'
+    -3 : '\xE2'
+    -1 : '\x{E180}'
+    */
+
+```
+
+```rexx
+-- Example 7
+-- Grapheme supplier providing the byte index and returning the error message
+.RexxUnicodeReverseGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
+    /*
+    a RexxUnicodeReverseGraphemeSupplier 
+     9 : ''
+    -7 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
+    -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
+    -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
+    -1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
+    */
+
+```
+
+### 6.1.   Class methods
+
+The `RexxUnicodeReverseGraphemeSupplier` class defines no class methods of its own.
+
+
+### 6.2.   Instance methods
+
+<a id="RexxUnicodeReverseGraphemeSupplier_available"></a>
+
+#### 6.2.1.   available
+
+    aRexxUnicodeReverseGraphemeSupplier~available
+
+Returns `.true` if a grapheme is available from the supplier (that is, if the `item` method would return a value).  
+Returns `.false` if the supplier has already enumerated all graphemes.
+
+
+<a id="RexxUnicodeReverseGraphemeSupplier_graphemeAtIndexG"></a>
+
+#### 6.2.2.   graphemeAtIndexG
+
+    aRexxUnicodeReverseGraphemeSupplier~graphemeAtIndexG(indexG)
+
+Convenience method.  
+Advances the supplier to grapheme index `indexG` and returns the corresponding grapheme as a string.  
+Here, "advance" refers to moving the supplier cursor, not the direction in the original string.  
+If `indexG` is less than the current grapheme index, the supplier raises an error (can only advance).  
+This method does not support negative indexes (counting from the beginning of the string).
+
+See also [`aRexxUnicodeReverseGraphemeSupplier~graphemeAtIndexG`](#RexxUnicodeReverseGraphemeSupplier_graphemeAtIndexG).
+
+
+<a id="RexxUnicodeReverseGraphemeSupplier_index"></a>
+
+#### 6.2.3.   index
+
+    aRexxUnicodeReverseGraphemeSupplier~index(type=defaultIndexType)
+
+Returns the index of the current grapheme in the string.  
+If no grapheme is available, that is, if `available` would return `.false`, the supplier raises an error.
+
+The following index types are supported:
+
+- If `type`is `""`, the grapheme index is returned.
+- If `type` is `"b"`, the byte index is returned (it is negative if the byte sequence is invalid).
+
+The default index type is specified when the supplier is created.
+
+Byte indexes are counted from the beginning of the string.  
+Grapheme indexes are counted from the end of the string.
+
+
+<a id="RexxUnicodeReverseGraphemeSupplier_init"></a>
+
+#### 6.2.4.   init
+
+    aRexxUnicodeReverseGraphemeSupplier~init(string, defaultIndexType="", defaultItemType="")
+
+Initializes a `RexxUnicodeReverseGraphemeSupplier` instance with the UTF-8 string `string`.
+
+If specified, `defaultIndexType` defines the default index type returned by the `index` method.  
+The default is `""` (grapheme index).  
+See the [`index`](#RexxUnicodeReverseGraphemeSupplier_index) method for the list of possible values.
+
+If specified, `defaultItemType` defines the default item type returned by the `item` method.  
+The default value is `""` (grapheme as a string).  
+See the [`item`](#RexxUnicodeReverseGraphemeSupplier_item) method for the list of possible values.
+
+
+<a id="RexxUnicodeReverseGraphemeSupplier_item"></a>
+
+#### 6.2.5.   item
+
+    aRexxUnicodeReverseGraphemeSupplier~item(type=defaultItemType)
+
+Returns the current grapheme in the string.  
+If no grapheme is available, that is, if `available` would return `.false`, the supplier raises an error.
+
+The following item types are supported:
+
+- If `type` is `""`, the grapheme is returned as a string.
+- If `type` is `"b"`, the grapheme byte sequence is returned as a string (same as `""`).
+- If `type` is `"e"`, the error message is returned (an empty string if there is no error).
+- If `type` is `"u"`, the grapheme is returned in `U+` notation.
+- If `type` is `"x"`, the grapheme byte sequence is returned as hexadecimal digits.
+- If `type` is `"\"`, the grapheme byte sequence is returned as an escaped string.
+- If `type` is a class, a new instance of that class is returned, initialized with the result of `item("")`.
+
+The default item type is specified when the supplier is created.
+
+
+<a id="RexxUnicodeReverseGraphemeSupplier_next"></a>
+
+#### 6.2.6.   next
+
+    aRexxUnicodeReverseGraphemeSupplier~next
+
+Moves to the next grapheme in the string, in reverse order.  
+By repeatedly sending `next` to the supplier (as long as `available` returns 
+`.true`), you can enumerate all graphemes in the string, in reverse order.  
+If no grapheme is available, that is, if `available` would return `.false`, the
+supplier raises an error.
+
+
+
+
+<!----------------------------------------------------------------------------->
+
 <a id="RexxUnicodeStringIndexer"></a>
 
-## 5.   RexxUnicodeStringIndexer Class
+## 7.   RexxUnicodeStringIndexer Class
 
 <!----------------------------------------------------------------------------->
 
@@ -2812,11 +3416,11 @@ indexer~graphemeAtIndexG(3)~c2x=    -- 92 (use ~c2x to not display an invalid by
 ```
 
 
-### 5.1.   Routines
+### 7.1.   Routines
 
 <a id="requestRexxUnicodeStringIndexer"></a>
 
-#### 5.1.1.   requestRexxUnicodeStringIndexer routine
+#### 7.1.1.   requestRexxUnicodeStringIndexer routine
 
     requestRexxUnicodeStringIndexer(object)
 
@@ -2824,16 +3428,16 @@ Returns a `RexxUnicodeStringIndexer` instance created from `object`.
 If `object` is already a `RexxUnicodeStringIndexer` instance, returns it unchanged.
 
 
-### 5.2.   Class methods
+### 7.2.   Class methods
 
 The `RexxUnicodeStringIndexer` class defines no class methods of its own.
 
 
-### 5.3.   Instance methods
+### 7.3.   Instance methods
 
 <a id="RexxUnicodeStringIndexer_codepointAtIndexC"></a>
 
-#### 5.3.1.   codepointAtIndexC
+#### 7.3.1.   codepointAtIndexC
 
     aRexxUnicodeStringIndexer~codepointAtIndexC(indexC)
 
@@ -2849,7 +3453,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_codepointCount"></a>
 
-#### 5.3.2.   codepointCount
+#### 7.3.2.   codepointCount
 
     aRexxUnicodeStringIndexer~codepointCount
 
@@ -2859,7 +3463,7 @@ This result is not impacted by `codepointStorageLimit`.
 
 <a id="RexxUnicodeStringIndexer_codepointIndexB"></a>
 
-#### 5.3.3.   codepointIndexB
+#### 7.3.3.   codepointIndexB
 
     aRexxUnicodeStringIndexer~codepointIndexB(indexC)
 
@@ -2874,9 +3478,9 @@ If `abs(indexC)` exceeds the codepoint count, or if the requested index is not s
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
 
-<a id="RexxUnicodeStringIndexer_graphemeIndexG"></a>
+<a id="RexxUnicodeStringIndexer_codepointIndexC"></a>
 
-#### 5.3.4.   codepointIndexC
+#### 7.3.4.   codepointIndexC
 
     aRexxUnicodeStringIndexer~codepointIndexC(indexB)
 
@@ -2945,7 +3549,7 @@ do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); 
 
 <a id="RexxUnicodeStringIndexer_codepointIndexes"></a>
 
-#### 5.3.5.   codepointIndexes
+#### 7.3.5.   codepointIndexes
 
     aRexxUnicodeStringIndexer~codepointIndexes
 
@@ -2956,7 +3560,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_codepointStorageLimit"></a>
 
-#### 5.3.6.   codepointStorageLimit
+#### 7.3.6.   codepointStorageLimit
 
     aRexxUnicodeStringIndexer~codepointStorageLimit
 
@@ -2967,7 +3571,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_endCodepointIndexes"></a>
 
-#### 5.3.7.   endCodepointIndexes
+#### 7.3.7.   endCodepointIndexes
 
     aRexxUnicodeStringIndexer~endCodepointIndexes
 
@@ -2989,7 +3593,7 @@ indexer~endCodepointIndexes=    -- [ 20, 16, 13, 9, 6]
 
 <a id="RexxUnicodeStringIndexer_endCodepointStorageSize"></a>
 
-#### 5.3.8.   endCodepointStorageSize
+#### 7.3.8.   endCodepointStorageSize
 
     aRexxUnicodeStringIndexer~endCodepointStorageSize
 
@@ -3000,7 +3604,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_endErrors"></a>
 
-#### 5.3.9.   endErrors
+#### 7.3.9.   endErrors
 
     aRexxUnicodeStringIndexer~endErrors
 
@@ -3041,7 +3645,7 @@ indexer~endErrors==
 
 <a id="RexxUnicodeStringIndexer_endErrorStorageSize"></a>
 
-#### 5.3.10.   endErrorStorageSize
+#### 7.3.10.   endErrorStorageSize
 
     aRexxUnicodeStringIndexer~endErrorStorageSize
 
@@ -3052,7 +3656,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_endGraphemeIndexes"></a>
 
-#### 5.3.11.   endGraphemeIndexes
+#### 7.3.11.   endGraphemeIndexes
 
     aRexxUnicodeStringIndexer~endGraphemeIndexes
 
@@ -3074,7 +3678,7 @@ indexer~endGraphemeIndexes=     -- [ 20, 2, 1]
 
 <a id="RexxUnicodeStringIndexer_endGraphemeStorageSize"></a>
 
-#### 5.3.12.   endGraphemeStorageSize
+#### 7.3.12.   endGraphemeStorageSize
 
     aRexxUnicodeStringIndexer~endGraphemeStorageSize
 
@@ -3085,7 +3689,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_errorCount"></a>
 
-#### 5.3.13.   errorCount
+#### 7.3.13.   errorCount
 
     aRexxUnicodeStringIndexer~errorCount
 
@@ -3096,7 +3700,7 @@ This result is not impacted by `errorStorageLimit`.
 
 <a id="RexxUnicodeStringIndexer_errors"></a>
 
-#### 5.3.14.   errors
+#### 7.3.14.   errors
 
     aRexxUnicodeStringIndexer~errors
 
@@ -3107,7 +3711,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_errorStorageLimit"></a>
 
-#### 5.3.15.   errorStorageLimit
+#### 7.3.15.   errorStorageLimit
 
     aRexxUnicodeStringIndexer~errorStorageLimit
 
@@ -3118,7 +3722,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_graphemeAtIndexG"></a>
 
-#### 5.3.16.   graphemeAtIndexG
+#### 7.3.16.   graphemeAtIndexG
 
     aRexxUnicodeStringIndexer~graphemeAtIndexG(indexG)
 
@@ -3134,7 +3738,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_graphemeCount"></a>
 
-#### 5.3.17.   graphemeCount
+#### 7.3.17.   graphemeCount
 
     aRexxUnicodeStringIndexer~graphemeCount
 
@@ -3145,7 +3749,7 @@ This result is not affected by `graphemeStorageLimit`.
 
 <a id="RexxUnicodeStringIndexer_graphemeIndexB"></a>
 
-#### 5.3.18.   graphemeIndexB
+#### 7.3.18.   graphemeIndexB
 
     aRexxUnicodeStringIndexer~graphemeIndexB(indexG)
 
@@ -3162,7 +3766,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_graphemeIndexG"></a>
 
-#### 5.3.19.   graphemeIndexG
+#### 7.3.19.   graphemeIndexG
 
     aRexxUnicodeStringIndexer~graphemeIndexG(indexB)
 
@@ -3231,7 +3835,7 @@ do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); e
 
 <a id="RexxUnicodeStringIndexer_graphemeIndexes"></a>
 
-#### 5.3.20.   graphemeIndexes
+#### 7.3.20.   graphemeIndexes
 
     aRexxUnicodeStringIndexer~graphemeIndexes
 
@@ -3242,7 +3846,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_graphemeStorageLimit"></a>
 
-#### 5.3.21.   graphemeStorageLimit
+#### 7.3.21.   graphemeStorageLimit
 
     aRexxUnicodeStringIndexer~graphemeStorageLimit
 
@@ -3253,7 +3857,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 <a id="RexxUnicodeStringIndexer_info"></a>
 
-#### 5.3.22.   info
+#### 7.3.22.   info
 
     aRexxUnicodeStringIndexer~info
 
@@ -3288,7 +3892,7 @@ Returns a string providing information about the indexer's string:
 
 <a id="RexxUnicodeStringIndexer_init"></a>
 
-#### 5.3.23.   init
+#### 7.3.23.   init
 
 ```
 aRexxUnicodeStringIndexer~init(
@@ -3407,7 +4011,7 @@ do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~gra
 
 <a id="RexxUnicodeStringIndexer_string"></a>
 
-#### 5.3.24.   string
+#### 7.3.24.   string
 
     aRexxUnicodeStringIndexer~string
 
@@ -3420,7 +4024,7 @@ Returns the string passed when creating the indexer.
 
 <a id="RexxUnicodeCharacter"></a>
 
-## 6.   RexxUnicodeCharacter Class
+## 8.   RexxUnicodeCharacter Class
 
 <!----------------------------------------------------------------------------->
 
@@ -3435,11 +4039,11 @@ and implements a `compareTo` method. Instances are compared by codepoint value.
 `::requires "rxunicode.cls"`
 
 
-### 6.1.   Class methods
+### 8.1.   Class methods
 
 <a id="RexxUnicodeCharacter_properties"></a>
 
-#### 6.1.1.   properties
+#### 8.1.1.   properties
 
     .RexxUnicodeCharacter~properties
 
@@ -3519,11 +4123,11 @@ c = .RexxUnicode~character("€"); do message over .RexxUnicodeCharacter~propert
 ```
  
  
-### 6.2.   Instance methods
+### 8.2.   Instance methods
 
 <a id="RexxUnicodeCharacter_bidiClass"></a>
 
-#### 6.2.1.   bidiClass
+#### 8.2.1.   bidiClass
 
     aRexxUnicodeCharacter~bidiClass
 
@@ -3543,7 +4147,7 @@ See [`.RexxUnicodeServices~codepointBidiClass`](#codepointBidiClass) for the lis
 
 <a id="RexxUnicodeCharacter_bidiClassName"></a>
 
-#### 6.2.2.   bidiClassName
+#### 8.2.2.   bidiClassName
 
     aRexxUnicodeCharacter~bidiClassName
 
@@ -3563,7 +4167,7 @@ See [`.RexxUnicodeServices~codepointBidiClass`](#codepointBidiClass) for the lis
 
 <a id="RexxUnicodeCharacter_bidiMirrored"></a>
 
-#### 6.2.3.   bidiMirrored
+#### 8.2.3.   bidiMirrored
 
     aRexxUnicodeCharacter~bidiMirrored
 
@@ -3574,7 +4178,7 @@ Returns `.true` if the `Bidi_Mirrored` property value is `Yes`.
 
 <a id="RexxUnicodeCharacter_boundClass"></a>
 
-#### 6.2.4.   boundClass
+#### 8.2.4.   boundClass
 
     aRexxUnicodeCharacter~boundClass
 
@@ -3596,7 +4200,7 @@ See [`.RexxUnicodeServices~codepointBoundClass`](#codepointBoundClass) for the l
 
 <a id="RexxUnicodeCharacter_boundClassName"></a>
 
-#### 6.2.5.   boundClassName
+#### 8.2.5.   boundClassName
 
     aRexxUnicodeCharacter~boundClassName
 
@@ -3618,7 +4222,7 @@ See [`.RexxUnicodeServices~codepointBoundClass`](#codepointBoundClass) for the l
 
 <a id="RexxUnicodeCharacter_category"></a>
 
-#### 6.2.6.   category
+#### 8.2.6.   category
 
     aRexxUnicodeCharacter~category
 
@@ -3640,7 +4244,7 @@ See [`.RexxUnicodeServices~codepointCategory`](#codepointCategory) for the list 
 
 <a id="RexxUnicodeCharacter_categoryName"></a>
 
-#### 6.2.7.   categoryName
+#### 8.2.7.   categoryName
 
     aRexxUnicodeCharacter~categoryName
 
@@ -3662,7 +4266,7 @@ See [`.RexxUnicodeServices~codepointCategory`](#codepointCategory) for the list 
 
 <a id="RexxUnicodeCharacter_charWidth"></a>
 
-#### 6.2.8.   charWidth
+#### 8.2.8.   charWidth
 
     aRexxUnicodeCharacter~charWidth
 
@@ -3673,7 +4277,7 @@ instead of -1 as in `wcwidth`.
 
 <a id="RexxUnicodeCharacter_codepoint"></a>
 
-#### 6.2.9.   codepoint
+#### 8.2.9.   codepoint
 
     aRexxUnicodeCharacter~codepoint
 
@@ -3682,7 +4286,7 @@ Returns the codepoint passed when creating the `RexxUnicodeCharacter` instance.
 
 <a id="RexxUnicodeCharacter_combiningClass"></a>
 
-#### 6.2.10.   combiningClass
+#### 8.2.10.   combiningClass
 
     aRexxUnicodeCharacter~combiningClass
 
@@ -3708,7 +4312,7 @@ See [`.RexxUnicodeServices~codepointCombiningClass`](#codepointCombiningClass) f
 
 <a id="RexxUnicodeCharacter_combiningClassName"></a>
 
-#### 6.2.11.   combiningClassName
+#### 8.2.11.   combiningClassName
 
     aRexxUnicodeCharacter~combiningClassName
 
@@ -3734,7 +4338,7 @@ See [`.RexxUnicodeServices~codepointCombiningClass`](#codepointCombiningClass) f
 
 <a id="RexxUnicodeCharacter_combiningClassValue"></a>
 
-#### 6.2.12.   combiningClassValue
+#### 8.2.12.   combiningClassValue
 
     aRexxUnicodeCharacter~combiningClassValue
 
@@ -3759,7 +4363,7 @@ See [`.RexxUnicodeServices~codepointCombiningClass`](#codepointCombiningClass) f
 
 <a id="RexxUnicodeCharacter_compareTo"></a>
 
-#### 6.2.13.   compareTo
+#### 8.2.13.   compareTo
 
     aRexxUnicodeCharacter~compareTo(otherUnicodeCharacter)
 
@@ -3782,7 +4386,7 @@ c1 = .RexxUnicodeCharacter~new(64); c2 = .RexxUnicodeCharacter~new(65); c1~compa
 
 <a id="RexxUnicodeCharacter_controlBoundary"></a>
 
-#### 6.2.14.   controlBoundary
+#### 8.2.14.   controlBoundary
 
     aRexxUnicodeCharacter~controlBoundary
 
@@ -3799,7 +4403,7 @@ Returns `.true` if the character's codepoint belongs to the `Zl`, `Zp`, `Cc`, or
 
 <a id="RexxUnicodeCharacter_decompositionType"></a>
 
-#### 6.2.15.   decompositionType
+#### 8.2.15.   decompositionType
 
     aRexxUnicodeCharacter~decompositionType
 
@@ -3823,7 +4427,7 @@ See [`.RexxUnicodeServices~codepointDecompositionType`](#codepointDecompositionT
 
 <a id="RexxUnicodeCharacter_decompositionTypeName"></a>
 
-#### 6.2.16.   decompositionTypeName
+#### 8.2.16.   decompositionTypeName
 
     aRexxUnicodeCharacter~decompositionTypeName
 
@@ -3847,7 +4451,7 @@ See [`.RexxUnicodeServices~codepointDecompositionType`](#codepointDecompositionT
 
 <a id="RexxUnicodeCharacter_eastAsianWidthIsAmbiguous"></a>
 
-#### 6.2.17.   eastAsianWidthIsAmbiguous
+#### 8.2.17.   eastAsianWidthIsAmbiguous
 
     aRexxUnicodeCharacter~eastAsianWidthIsAmbiguous
 
@@ -3858,7 +4462,7 @@ Returns `.true` if the `East_Asian_Width` property value is `"A"` (`"Ambiguous"`
 
 <a id="RexxUnicodeCharacter_extendedName"></a>
 
-#### 6.2.18.   extendedName
+#### 8.2.18.   extendedName
 
     aRexxUnicodeCharacter~extendedName
 
@@ -3884,7 +4488,7 @@ An extended name is either the standard name if defined, or a codepoint label al
 
 <a id="RexxUnicodeCharacter_ignorable"></a>
 
-#### 6.2.19.   ignorable
+#### 8.2.19.   ignorable
 
     aRexxUnicodeCharacter~ignorable
 
@@ -3895,7 +4499,7 @@ Returns the `Default_Ignorable_Code_Point` property value (boolean value).
 
 <a id="RexxUnicodeCharacter_indicConjunctBreak"></a>
 
-#### 6.2.20.   indicConjunctBreak
+#### 8.2.20.   indicConjunctBreak
 
     aRexxUnicodeCharacter~indicConjunctBreak
 
@@ -3920,7 +4524,7 @@ See [`.RexxUnicodeServices~codepointIndicConjunctBreak`](#codepointIndicConjunct
 
 <a id="RexxUnicodeCharacter_indicConjunctBreakName"></a>
 
-#### 6.2.21.   indicConjunctBreakName
+#### 8.2.21.   indicConjunctBreakName
 
     aRexxUnicodeCharacter~indicConjunctBreakName
 
@@ -3945,7 +4549,7 @@ See [`.RexxUnicodeServices~codepointIndicConjunctBreak`](#codepointIndicConjunct
 
 <a id="RexxUnicodeCharacter_info"></a>
 
-#### 6.2.22.   info
+#### 8.2.22.   info
 
     aRexxUnicodeCharacter~info
 
@@ -3996,7 +4600,7 @@ The following properties have a special representation:
 
 <a id="RexxUnicodeCharacter_init"></a>
 
-#### 6.2.23.   init
+#### 8.2.23.   init
 
     aRexxUnicodeCharacter~init(codepoint)
 
@@ -4005,7 +4609,7 @@ Initializes a `RexxUnicodeCharacter` instance with the specified `codepoint`.
 
 <a id="RexxUnicodeCharacter_isLower"></a>
 
-#### 6.2.24.   isLower
+#### 8.2.24.   isLower
 
     aRexxUnicodeCharacter~isLower
 
@@ -4015,7 +4619,7 @@ and `.false` otherwise.
 
 <a id="RexxUnicodeCharacter_isUpper"></a>
 
-#### 6.2.25.   isUpper
+#### 8.2.25.   isUpper
 
     aRexxUnicodeCharacter~isUpper
 
@@ -4025,7 +4629,7 @@ and `.false` otherwise.
 
 <a id="RexxUnicodeCharacter_name"></a>
 
-#### 6.2.26.   name
+#### 8.2.26.   name
 
     aRexxUnicodeCharacter~name
 
@@ -4050,7 +4654,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method als
 
 <a id="RexxUnicodeCharacter_nameAlias"></a>
 
-#### 6.2.27.   nameAlias
+#### 8.2.27.   nameAlias
 
     aRexxUnicodeCharacter~nameAlias
 
@@ -4075,7 +4679,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method als
 
 <a id="RexxUnicodeCharacter_string"></a>
 
-#### 6.2.28.   string
+#### 8.2.28.   string
 
     aRexxUnicodeCharacter~string
 
@@ -4107,7 +4711,7 @@ Fields displayed in the string representation:
 
 <a id="RexxUnicodeCharacter_toLower"></a>
 
-#### 6.2.29.   toLower
+#### 8.2.29.   toLower
 
     aRexxUnicodeCharacter~toLower
 
@@ -4120,7 +4724,7 @@ and always returns a single codepoint.
 
 <a id="RexxUnicodeCharacter_toLowerFull"></a>
 
-#### 6.2.30.   toLowerFull (not supported)
+#### 8.2.30.   toLowerFull (not supported)
 
     aRexxUnicodeCharacter~toLowerFull
 
@@ -4135,7 +4739,7 @@ Since `utf8proc` does not expose full case mappings, this method returns an arra
 
 <a id="RexxUnicodeCharacter_toTitle"></a>
 
-#### 6.2.31.   toTitle
+#### 8.2.31.   toTitle
 
     aRexxUnicodeCharacter~toTitle
 
@@ -4148,7 +4752,7 @@ and always returns a single codepoint.
 
 <a id="RexxUnicodeCharacter_toTitleFull"></a>
 
-#### 6.2.32.   toTitleFull (not supported)
+#### 8.2.32.   toTitleFull (not supported)
 
     aRexxUnicodeCharacter~toTitleFull
 
@@ -4163,7 +4767,7 @@ Since `utf8proc` does not expose full case mappings, this method returns an arra
 
 <a id="RexxUnicodeCharacter_toUpper"></a>
 
-#### 6.2.33.   toUpper
+#### 8.2.33.   toUpper
 
     aRexxUnicodeCharacter~toUpper
 
@@ -4176,7 +4780,7 @@ and always returns a single codepoint.
 
 <a id="RexxUnicodeCharacter_toUpperFull"></a>
 
-#### 6.2.34.   toUpperFull (not supported)
+#### 8.2.34.   toUpperFull (not supported)
 
     aRexxUnicodeCharacter~toUpperFull
 
@@ -4191,7 +4795,7 @@ Since `utf8proc` does not expose full case mappings, this method returns an arra
 
 <a id="RexxUnicodeCharacter_preferredName"></a>
 
-#### 6.2.35.   preferredName
+#### 8.2.35.   preferredName
 
     aRexxUnicodeCharacter~preferredName
 
@@ -4206,7 +4810,7 @@ This preferred Unicode name is used in the string representation of the characte
 
 <a id="RexxUnicodeCharacter_UTF8"></a>
 
-#### 6.2.36.   UTF8
+#### 8.2.36.   UTF8
 
     aRexxUnicodeCharacter~UTF8
 
@@ -4219,7 +4823,7 @@ Returns a string representing the UTF-8 encoding of the character.
 
 <a id="ICU4ooRexxInterface"></a>
 
-## 7.   ICU4ooRexxInterface Class
+## 9.   ICU4ooRexxInterface Class
 
 <!----------------------------------------------------------------------------->
 
@@ -4231,11 +4835,11 @@ Its public methods are exposed through `RexxUnicode`.
 
 `::requires "rxunicode.cls"`
 
-### 7.1.   Class methods
+### 9.1.   Class methods
 
 <a id="ICU4ooRexxInterface_assertICU4ooRexxIsRegistered"></a>
 
-#### 7.1.1.   assertICU4ooRexxIsRegistered
+#### 9.1.1.   assertICU4ooRexxIsRegistered
 
     .ICU4ooRexxInterface~assertICU4ooRexxIsRegistered(raiseError=.true)
 
@@ -4245,7 +4849,7 @@ If `raiseError` is `.false`, returns `.true` if `ICU4ooRexx` is registered, or `
 
 <a id="ICU4ooRexxInterface_ICU4ooRexxIsRegistered"></a>
 
-#### 7.1.2.   ICU4ooRexxIsRegistered
+#### 9.1.2.   ICU4ooRexxIsRegistered
 
     .ICU4ooRexxInterface~ICU4ooRexxIsRegistered
 
@@ -4254,7 +4858,7 @@ Returns `.true` if `ICU4ooRexx` is registered, or `.false` otherwise.
 
 <a id="ICU4ooRexxInterface_ICU4ooRexxPackage"></a>
 
-#### 7.1.3.   ICU4ooRexxPackage
+#### 9.1.3.   ICU4ooRexxPackage
 
     .ICU4ooRexxInterface~ICU4ooRexxPackage
 
@@ -4263,7 +4867,7 @@ Returns the package object for `ICU4ooRexx` if it is registered, or `.nil` other
 
 <a id="ICU4ooRexxInterface_registerICU4ooRexx"></a>
 
-#### 7.1.4.   registerICU4ooRexx
+#### 9.1.4.   registerICU4ooRexx
 
     .ICU4ooRexxInterface~registerICU4ooRexx(package)
 
@@ -4306,7 +4910,7 @@ say .RexxUnicode~ICU4ooRexxIsRegistered                             -- 1
 ```
 
 
-### 7.2.   Instance methods
+### 9.2.   Instance methods
 
 The `ICU4ooRexxInterface` class defines no instance methods of its own.
 
