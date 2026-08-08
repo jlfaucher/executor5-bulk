@@ -1,3 +1,8 @@
+<p align="right" style="font-size:10px;">
+<a style="font-size:10px;" href="https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/rxunicode.md">Markdown</a><br/>
+<a style="font-size:10px;" href="https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/rxunicode.html">HTML</a>
+</p>
+
 # rxunicode Reference Documentation
 
 The [`RexxUnicodeServices`](#RexxUnicodeServices) class is a native class that exposes the Unicode services
