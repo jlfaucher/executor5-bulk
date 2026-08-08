@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+String class
+    </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel='stylesheet' href='https://jlfaucher.github.io/css/rexx-vim-light-zellner.css'>
+    <link rel='stylesheet' href='https://jlfaucher.github.io/css/markdown.css'>
+    <link rel='stylesheet' href='https://jlfaucher.github.io/css/markdown4xtr.css'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class='container bg-white' lang='en'>
+      <div class='row layout-main'>
+        <div class='col-md-9 content-pane'>
+          <div class='content' id="content">
+<p align="right" style="font-size:10px;">
+<a style="font-size:10px;" href="https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/string/translateInto.md">Markdown</a><br/>
+<a style="font-size:10px;" href="https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/string/translateInto.html">HTML</a>
+</p>
+<h1 id="string-class">String class</h1>
+<h2 id="translateinto">translateInto</h2>
+<p>The <code>translateInto</code> method of the String class is a
+generalization of the <code>translate</code> method.</p>
+<pre><code>string~translate(                  [tableo], [tablei], [pad], [n], [length]           )
+string~translateInto( destination, [tableo], [tablei], [pad], [n], [length], [refEnd] )</code></pre>
+<p>Translates sequences of characters into another sequence of
+characters.<br />
+Appends the translated sequences of characters to
+<code>destination</code>.<br />
+Currently, <code>destination</code> must be a mutable buffer, but it
+could be any object supporting the<code>append</code> method at C++
+level.<br />
+The resulting string may be shorter or longer than the receiving
+string.</p>
+<p><code>tablei</code> and <code>tableo</code> can be either a string or
+an array.</p>
+<p>If <code>tablei</code> is a string:</p>
+<ul>
+<li>each character in the receiving string is searched in
+<code>tablei</code>.</li>
+<li>If the character is found, the corresponding translation item in
+<code>tableo</code> is tried.</li>
+</ul>
+<p>If <code>tablei</code> is an array, the matcher items are:</p>
+<ul>
+<li>either a routine that may match a sequence of characters,</li>
+<li>or any <code>non-NIL</code> object whose string representation is
+used as a sequence of characters for matching in the receiving
+string.</li>
+<li>or <code>.NIL</code> which is ignored</li>
+<li>or <code>OREF_NULL</code> (an omitted item in the array) which is
+ignored.</li>
+<li>If there is a match, the corresponding translation item in
+<code>tableo</code> is tried.</li>
+</ul>
+<p>If <code>tableo</code> is a string, the translation items are
+characters.</p>
+<p>If <code>tableo</code> is an array, the translation items are:</p>
+<ul>
+<li>either a routine that may append a sequence of characters,</li>
+<li>or any <code>non-NIL</code> object whose string representation is
+used as a sequence of characters to append. A string representation is
+always applicable.</li>
+<li>or <code>.NIL</code> to stop the translation.</li>
+<li>or <code>OREF_NULL</code> (an omitted item in the array) to stop the
+translation.</li>
+</ul>
+<p>Arguments passed to a matcher routine in <code>tablei</code>:</p>
+<pre><code>string: The string that received the &quot;translateInto&quot; message.
+pos:    The current matching position in string (first character).</code></pre>
+<p>Arguments passed to a translation routine in <code>tableo</code>:</p>
+<pre><code>destination: The destination of the translation.
+             The routine can append text to it.
+string:      The string that received the &quot;translateInto&quot; message.
+pad:         The pad string passed with the &quot;translateInto&quot; message, can be
+             omitted.
+pos:         The current matching position in string (first character).
+matchLength: The length of the current matched substring. The routine can
+             either return this length or return a different length.</code></pre>
+<p>Interpretation of the result returned by a routine:</p>
+<pre><code>          |    no result     | 0 or not a number | &gt; 0 (offset of next position)
+in tablei | stop translation | no match          | match
+in tableo | stop translation | not applicable    | translation applied</code></pre>
+<p>If there are duplicates in <code>tablei</code>:</p>
+<ul>
+<li>the first (leftmost if string) occurrence is selected.</li>
+<li>if the corresponding translation item is a routine and this routine
+returns 0, then the next occurrence in <code>tablei</code> is selected.
+Repeat until a translation item is applicable, or until there are no
+more occurences.</li>
+<li>otherwise only the first corresponding translation item is
+used.</li>
+</ul>
+<p>If there is a match and the corresponding translation item is
+applicable, the translation is appended to <code>destination</code>. The
+next position in the receiving string is updated:</p>
+<ul>
+<li>Character matching: advance by one character.</li>
+<li>String matching: advance by the length of the corresponding
+string.</li>
+<li>Matching by routine: advance by the returned number (unless
+overriden)</li>
+<li>Translation by routine: advance by the returned number
+(override)</li>
+</ul>
+<p>If there is no match or no applicable translation item, the current
+character in the receiving string is appended to
+<code>destination</code>. The next position in the receiving string is
+advanced by one character.</p>
+<p>At the end of the translation, the current position in the receiving
+string is returned in the optional <code>refEnd</code> variable
+reference.</p>
+<h3 id="example-1">Example 1</h3>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-var">inArray</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">00</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="2"><span class="rx-ws">          </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">07</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="3"><span class="rx-ws">          </span><span class="rx-env">.routines</span><span class="rx-op">~</span><span class="rx-const rx-method">match_cntrl</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="4"><span class="rx-ws">          </span><span class="rx-str rx-oquo">"</span><span class="rx-str">&lt;script&gt;</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="5"><span class="rx-ws">          </span><span class="rx-str rx-oquo">"</span><span class="rx-str">&lt;LOL&gt;</span><span class="rx-str rx-cquo">"</span></code>
+<code lineno="6"></code>
+<code lineno="7"><span class="rx-var">outArray</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">0️⃣</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="8"><span class="rx-ws">           </span><span class="rx-str rx-oquo">"</span><span class="rx-str">7️⃣</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="9"><span class="rx-ws">           </span><span class="rx-env">.routines</span><span class="rx-op">~</span><span class="rx-const rx-method">translate_cntrl</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="10"><span class="rx-ws">           </span><span class="rx-env">.routines</span><span class="rx-op">~</span><span class="rx-const rx-method">translate_to_script_font</span><span class="rx-spe">,</span><span class="rx-cont">-</span><span class="rx-ws">     </span><span class="rx-lncm">-- up to &lt;/script&gt;</span></code>
+<code lineno="11"><span class="rx-ws">           </span><span class="rx-str rx-oquo">"</span><span class="rx-str">😂</span><span class="rx-str rx-cquo">"</span></code>
+<code lineno="12"></code>
+<code lineno="13"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">My name is &lt;script&gt;Bond, James Bond&lt;/script&gt; &lt;LOL&gt;! My public ID is </span><span class="rx-str rx-cquo">"</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">000007</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">. My secret ID is </span><span class="rx-str rx-cquo">"</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">01000500020807</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">.</span><span class="rx-str rx-cquo">"</span></code>
+<code lineno="14"><span class="rx-var">translation</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-var">string</span><span class="rx-op">~</span><span class="rx-const rx-method">translateInto</span><span class="rx-spe">(</span><span class="rx-env">.mutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">outArray</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">inArray</span><span class="rx-spe">)</span></code>
+<code lineno="15"></code>
+<code lineno="16"><span class="rx-var">translation</span><span class="rx-ws"> </span><span class="rx-op">=</span><span class="rx-op">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">My name is 𝓑𝓸𝓷𝓭, 𝓙𝓪𝓶𝓮𝓼 𝓑𝓸𝓷𝓭 😂! My public ID is 0️⃣0️⃣7️⃣. My secret ID is \u00010️⃣\u00050️⃣\u0002\u00087️⃣.</span><span class="rx-str rx-cquo">"</span></code>
+<code lineno="17"></code>
+<code lineno="18"></code>
+<code lineno="19"><span class="rx-dir">::</span><span class="rx-dkw">routine</span><span class="rx-ws"> </span><span class="rx-const rx-routine">match_cntrl</span></code>
+<code lineno="20"><span class="rx-ws">    </span><span class="rx-kw">use</span><span class="rx-ws"> </span><span class="rx-skw">strict</span><span class="rx-ws"> </span><span class="rx-skw">arg</span><span class="rx-ws"> </span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">pos</span></code>
+<code lineno="21"><span class="rx-ws">    </span><span class="rx-lncm">-- The returned value is not a boolean, it's a number of matched characters:</span></code>
+<code lineno="22"><span class="rx-ws">    </span><span class="rx-lncm">-- 0 if no match</span></code>
+<code lineno="23"><span class="rx-ws">    </span><span class="rx-lncm">-- 1 if match</span></code>
+<code lineno="24"><span class="rx-ws">    </span><span class="rx-kw">return</span><span class="rx-ws"> </span><span class="rx-env">.string</span><span class="rx-op">~</span><span class="rx-const rx-method">cntrl</span><span class="rx-op">~</span><span class="rx-const rx-method">contains</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-op">~</span><span class="rx-const rx-method">subchar</span><span class="rx-spe">(</span><span class="rx-var">pos</span><span class="rx-spe">)</span><span class="rx-spe">)</span></code>
+<code lineno="25"></code>
+<code lineno="26"></code>
+<code lineno="27"><span class="rx-dir">::</span><span class="rx-dkw">routine</span><span class="rx-ws"> </span><span class="rx-const rx-routine">translate_cntrl</span></code>
+<code lineno="28"><span class="rx-ws">    </span><span class="rx-kw">use</span><span class="rx-ws"> </span><span class="rx-skw">strict</span><span class="rx-ws"> </span><span class="rx-skw">arg</span><span class="rx-ws"> </span><span class="rx-var">buffer</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">pad</span><span class="rx-op">=</span><span class="rx-str rx-oquo">"</span><span class="rx-str"> </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">pos</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">matchLength</span></code>
+<code lineno="29"><span class="rx-ws">    </span><span class="rx-var">byte</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-var">string</span><span class="rx-op">~</span><span class="rx-const rx-method">subchar</span><span class="rx-spe">(</span><span class="rx-var">pos</span><span class="rx-spe">)</span></code>
+<code lineno="30"><span class="rx-ws">    </span><span class="rx-var">buffer</span><span class="rx-op">~</span><span class="rx-const rx-method">append</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\u00</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span></code>
+<code lineno="31"><span class="rx-ws">    </span><span class="rx-var">buffer</span><span class="rx-op">~</span><span class="rx-const rx-method">append</span><span class="rx-spe">(</span><span class="rx-var">byte</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">)</span></code>
+<code lineno="32"><span class="rx-ws">    </span><span class="rx-kw">return</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-ws"> </span><span class="rx-lncm">-- advance by 1 character</span></code>
+<code lineno="33"></code>
+<code lineno="34"></code>
+<code lineno="35"><span class="rx-dir">::</span><span class="rx-dkw">routine</span><span class="rx-ws"> </span><span class="rx-const rx-routine">translate_to_script_font</span></code>
+<code lineno="36"><span class="rx-ws">    </span><span class="rx-kw">use</span><span class="rx-ws"> </span><span class="rx-skw">strict</span><span class="rx-ws"> </span><span class="rx-skw">arg</span><span class="rx-ws"> </span><span class="rx-var">buffer</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">pad</span><span class="rx-op">=</span><span class="rx-str rx-oquo">"</span><span class="rx-str"> </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">pos</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">matchLength</span></code>
+<code lineno="37"><span class="rx-ws">    </span><span class="rx-kw">parse</span><span class="rx-ws"> </span><span class="rx-skw">value</span><span class="rx-ws"> </span><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-skw">with</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">&lt;script&gt;</span><span class="rx-str rx-cquo">"</span><span class="rx-ws"> </span><span class="rx-var">text</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">&lt;/script&gt;</span><span class="rx-str rx-cquo">"</span><span class="rx-ws"> </span><span class="rx-spe">.</span></code>
+<code lineno="38"><span class="rx-ws">    </span><span class="rx-var">alpha_sb</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓐</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓑</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓒</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓓</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓔</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓕</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓖</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓗</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓘</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓙</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓚</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓛</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓜</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓝</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓞</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓟</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓠</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓡</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓢</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓣</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓤</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓥</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓦</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓧</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓨</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓩</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="39"><span class="rx-ws">               </span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓪</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓫</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓬</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓭</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓮</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓯</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓰</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓱</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓲</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓳</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓴</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓵</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓶</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓷</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓸</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓹</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓺</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓻</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓼</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓽</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓾</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝓿</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝔀</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝔁</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝔂</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-str rx-oquo">"</span><span class="rx-str">𝔃</span><span class="rx-str rx-cquo">"</span></code>
+<code lineno="40"><span class="rx-ws">    </span><span class="rx-var">text_sb</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-var">text</span><span class="rx-op">~</span><span class="rx-const rx-method">translateInto</span><span class="rx-spe">(</span><span class="rx-var">buffer</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">alpha_sb</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.string</span><span class="rx-op">~</span><span class="rx-const rx-method">alpha</span><span class="rx-spe">)</span></code>
+<code lineno="41"><span class="rx-ws">    </span><span class="rx-kw">return</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">&lt;script&gt;</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-ws"> </span><span class="rx-op">+</span><span class="rx-ws"> </span><span class="rx-var">text</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-ws"> </span><span class="rx-op">+</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">&lt;/script&gt;</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span>
+</code></pre>
+</div>
+<h3 id="example-2">Example 2</h3>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Translate a JSON string, starting at position 15.</span></code>
+<code lineno="2"><span class="rx-lncm">-- The next unescaped double quote will stop the translation.</span></code>
+<code lineno="3"><span class="rx-lncm">-- Its position will be collected with the `endTranslation` variable passed by reference.</span></code>
+<code lineno="4"><span class="rx-lncm">-- Some strings contain control characters, displayed in hexadecimal between []</span></code>
+<code lineno="5"></code>
+<code lineno="6"><span class="rx-var">inArray</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\"</span><span class="rx-str rx-cquo">'</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="7"><span class="rx-ws">          </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\\</span><span class="rx-str rx-cquo">'</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="8"><span class="rx-ws">          </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\/</span><span class="rx-str rx-cquo">'</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="9"><span class="rx-ws">          </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\b</span><span class="rx-str rx-cquo">'</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="10"><span class="rx-ws">          </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\f</span><span class="rx-str rx-cquo">'</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="11"><span class="rx-ws">          </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\n</span><span class="rx-str rx-cquo">'</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="12"><span class="rx-ws">          </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\r</span><span class="rx-str rx-cquo">'</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="13"><span class="rx-ws">          </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\t</span><span class="rx-str rx-cquo">'</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="14"><span class="rx-ws">          </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\u00</span><span class="rx-str rx-cquo">'</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="15"><span class="rx-ws">          </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\u</span><span class="rx-str rx-cquo">'</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="16"><span class="rx-ws">          </span><span class="rx-str rx-oquo">'</span><span class="rx-str">"</span><span class="rx-str rx-cquo">'</span></code>
+<code lineno="17"></code>
+<code lineno="18"><span class="rx-var">outArray</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">"</span><span class="rx-str rx-cquo">'</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="19"><span class="rx-ws">           </span><span class="rx-str rx-oquo">'</span><span class="rx-str">\</span><span class="rx-str rx-cquo">'</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="20"><span class="rx-ws">           </span><span class="rx-str rx-oquo">'</span><span class="rx-str">/</span><span class="rx-str rx-cquo">'</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="21"><span class="rx-ws">           </span><span class="rx-xstr rx-oquo">'</span><span class="rx-xstr">08</span><span class="rx-xstr rx-cquo">'</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="22"><span class="rx-ws">           </span><span class="rx-xstr rx-oquo">'</span><span class="rx-xstr">0C</span><span class="rx-xstr rx-cquo">'</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="23"><span class="rx-ws">           </span><span class="rx-xstr rx-oquo">'</span><span class="rx-xstr">0A</span><span class="rx-xstr rx-cquo">'</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="24"><span class="rx-ws">           </span><span class="rx-xstr rx-oquo">'</span><span class="rx-xstr">0D</span><span class="rx-xstr rx-cquo">'</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="25"><span class="rx-ws">           </span><span class="rx-xstr rx-oquo">'</span><span class="rx-xstr">09</span><span class="rx-xstr rx-cquo">'</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="26"><span class="rx-ws">           </span><span class="rx-env">.routines</span><span class="rx-op">~</span><span class="rx-const rx-method">translate_backslash_u00_2_hexdigits</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="27"><span class="rx-ws">           </span><span class="rx-env">.routines</span><span class="rx-op">~</span><span class="rx-const rx-method">translate_backslash_u_4_hexdigits</span><span class="rx-spe">,</span><span class="rx-cont">-</span></code>
+<code lineno="28"><span class="rx-ws">           </span><span class="rx-env">.nil</span><span class="rx-ws"> </span><span class="rx-cm">/* .nil or omitted item means stop */</span></code>
+<code lineno="29"></code>
+<code lineno="30"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">[ { "key1" : "My name is \"Bond\", \"James Bond\".\r\nMy ID is \"007\"." }]</span><span class="rx-str rx-cquo">'</span></code>
+<code lineno="31"><span class="rx-var">cols</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws">   </span><span class="rx-str rx-oquo">'</span><span class="rx-str">123456789012345........................................................^</span><span class="rx-str rx-cquo">'</span></code>
+<code lineno="32"><span class="rx-var">translation</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-var">string</span><span class="rx-op">~</span><span class="rx-const rx-method">translateInto</span><span class="rx-spe">(</span><span class="rx-env">.mutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">outArray</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">inArray</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*pad*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">15</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*length*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">endTranslation</span><span class="rx-spe">)</span></code>
+<code lineno="33"></code>
+<code lineno="34"><span class="rx-var">translation</span><span class="rx-ws"> </span><span class="rx-op">=</span><span class="rx-op">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">'</span><span class="rx-str">[ { "key1" : "My name is "Bond", "James Bond".[0D0A]My ID is "007".</span><span class="rx-str rx-cquo">'</span></code>
+<code lineno="35"><span class="rx-var">endTranslation</span><span class="rx-ws"> </span><span class="rx-op">=</span><span class="rx-op">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">72</span></code>
+<code lineno="36"></code>
+<code lineno="37"></code>
+<code lineno="38"><span class="rx-dir">::</span><span class="rx-dkw">routine</span><span class="rx-ws"> </span><span class="rx-const rx-routine">translate_backslash_u00_2_hexdigits</span></code>
+<code lineno="39"><span class="rx-ws">    </span><span class="rx-kw">use</span><span class="rx-ws"> </span><span class="rx-skw">strict</span><span class="rx-ws"> </span><span class="rx-skw">arg</span><span class="rx-ws"> </span><span class="rx-var">buffer</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">pad</span><span class="rx-op">=</span><span class="rx-str rx-oquo">"</span><span class="rx-str"> </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">pos</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">matchLength</span></code>
+<code lineno="40"><span class="rx-ws">    </span><span class="rx-lncm">-- "\u00XX" where "\u00" is already matched</span></code>
+<code lineno="41"><span class="rx-ws">    </span><span class="rx-kw">if</span><span class="rx-ws"> </span><span class="rx-var">string</span><span class="rx-op">~</span><span class="rx-const rx-method">verify</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">0123456789ABCDEFabcdef</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">NOMATCH</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">pos</span><span class="rx-ws"> </span><span class="rx-op">+</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">4</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">=</span><span class="rx-op">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-ws"> </span><span class="rx-kw">then</span><span class="rx-ws"> </span><span class="rx-kw">do</span></code>
+<code lineno="42"><span class="rx-ws">        </span><span class="rx-var">hex</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-var">string</span><span class="rx-spe">[</span><span class="rx-var">pos</span><span class="rx-ws"> </span><span class="rx-op">+</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">4</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">2</span><span class="rx-spe">]</span></code>
+<code lineno="43"><span class="rx-ws">        </span><span class="rx-kw">if</span><span class="rx-ws"> </span><span class="rx-var">hex</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-ws"> </span><span class="rx-op">=</span><span class="rx-op">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">2</span><span class="rx-ws"> </span><span class="rx-kw">then</span><span class="rx-ws"> </span><span class="rx-kw">do</span></code>
+<code lineno="44"><span class="rx-ws">            </span><span class="rx-var">buffer</span><span class="rx-op">~</span><span class="rx-const rx-method">append</span><span class="rx-spe">(</span><span class="rx-var">hex</span><span class="rx-op">~</span><span class="rx-const rx-method">x2c</span><span class="rx-spe">)</span></code>
+<code lineno="45"><span class="rx-ws">            </span><span class="rx-kw">return</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">6</span><span class="rx-ws"> </span><span class="rx-lncm">-- advance by 6 characters</span></code>
+<code lineno="46"><span class="rx-ws">        </span><span class="rx-kw">end</span></code>
+<code lineno="47"><span class="rx-ws">    </span><span class="rx-kw">end</span></code>
+<code lineno="48"><span class="rx-ws">    </span><span class="rx-kw">raise</span><span class="rx-ws"> </span><span class="rx-skw">user</span><span class="rx-ws"> </span><span class="rx-const rx-user-condition">parseError</span><span class="rx-ws"> </span><span class="rx-skw">array</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Invalid escape sequence</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span></code>
+<code lineno="49"></code>
+<code lineno="50"></code>
+<code lineno="51"><span class="rx-dir">::</span><span class="rx-dkw">routine</span><span class="rx-ws"> </span><span class="rx-const rx-routine">translate_backslash_u_4_hexdigits</span></code>
+<code lineno="52"><span class="rx-ws">    </span><span class="rx-kw">use</span><span class="rx-ws"> </span><span class="rx-skw">strict</span><span class="rx-ws"> </span><span class="rx-skw">arg</span><span class="rx-ws"> </span><span class="rx-var">buffer</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">pad</span><span class="rx-op">=</span><span class="rx-str rx-oquo">"</span><span class="rx-str"> </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">pos</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">matchLength</span></code>
+<code lineno="53"><span class="rx-ws">    </span><span class="rx-lncm">-- "\uXXXX" where "\u" is already matched</span></code>
+<code lineno="54"><span class="rx-ws">    </span><span class="rx-kw">if</span><span class="rx-ws"> </span><span class="rx-var">string</span><span class="rx-op">~</span><span class="rx-const rx-method">verify</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">0123456789ABCDEFabcdef</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">NOMATCH</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">pos</span><span class="rx-ws"> </span><span class="rx-op">+</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">2</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">4</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">=</span><span class="rx-op">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-ws"> </span><span class="rx-kw">then</span><span class="rx-ws"> </span><span class="rx-kw">do</span></code>
+<code lineno="55"><span class="rx-ws">        </span><span class="rx-var">escapeSequence</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-var">string</span><span class="rx-spe">[</span><span class="rx-var">pos</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">6</span><span class="rx-spe">]</span></code>
+<code lineno="56"><span class="rx-ws">        </span><span class="rx-kw">if</span><span class="rx-ws"> </span><span class="rx-var">escapeSequence</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-ws"> </span><span class="rx-op">=</span><span class="rx-op">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">6</span><span class="rx-ws"> </span><span class="rx-kw">then</span><span class="rx-ws"> </span><span class="rx-kw">do</span></code>
+<code lineno="57"><span class="rx-ws">            </span><span class="rx-var">buffer</span><span class="rx-op">~</span><span class="rx-const rx-method">append</span><span class="rx-spe">(</span><span class="rx-var">escapeSequence</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-lncm">-- keep as-is</span></code>
+<code lineno="58"><span class="rx-ws">            </span><span class="rx-kw">return</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">6</span><span class="rx-ws"> </span><span class="rx-lncm">-- advance by 6 characters</span></code>
+<code lineno="59"><span class="rx-ws">        </span><span class="rx-kw">end</span></code>
+<code lineno="60"><span class="rx-ws">    </span><span class="rx-kw">end</span></code>
+<code lineno="61"><span class="rx-ws">    </span><span class="rx-kw">raise</span><span class="rx-ws"> </span><span class="rx-skw">user</span><span class="rx-ws"> </span><span class="rx-const rx-user-condition">parseError</span><span class="rx-ws"> </span><span class="rx-skw">array</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">Invalid escape sequence</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span>
+</code></pre>
+</div>
+<h3 id="more-examples">More examples</h3>
+<p>Script <a
+href="https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/string/translateInto_test.rex"><code>translateInto_test.rex</code></a><br />
+Script output <a
+href="https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/string/translateInto_test-out-ref.txt"><code>translateInto_test-out-ref.txt</code></a></p>
+          </div>
+        </div>
+        <div class="resize-handle"></div>
+        <div class="col-md-3 toc-pane">
+
+    <aside class="outline">
+      <nav id="toc">
+        <strong>Outline</strong>
+        <ul></ul>
+      </nav>
+    </aside>
+
+    <script>
+        // TOC with collapse / expand
+        (function () {
+          const content = document.getElementById("content");
+          const tocRoot = document.querySelector("#toc ul");
+          const headings = content.querySelectorAll("h1, h2, h3, h4");
+
+          // Stack to build hierarchy
+          const stack = [{ level: 0, ul: tocRoot }];
+
+          headings.forEach((heading, index) => {
+            const level = parseInt(heading.tagName.substring(1), 10);
+
+            if (!heading.id) {
+              heading.id = `section-${index}`;
+            }
+
+            // ---- TOC item ----
+            const li = document.createElement("li");
+            li.className = `level-${heading.tagName.toLowerCase()}`;
+
+            const a = document.createElement("a");
+            a.setAttribute("href", "#" + heading.id);
+
+            // Caret (always present, may be empty)
+            const caret = document.createElement("span");
+            caret.className = "toc-caret";
+
+            // Text
+            const text = document.createElement("span");
+            text.className = "toc-text";
+            text.textContent = heading.textContent;
+
+            a.appendChild(caret);
+            a.appendChild(text);
+            li.appendChild(a);
+
+            // ---- Find correct parent ----
+            while (stack[stack.length - 1].level >= level) {
+              stack.pop();
+            }
+
+            stack[stack.length - 1].ul.appendChild(li);
+
+            // ---- Child container (always created) ----
+            const childUl = document.createElement("ul");
+            childUl.className = "toc-children";
+            li.appendChild(childUl);
+
+            stack.push({ level, ul: childUl });
+          });
+
+          // ---- Enable caret-only toggling ----
+          document.querySelectorAll("#toc li").forEach(li => {
+            const childUl = li.querySelector(":scope > ul");
+            const caret = li.querySelector(":scope > a > .toc-caret");
+
+            if (childUl && childUl.children.length > 0) {
+              li.classList.add("has-children", "expanded"); // expanded by default
+
+              caret.addEventListener("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                li.classList.toggle("collapsed");
+                li.classList.toggle("expanded");
+              });
+            }
+          });
+        })();
+    </script>
+
+    <script>
+        // Highlight Active Section While Scrolling
+        (function () {
+          const toc = document.getElementById("toc");
+          const tocLinks = toc.querySelectorAll("a");
+          const tocItems = toc.querySelectorAll("li");
+          const headings = Array.from(
+            document.querySelectorAll("#content h1, #content h2, #content h3, #content h4")
+          );
+
+          function updateActiveToc() {
+            let current = null;
+
+            for (const h of headings) {
+              if (h.getBoundingClientRect().top <= 80) {
+                current = h;
+              } else {
+                break;
+              }
+            }
+
+            /* RESET STATE */
+            tocLinks.forEach(a => a.classList.remove("active"));
+            tocItems.forEach(li => li.classList.remove("active-parent"));
+
+            if (current) {
+              const link = toc.querySelector(`a[href="#${current.id}"]`);
+              if (link) {
+                link.classList.add("active");
+                markParentsActive(link);
+                ensureTocItemVisible(link);
+              }
+            }
+          }
+
+          function markParentsActive(link) {
+            let li = link.closest("li");
+
+            while (li) {
+              li.classList.add("active-parent");
+              li = li.parentElement.closest("li");
+            }
+          }
+
+          function ensureTocItemVisible(link) {
+            const toc = document.getElementById("toc");
+            const rect = link.getBoundingClientRect();
+            const tocRect = toc.getBoundingClientRect();
+
+            if (rect.top < tocRect.top || rect.bottom > tocRect.bottom) {
+              link.scrollIntoView({
+                block: "nearest",
+                inline: "nearest"
+              });
+            }
+          }
+
+          window.addEventListener("scroll", updateActiveToc, { passive: true });
+          updateActiveToc();
+        })();
+    </script>
+
+    <script>
+        /* Drag-to-Resize */
+        (function () {
+          const handle = document.querySelector(".resize-handle");
+          const toc = document.querySelector(".toc-pane");
+
+          let startX, startWidth;
+
+          handle.addEventListener("mousedown", function (e) {
+            startX = e.clientX;
+            startWidth = toc.offsetWidth;
+
+            document.addEventListener("mousemove", onMouseMove);
+            document.addEventListener("mouseup", onMouseUp);
+            e.preventDefault();
+          });
+
+          function onMouseMove(e) {
+            const delta = startX - e.clientX;
+            const newWidth = Math.min(
+              420,
+              Math.max(180, startWidth + delta)
+            );
+
+            toc.style.flexBasis = newWidth + "px";
+          }
+
+          function onMouseUp() {
+            document.removeEventListener("mousemove", onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+          }
+        })();
+    </script>
+
+    <script>
+        // Workaround to have the TOC working with https://htmlpreview.github.io/?...
+        // Watch the DOM and remove <base> whenever it appears.
+        (function () {
+          function removeBase() {
+            const base = document.querySelector("base");
+            if (base) {
+              base.remove();
+            }
+          }
+
+          // Run immediately
+          removeBase();
+
+          // Watch for late injection
+          const observer = new MutationObserver(removeBase);
+          observer.observe(document.head || document.documentElement, {
+            childList: true,
+            subtree: true
+          });
+        })();
+    </script>
+
+        </div>
+      </div>
+      <style>
+        small a { font-size: 100%; }
+      </style>
+      <hr class="before-footer">
+      <div class="panel panel-default footer">
+        <div class="panel-heading text-center">
+          <small>
+             This page was generated by
+             <a href="https://rexx.epbcn.com/rexx-parser/doc/utilities/md2html/">md2html</a>
+             using
+             <a href="https://github.com/jlfaucher/executor/tree/master/incubator/scripts/md2html4xtr">custom files</a>.
+          </small>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </body>
+</html>

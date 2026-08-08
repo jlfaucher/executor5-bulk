@@ -14,6 +14,7 @@ Documentation:
 Extensions:
 
 - [RxMessageBox][rxmessagebox]
+- [String~translateInto][string_translateinto]
 - [Unicode support][unicode_support]
 
 
@@ -43,4 +44,5 @@ Extensions:
 [executor5]: https://github.com/jlfaucher/executor5 "Executor5"
 [rxmessagebox]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/rexxutil/rxmessagebox.html "RxMessageBox"
 [sourceforge]: https://sourceforge.net/p/oorexx/code-0/HEAD/tree "SourceForge"
+[string_translateinto]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/string/translateInto.html "String~translateInto"
 [unicode_support]: https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/README.md
