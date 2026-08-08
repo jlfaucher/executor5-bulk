@@ -44,6 +44,7 @@
 #ifndef Included_Activity
 #define Included_Activity
 
+#include <atomic>
 #include "ListClass.hpp"
 #include "InternalStack.hpp"
 #include "ActivationStack.hpp"
@@ -184,6 +185,9 @@ class Activity : public RexxInternalObject
     bool        setTrace(bool);
     inline void yieldControl() { releaseAccess(); requestAccess(); }
     void        yield();
+    // read on the interpreter's hot path, so keep this a relaxed load
+    inline bool isYieldRequested() { return yieldRequested.load(std::memory_order_relaxed); }
+    inline void clearYieldRequest() { yieldRequested.store(false, std::memory_order_relaxed); }
     void        releaseAccess(bool dispatch = true);
     void        requestApiAccess();
     void        requestAccess();
@@ -233,12 +237,19 @@ class Activity : public RexxInternalObject
     void nestAttach();
     void returnAttach();
     inline bool isNestedAttach() { return attachCount > 1 || (attachCount == 1 && !newThreadAttached); }
-    inline void activate() { nestedCount++; }
-    inline void deactivate() { nestedCount--; }
-    inline bool isActive() { return nestedCount > 0; }
-    inline bool isInactive() { return nestedCount == 0; }
-    inline size_t getActivationLevel() { return nestedCount; }
-    inline void restoreActivationLevel(size_t l) { nestedCount = l; }
+    // nestedCount is written by the thread running this activity and read by
+    // other threads: InterpreterInstance::removeInactiveActivities() asks
+    // isActive() about activities it does not own. Relaxed ordering is enough,
+    // since this only reports whether the activity is busy; the kernel lock
+    // provides the actual ordering. Note that a caller acting on the answer is
+    // racing with the owner by nature -- making the field atomic removes the
+    // undefined behaviour, not that inherent race.
+    inline void activate() { nestedCount.fetch_add(1, std::memory_order_relaxed); }
+    inline void deactivate() { nestedCount.fetch_sub(1, std::memory_order_relaxed); }
+    inline bool isActive() { return nestedCount.load(std::memory_order_relaxed) > 0; }
+    inline bool isInactive() { return nestedCount.load(std::memory_order_relaxed) == 0; }
+    inline size_t getActivationLevel() { return nestedCount.load(std::memory_order_relaxed); }
+    inline void restoreActivationLevel(size_t l) { nestedCount.store(l, std::memory_order_relaxed); }
     inline bool isSuspended() { return suspended; }
     inline void clearWaitingForDispatch() { waitingForDispatch = false; }
     inline void setWaitingForDispatch() { waitingForDispatch = true; }
@@ -398,8 +409,16 @@ class Activity : public RexxInternalObject
     bool     waitingForApiAccess;       // This activity is waiting for access for an API callback
     bool     waitingForDispatch;        // This activity is in the dispatch queue waiting to be dispatched.
     bool     waitingOnSemaphore;        // activity is blocked while waiting for any semaphore
-    bool     dispatchPosted;            // we have been given permission to run
-    size_t   nestedCount;               // extent of the nesting
+    // atomic: read by hasRunPermission() from other threads while the owner
+    // clears/sets it -- TSan flags this, and it is the exact crash site.  bug #2074
+    std::atomic<bool> dispatchPosted;   // we have been given permission to run
+    // Set by a thread that wants this activity to give up control at its next
+    // instruction boundary.  This must be atomic: it is written by the thread
+    // requesting access and read by the thread running Rexx code, and those two
+    // hold no lock in common.  Relaxed ordering is enough, since this only
+    // requests a yield -- the kernel lock provides the actual ordering.
+    std::atomic<bool> yieldRequested;
+    std::atomic<size_t> nestedCount;    // extent of the nesting, read by other threads
     size_t   attachCount;               // extent of nested attaches
     bool     newThreadAttached;         // Indicates this thread was a "side door" attach.
     char    *stackLimit;                // pointer to base to the C stack location that will trigger a control stack error

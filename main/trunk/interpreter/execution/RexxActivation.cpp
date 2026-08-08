@@ -616,8 +616,23 @@ RexxObject* RexxActivation::run(RexxObject *_receiver, RexxString *name, RexxObj
                 if (++instructionCount > yieldInstructions)
                 {
                     instructionCount = 0;   // reset the instruction counter even if we didn't yield.
-                    // and have the activity manager decide if we need to give up control
-                    ActivityManager::relinquishIfNeeded(activity);
+                    // Another thread may have asked us to give up control. Note that
+                    // the flag is only tested here, once every yieldInstructions, and
+                    // not on every instruction: reading it in the loop condition costs
+                    // about 2% of dispatch, and arriving here is already frequent
+                    // enough that the extra latency is a few microseconds.
+                    if (activity->isYieldRequested())
+                    {
+                        activity->clearYieldRequest();
+                        // an explicit request, so give up control rather than waiting
+                        // for the time slice to expire
+                        ActivityManager::relinquish(activity);
+                    }
+                    else
+                    {
+                        // no request, so let the activity manager decide
+                        ActivityManager::relinquishIfNeeded(activity);
+                    }
                 }
                 // set the current instruction and prefetch the next one.  Control
                 // instructions may change next on us.
@@ -1415,9 +1430,9 @@ void RexxActivation::exitFrom(RexxObject *resultObj)
             // terminate this level
             activation->termination();
             // pop from the activity stack
-            ActivityManager::currentActivity->popStackFrame(false);
+            ActivityManager::currentActivity.load()->popStackFrame(false);
             //. go to the next level
-            activation = ActivityManager::currentActivity->getCurrentRexxFrame();
+            activation = ActivityManager::currentActivity.load()->getCurrentRexxFrame();
         }
         while (!activation->isTopLevel());
 
@@ -1828,12 +1843,12 @@ void RexxActivation::raise(RexxString *condition, RexxObject *rc, RexxString *de
             ProtectedObject p(this);
             termination();
             activity->popStackFrame(false);
-            ActivityManager::currentActivity->reraiseException(conditionobj);
+            ActivityManager::currentActivity.load()->reraiseException(conditionobj);
         }
         else
         {
             // raise the error now at this level.
-            ActivityManager::currentActivity->raiseException((RexxErrorCodes)((RexxInteger *)rc)->getValue(), description, (ArrayClass *)additional, resultObj);
+            ActivityManager::currentActivity.load()->raiseException((RexxErrorCodes)((RexxInteger *)rc)->getValue(), description, (ArrayClass *)additional, resultObj);
         }
     }
     else
@@ -2750,7 +2765,7 @@ ActivationBase* RexxActivation::senderActivation(RexxString *conditionName)
 void RexxActivation::interpret(RexxString *codestring)
 {
     // check the stack space to see if we have room.
-    ActivityManager::currentActivity->checkStackSpace();
+    ActivityManager::currentActivity.load()->checkStackSpace();
     // translate the code as if it was located here.
     RexxCode *newCode = code->interpret(codestring, current->getLineNumber());
     // create a new activation to run this code
@@ -4151,16 +4166,6 @@ bool RexxActivation::halt(RexxString *description )
         // we're not in a good position to process this
         return false;
     }
-}
-
-
-/**
- * Flip ON the externally activated TRACE bit.
- */
-void RexxActivation::yield()
-{
-    // max the instruction counter so that we will check immediately.
-    instructionCount = yieldInstructions;
 }
 
 

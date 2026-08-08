@@ -55,12 +55,17 @@ also provides objects that are accessible via <xref linkend="ensym" xrefstyle="t
 <para>The Environment object is a directory of public
 objects that are always accessible.  The Environment object is automatically searched when environment symbols
 are used, or the Environment object may be directly accessed using the .ENVIRONMENT symbol.  Entries stored in the
-Environment use the same name as the corresponding environment symbol, but without a leading period.  For example:
+Environment use the same (uppercased) name as the corresponding environment symbol, but without a leading period.
+For example:
 </para>
-<para><programlisting language="rexx">say .true                   -- Displays "1"
-say .environment~true       -- Also displays "1"
-say .environment["TRUE"]    -- "1"
-say .environment["true"]    -- The NIL object
+<para><programlisting language="rexx">say .object                            -- Displays "The Object class"
+say .environment~object                -- Displays "The Object class"
+say .environment["OBJECT"]             -- Displays "The Object class"
+say .environment["object"]             -- Displays "The NIL object"
+say .rexxinfo                          -- Displays "a RexxInfo"
+say .rexxinfo~platform                 -- Displays "WindowsNT" (if running on Windows)
+say .environment~rexxinfo~platform     -- Displays "WindowsNT" (if running on Windows)
+say .environment["REXXINFO"]~platform  -- Displays "WindowsNT" (if running on Windows)
 </programlisting></para>
 <para>The Environment object directory contains
 all of the Rexx built-in classes (Array, etc.),
@@ -122,7 +127,7 @@ of the <xref linkend="clsRexxInfo" xrefstyle="template:RexxInfo class"/>
 and gives access to Rexx language information and other platform-specific
 information in a single place.
 </para>
-<programlisting language="rexx">say .RexxInfo~name    -- REXX-ooRexx_5.0.0(MT)_64-bit 6.05 1 Sep 2016 /* e. g. */
+<programlisting language="rexx">say .RexxInfo~name    -- Displays "REXX-ooRexx_5.2.0(MT)_64-bit 6.06 18 Apr 2026" /* e. g. */
 </programlisting>
 </section>
 

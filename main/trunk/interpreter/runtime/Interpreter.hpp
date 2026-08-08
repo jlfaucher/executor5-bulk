@@ -72,21 +72,17 @@ public:
     static void processStartup();
     static void processShutdown();
 
-    static inline void getResourceLock() { resourceLock.request(); }
-    static inline void releaseResourceLock() { resourceLock.release(); }
-    static inline void getDispatchLock() { dispatchLock.request(); }
-    static inline void releaseDispatchLock() { dispatchLock.release(); }
+    static inline bool getResourceLock() { return resourceLock().request(); }
+    static inline void releaseResourceLock() { resourceLock().release(); }
     static inline void createLocks()
     {
-        // these are critical-time locks, which involves special processing on Windows
-        resourceLock.create(true);
-        dispatchLock.create(true);
+        // this is a critical-time lock, which involves special processing on Windows
+        resourceLock().create(true);
     }
 
     static inline void closeLocks()
     {
-        dispatchLock.close();
-        resourceLock.close();
+        resourceLock().close();
     }
 
     static int createInstance(RexxInstance *&instance, RexxThreadContext *&threadContext, RexxOption *options);
@@ -137,8 +133,11 @@ protected:
     // IMPORTANT NOTE: To avoid deadlocks, never request the kernel lock while holding the resourceLock,
     // otherwise deadlocks are possible. It is permissible to request the resource lock while holding the
     // kernel lock, but this ordering must be strictly observed.
-    static SysMutex  resourceLock;   // use to lock resources accessed outside of kernel global lock
-    static SysMutex  dispatchLock;   // use to lock when manipulating the activity dispatch queue
+    // NOTE: this is a function returning a reference to a function-local static, not
+    // a namespace-scope object.  See the definition in Interpreter.cpp for why (bug #2078).
+    static SysMutex &resourceLock();  // use to lock resources accessed outside of kernel global lock
+    // NOTE: the lock for the activity dispatch queue is owned by WaitingActivityQueue,
+    // which is the only thing that can reach the queue it protects.
     static int    initializations;   // indicates whether we're terminated or not
     static QueueClass *interpreterInstances;  // the set of interpreter instances
     static bool   active;            // indicates whether the interpreter is initialized
@@ -156,8 +155,11 @@ class ResourceSection
 public:
     inline ResourceSection()
     {
-        Interpreter::getResourceLock();
-        terminated = false;
+        // if the acquire fails we must NOT unlock in the destructor.  An unbalanced
+        // unlock on a recursive mutex decrements the count and can drop a lock an
+        // outer scope still believes it holds, destroying mutual exclusion for
+        // everyone.  See bug #2071.
+        terminated = !Interpreter::getResourceLock();
     }
 
     inline ~ResourceSection()
@@ -182,8 +184,7 @@ public:
     {
         if (terminated)
         {
-            Interpreter::getResourceLock();
-            terminated = false;
+            terminated = !Interpreter::getResourceLock();
         }
     }
 
@@ -193,49 +194,8 @@ private:
 };
 
 
-/**
- * Block control for access to the dispatch queue.
- */
-class DispatchSection
-{
-public:
-    inline DispatchSection()
-    {
-        Interpreter::getDispatchLock();
-        terminated = false;
-    }
-
-    inline ~DispatchSection()
-    {
-        if (!terminated)
-        {
-            Interpreter::releaseDispatchLock();
-        }
-    }
-
-    inline void release()
-    {
-        if (!terminated)
-        {
-            Interpreter::releaseDispatchLock();
-            terminated = true;
-        }
-    }
-
-
-    inline void reacquire()
-    {
-        if (terminated)
-        {
-            Interpreter::getDispatchLock();
-            terminated = false;
-        }
-    }
-
-private:
-
-    bool terminated;       // we can release these as needed
-};
+// NOTE: DispatchSection is declared in ActivityManager.hpp, next to the dispatch
+// queue it guards.
 
 
 class InstanceBlock

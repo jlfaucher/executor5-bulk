@@ -2131,13 +2131,15 @@ void Activity::relinquish()
  */
 void Activity::yield()
 {
-    // get the current rexx frame and request that it yield control
-    RexxActivation *activation = currentRexxFrame;
-    // if we're in the context of Rexx code, request that it yield control
-    if (activation != NULL)
-    {
-        activation->yield();
-    }
+    // Just flag the request.  This is called from a thread other than the one
+    // running this activity, so it must NOT follow currentRexxFrame: the owning
+    // thread rewrites that pointer in updateFrameMarkers() as it pushes and pops
+    // activations, and it is not synchronised with us. Reading it here could hand
+    // back a frame that has already been popped, and writing into that frame
+    // writes into storage the collector may have handed to another object.
+    // The Activity itself is stable, so the request goes here instead, and the
+    // run loop picks it up at the next instruction boundary.
+    yieldRequested.store(true, std::memory_order_relaxed);
 }
 
 
@@ -2279,12 +2281,33 @@ void Activity::checkStackSpace()
 /* Function:  Make sure there is enough stack space to run a method           */
 /******************************************************************************/
 {
+// Sanitizer builds add substantial per-frame overhead (redzones, shadow state), so the
+// recursive-descent parser exhausts this budget while parsing the class definitions during
+// image creation, and rexx.img can never be built.  That blocks ASan/TSan/MSan on the
+// interpreter entirely.  Skip the check when building under a sanitizer.  See bugs #2076/#1923.
+//
+// The __has_feature test has to be nested rather than &&-ed onto the line above.  A
+// preprocessor still parses the whole #if expression when the left side is false, and a
+// compiler without __has_feature turns that identifier into 0, leaving 0(address_sanitizer)
+// to be parsed as an expression.  MSVC rejects that outright with C1012.
+#if defined(__SANITIZE_ADDRESS__) || defined(__SANITIZE_THREAD__)
+#define ORX_SANITIZER_BUILD
+#elif defined(__has_feature)
+#if __has_feature(address_sanitizer) || __has_feature(thread_sanitizer)
+#define ORX_SANITIZER_BUILD
+#endif
+#endif
+
+#ifdef ORX_SANITIZER_BUILD
+    return;
+#else
     // note that we use a size_t variable here to get proper alignment
     size_t temp;                          // if checking and there isn't room
     if ((char *)&temp < stackLimit && stackcheck == true)
     {
         reportException(Error_Control_stack_full);
     }
+#endif
 }
 
 
