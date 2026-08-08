@@ -3291,7 +3291,7 @@ Here, "advance" refers to moving the supplier cursor, not the direction in the o
 If `indexG` is less than the current grapheme index, the supplier raises an error (can only advance).  
 This method does not support negative indexes (counting from the beginning of the string).
 
-See also [`aRexxUnicodeReverseGraphemeSupplier~graphemeAtIndexG`](#RexxUnicodeReverseGraphemeSupplier_graphemeAtIndexG).
+See also [`aRexxUnicodeStringIndexer~graphemeAtIndexG`](#RexxUnicodeStringIndexer_graphemeAtIndexG).
 
 
 <a id="RexxUnicodeReverseGraphemeSupplier_index"></a>
