@@ -3138,7 +3138,8 @@ Grapheme indexes are counted from the end of the string.
 provided that the supplier can only be advanced sequentially with `next`. Here,
 "advance" refers to moving the supplier cursor, not the direction in the original
 string.
-- They can be used with [`aRexxUnicodeStringIndexer~graphemeAtIndexG`](#RexxUnicodeStringIndexer_graphemeAtIndexG).
+- They can be used with [`aRexxUnicodeStringIndexer~graphemeAtIndexG`](#RexxUnicodeStringIndexer_graphemeAtIndexG)
+by passing them as negated values.
 
 See [`RexxUnicodeGraphemeSupplier`](#RexxUnicodeGraphemeSupplier)
 for a supplier that enumerates graphemes in forward order.
