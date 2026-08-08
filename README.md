@@ -8,9 +8,13 @@ Unlike [Executor][executor] and [Executor5][executor5], this repository includes
 Documentation:
 
 - [Diary][diary]
-- [Unicode support][unicode_support]
 - [Instructions to build Executor5-bulk][build_executor5_bulk]
 - [Instructions to build ICU4ooRexx][build_icu4oorexx] (optional)
+
+Extensions:
+
+- [RxMessageBox][rxmessagebox]
+- [Unicode support][unicode_support]
 
 
 <br/>
@@ -37,5 +41,6 @@ Documentation:
 [diary]: https://github.com/jlfaucher/executor5-bulk/blob/main/_diary.txt "Diary"
 [executor]: https://github.com/jlfaucher/executor "Executor"
 [executor5]: https://github.com/jlfaucher/executor5 "Executor5"
+[rxmessagebox]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/rexxutil/rxmessagebox.html "RxMessageBox"
 [sourceforge]: https://sourceforge.net/p/oorexx/code-0/HEAD/tree "SourceForge"
 [unicode_support]: https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/README.md

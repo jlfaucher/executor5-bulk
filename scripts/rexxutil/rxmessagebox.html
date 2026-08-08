@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+Rexx Utilities (RexxUtil)
+    </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel='stylesheet' href='https://jlfaucher.github.io/css/rexx-vim-light-zellner.css'>
+    <link rel='stylesheet' href='https://jlfaucher.github.io/css/markdown.css'>
+    <link rel='stylesheet' href='https://jlfaucher.github.io/css/markdown4xtr.css'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class='container bg-white' lang='en'>
+      <div class='row layout-main'>
+        <div class='col-md-9 content-pane'>
+          <div class='content' id="content">
+<p align="right" style="font-size:10px;">
+<a style="font-size:10px;" href="https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/rexxutil/rxmessagebox.md">Markdown</a><br/>
+<a style="font-size:10px;" href="https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/rexxutil/rxmessagebox.html">HTML</a>
+</p>
+<h1 id="rexx-utilities-rexxutil">Rexx Utilities (RexxUtil)</h1>
+<h2 id="rxmessagebox-windows-only">RxMessageBox (Windows only)</h2>
+<p>For users (like me) who prefer not to enable the Windows
+<code>UTF-8</code> beta option:<br />
+Added <code>codepage</code> and <code>translateflags</code> parameters
+to <code>RxMessageBox</code>.</p>
+<p>Motivated by: <a
+href="https://sourceforge.net/p/oorexx/discussion/408478/thread/ec4123a46d/">https://sourceforge.net/p/oorexx/discussion/408478/thread/ec4123a46d/</a><br />
+2025 Mar 22 [oorexx:discussions] Output text in Russian in
+<code>RxMessageBox()</code></p>
+<pre><code>RxMessageBox(text [, title] [, button] [,icon] [, option]    [, codepage [, translateflags]])
+                                                 *updated*       *new*          *new*
+
+new CUSTOM option.  
+new HELP option.  
+codepage = text and title code page.  
+translateflags = flags for SysToUnicode.</code></pre>
+<p>Functionalities:</p>
+<ul>
+<li><p>If <code>codePage</code> is omitted or is an empty string,
+<code>text</code> and <code>title</code> (which should be
+<code>ANSI</code> strings) are converted from <code>ACP</code> to
+<code>Unicode</code> by the system.</p></li>
+<li><p>If <code>codePage</code> is <code>"UNICODE"</code>,
+<code>text</code> and <code>title</code> (which should be
+<code>UTF-16</code> strings) are displayed as-is.</p></li>
+<li><p>For any other value of <code>codepage</code>, <code>text</code>
+and <code>title</code> (which should be strings encoded in
+<code>codepage</code>) are converted from <code>codepage</code> to
+<code>Unicode</code> using the <code>Rexx</code> utility
+<code>SysToUnicode</code>.</p></li>
+<li><p>The standard <code>MessageBoxW</code> is used by default to
+display <code>Unicode</code> strings. If the <code>CUSTOM</code> option
+is specified then a custom <code>MessageBoxW</code> is used. The custom
+<code>MessageBoxW</code> displays emojis in colors using the
+<code>"Segoe UI Emoji"</code> font that carries the full-color
+<code>COLR/CPAL</code> emoji glyphs on Windows 10+. The emojis in the
+caption are still displayed in black and white.</p></li>
+<li><p>If the <code>HELP</code> option is specified then a
+<code>Help</code> button is added to the message box. This is applicable
+to any button style, so more general than the <code>HELP</code> button
+style.</p></li>
+<li><p>The <code>HELP</code> button style is not documented, but is
+supported. The message box contains two push buttons: <code>OK</code>
+and <code>Help</code>.</p></li>
+</ul>
+<p>The behavior of the custom <code>MessageBoxW</code> is different from
+the standard <code>MessageBoxW</code> regarding the effect of the
+<code>Help</code> button:</p>
+<ul>
+<li><p>Standard <code>MessageBoxW</code>: When the user clicks the
+<code>Help</code> button or presses <code>F1</code>, the system sends a
+<code>WM_HELP</code> message to the owner window. The message box is not
+closed. Since <code>RxMessageBox</code> creates a message box with no
+owner window, the <code>WM_HELP</code> message is not sent.</p></li>
+<li><p>Custom <code>MessageBoxW</code>: When the user clicks the
+<code>Help</code> button, the message box is closed and the value
+<code>9</code> is returned. The <code>F1</code> key has no
+effect.</p></li>
+</ul>
+<p>When displaying long multi-line text with many emojis using the
+<code>CUSTOM</code> option, there is a noticeable lag between the dialog
+box display and the text display. AI can't do better. It's definitely
+not me who can make this better.</p>
+<p>The default modality is <code>MB_APPLMODAL</code>.</p>
+<p>The following settings are not supported, and there is no plan to
+support them:</p>
+<pre><code>Modality:
+    MB_SYSTEMMODAL
+    MB_TASKMODAL
+
+Other options:
+    MB_SETFOREGROUND
+    MB_DEFAULT_DESKTOP_ONLY
+    MB_TOPMOST
+    MB_RIGHT
+    MB_RTLREADING
+    MB_SERVICE_NOTIFICATION</code></pre>
+<h3 id="test-case-13---long-multiline-text">Test case 13 - Long
+multiline text</h3>
+<h4 id="code">Code</h4>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-var">text</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.resources</span><span class="rx-op">~</span><span class="rx-const rx-method">multiline_stress_1</span></code>
+<code lineno="2"><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-const rx-ext-func">RxMessageBox</span><span class="rx-spe">(</span><span class="rx-var">text</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">13: Long multiline text</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*button*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*icon*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*option*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">65001</span><span class="rx-spe">)</span></code>
+<code lineno="3"><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-const rx-ext-func">RxMessageBox</span><span class="rx-spe">(</span><span class="rx-var">text</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">13: Long multiline text</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*button*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*icon*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">CUSTOM</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">65001</span><span class="rx-spe">)</span></code>
+<code lineno="4"></code>
+<code lineno="5"><span class="rx-dir">::</span><span class="rx-dkw">RESOURCE</span><span class="rx-ws"> </span><span class="rx-const rx-resource">multiline_stress_1</span></code>
+<code lineno="6"><span class="rx-res-data"># Big List of Naughty Strings</span></code>
+<code lineno="7"><span class="rx-res-data"># https://github.com/minimaxir/big-list-of-naughty-strings</span></code>
+<code lineno="8"><span class="rx-res-data"></span></code>
+<code lineno="9"><span class="rx-res-data">#    Emoji</span></code>
+<code lineno="10"><span class="rx-res-data">#</span></code>
+<code lineno="11"><span class="rx-res-data">#   Strings which contain Emoji; should be the same behavior as two-byte characters, but not always</span></code>
+<code lineno="12"><span class="rx-res-data"></span></code>
+<code lineno="13"><span class="rx-res-data">😍</span></code>
+<code lineno="14"><span class="rx-res-data">👩🏽</span></code>
+<code lineno="15"><span class="rx-res-data">👨‍🦰 👨🏿‍🦰 👨‍🦱 👨🏿‍🦱 🦹🏿‍♂️</span></code>
+<code lineno="16"><span class="rx-res-data">👾 🙇 💁 🙅 🙆 🙋 🙎 🙍</span></code>
+<code lineno="17"><span class="rx-res-data">🐵 🙈 🙉 🙊</span></code>
+<code lineno="18"><span class="rx-res-data">❤️ 💔 💌 💕 💞 💓 💗 💖 💘 💝 💟 💜 💛 💚 💙</span></code>
+<code lineno="19"><span class="rx-res-data">✋🏿 💪🏿 👐🏿 🙌🏿 👏🏿 🙏🏿</span></code>
+<code lineno="20"><span class="rx-res-data">👨‍👩‍👦 👨‍👩‍👧‍👦 👨‍👨‍👦 👩‍👩‍👧 👨‍👦 👨‍👧‍👦 👩‍👦 👩‍👧‍👦</span></code>
+<code lineno="21"><span class="rx-res-data">🚾 🆒 🆓 🆕 🆖 🆗 🆙 🏧</span></code>
+<code lineno="22"><span class="rx-res-data">0️⃣ 1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣ 8️⃣ 9️⃣ 🔟</span></code>
+<code lineno="23"><span class="rx-res-data"></span></code>
+<code lineno="24"><span class="rx-res-data">#       Regional Indicator Symbols</span></code>
+<code lineno="25"><span class="rx-res-data">#</span></code>
+<code lineno="26"><span class="rx-res-data">#       Regional Indicator Symbols can be displayed differently across</span></code>
+<code lineno="27"><span class="rx-res-data">#       fonts, and have a number of special behaviors</span></code>
+<code lineno="28"><span class="rx-res-data"></span></code>
+<code lineno="29"><span class="rx-res-data">🇺🇸🇷🇺🇸 🇦🇫🇦🇲🇸</span></code>
+<code lineno="30"><span class="rx-res-data">🇺🇸🇷🇺🇸🇦🇫🇦🇲</span></code>
+<code lineno="31"><span class="rx-res-data">🇺🇸🇷🇺🇸🇦</span></code>
+<code lineno="32"><span class="rx-res-data"></span></code>
+<code lineno="33"><span class="rx-res-data">#   Unicode font</span></code>
+<code lineno="34"><span class="rx-res-data">#</span></code>
+<code lineno="35"><span class="rx-res-data">#   Strings which contain bold/italic/etc. versions of normal characters</span></code>
+<code lineno="36"><span class="rx-res-data"></span></code>
+<code lineno="37"><span class="rx-res-data">Ｔｈｅ ｑｕｉｃｋ ｂｒｏｗｎ ｆｏｘ ｊｕｍｐｓ ｏｖｅｒ ｔｈｅ ｌａｚｙ ｄｏｇ</span></code>
+<code lineno="38"><span class="rx-res-data">𝐓𝐡𝐞 𝐪𝐮𝐢𝐜𝐤 𝐛𝐫𝐨𝐰𝐧 𝐟𝐨𝐱 𝐣𝐮𝐦𝐩𝐬 𝐨𝐯𝐞𝐫 𝐭𝐡𝐞 𝐥𝐚𝐳𝐲 𝐝𝐨𝐠</span></code>
+<code lineno="39"><span class="rx-res-data">𝕿𝖍𝖊 𝖖𝖚𝖎𝖈𝖐 𝖇𝖗𝖔𝖜𝖓 𝖋𝖔𝖝 𝖏𝖚𝖒𝖕𝖘 𝖔𝖛𝖊𝖗 𝖙𝖍𝖊 𝖑𝖆𝖟𝖞 𝖉𝖔𝖌</span></code>
+<code lineno="40"><span class="rx-res-data">𝑻𝒉𝒆 𝒒𝒖𝒊𝒄𝒌 𝒃𝒓𝒐𝒘𝒏 𝒇𝒐𝒙 𝒋𝒖𝒎𝒑𝒔 𝒐𝒗𝒆𝒓 𝒕𝒉𝒆 𝒍𝒂𝒛𝒚 𝒅𝒐𝒈</span></code>
+<code lineno="41"><span class="rx-res-data">𝓣𝓱𝓮 𝓺𝓾𝓲𝓬𝓴 𝓫𝓻𝓸𝔀𝓷 𝓯𝓸𝔁 𝓳𝓾𝓶𝓹𝓼 𝓸𝓿𝓮𝓻 𝓽𝓱𝓮 𝓵𝓪𝔃𝔂 𝓭𝓸𝓰</span></code>
+<code lineno="42"><span class="rx-res-data">𝕋𝕙𝕖 𝕢𝕦𝕚𝕔𝕜 𝕓𝕣𝕠𝕨𝕟 𝕗𝕠𝕩 𝕛𝕦𝕞𝕡𝕤 𝕠𝕧𝕖𝕣 𝕥𝕙𝕖 𝕝𝕒𝕫𝕪 𝕕𝕠𝕘</span></code>
+<code lineno="43"><span class="rx-res-data">𝚃𝚑𝚎 𝚚𝚞𝚒𝚌𝚔 𝚋𝚛𝚘𝚠𝚗 𝚏𝚘𝚡 𝚓𝚞𝚖𝚙𝚜 𝚘𝚟𝚎𝚛 𝚝𝚑𝚎 𝚕𝚊𝚣𝚢 𝚍𝚘𝚐</span></code>
+<code lineno="44"><span class="rx-res-data">⒯⒣⒠ ⒬⒰⒤⒞⒦ ⒝⒭⒪⒲⒩ ⒡⒪⒳ ⒥⒰⒨⒫⒮ ⒪⒱⒠⒭ ⒯⒣⒠ ⒧⒜⒵⒴ ⒟⒪⒢</span></code>
+<code lineno="45"><span class="rx-const rx-res-delimiter">::END</span></code>
+<code lineno="46">
+</code></pre>
+</div>
+<h4 id="standard-dialog-box">Standard Dialog box</h4>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-const rx-ext-func">RxMessageBox</span><span class="rx-spe">(</span><span class="rx-var">text</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">13: Long multiline text</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*button*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*icon*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*option*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">65001</span><span class="rx-spe">)</span></code>
+<code lineno="2">
+</code></pre>
+</div>
+<p align="center">
+<img width="60%" src="rxmessagebox_test.rex%20-%2013.png" alt="Standard Dialog box">
+</p>
+<h4 id="custom-dialog-box">Custom Dialog box</h4>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-const rx-ext-func">RxMessageBox</span><span class="rx-spe">(</span><span class="rx-var">text</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">13: Long multiline text</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*button*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*icon*/</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">CUSTOM</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">65001</span><span class="rx-spe">)</span></code>
+<code lineno="2">
+</code></pre>
+</div>
+<p align="center">
+<img width="60%" src="rxmessagebox_test.rex%20-%2013%20(custom).png" alt="Custom Dialog box">
+</p>
+<h3 id="other-test-cases">Other test cases</h3>
+<p>Script <a
+href="https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/rexxutil/rxmessagebox_test.rex"><code>rxmessagebox_test.rex</code></a></p>
+          </div>
+        </div>
+        <div class="resize-handle"></div>
+        <div class="col-md-3 toc-pane">
+
+    <aside class="outline">
+      <nav id="toc">
+        <strong>Outline</strong>
+        <ul></ul>
+      </nav>
+    </aside>
+
+    <script>
+        // TOC with collapse / expand
+        (function () {
+          const content = document.getElementById("content");
+          const tocRoot = document.querySelector("#toc ul");
+          const headings = content.querySelectorAll("h1, h2, h3, h4");
+
+          // Stack to build hierarchy
+          const stack = [{ level: 0, ul: tocRoot }];
+
+          headings.forEach((heading, index) => {
+            const level = parseInt(heading.tagName.substring(1), 10);
+
+            if (!heading.id) {
+              heading.id = `section-${index}`;
+            }
+
+            // ---- TOC item ----
+            const li = document.createElement("li");
+            li.className = `level-${heading.tagName.toLowerCase()}`;
+
+            const a = document.createElement("a");
+            a.setAttribute("href", "#" + heading.id);
+
+            // Caret (always present, may be empty)
+            const caret = document.createElement("span");
+            caret.className = "toc-caret";
+
+            // Text
+            const text = document.createElement("span");
+            text.className = "toc-text";
+            text.textContent = heading.textContent;
+
+            a.appendChild(caret);
+            a.appendChild(text);
+            li.appendChild(a);
+
+            // ---- Find correct parent ----
+            while (stack[stack.length - 1].level >= level) {
+              stack.pop();
+            }
+
+            stack[stack.length - 1].ul.appendChild(li);
+
+            // ---- Child container (always created) ----
+            const childUl = document.createElement("ul");
+            childUl.className = "toc-children";
+            li.appendChild(childUl);
+
+            stack.push({ level, ul: childUl });
+          });
+
+          // ---- Enable caret-only toggling ----
+          document.querySelectorAll("#toc li").forEach(li => {
+            const childUl = li.querySelector(":scope > ul");
+            const caret = li.querySelector(":scope > a > .toc-caret");
+
+            if (childUl && childUl.children.length > 0) {
+              li.classList.add("has-children", "expanded"); // expanded by default
+
+              caret.addEventListener("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                li.classList.toggle("collapsed");
+                li.classList.toggle("expanded");
+              });
+            }
+          });
+        })();
+    </script>
+
+    <script>
+        // Highlight Active Section While Scrolling
+        (function () {
+          const toc = document.getElementById("toc");
+          const tocLinks = toc.querySelectorAll("a");
+          const tocItems = toc.querySelectorAll("li");
+          const headings = Array.from(
+            document.querySelectorAll("#content h1, #content h2, #content h3, #content h4")
+          );
+
+          function updateActiveToc() {
+            let current = null;
+
+            for (const h of headings) {
+              if (h.getBoundingClientRect().top <= 80) {
+                current = h;
+              } else {
+                break;
+              }
+            }
+
+            /* RESET STATE */
+            tocLinks.forEach(a => a.classList.remove("active"));
+            tocItems.forEach(li => li.classList.remove("active-parent"));
+
+            if (current) {
+              const link = toc.querySelector(`a[href="#${current.id}"]`);
+              if (link) {
+                link.classList.add("active");
+                markParentsActive(link);
+                ensureTocItemVisible(link);
+              }
+            }
+          }
+
+          function markParentsActive(link) {
+            let li = link.closest("li");
+
+            while (li) {
+              li.classList.add("active-parent");
+              li = li.parentElement.closest("li");
+            }
+          }
+
+          function ensureTocItemVisible(link) {
+            const toc = document.getElementById("toc");
+            const rect = link.getBoundingClientRect();
+            const tocRect = toc.getBoundingClientRect();
+
+            if (rect.top < tocRect.top || rect.bottom > tocRect.bottom) {
+              link.scrollIntoView({
+                block: "nearest",
+                inline: "nearest"
+              });
+            }
+          }
+
+          window.addEventListener("scroll", updateActiveToc, { passive: true });
+          updateActiveToc();
+        })();
+    </script>
+
+    <script>
+        /* Drag-to-Resize */
+        (function () {
+          const handle = document.querySelector(".resize-handle");
+          const toc = document.querySelector(".toc-pane");
+
+          let startX, startWidth;
+
+          handle.addEventListener("mousedown", function (e) {
+            startX = e.clientX;
+            startWidth = toc.offsetWidth;
+
+            document.addEventListener("mousemove", onMouseMove);
+            document.addEventListener("mouseup", onMouseUp);
+            e.preventDefault();
+          });
+
+          function onMouseMove(e) {
+            const delta = startX - e.clientX;
+            const newWidth = Math.min(
+              420,
+              Math.max(180, startWidth + delta)
+            );
+
+            toc.style.flexBasis = newWidth + "px";
+          }
+
+          function onMouseUp() {
+            document.removeEventListener("mousemove", onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+          }
+        })();
+    </script>
+
+    <script>
+        // Workaround to have the TOC working with https://htmlpreview.github.io/?...
+        // Watch the DOM and remove <base> whenever it appears.
+        (function () {
+          function removeBase() {
+            const base = document.querySelector("base");
+            if (base) {
+              base.remove();
+            }
+          }
+
+          // Run immediately
+          removeBase();
+
+          // Watch for late injection
+          const observer = new MutationObserver(removeBase);
+          observer.observe(document.head || document.documentElement, {
+            childList: true,
+            subtree: true
+          });
+        })();
+    </script>
+
+        </div>
+      </div>
+      <style>
+        small a { font-size: 100%; }
+      </style>
+      <hr class="before-footer">
+      <div class="panel panel-default footer">
+        <div class="panel-heading text-center">
+          <small>
+             This page was generated by
+             <a href="https://rexx.epbcn.com/rexx-parser/doc/utilities/md2html/">md2html</a>
+             using
+             <a href="https://github.com/jlfaucher/executor/tree/master/incubator/scripts/md2html4xtr">custom files</a>.
+          </small>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </body>
+</html>
