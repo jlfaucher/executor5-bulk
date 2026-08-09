@@ -1,3 +1,8 @@
+<p align="right" style="font-size:10px;">
+<a style="font-size:10px;" href="https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/README.md">Markdown</a><br/>
+<a style="font-size:10px;" href="https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/README.html">HTML</a>
+</p>
+
 # Unicode support
 
 ## RexxUnicodeServices class
@@ -21,12 +26,12 @@ Demo / Validation:
 
 The `rxunicode` library provides additional classes built on the `RexxUnicodeServices` and `RexxUnicode` classes.
 
-**Reference documentation:**
+### Reference documentation
 
 - [Markdown documentation][rxunicode_documentation_md].
 - [HTML documentation][rxunicode_documentation_html].
 
-**Examples**
+### Examples
 
 - [rxunicode documentation examples][rxunicode_documentation_examples].
 - [Unicode diary examples][unicode_diary_examples].
