@@ -1235,8 +1235,7 @@ How other languages are supporting escape characters for Unicode:
 ::attribute indexG get package          -- 1-based, counted from the beginning of the string
 
 ::method init
-    expose string indexB indexG -
-           /* coroutine internal state */ decodeNextStep
+    expose isFirstStep string indexG
 
     use strict arg string, defaultIndexType="", defaultItemType=""
     string = requestBaseString(string, "string")
@@ -1246,112 +1245,110 @@ How other languages are supporting escape characters for Unicode:
     empty = .array~new(0) -- No need to create a copy, the string is immutable
     self~init:super(empty, empty)
 
-    indexB = 1  -- current codepoint byte position
     indexG = 1
-    decodeNextStep = "START"
+    isFirstStep = .true
     self~decode
 
 
 /*
 This method is called from ~init and from ~next.
-In both cases, nextGraphemeIndexB is set to .nil.
 
-This method is convoluted! I had difficulties to implement it...
-Using a coroutine design helped me to finalize the implementation.
-I keep the logic of .RexxUnicodeStringIndexer~init, but with several entry/exit.
-Maybe it can be simplified...
+Simplification by Claude.
+Key simplification versus the original: a grapheme is delimited by two
+boundaries (its start and its end/next-start), and each call to ~decode only
+ever needs to resolve ONE boundary before it can return - the other boundary
+is always already known (either from the previous call, or, for the very
+first grapheme, from the first step phase below). So there's no need for a
+rotating 2-slot buffer: a single "pendingIndexB/pendingError" slot, filled by
+the shared scanBoundary helper, is enough. ~next simply promotes that pending
+boundary into graphemeIndexB/error before resuming here.
+
+"Locate the start of grapheme 1" and "locate the end of the current grapheme"
+are the same operation - scanBoundary is used for both.
 */
 ::method decode private
-    expose string indexB grapheme graphemeIndexB nextGraphemeIndexB error nextError -
-           /* coroutine internal state */ -
-           decodeNextStep previousCodepoint graphemeBreakState -
-           codepoint sizeB errorCode errorMsg
+    expose isFirstStep string grapheme graphemeIndexB error -
+           /* scan state, shared with scanBoundary */ -
+           indexB previousCodepoint graphemeBreakState pendingIndexB pendingError
     use strict arg -- none
 
-    -- coroutine
-    signal value decodeNextStep
+    if isFirstStep then do
+        indexB = 1
+        previousCodepoint = -1
+        graphemeBreakState = 0
+        self~scanBoundary                  -- locates the start of the first grapheme (.nil if the string is empty)
+        graphemeIndexB = pendingIndexB
+        error = pendingError
+        isFirstStep = .false
+    end
 
-    START:
-    graphemeIndexB = .nil
-    nextGraphemeIndexB = .nil
-    previousCodepoint = -1
-    graphemeBreakState = 0
-    error = ""
-    nextError = ""
+    if graphemeIndexB~isNil then do    -- nothing left to deliver (empty string, or already exhausted)
+        grapheme = .nil
+        return                         -- grapheme ready for use (.nil): ~available will now report .false
+    end
 
-    forever:
-        if .nil \== nextGraphemeIndexB then do
-            grapheme = string~substr(abs(graphemeIndexB), abs(nextGraphemeIndexB) - abs(graphemeIndexB))
-            decodeNextStep = "NEXT_CODEPOINT"
-            return -- grapheme, graphemeIndexB and error ready for use
-            -- on reentry from ~next, graphemeIndexB == nextGraphemeIndexB and nextGraphemeIndexB == .nil
-        end
+    self~scanBoundary                  -- locates the end of the current grapheme (.nil at end of string)
+    if pendingIndexB~isNil then grapheme = string~substr(abs(graphemeIndexB))
+    else grapheme = string~substr(abs(graphemeIndexB), abs(pendingIndexB) - abs(graphemeIndexB))
+    -- grapheme, graphemeIndexB and error are ready for use;
+    -- on reentry from ~next, graphemeIndexB/error have been set from pendingIndexB/pendingError
+    return
 
-        NEXT_CODEPOINT:
-        -- here, nextGraphemeIndexB is necessarily .nil
+
+-- Advances indexB (decoding codepoints one at a time, tracking previousCodepoint
+-- and graphemeBreakState for the extended grapheme break algorithm) until either
+-- a grapheme boundary is found or the string is exhausted.
+-- Result is left in pendingIndexB/pendingError:
+--   pendingIndexB = .nil                     -> end of string, nothing more to scan
+--   pendingIndexB = byte position (>0)       -> boundary at a validly-decoded codepoint
+--   pendingIndexB = -(byte position)         -> boundary at an invalid byte sequence; pendingError describes it
+::method scanBoundary private
+    expose string indexB previousCodepoint graphemeBreakState pendingIndexB pendingError
+    use strict arg -- none
+
+    loop forever
         codepoint = .RexxUnicode~utf8DecodeCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
-        if sizeB == 0 then signal end_of_string
-        if sizeB < 0 then signal error
 
-        if previousCodepoint < 0 then call appendGraphemeIndex indexB -- First codepoint or Error recovery
-        else do
-            graphemeBreak  = .RexxUnicode~graphemeBreak3(previousCodepoint, codepoint, >graphemeBreakState)
-            if graphemeBreak then call appendGraphemeIndex indexB
+        if sizeB == 0 then do                  -- end of string
+            pendingIndexB = .nil
+            pendingError  = ""
+            return
         end
+
+        if sizeB < 0 then do                   -- invalid byte sequence: always its own boundary
+            pendingIndexB = -indexB
+            pendingError  = "start byte position" indexB ":" errorMsg
+            indexB += abs(sizeB)                -- skip the invalid bytes
+            previousCodepoint = codepoint
+            graphemeBreakState = 0              -- reset the extended grapheme state
+            return
+        end
+
+        -- graphemeBreak3 must NOT be called when previousCodepoint < 0 (nothing to compare against yet)
+        if previousCodepoint < 0 then isBoundary = 1
+        else isBoundary = .RexxUnicode~graphemeBreak3(previousCodepoint, codepoint, >graphemeBreakState)
+
+        boundaryHere = indexB
         previousCodepoint = codepoint
         indexB += sizeB
-        signal forever
 
-    END_OF_STRING:
-        -- here, nextGraphemeIndexB is necessarily .nil
-        -- but graphemeIndexB can be not .nil or .nil
-        if .nil \== graphemeIndexB then grapheme = string~substr(abs(graphemeIndexB))
-        else grapheme = .nil -- ~next will no longer reenter because ~available will return .false
-        decodeNextStep = "END_OF_STRING"
-        return -- grapheme, graphemeIndexB and error ready for use
-        -- on reentry from ~next, graphemeIndexB == .nil and nextGraphemeIndexB == .nil
-
-    error:
-        -- here, nextGraphemeIndexB is necessarily .nil
-        errorMsg = "start byte position" indexB ":" errorMsg
-        call appendGraphemeIndex -indexB, errorMsg -- same convention as .RexxUnicodeStringIndexer; a negative byte index indicates an invalid byte sequence
-        graphemeBreakState = 0 -- reset the extended grapheme state
-        previousCodepoint = codepoint
-        indexB += abs(sizeB) -- skip the invalid bytes
-        signal forever
-
-    appendGraphemeIndex:
-        use strict arg newIndex, newError=""
-
-        if graphemeIndexB~isNil then do
-            graphemeIndexB = newIndex
-            error = newError
+        if isBoundary then do
+            pendingIndexB = boundaryHere
+            pendingError  = ""
+            return
         end
-        else if nextGraphemeIndexB~isNil then do
-            nextGraphemeIndexB = newIndex
-            nextError = newError
-        end
-        else do
-            -- shift
-            graphemeIndexB = nextGraphemeIndexB
-            nextGraphemeIndexB = newIndex
-            error = nextError
-            nextError = newError
-        end
-
-        return
+        -- else: no break here, keep scanning (loop continues)
+    end
 
 
 ::method next
-    expose error indexG graphemeIndexB nextError nextGraphemeIndexB
+    expose error indexG graphemeIndexB pendingIndexB pendingError
 
     use strict arg -- none
     if self~available then do
         indexG += 1
-        graphemeIndexB = nextGraphemeIndexB
-        nextGraphemeIndexB = .nil
-        error = nextError
-        nextError = ""
+        graphemeIndexB = pendingIndexB
+        error = pendingError
         self~decode
     end
     else raise syntax 93.937 -- No more supplier items available
