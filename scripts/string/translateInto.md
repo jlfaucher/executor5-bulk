@@ -10,8 +10,8 @@
 The `translateInto` method of the String class  is a generalization of the
 `translate` method.
 
-    string~translate(                  [tableo], [tablei], [pad], [n], [length]           )
-    string~translateInto( destination, [tableo], [tablei], [pad], [n], [length], [refEnd] )
+    string~translate(                    [tableo] [, [tablei] [, [pad] [, [n] [, [length]]]]]                )
+    string~translateInto( destination [, [tableo] [, [tablei] [, [pad] [, [n] [, [length] [, [>refEnd]]]]]]] )
 
 
 Translates sequences of characters into another sequence of characters.  
