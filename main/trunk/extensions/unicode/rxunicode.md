@@ -1645,6 +1645,8 @@ Inherited methods:
 - [`codepointToTitle`](#codepointToTitle)
 - [`codepointToUpper`](#codepointToUpper)
 - [`graphemeBreak`](#graphemeBreak)
+- [`graphemeBreak3`](#graphemeBreak3)
+- [`graphemeBreakBackward`](#graphemeBreakBackward)
 - [`systemIsLittleEndian`](#systemIsLittleEndian)
 - [`unicodeVersion`](#unicodeVersion)
 - [`utf8DecodeCodepoint`](#utf8DecodeCodepoint)
