@@ -80,6 +80,153 @@ state=                                                  -- 3
 .RexxUnicodeServices~graphemeBreak3(10, 65, >state)=    -- 1    There is a grapheme break between LF and 'A'
 state=                                                  -- 1
 
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeServices~graphemeBreakBackward
+--------------------------------------------------------------------------------
+
+string = "noël👩‍👨‍👩‍👧🎅"
+
+-- A reverse codepoint supplier does not depend on `graphemeBreakBackward`
+.RexxUnicodeReverseCodepointSupplier~new(string, "b", .RexxUnicodeCharacter)==
+/*
+    a RexxUnicodeReverseCodepointSupplier
+     31 : ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+     27 : ("👧" \x{F09F91A7} U+1F467 So Other_Symbol "GIRL")
+     24 : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+     20 : ("👩" \x{F09F91A9} U+1F469 So Other_Symbol "WOMAN")
+     17 : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+     13 : ("👨" \x{F09F91A8} U+1F468 So Other_Symbol "MAN")
+     10 : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+     6  : ("👩" \x{F09F91A9} U+1F469 So Other_Symbol "WOMAN")
+     5  : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+     3  : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")
+     2  : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
+     1  : ("n" \x6E U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
+*/
+
+-- A reverse grapheme supplier depends on `graphemeBreakBackward`
+.RexxUnicodeReverseGraphemeSupplier~new(string, "b", "\")==
+/*
+    a RexxUnicodeReverseGraphemeSupplier
+     31 : '🎅'
+     6  : '👩\u200D👨\u200D👩\u200D👧'
+     5  : 'l'
+     3  : 'ë'
+     2  : 'o'
+     1  : 'n'
+*/
+
+-- Step by step procedure
+indexB = string~length + 1; indexB=                                                     -- 35
+codepoint2 = .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size)
+codepoint2~d2x=; size=                                                                  -- '1F385'; 4
+indexB -= abs(size); indexB=                                                            -- 31
+codepoint1 = .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size)
+codepoint1~d2x=; size=                                                                  -- '1F467'; 4
+indexB -= abs(size); indexB=                                                            -- 27
+-- There is a grapheme break between '👧' and '🎅'
+.RexxUnicodeServices~graphemeBreakBackward(string, indexB, codepoint1, codepoint2)=     -- 1
+codepoint2 = codepoint1
+codepoint1 = .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size)
+codepoint1~d2x=; size=                                                                  -- '200D'; 3
+indexB -= abs(size); indexB=                                                            -- 24
+-- There is no grapheme break between '\u200D' and '👧'
+.RexxUnicodeServices~graphemeBreakBackward(string, indexB, codepoint1, codepoint2)=     -- 0
+
+
+/*
+The reverse grapheme supplier is quadratic when RI.
+Repeat the Regional Indicator Symbol Letter, e.g. 🇦 = `U+1F1E6`:
+
+🇦🇦🇦🇦🇦...🇦        (`N` copies of `U+1F1E6`)
+*/
+
+-- Durations on Macbook Pro M1 32GB, non-native suppliers, non-native indexers
+
+RI_A = .RexxUnicode~U2C("U+1F1E6")
+
+.RexxUnicode~stringInfo(RI_A~copies(100))=      -- '(not-ASCII, 50 graphemes, 100 codepoints, 400 bytes, 0 error)'
+.RexxUnicode~stringInfo(RI_A~copies(100000))=   -- '(not-ASCII, 50000 graphemes, 100000 codepoints, 400000 bytes, 0 error)'
+.RexxUnicode~stringInfo("A"~copies(100000))=    -- '(ASCII, 100000 graphemes, 100000 codepoints, 100000 bytes, 0 error)'
+
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(100)); do while s~available; s~next; end      -- Duration: 0.001217
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(1000)); do while s~available; s~next; end     -- Duration: 0.026591
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(10000)); do while s~available; s~next; end    -- Duration: 0.312036
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(20000)); do while s~available; s~next; end    -- Duration: 1.20119
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(30000)); do while s~available; s~next; end    -- Duration: 2.629657
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(40000)); do while s~available; s~next; end    -- Duration: 4.611944
+-- too long: s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(100000)); do while s~available; s~next; end   -- Duration: 28.448092
+
+-- The forward grapheme supplier is not quadratic
+s=.RexxUnicodeGraphemeSupplier~new(RI_A~copies(100000)); do while s~available; s~next; end          -- Duration: 0.257308
+
+-- The reverse grapheme supplier is not quadratic when no RI
+s=.RexxUnicodeReverseGraphemeSupplier~new("A"~copies(100000)); do while s~available; s~next; end    -- Duration: 0.395018
+
+
+/*
+`GB9c` single-call example: a long run of `ZWJ` (boundclass `ZWJ`, `InCB=None`
+with no Consonant anywhere in it, terminated by one Consonant:
+
+`U+200D` repeated `N` times, then `U+0915` (क, DEVANAGARI LETTER KA).
+*/
+
+-- Durations on Macbook Pro M1 32GB, non-native suppliers, non-native indexers
+
+ZWJ = .RexxUnicode~U2C("U+200D")
+KA = .RexxUnicode~U2C("U+0915")
+
+.RexxUnicode~stringInfo(ZWJ~copies(100) || KA)=         -- '(not-ASCII, 2 graphemes, 101 codepoints, 303 bytes, 0 error)'                       Duration: 0.001262
+-- too long: .RexxUnicode~stringInfo(ZWJ~copies(100000000) || KA)=   -- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'           Duration: 45.556058
+-- too long: .RexxUnicode~stringInfo("A"~copies(100000000) || KA)=   -- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'   Duration: 53.451210
+
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(100) || KA); do while s~available; s~next; end         -- Duration: 0.000577
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(1000) || KA); do while s~available; s~next; end        -- Duration: 0.001165
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(10000) || KA); do while s~available; s~next; end       -- Duration: 0.016968
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(1000000) || KA); do while s~available; s~next; end     -- Duration: 0.395289
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(10000000) || KA); do while s~available; s~next; end    -- Duration: 3.669910
+-- too long: s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(100000000) || KA); do while s~available; s~next; end   -- Duration: 36.272723
+
+-- The forward grapheme supplier is not faster
+-- too long: s=.RexxUnicodeGraphemeSupplier~new(ZWJ~copies(100000000) || KA); do while s~available; s~next; end           -- Duration: 38.077146
+
+-- The reverse grapheme supplier is much slower when GB9c is not applicable (100000001 graphemes instead of 2)
+-- too long: s=.RexxUnicodeReverseGraphemeSupplier~new("A"~copies(100000000) || KA); do while s~available; s~next; end    -- Duration: 395.163515
+
+
+/*
+`GB11` single-call example: a long run of a plain combining mark (Extend, not pictographic)
+with no pictograph in it, then a `ZWJ`, then a pictograph:
+
+`U+0301` (combining acute accent) repeated `N` times, then `U+200D`, then `U+1F600` (😀)
+*/
+
+-- Durations on Macbook Pro M1 32GB, non-native suppliers, non-native indexers
+
+acute = .RexxUnicode~U2C("U+0301")
+ZWJ = .RexxUnicode~U2C("U+200D")
+grin = .RexxUnicode~U2C("U+1F600")
+
+.RexxUnicode~stringInfo(acute~copies(100) || ZWJ || grin)=          -- '(not-ASCII, 2 graphemes, 102 codepoints, 207 bytes, 0 error)'                       Duration: 0.000829
+-- too long: .RexxUnicode~stringInfo(acute~copies(100000000) || ZWJ || grin)=    -- '(not-ASCII, 2 graphemes, 100000002 codepoints, 200000007 bytes, 0 error)'           Duration: 44.753312
+-- too long: .RexxUnicode~stringInfo("A"~copies(100000000) || ZWJ || grin)=      -- '(not-ASCII, 100000001 graphemes, 100000002 codepoints, 100000007 bytes, 0 error)'   Duration: 53.045773
+
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100) || ZWJ || grin); do while s~available; s~next; end          -- Duration: 0.001653
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(1000) || ZWJ || grin); do while s~available; s~next; end         -- Duration: 0.001594
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(10000) || ZWJ || grin); do while s~available; s~next; end        -- Duration: 0.006053
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100000) || ZWJ || grin); do while s~available; s~next; end       -- Duration: 0.045627
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(1000000) || ZWJ || grin); do while s~available; s~next; end      -- Duration: 0.389713
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(10000000) || ZWJ || grin); do while s~available; s~next; end     -- Duration: 3.623596
+-- too long: s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100000000) || ZWJ || grin); do while s~available; s~next; end    -- Duration: 35.995098
+
+-- The forward grapheme supplier is not faster
+-- too long: s=.RexxUnicodeGraphemeSupplier~new(acute~copies(100000000) || ZWJ || grin); do while s~available; s~next; end           -- Duration: 37.414371
+
+-- The reverse grapheme supplier is much slower when GB11 is not applicable (100000001 graphemes instead of 2)
+-- too long: s=.RexxUnicodeReverseGraphemeSupplier~new("A"~copies(100000000) || ZWJ || grin); do while s~available; s~next; end      -- Duration: 398.995352
+
+
 --------------------------------------------------------------------------------
 -- .RexxUnicodeServices~utf8DecodePreviousCodepoint
 --------------------------------------------------------------------------------

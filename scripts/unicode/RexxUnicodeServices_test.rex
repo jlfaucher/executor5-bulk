@@ -15,6 +15,7 @@ Native methods of RexxUnicodeServices
 
     RexxInteger *graphemeBreak(ArrayClass *array); // deprecated
     RexxInteger *graphemeBreak3(RexxInteger *rexxCodepoint1, RexxInteger *rexxCodepoint2, VariableReference *refState);
+    RexxInteger *graphemeBreakBackward(RexxString *string, RexxInteger *indexB, RexxInteger *rexxCodepoint1, RexxInteger *rexxCodepoint2);
 
     RexxInteger *codepointBidiClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
     RexxInteger *codepointBidiMirrored(RexxInteger *rexxCodepoint); // boolean

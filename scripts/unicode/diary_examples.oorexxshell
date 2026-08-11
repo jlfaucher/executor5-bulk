@@ -7,6 +7,38 @@ demo on
 
 
 -- ===============================================================================
+-- 2026 Aug 11
+
+/*
+[Unicode]
+
+Replace the ooRexx implementation of
+    .RexxUnicodeReverseGraphemeSupplier~shouldBreakBackward
+by the C++ native method
+    .RexxUnicodeServices~graphemeBreakBackward
+
+Example
+*/
+
+string = "noël👩‍👨‍👩‍👧🎅"
+indexB = string~length + 1; indexB=                                                     -- 35
+codepoint2 = .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size)
+codepoint2~d2x=; size=                                                                  -- '1F385'; 4
+indexB -= abs(size); indexB=                                                            -- 31
+codepoint1 = .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size)
+codepoint1~d2x=; size=                                                                  -- '1F467'; 4
+indexB -= abs(size); indexB=                                                            -- 27
+-- There is a grapheme break between '👧' and '🎅'
+.RexxUnicodeServices~graphemeBreakBackward(string, indexB, codepoint1, codepoint2)=     -- 1
+codepoint2 = codepoint1
+codepoint1 = .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size)
+codepoint1~d2x=; size=                                                                  -- '200D'; 3
+indexB -= abs(size); indexB=                                                            -- 24
+-- There is no grapheme break between '\u200D' and '👧'
+.RexxUnicodeServices~graphemeBreakBackward(string, indexB, codepoint1, codepoint2)=     -- 0
+
+
+-- ===============================================================================
 -- 2026 Aug 07
 
 /*

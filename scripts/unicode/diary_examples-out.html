@@ -42,12 +42,56 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
-</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 5 Aug 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: Se973Qbc4826040
+</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 8 Aug 2026
+</span><span style="font-weight:bold;color:green;">Input queue name: S71e1Qbc48249c0
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
+
+
+<span style="font-weight:bold;color:blue;">-- ===============================================================================
+</span><span style="font-weight:bold;color:blue;">-- 2026 Aug 11
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">[Unicode]
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Replace the ooRexx implementation of
+</span><span style="font-weight:bold;color:blue;">    .RexxUnicodeReverseGraphemeSupplier~shouldBreakBackward
+</span><span style="font-weight:bold;color:blue;">by the C++ native method
+</span><span style="font-weight:bold;color:blue;">    .RexxUnicodeServices~graphemeBreakBackward
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Example
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;noël👩‍👨‍👩‍👧🎅&quot;</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexB = string~length + 1; indexB=                                                     </span><span style="font-weight:bold;color:blue;">-- 35</span>
+ 35
+ooRexx&gt; <span style="font-weight:bold;color:purple;">codepoint2 = .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, &gt;size)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">codepoint2~d2x=; size=                                                                  </span><span style="font-weight:bold;color:blue;">-- '1F385'; 4</span>
+'1F385'
+ 4
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexB -= abs(size); indexB=                                                            </span><span style="font-weight:bold;color:blue;">-- 31</span>
+ 31
+ooRexx&gt; <span style="font-weight:bold;color:purple;">codepoint1 = .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, &gt;size)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">codepoint1~d2x=; size=                                                                  </span><span style="font-weight:bold;color:blue;">-- '1F467'; 4</span>
+'1F467'
+ 4
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexB -= abs(size); indexB=                                                            </span><span style="font-weight:bold;color:blue;">-- 27</span>
+ 27
+<span style="font-weight:bold;color:blue;">-- There is a grapheme break between '👧' and '🎅'
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~graphemeBreakBackward(string, indexB, codepoint1, codepoint2)=     </span><span style="font-weight:bold;color:blue;">-- 1</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">codepoint2 = codepoint1</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">codepoint1 = .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, &gt;size)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">codepoint1~d2x=; size=                                                                  </span><span style="font-weight:bold;color:blue;">-- '200D'; 3</span>
+'200D'
+ 3
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexB -= abs(size); indexB=                                                            </span><span style="font-weight:bold;color:blue;">-- 24</span>
+ 24
+<span style="font-weight:bold;color:blue;">-- There is no grapheme break between '\u200D' and '👧'
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~graphemeBreakBackward(string, indexB, codepoint1, codepoint2)=     </span><span style="font-weight:bold;color:blue;">-- 0</span>
+ 0
 
 
 <span style="font-weight:bold;color:blue;">-- ===============================================================================

@@ -62,6 +62,7 @@ Native methods of RexxUnicodeServices
 
     RexxInteger *graphemeBreak(ArrayClass *array); // deprecated
     RexxInteger *graphemeBreak3(RexxInteger *rexxCodepoint1, RexxInteger *rexxCodepoint2, VariableReference *refState);
+    RexxInteger *graphemeBreakBackward(RexxString *string, RexxInteger *indexB, RexxInteger *rexxCodepoint1, RexxInteger *rexxCodepoint2);
 
     RexxInteger *codepointBidiClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
     RexxInteger *codepointBidiMirrored(RexxInteger *rexxCodepoint); // boolean
@@ -1360,106 +1361,7 @@ are the same operation - scanBoundary is used for both.
 /******************************************************************************/
 
 -- Reverse grapheme supplier for UTF-8 strings without pre-indexing.
--- Initial code by Claude Sonnet 5 medium, reviewed and adapted.
-
-/*
-I'm assuming your .RexxUnicode class exposes (or you'll add, alongside graphemeBreak)
-a handful of property-query primitives, since I don't have visibility into your existing C-layer API surface for these:
-
-AI requirement:
-    .RexxUnicode~graphemeClusterBreakProperty(codepoint) → one of 'CR' 'LF' 'CONTROL' 'EXTEND' 'ZWJ' 'REGIONAL_INDICATOR' 'PREPEND' 'SPACINGMARK' 'L' 'V' 'T' 'LV' 'LVT' 'OTHER'
-replaced by:
-    .RexxUnicode~codepointBoundClass(codepoint, >boundClass)
-    boundClass values to test (on the right, if different):
-        'CR'
-        'LF'
-        'CONTROL'               'CN'
-        'EXTEND'                'EX'
-        'ZWJ'
-        'REGIONAL_INDICATOR'    'RI'
-        'PREPEND'               'PP'
-        'SPACINGMARK'           'SM'
-        'L'
-        'V'
-        'T'
-        'LV'
-        'LVT'
-        'OTHER'                 'XX'
-
-AI requirement:
-    .RexxUnicode~isExtendedPictographic(codepoint) → boolean
-replaced by:
-    .RexxUnicode~codepointBoundClass(codepoint, >boundClass)
-    boundClass == "EP" | boundClass == "EZWG"
-        "EP",       "Extended_Pictographic"
-        "EZWG",     "E_ZWG"
-
-AI requirement:
-    .RexxUnicode~isInCBConsonant(codepoint) → boolean
-replaced by:
-    .RexxUnicodeServices~codepointIndicConjunctBreak(codepoint, >indicConjunctBreak)
-    indicConjunctBreak == "Consonant"
-
-AI requirement:
-    .RexxUnicode~isInCBLinker(codepoint) → boolean
-replaced by:
-    .RexxUnicodeServices~codepointIndicConjunctBreak(codepoint, >indicConjunctBreak)
-    indicConjunctBreak == "Linker"
-*/
-
-/*
-UAX #29, Unicode Text Segmentation
-https://www.unicode.org/reports/tr29/
-https://www.unicode.org/reports/tr29/#Random_Access
-
-Iterates backward from a KNOWN boundary (default: one past the end of the
-string, i.e. the whole string's right edge). This is deliberately not a
-random-access primitive -- per UAX #29 6.4, starting from an arbitrary,
-unverified offset would require a separate "safe point" search. Starting
-from a genuine boundary avoids that; what remains is the residual cost
-described below.
-
-Rules GB3, GB6-GB9b are simple, direction-symmetric pairwise lookups: no
-lookback needed, forward or backward. Three rules are not:
-  GB9c  (Indic conjunct clusters)
-  GB11  (emoji ZWJ sequences)
-  GB12/13 (regional indicator / flag sequences)
-These are left-anchored: correctly resolving them going backward requires
-rescanning the run of Extend/Linker/RI scalars each time one is
-encountered, since (unlike forward iteration) there's no running "parity"
-or "seen a linker" state carried over from a previous step to reuse. This
-is not an implementation gap on our part -- Swift's stdlib has the exact
-same property and documents it as accepted, non-quadratic-in-practice
-behavior (see StringGraphemeBreaking.swift, _previousGraphemeClusterBoundary).
-https://github.com/swiftlang/swift/blob/main/stdlib/public/core/StringGraphemeBreaking.swift
-*/
-
-/*
-A few things worth flagging:
-
-JLF:
-There is no countPrecedingRegionalIndicators in the code.
-Is it precedingRIRunLengthIsOdd?
-
-countPrecedingRegionalIndicators intentionally counts starting from the scalar
-itself, not from scalar1's position — it's called with pos1, the end of scalar1
-(i.e. cursor before the step), so its first backward decode re-reads scalar1
-itself, folding it into the count. That matches the definition:
-parity is of "how many RI's including this one, back to the start of the run."
-
-Error handling mirrors your forward supplier exactly: a maximal ill-formed subpart
-is always its own grapheme, isolated from neighbors on both sides, and the three
-lookback helpers all treat hitting an error boundary as "run terminates, no match"
-— consistent with your forward code's graphemeBreakState = 0 reset on error.
-
-This is a plain sketch, not benchmarked — like Swift's version,
-precedingRIRunLengthIsOdd is O(run length) rather than O(1),
-so a string that's pathologically almost-all REGIONAL_INDICATOR scalars would
-make backward iteration quadratic over that stretch, same as forward would be
-fast but backward wouldn't. That's an accepted, documented trade-off in the
-reference implementation, not a bug to chase down — but worth a comment in your
-code so a future reader (including future-you) doesn't mistake it for an oversight.
-*/
+-- Initial ooRexx code by Claude Sonnet 5 medium, reviewed and adapted.
 
 -- Using a mixin class requires giving access to these (normally) private variables.
 ::attribute error get package           -- "" if no error, otherwise error description
@@ -1502,6 +1404,9 @@ code so a future reader (including future-you) doesn't mistake it for an oversig
     expose string indexB grapheme graphemeIndexB error
     use strict arg -- none
 
+debug = .false -- keep it for the moment
+if debug then say
+if debug then say "Enter decodePrevious with indexB =" indexB
     error = ""
 
     -- ok, it's an alternative way to detect the beginning of string,
@@ -1509,10 +1414,12 @@ code so a future reader (including future-you) doesn't mistake it for an oversig
     if indexB <= 1 then do
         grapheme = .nil
         graphemeIndexB = .nil
+if debug then say "Leave decodePrevious with graphemeIndexB =" graphemeIndexB", grapheme =" grapheme
         return
     end
 
     codepoint2 = .RexxUnicode~utf8DecodePreviousCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
+if debug then say "    utf8DecodePreviousCodepoint with indexB =" indexB "returned codepoint2 =" codepoint2 "of size" sizeB
     cursor = indexB - abs(sizeB)      -- start of the rightmost scalar so far
 
     -- An ill-formed byte's maximal subpart is always its own grapheme cluster
@@ -1521,24 +1428,22 @@ code so a future reader (including future-you) doesn't mistake it for an oversig
         graphemeIndexB = -cursor -- same convention as .RexxUnicodeStringIndexer; a negative byte index indicates an invalid byte sequence
         grapheme = string~substr(cursor, indexB - cursor)
         error = "start byte position" cursor ":" errorMsg
+if debug then say "Leave decodePrevious with graphemeIndexB =" graphemeIndexB", grapheme =" grapheme~c2x
         return
     end
-
-    -- prop2 = .RexxUnicode~graphemeClusterBreakProperty(codepoint2)
-    .RexxUnicode~codepointBoundClass(codepoint2, >prop2)
 
     loop
         if cursor <= 1 then leave    -- start of text: always a boundary
 
         codepoint1 = .RexxUnicode~utf8DecodePreviousCodepoint(string, cursor, >sizeB1, >errorCode1, >errorMsg1)
+if debug then say "    utf8DecodePreviousCodepoint with cursor =" cursor "returned codepoint1 =" codepoint1 "of size" sizeB
         pos1 = cursor - abs(sizeB1)
 
         if sizeB1 < 0 then leave    -- adjacent error is always its own cluster: break here
 
-        -- prop1 = .RexxUnicode~graphemeClusterBreakProperty(codepoint1)
-        .RexxUnicode~codepointBoundClass(codepoint1, >prop1)
-
-        if self~shouldBreakBackward(codepoint1, prop1, pos1, codepoint2, prop2) then leave
+        graphemeBreakBackward = .RexxUnicode~graphemeBreakBackward(string, pos1, codepoint1, codepoint2)
+if debug then say "    graphemeBreakBackward with pos1 =" pos1", codepoint1 =" codepoint1", codepoint2 =" codepoint2 "returned" graphemeBreakBackward
+        if graphemeBreakBackward then leave
 
         -- No break: extend the grapheme leftward and keep going
         cursor = pos1
@@ -1549,246 +1454,7 @@ code so a future reader (including future-you) doesn't mistake it for an oversig
     graphemeIndexB = cursor
     grapheme = string~substr(cursor, indexB - cursor)
     error = ""
-
-
--- Direct-from-table pairwise rules (GB3, GB6-GB9b), plus dispatch to the
--- three lookback-requiring rules (GB9c, GB11, GB12/13). Order matches rule
--- precedence in UAX #29 3.1.1: first match wins.
-::method shouldBreakBackward private
-    expose string
-    use strict arg codepoint1, prop1, pos1, codepoint2, prop2
-
-    -- GB3: do not break CR x LF
-    if prop1 == "CR", prop2 == "LF" then return .false
-
-    -- GB4: break after Control | CR | LF
-    if prop1 == "CN" | prop1 == "CR" | prop1 == "LF" then return .true
-
-    -- GB5: break before Control | CR | LF
-    if prop2 == "CN" | prop2 == "CR" | prop2 == "LF" then return .true
-
-    -- GB6/7/8: do not break within Hangul syllable sequences
-    if prop1 == "L", (prop2 == "L" | prop2 == "V" | prop2 == "LV" | prop2 == "LVT") then return .false
-    if (prop1 == "LV" | prop1 == "V"), (prop2 == "V" | prop2 == "T") then return .false
-    if (prop1 == "LVT" | prop1 == "T"), prop2 == "T" then return .false
-
-    -- GB9: do not break before Extend | ZWJ
-    if prop2 == "EX" | prop2 == "ZWJ" then return .false
-
-    -- GB9a: do not break before SpacingMark
-    if prop2 == "SM" then return .false
-
-    -- GB9b: do not break after Prepend
-    if prop1 == "PP" then return .false
-
-    -- GB11: Extended_Pictographic Extend* ZWJ x Extended_Pictographic
-    if prop1 == "ZWJ", -
-       (prop2 == "EP" | prop2 == "EZWG") /*.RexxUnicode~isExtendedPictographic(codepoint2)*/ then -
-        return \self~isPictographicBeforeZwj(pos1)
-
-    -- GB9c: InCB=Consonant [Extend|Linker]* Linker [Extend|Linker]* x InCB=Consonant
-    .RexxUnicodeServices~codepointIndicConjunctBreak(codepoint2, >indicConjunctBreak2)
-    if indicConjunctBreak2 == "Consonant" /*.RexxUnicode~isInCBConsonant(codepoint2)*/ , -
-       (prop1 == "EX" | prop1 == "ZWJ"), -
-       self~isInCBExtendOrLinker(codepoint1) then -
-        return \self~isConsonantThroughLinkerRun(codepoint1, pos1)
-
-    -- GB12/13: do not break within RI RI if an odd number of RI precede the break
-    if prop1 == "RI", prop2 == "RI" then -
-        return self~precedingRIRunLengthIsOdd(pos1)
-
-    -- GB999: otherwise, break
-    return .true
-
-
--- true if codepoint is InCB=Extend or InCB=Linker (i.e. Extend/ZWJ but not itself
--- a Consonant or Linker) -- same derivation Swift uses for _isInCBExtend.
-::method isInCBExtendOrLinker private
-    use strict arg codepoint
-    .RexxUnicodeServices~codepointIndicConjunctBreak(codepoint, >indicConjunctBreak)
-    if indicConjunctBreak == "Linker" /*.RexxUnicode~isInCBLinker(codepoint)*/ then return .true
-    -- prop = .RexxUnicode~graphemeClusterBreakProperty(codepoint)
-    .RexxUnicode~codepointBoundClass(codepoint, >prop)
-    if prop \== "EX", prop \== "ZWJ" then return .false
-    -- return \.RexxUnicode~isInCBConsonant(codepoint)
-    return indicConjunctBreak \== "Consonant"
-
-
--- GB11 lookback: walk left from the ZWJ (whose right boundary ends at zwjEndPos)
--- over an Extend* run to see whether an Extended_Pictographic started it.
-::method isPictographicBeforeZwj private
-    expose string
-    use strict arg zwjEndPos
-    pos = zwjEndPos
-    loop
-        if pos <= 1 then return .false
-        cp = .RexxUnicode~utf8DecodePreviousCodepoint(string, pos, >sizeB)
-        if sizeB < 0 then return .false          -- an error boundary can't be pictographic
-
-        -- if .RexxUnicode~isExtendedPictographic(cp) then return .true
-        .RexxUnicode~codepointBoundClass(cp, >boundClass)
-        if boundClass == "EP" | boundClass == "EZWG" then return .true
-
-        -- prop = .RexxUnicode~graphemeClusterBreakProperty(cp)
-        .RexxUnicode~codepointBoundClass(cp, >prop)
-        if prop \== "EX" then return .false   -- run ended without finding one
-        pos = pos - abs(sizeB)
-    end
-
-
--- GB9c lookback: walk left from the Extend/Linker run looking for an
--- InCB=Consonant, requiring at least one InCB=Linker en route. `firstCodepoint`
--- is codepoint1 itself (already confirmed Extend/Linker by the caller) and must
--- be checked for Linker-ness too -- it's part of the run, not something to skip
--- past before scanning starts.
-/*
---------------------------------------------------------------------------------
-Bug 2 — isConsonantThroughLinkerRun: doesn't actually require a Linker
-    if indicConjunctBreak == "Consonant" then return .true
-
-GB9c requires at least one InCB=Linker between the two consonants —
-[Extend|Linker]* Linker [Extend|Linker]*, not just any run of Extend/Linker.
-The current code returns success the moment it finds a Consonant behind the run,
-without ever checking whether a Linker was actually part of that run.
-So U+0915 U+0951 U+0915 (consonant, Extend, consonant — no Linker at all) walks
-back from the Extend, immediately hits the first consonant, and reports
-"yes, conjunct" — merging everything, when it should report "no" and let GB999
-break there.
-
-It needs a flag, set only when a genuine Linker is seen, and the success return
-must be conditioned on it: seenLinker.
-
-This is why your other GB9c cases (the "kshi" example and the
-double-Extend-around-a-linker case) already passed despite the bug — they all
-happen to contain a genuine Linker, so the missing check never got exercised.
-Test #3 was specifically constructed as the negative case, and it's exactly the
-one that catches it — good test design, that's precisely what it was for.
-
-isPictographicBeforeZwj (GB11) doesn't have an analogous issue — it has no
-"must have seen X" requirement, just "walk back over Extend* until pictographic
-or non-Extend," so there's no missing-flag failure mode there, consistent with
-none of your GB11 cases showing up in the failures.
-*/
-/*
---------------------------------------------------------------------------------
-Bug 3 - "U+0915 U+094D U+0937 U+093F" regression
-        a RexxUnicodeReverseGraphemeSupplier
-         7 : 'U+0937 U+093F'
-         1 : 'U+0915 U+094D'
-should be
-       a RexxUnicodeReverseGraphemeSupplier
-         1 : 'U+0915 U+094D U+0937 U+093F'
-
-it's in isConsonantThroughLinkerRun, and it's a boundary-condition bug rather
-than a logic-inversion like the last two: the function starts scanning before
-codepoint1, so it never actually checks whether codepoint1 itself is the Linker.
-
-Trace through U+0915 U+094D U+0937 U+093F (KA, Virama, SSA, vowel sign I):
-the backward walk reaches the pair codepoint1 = U+094D (the Linker),
-codepoint2 = U+0937 (Consonant). isInCBExtendOrLinker(codepoint1) correctly
-confirms U+094D qualifies, so the GB9c branch fires and calls:
-    return \self~isConsonantThroughLinkerRun(pos1)
-
-where pos1 is the position before U+094D — i.e., the scan starts by decoding
-past the Linker and lands straight on U+0915 (Consonant), having never inspected
-U+094D for Linker-ness at all. Since seenLinker is still .false at that point,
-it returns .false → forces a break right where there shouldn't be one. That's
-exactly the regression: 094D | 0937 splits.
-
-The fix is to seed seenLinker from codepoint1 itself before scanning further
-back, since codepoint1 is already known (by the caller) to be part of the run:
-    add `firstCodepoint` argument and test its IndicConjunctBreak property.
-    modify `shouldBreakBackward` to pass codepoint1.
-
-Retracing the "kshi" case with this fix:
-firstCodepoint = U+094D is checked first — Linker, so seenLinker = .true
-immediately — then the loop decodes back to U+0915, sees Consonant, and returns
-.true. No break. Matches forward.
-
-And it doesn't reopen the negative test you caught last time (U+0915 U+0951
-U+0915, no linker): there, firstCodepoint = U+0951 is Extend, not Linker, so
-seenLinker stays .false going in, the loop then hits U+0915 (Consonant) and
-correctly returns .false → break, as it should.
-
-I also re-traced the two-Extend-around-a-linker case (U+0915 U+0951 U+094D
-U+0951 U+0915) with this fix to make sure it doesn't regress — it still merges
-into one grapheme, since the Linker gets picked up on the second call to
-isConsonantThroughLinkerRun (this time seeded from a plain Extend codepoint,
-seenLinker = .false initially, but the scan then walks past the actual U+094D
-and sets it .true there before reaching the leading consonant).
-*/
-::method isConsonantThroughLinkerRun private
-    expose string
-    use strict arg firstCodepoint, runEndPos
-
-    .RexxUnicodeServices~codepointIndicConjunctBreak(firstCodepoint, >indicConjunctBreak)
-    seenLinker = (indicConjunctBreak == "Linker")
-
-    pos = runEndPos
-    loop
-        if pos <= 1 then return .false
-        cp = .RexxUnicode~utf8DecodePreviousCodepoint(string, pos, >sizeB)
-        if sizeB < 0 then return .false
-
-        -- if .RexxUnicode~isInCBConsonant(cp) then return .true
-        .RexxUnicodeServices~codepointIndicConjunctBreak(cp, >indicConjunctBreak)
-        if indicConjunctBreak == "Consonant" then return seenLinker   -- <-- was unconditional .true
-
-        if indicConjunctBreak == "Linker" then seenLinker = .true
-        else if \self~isInCBExtendOrLinker(cp) then return .false     -- run ended, no consonant
-
-        pos = pos - abs(sizeB)
-    end
-
-
--- GB12/13 lookback: count the contiguous run of Regional_Indicator scalars
--- ending at (and including) the scalar whose right edge is riEndPos.
--- No-break holds iff that count is odd.
---
--- precedingRIRunLengthIsOdd is O(run length) rather than O(1),
--- so a string that's pathologically almost-all REGIONAL_INDICATOR scalars would
--- make backward iteration quadratic over that stretch.
-/*
---------------------------------------------------------------------------------
-Bug 1 — precedingRIRunLengthIsOdd: the loop condition is inverted
-    if boundClass == "RI" then leave
-
-This says "stop counting as soon as you find an RI" — backwards. The whole point
-of the loop is to count the run of RI's; it should stop when it finds something
-that isn't RI (that's where the run ends), and increment the count while it is RI.
-
-As written, the loop almost always terminates on its very first decode (since
-that first decode very often is an RI, given it's being called at an RI/RI
-junction), so count stays near 0 regardless of the actual run length — which is
-why every RI test merged the whole run into a single grapheme instead of pairing
-it up: the parity check was comparing against a count that never reflected the
-real run.
-
-The rest of the RI logic is correct as-is, including the (unnegated) call site
-return self~precedingRIRunLengthIsOdd(pos1) — I checked that one carefully since
-it looked suspicious at first, but the parity math works out: pos1 is scalar1's
-start, so the count naturally excludes scalar1 itself, giving "how many RI
-precede scalar1"; break-iff-that's-odd is the correct condition once the loop
-itself is fixed. Tracing your test #3 (U+1F1EB U+1F1F7 U+1F1E9) through the
-corrected version end-to-end reproduces the forward result exactly, pair (a,b)
-then singleton c.
-*/
-::method precedingRIRunLengthIsOdd private
-    expose string
-    use strict arg riEndPos
-    pos = riEndPos
-    count = 0
-    loop
-        if pos <= 1 then leave
-        cp = .RexxUnicode~utf8DecodePreviousCodepoint(string, pos, >sizeB)
-        if sizeB < 0 then leave -- error
-        -- if .RexxUnicode~graphemeClusterBreakProperty(cp) \== "REGIONAL_INDICATOR" then leave
-        .RexxUnicode~codepointBoundClass(cp, >boundClass)
-        if boundClass \== "RI" then leave        -- <-- was "==": run ends here
-        count += 1
-        pos = pos - abs(sizeB)
-    end
-    return count // 2 == 1
+if debug then say "Leave decodePrevious with graphemeIndexB =" graphemeIndexB", grapheme =" grapheme~c2x
 
 
 /******************************************************************************/
@@ -1873,30 +1539,40 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     previousCodepoint = -1
     graphemeBreakState = 0
 
-    forever:
+    loop forever
         codepoint = .RexxUnicode~utf8DecodeCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
-        if sizeB == 0 then do
-            -- End of string
-            -- Convert the circular queues to arrays in Lifo order, ready for indexing from the end.
-            -- Illustration with codepoints:
-            --     index -1: indexer~codepointAtIndexC(indexer~codepointCount)          first codepoint from the end
-            --     index -2: indexer~codepointAtIndexC(indexer~codepointCount - 1)      second codepoint from the end
-            --     index -3: indexer~codepointAtIndexC(indexer~codepointCount - 2)      third codepoint from the end
-            --     etc.
-            if .nil \== endCodepointIndexes then endCodepointIndexes = endCodepointIndexes~makeArray("L")
-            if .nil \== endGraphemeIndexes then endGraphemeIndexes = endGraphemeIndexes~makeArray("L")
-            if .nil \== endErrors then endErrors = endErrors~makeArray("L")
-            return
+        if sizeB == 0 then leave -- End of string
+
+        if sizeB < 0 then do
+            errorCount += 1
+            errorMsg = "start byte position" indexB ":" errorMsg
+            if errorCount <= errorStorageLimit then errors~append(errorMsg)
+            if endErrorStorageSize > 0 then endErrors~append(errorMsg)
+
+            codepointCount += 1
+            if codepointCount <= codepointStorageLimit then codepointIndexes~append(-indexB) -- a negative index means "error"
+            if endCodepointStorageSize > 0 then endCodepointIndexes~append(-indexB)
+
+            graphemeCount += 1
+            if graphemeCount <= graphemeStorageLimit then graphemeIndexes~append(-indexB) -- a negative index means "error"
+            if graphemeCount == (graphemeStorageLimit + 1) then lastGraphemeSuccessorIndex = -indexB
+            if endGraphemeStorageSize > 0 then endGraphemeIndexes~append(-indexB)
+
+            graphemeBreakState = 0 -- reset the extended grapheme state
+            previousCodepoint = codepoint
+            indexB += abs(sizeB) -- skip the invalid bytes
+
+            iterate
         end
-        if sizeB < 0 then signal error
 
         codepointCount += 1
         if codepointCount <= codepointStorageLimit then codepointIndexes~append(indexB)
         if endCodepointStorageSize > 0 then endCodepointIndexes~append(indexB)
 
         if previousCodepoint < 0 then do
+            -- First codepoint or Error recovery
             graphemeCount += 1
-            if graphemeCount <= graphemeStorageLimit then graphemeIndexes~append(indexB) -- First codepoint or Error recovery
+            if graphemeCount <= graphemeStorageLimit then graphemeIndexes~append(indexB)
             if graphemeCount == (graphemeStorageLimit + 1) then lastGraphemeSuccessorIndex = indexB
             if endGraphemeStorageSize > 0 then endGraphemeIndexes~append(indexB)
         end
@@ -1910,27 +1586,18 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
         end
         previousCodepoint = codepoint
         indexB += sizeB
-        signal forever
+    end
 
-    error:
-        errorCount += 1
-        errorMsg = "start byte position" indexB ":" errorMsg
-        if errorCount <= errorStorageLimit then errors~append(errorMsg)
-        if endErrorStorageSize > 0 then endErrors~append(errorMsg)
-
-        codepointCount += 1
-        if codepointCount <= codepointStorageLimit then codepointIndexes~append(-indexB) -- a negative index means "error"
-        if endCodepointStorageSize > 0 then endCodepointIndexes~append(-indexB)
-
-        graphemeCount += 1
-        if graphemeCount <= graphemeStorageLimit then graphemeIndexes~append(-indexB) -- a negative index means "error"
-        if graphemeCount == (graphemeStorageLimit + 1) then lastGraphemeSuccessorIndex = -indexB
-        if endGraphemeStorageSize > 0 then endGraphemeIndexes~append(-indexB)
-
-        graphemeBreakState = 0 -- reset the extended grapheme state
-        previousCodepoint = codepoint
-        indexB += abs(sizeB) -- skip the invalid bytes
-        signal forever
+    -- Convert the circular queues to arrays in Lifo order, ready for indexing from the end.
+    -- Illustration with codepoints:
+    --     index -1: indexer~codepointAtIndexC(indexer~codepointCount)          first codepoint from the end
+    --     index -2: indexer~codepointAtIndexC(indexer~codepointCount - 1)      second codepoint from the end
+    --     index -3: indexer~codepointAtIndexC(indexer~codepointCount - 2)      third codepoint from the end
+    --     etc.
+    if .nil \== endCodepointIndexes then endCodepointIndexes = endCodepointIndexes~makeArray("L")
+    if .nil \== endGraphemeIndexes then endGraphemeIndexes = endGraphemeIndexes~makeArray("L")
+    if .nil \== endErrors then endErrors = endErrors~makeArray("L")
+    return
 
 
 -- Converts a codepoint index to a byte index

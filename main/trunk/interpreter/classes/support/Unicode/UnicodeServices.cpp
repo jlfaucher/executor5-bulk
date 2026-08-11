@@ -201,26 +201,29 @@ ssize_t integer(RexxObject *obj, const char *errorMessage)
 /*                                                                            */
 /* UTF8Proc Extensions                                                        */
 /*                                                                            */
+/* utf8proc_iterate_extended                                                  */
+/* utf8proc_iterate_extended_backward                                         */
+/*                                                                            */
 /******************************************************************************/
 
 #define DECODE_ERROR_1(ident, arg1, ret) \
 { \
-    snprintf(errcode, errcodeSize, #ident); \
-    snprintf(errmsg, errmsgSize, ident##___MSG1, (arg1)); \
+    if (errcode != NULL) snprintf(errcode, errcodeSize, #ident); \
+    if (errmsg != NULL) snprintf(errmsg, errmsgSize, ident##___MSG1, (arg1)); \
     return ret; \
 }
 
 #define DECODE_ERROR_2(ident, arg1, arg2, ret) \
 { \
-    snprintf(errcode, errcodeSize, #ident); \
-    snprintf(errmsg, errmsgSize, ident##___MSG2, (arg1), (arg2)); \
+    if (errcode != NULL) snprintf(errcode, errcodeSize, #ident); \
+    if (errmsg != NULL) snprintf(errmsg, errmsgSize, ident##___MSG2, (arg1), (arg2)); \
     return ret; \
 }
 
 #define DECODE_ERROR_3(ident, arg1, arg2, arg3, ret) \
 { \
-    snprintf(errcode, errcodeSize, #ident); \
-    snprintf(errmsg, errmsgSize, ident##___MSG3, (arg1), (arg2), (arg3)); \
+    if (errcode != NULL) snprintf(errcode, errcodeSize, #ident); \
+    if (errmsg != NULL) snprintf(errmsg, errmsgSize, ident##___MSG3, (arg1), (arg2), (arg3)); \
     return ret; \
 }
 
@@ -242,6 +245,13 @@ ssize_t integer(RexxObject *obj, const char *errorMessage)
  * For accurate analysis, more detailed errors must be returned.
  * To correctly support "U+FFFD Substitution of Maximal Subparts", the number of bytes to be replaced by U+FFFD must be returned.
  *
+ * Reads a single codepoint from the UTF-8 sequence being pointed to by `str`.
+ * The maximum number of bytes read is `strlen`, unless `strlen` is
+ * negative (in which case up to 4 bytes are read).
+ *
+ * If a valid codepoint could be read, it is stored in the variable
+ * pointed to by `dst`, otherwise that variable will be set to -1.
+ *
  * Modifications:
  *
  * The returned value is always a number of bytes:
@@ -249,25 +259,28 @@ ssize_t integer(RexxObject *obj, const char *errorMessage)
  * - or the number of bytes to skip and replace by U+FFFD (< 0)
  *
  * New "index" argument for accurate error messages:
- * 1-based index in the Rexx string of the current codepoint (str = string + index - 1)
+ * 1-based index of the current codepoint in the Rexx string (str = string + index - 1).
+ * May be 0 if errmsg is NULL (in this case, index is not used).
  *
  * New "errcode" out-argument to return an error code.
+ * May be NULL if no error code is needed.
  *
  * New "errmsg" out-argument to return a detailed error message.
+ * May be NULL if no error message is needed.
  */
 #define utf_cont(ch)  (((ch) & 0xc0) == 0x80)
 utf8proc_ssize_t utf8proc_iterate_extended(
   const utf8proc_uint8_t *str, utf8proc_ssize_t strlen, utf8proc_int32_t *dst,
-  size_t index,
-  char errcode[], size_t errcodeSize,
-  char errmsg[], size_t errmsgSize
+  size_t index = 0,
+  char *errcode = NULL, size_t errcodeSize = 0,
+  char *errmsg = NULL, size_t errmsgSize = 0
 ) {
   utf8proc_int32_t uc;
   const utf8proc_uint8_t *end;
 
   *dst = -1;
-  *errcode = '\0';
-  *errmsg = '\0';
+  if (errcode != NULL) *errcode = '\0';
+  if (errmsg != NULL) *errmsg = '\0';
 
   if (!strlen) return 0;
 
@@ -360,8 +373,15 @@ utf8proc_ssize_t utf8proc_iterate_extended(
  *             utf8proc_iterate_extended the same trailing context a forward pass
  *             would have had, so TRUNCATED vs CONTINUATION-type errors are reported
  *             identically to forward decoding. Equal to str_end on the first call.
- * end_index   1-based Rexx-string index str_end would have if it addressed an actual
- *             byte (one more than the 1-based index of str_end[-1]).
+ * dst         If a valid codepoint could be read, it is stored in the variable
+ *             pointed to by `dst`, otherwise that variable will be set to -1.
+ * end_index   1-based index of str_end for accurate error messages
+ *             (str_end = str_start + end_index - 1).
+ *             May be 0 if errmsg is NULL (in this case, end_index is not used).
+ * errcode     out-argument to return an error code.
+ *             May be NULL if no error code is needed.
+ * errmsg      out-argument to return a detailed error message.
+ *             May be NULL if no error message is needed.
  *
  * Precondition: str_end must be a genuine subpart boundary as produced by a real
  * forward pass over [str_start, buffer_end) — e.g. buffer_end itself, or a value
@@ -376,9 +396,9 @@ utf8proc_ssize_t utf8proc_iterate_extended_backward(
   const utf8proc_uint8_t *str_end,
   const utf8proc_uint8_t *buffer_end,
   utf8proc_int32_t *dst,
-  size_t end_index,
-  char errcode[], size_t errcodeSize,
-  char errmsg[], size_t errmsgSize
+  size_t end_index = 0,
+  char *errcode = NULL, size_t errcodeSize = 0,
+  char *errmsg = NULL, size_t errmsgSize = 0
 ) {
   const utf8proc_uint8_t *anchor;
   int back;
@@ -386,8 +406,8 @@ utf8proc_ssize_t utf8proc_iterate_extended_backward(
   size_t anchor_index;
 
   *dst = -1;
-  *errcode = '\0';
-  *errmsg = '\0';
+  if (errcode != NULL) *errcode = '\0';
+  if (errmsg != NULL) *errmsg = '\0';
 
   if (str_end <= str_start) return 0;
 
@@ -408,7 +428,7 @@ utf8proc_ssize_t utf8proc_iterate_extended_backward(
   /* Decode from anchor with the REAL remaining buffer, not just up to str_end,
    * so any TRUNCATED/CONTINUATION-type message matches what a forward pass
    * over the whole buffer would have produced at this position. */
-  anchor_index = end_index - (size_t)(str_end - anchor);
+  anchor_index = (end_index == 0) ? end_index : end_index - (size_t)(str_end - anchor);
   result = utf8proc_iterate_extended(anchor, buffer_end - anchor, dst,
                                       anchor_index, errcode, errcodeSize,
                                       errmsg, errmsgSize);
@@ -428,12 +448,346 @@ utf8proc_ssize_t utf8proc_iterate_extended_backward(
    * lookahead, since it always fails the uc < 0xc2 check immediately).
    */
   anchor = str_end - 1;
-  anchor_index = end_index - 1;
+  anchor_index = (end_index == 0) ? end_index : end_index - 1;
   result = utf8proc_iterate_extended(anchor, buffer_end - anchor, dst,
                                       anchor_index, errcode, errcodeSize,
                                       errmsg, errmsgSize);
 
   return result;
+}
+
+
+/******************************************************************************/
+/*                                                                            */
+/* UTF8Proc Extensions                                                        */
+/*                                                                            */
+/* utf8proc_grapheme_break_backward                                           */
+/*                                                                            */
+/******************************************************************************/
+
+/*
+Position convention:
+
+A "pos" pointer denotes a *boundary* in the buffer, not a codepoint itself.
+utf8proc_iterate_extended_backward(str_start, pos, ...) decodes whatever
+codepoint's bytes lie immediately before that boundary.
+pos == str_start means "nothing precedes here".
+
+In utf8proc_grapheme_break_backward(str_start, buffer_end, pos1, codepoint1,
+codepoint2), `pos1` is the address of codepoint1's first byte -- the
+boundary at codepoint1's left edge. Passing pos1 to
+utf8proc_iterate_extended_backward decodes whatever codepoint immediately
+precedes codepoint1, which is exactly the starting point the lookback
+helpers (GB9c, GB11, GB12/13) need to walk further left past codepoint1.
+*/
+
+/*
+UAX #29, Unicode Text Segmentation
+https://www.unicode.org/reports/tr29/
+https://www.unicode.org/reports/tr29/#Random_Access
+
+Iterates backward from a KNOWN boundary (default: one past the end of the
+string, i.e. the whole string's right edge). This is deliberately not a
+random-access primitive -- per UAX #29 6.4, starting from an arbitrary,
+unverified offset would require a separate "safe point" search. Starting
+from a genuine boundary avoids that; what remains is the residual cost
+described below.
+
+Rules GB3, GB6-GB9b are simple, direction-symmetric pairwise lookups: no
+lookback needed, forward or backward. Three rules are not:
+  GB9c  (Indic conjunct clusters)
+  GB11  (emoji ZWJ sequences)
+  GB12/13 (regional indicator / flag sequences)
+These are left-anchored: correctly resolving them going backward requires
+rescanning the run of Extend/Linker/RI scalars each time one is
+encountered, since (unlike forward iteration) there's no running "parity"
+or "seen a linker" state carried over from a previous step to reuse. This
+is not an implementation gap on our part -- Swift's stdlib has the exact
+same property and documents it as accepted, non-quadratic-in-practice
+behavior (see StringGraphemeBreaking.swift, _previousGraphemeClusterBoundary).
+https://github.com/swiftlang/swift/blob/main/stdlib/public/core/StringGraphemeBreaking.swift
+*/
+
+/*
+RI is genuinely quadratic — here's why
+
+precedingRIRunLengthIsOdd triggers on every internal pair of a homogeneous RI run,
+because its trigger condition is "both sides are the same class" (prop1==RI && prop2==RI).
+In a run of N consecutive RI codepoints, essentially every adjacent pair re-fires the check,
+and each firing rescans the whole preceding RI stretch from scratch.
+That's O(N) calls × O(N) average scan = O(N²).
+
+Repeat unit: a single Regional Indicator Symbol Letter,
+e.g. 🇦 = U+1F1E6 (UTF-8: F0 9F 87 A6). Just repeat it:
+🇦🇦🇦🇦🇦...🇦        (N copies of U+1F1E6)
+This isn't a sequence of valid flag pairs semantically — it doesn't matter,
+GB12/13 only cares about the boundclass RI, not validity as a country code.
+*/
+
+/*
+GB9c and GB11 are not actually quadratic
+
+isConsonantThroughLinkerRun and isPictographicBeforeZwj trigger on an asymmetric transition
+— "arriving at a Consonant" / "arriving at a Pictograph" — not on two sides matching.
+Critically, hitting any Consonant (or Pictograph) during the backward scan halts it unconditionally,
+regardless of whether the rule's specific condition (a Linker in between, etc.) is satisfied.
+That means: for consonants c₁ < c₂ < ... < cₖ in the string, the scan triggered by cᵢ
+can never run past cᵢ₋₁ — it stops there. Since each pair is tested exactly once
+during a full traversal, these per-consonant scan intervals are disjoint and telescope
+to O(n) total, no matter how the consonants are spaced.
+Same argument for pictographs and GB11.
+
+So a single call can still be O(run length) — worth demonstrating for perf-testing
+one grapheme decode's worst case — but it can't accumulate to O(n²) over a full
+string traversal the way RI does.
+
+GB9c single-call example: a long run of ZWJ (boundclass ZWJ, InCB=None — satisfies
+isInCBExtendOrLinker) with no Consonant anywhere in it, terminated by one Consonant:
+U+200D repeated N times, then U+0915 (क, DEVANAGARI LETTER KA)
+UTF-8: E2 80 8D × N, then E0 A4 95.
+The single pair (last ZWJ, KA) triggers one O(N) scan that runs all the way to
+string start without finding a Consonant, then returns "break allowed."
+
+GB11 single-call example: a long run of a plain combining mark (Extend, not pictographic)
+with no pictograph in it, then a ZWJ, then a pictograph:
+U+0301 (combining acute accent) repeated N times, then U+200D, then U+1F600 (😀)
+UTF-8: CC 81 × N, then E2 80 8D, then F0 9F 98 80.
+If you want to see the "each call bounded, still linear overall" behavior rather
+than one big call, chain several ZWJ^k + Consonant (or Extend^k + ZWJ + Pictograph)
+blocks back to back — each block's scan is bounded by k and stops at the previous
+block's terminator, so M blocks of length k cost O(M·k) = O(n), not O(n²).
+*/
+
+
+/**
+ * isInCBExtendOrLinker
+ *
+ * true if codepoint is InCB=Extend or InCB=Linker (i.e. Extend/ZWJ but
+ * not itself a Consonant or Linker) -- same derivation Swift uses for
+ * _isInCBExtend.
+ */
+static utf8proc_bool isInCBExtendOrLinker(utf8proc_int32_t codepoint)
+{
+    const utf8proc_property_t *p = utf8proc_get_property(codepoint);
+
+    if (p->indic_conjunct_break == UTF8PROC_INDIC_CONJUNCT_BREAK_LINKER)
+        return true;
+
+    if (p->boundclass != UTF8PROC_BOUNDCLASS_EXTEND &&
+        p->boundclass != UTF8PROC_BOUNDCLASS_ZWJ)
+        return false;
+
+    return p->indic_conjunct_break != UTF8PROC_INDIC_CONJUNCT_BREAK_CONSONANT;
+}
+
+
+/**
+ * isPictographicBeforeZwj
+ *
+ * GB11 lookback: walk left from the ZWJ (whose left boundary starts at
+ * zwjStartPos) over an Extend* run to see whether an
+ * Extended_Pictographic codepoint started it.
+ */
+static utf8proc_bool isPictographicBeforeZwj(
+    const utf8proc_uint8_t *str_start,
+    const utf8proc_uint8_t *zwjStartPos,
+    const utf8proc_uint8_t *buffer_end)
+{
+    const utf8proc_uint8_t *pos = zwjStartPos;
+
+    for (;;) {
+        if (pos <= str_start) return false;
+
+        utf8proc_int32_t cp;
+        utf8proc_ssize_t sizeB = utf8proc_iterate_extended_backward(str_start, pos, buffer_end, &cp);
+        if (sizeB < 0) return false; /* an error boundary can't be pictographic */
+
+        const utf8proc_property_t *p = utf8proc_get_property(cp);
+
+        if (p->boundclass == UTF8PROC_BOUNDCLASS_EXTENDED_PICTOGRAPHIC ||
+            p->boundclass == UTF8PROC_BOUNDCLASS_E_ZWG)
+            return true;
+
+        if (p->boundclass != UTF8PROC_BOUNDCLASS_EXTEND)
+            return false; /* run ended without finding one */
+
+        pos -= sizeB;
+    }
+}
+
+
+/**
+ * isConsonantThroughLinkerRun
+ *
+ * GB9c lookback: walk left from the Extend/Linker run looking for an
+ * InCB=Consonant, requiring at least one InCB=Linker en route.
+ * `firstCodepoint` is codepoint1 itself (already confirmed
+ * Extend/Linker by the caller) and must be checked for Linker-ness
+ * too -- it's part of the run, not something to skip past before
+ * scanning starts.
+ */
+static utf8proc_bool isConsonantThroughLinkerRun(
+    const utf8proc_uint8_t *str_start,
+    utf8proc_int32_t firstCodepoint,
+    const utf8proc_uint8_t *runEndPos,
+    const utf8proc_uint8_t *buffer_end)
+{
+    const utf8proc_property_t *pFirst = utf8proc_get_property(firstCodepoint);
+    utf8proc_bool seenLinker = (pFirst->indic_conjunct_break == UTF8PROC_INDIC_CONJUNCT_BREAK_LINKER);
+
+    const utf8proc_uint8_t *pos = runEndPos;
+
+    for (;;) {
+        if (pos <= str_start) return false;
+
+        utf8proc_int32_t cp;
+        utf8proc_ssize_t sizeB = utf8proc_iterate_extended_backward(str_start, pos, buffer_end, &cp);
+        if (sizeB < 0) return false;
+
+        const utf8proc_property_t *p = utf8proc_get_property(cp);
+
+        if (p->indic_conjunct_break == UTF8PROC_INDIC_CONJUNCT_BREAK_CONSONANT)
+            return seenLinker;
+
+        if (p->indic_conjunct_break == UTF8PROC_INDIC_CONJUNCT_BREAK_LINKER)
+            seenLinker = true;
+        else if (!isInCBExtendOrLinker(cp))
+            return false; /* run ended, no consonant */
+
+        pos -= sizeB;
+    }
+}
+
+
+/**
+ * precedingRIRunLengthIsOdd
+ *
+ * GB12/13 lookback: count the contiguous run of Regional_Indicator
+ * scalars ending at (and including) the scalar whose left edge is
+ * riStartPos. No-break holds iff that count is odd.
+ *
+ * This is O(run length) rather than O(1), so a string that's
+ * pathologically almost-all REGIONAL_INDICATOR scalars would make
+ * backward iteration quadratic over that stretch.
+ */
+static utf8proc_bool precedingRIRunLengthIsOdd(
+    const utf8proc_uint8_t *str_start,
+    const utf8proc_uint8_t *riStartPos,
+    const utf8proc_uint8_t *buffer_end)
+{
+    const utf8proc_uint8_t *pos = riStartPos;
+    int count = 0;
+
+    for (;;) {
+        if (pos <= str_start) break;
+
+        utf8proc_int32_t cp;
+        utf8proc_ssize_t sizeB = utf8proc_iterate_extended_backward(str_start, pos, buffer_end, &cp);
+        if (sizeB < 0) break; /* error */
+
+        const utf8proc_property_t *p = utf8proc_get_property(cp);
+        if (p->boundclass != UTF8PROC_BOUNDCLASS_REGIONAL_INDICATOR)
+            break; /* run ends here */
+
+        count += 1;
+        pos -= sizeB;
+    }
+
+    return (count % 2) == 1;
+}
+
+
+/**
+ * utf8proc_grapheme_break_backward
+ *
+ * Direct-from-table pairwise rules (GB3, GB6-GB9b), plus dispatch to
+ * the three lookback-requiring rules (GB9c, GB11, GB12/13). Order
+ * matches rule precedence in UAX #29 3.1.1: first match wins.
+ *
+ *   str_start   lower bound of the whole buffer.
+ *   buffer_end  one past the last byte of the whole buffer.
+ *   pos1        the address of codepoint1's first byte (its left edge).
+ *               Passing this to utf8proc_iterate_extended_backward decodes
+ *               whatever codepoint immediately precedes codepoint1.
+ *   codepoint1  the codepoint to the left of the candidate break.
+ *   codepoint2  the codepoint to the right of the candidate break.
+ */
+utf8proc_bool utf8proc_grapheme_break_backward(
+    const utf8proc_uint8_t *str_start,
+    const utf8proc_uint8_t *buffer_end,
+    const utf8proc_uint8_t *pos1,
+    utf8proc_int32_t codepoint1,
+    utf8proc_int32_t codepoint2)
+{
+    const utf8proc_property_t *p1 = utf8proc_get_property(codepoint1);
+    const utf8proc_property_t *p2 = utf8proc_get_property(codepoint2);
+    int prop1 = p1->boundclass;
+    int prop2 = p2->boundclass;
+
+    /* GB3: do not break CR x LF */
+    if (prop1 == UTF8PROC_BOUNDCLASS_CR && prop2 == UTF8PROC_BOUNDCLASS_LF)
+        return false;
+
+    /* GB4: break after Control | CR | LF */
+    if (prop1 == UTF8PROC_BOUNDCLASS_CONTROL ||
+        prop1 == UTF8PROC_BOUNDCLASS_CR ||
+        prop1 == UTF8PROC_BOUNDCLASS_LF)
+        return true;
+
+    /* GB5: break before Control | CR | LF */
+    if (prop2 == UTF8PROC_BOUNDCLASS_CONTROL ||
+        prop2 == UTF8PROC_BOUNDCLASS_CR ||
+        prop2 == UTF8PROC_BOUNDCLASS_LF)
+        return true;
+
+    /* GB6/7/8: do not break within Hangul syllable sequences */
+    if (prop1 == UTF8PROC_BOUNDCLASS_L &&
+        (prop2 == UTF8PROC_BOUNDCLASS_L || prop2 == UTF8PROC_BOUNDCLASS_V ||
+         prop2 == UTF8PROC_BOUNDCLASS_LV || prop2 == UTF8PROC_BOUNDCLASS_LVT))
+        return false;
+
+    if ((prop1 == UTF8PROC_BOUNDCLASS_LV || prop1 == UTF8PROC_BOUNDCLASS_V) &&
+        (prop2 == UTF8PROC_BOUNDCLASS_V || prop2 == UTF8PROC_BOUNDCLASS_T))
+        return false;
+
+    if ((prop1 == UTF8PROC_BOUNDCLASS_LVT || prop1 == UTF8PROC_BOUNDCLASS_T) &&
+        prop2 == UTF8PROC_BOUNDCLASS_T)
+        return false;
+
+    /* GB9: do not break before Extend | ZWJ */
+    if (prop2 == UTF8PROC_BOUNDCLASS_EXTEND || prop2 == UTF8PROC_BOUNDCLASS_ZWJ)
+        return false;
+
+    /* GB9a: do not break before SpacingMark */
+    if (prop2 == UTF8PROC_BOUNDCLASS_SPACINGMARK)
+        return false;
+
+    /* GB9b: do not break after Prepend */
+    if (prop1 == UTF8PROC_BOUNDCLASS_PREPEND)
+        return false;
+
+    /* GB11: Extended_Pictographic Extend* ZWJ x Extended_Pictographic */
+    if (prop1 == UTF8PROC_BOUNDCLASS_ZWJ &&
+        (prop2 == UTF8PROC_BOUNDCLASS_EXTENDED_PICTOGRAPHIC ||
+         prop2 == UTF8PROC_BOUNDCLASS_E_ZWG)) {
+        return !isPictographicBeforeZwj(str_start, pos1, buffer_end);
+    }
+
+    /* GB9c: InCB=Consonant [Extend|Linker]* Linker [Extend|Linker]* x InCB=Consonant */
+    if (p2->indic_conjunct_break == UTF8PROC_INDIC_CONJUNCT_BREAK_CONSONANT &&
+        (prop1 == UTF8PROC_BOUNDCLASS_EXTEND || prop1 == UTF8PROC_BOUNDCLASS_ZWJ) &&
+        isInCBExtendOrLinker(codepoint1)) {
+        return !isConsonantThroughLinkerRun(str_start, codepoint1, pos1, buffer_end);
+    }
+
+    /* GB12/13: do not break within RI RI if an odd number of RI precede the break */
+    if (prop1 == UTF8PROC_BOUNDCLASS_REGIONAL_INDICATOR &&
+        prop2 == UTF8PROC_BOUNDCLASS_REGIONAL_INDICATOR) {
+        return precedingRIRunLengthIsOdd(str_start, pos1, buffer_end);
+    }
+
+    /* GB999: otherwise, break */
+    return true;
 }
 
 
@@ -686,9 +1040,9 @@ MutableBuffer *RexxUnicodeServicesClass::utf8EncodeCodepoint(RexxInteger *rexxCo
  * permitted between them.
  *
  * @param array An array of 3 items:
- *     codepoint1 [IN]     The first codepoint.
- *     codepoint2 [IN]     The second codepoint.
- *     state      [IN OUT] Initial value must be 0.
+ *     codepoint1 (in)     The first codepoint.
+ *     codepoint2 (in)     The second codepoint.
+ *     state      (in-out) Initial value must be 0.
  *
  * @return .true if a grapheme break is permitted, .false otherwise.
  */
@@ -711,9 +1065,9 @@ RexxInteger *RexxUnicodeServicesClass::graphemeBreak(ArrayClass *array)
  * Given a pair of consecutive codepoints, return whether a grapheme break is
  * permitted between them.
  *
- * @param codepoint1 [IN]     The first codepoint.
- * @param codepoint2 [IN]     The second codepoint.
- * @param refState   [IN OUT] Initial value must be 0.
+ * @param codepoint1 (in)     The first codepoint.
+ * @param codepoint2 (in)     The second codepoint.
+ * @param refState   (in-out) Initial value must be 0.
  *
  * @return .true if a grapheme break is permitted, .false otherwise.
  */
@@ -736,6 +1090,54 @@ RexxInteger *RexxUnicodeServicesClass::graphemeBreak3(RexxInteger *rexxCodepoint
 }
 
 
+/**
+ * graphemeBreakBackward — backward counterpart to graphemeBreak3.
+ *
+ * Given a pair of consecutive codepoints, return whether a grapheme break
+ * is permitted between them when processing the pair backward.
+ *
+ * @param string     (in)       A UTF-8 string.
+ * @param indexB     (in)       The byte index (1-based) of codepoint1.
+ * @param codepoint1 (in)       The first codepoint.
+ * @param codepoint2 (in)       The second codepoint, immediatly following codepoint1 in forward order.
+ *
+ * @return .true if a grapheme break is permitted, .false otherwise.
+ */
+RexxInteger *RexxUnicodeServicesClass::graphemeBreakBackward(RexxString *string, RexxInteger *indexB, RexxInteger *rexxCodepoint1, RexxInteger *rexxCodepoint2)
+{
+    // Check arguments
+
+    requiredArgument(string, "string");
+    if (string->classObject() != TheStringClass)
+    {
+        Protected<RexxString> errmsg = new_string("Argument string class: expected String, found ");
+        errmsg = errmsg->concat(string->classObject()->getId());
+        reportException(Error_Invalid_argument_user_defined, errmsg);
+    }
+
+    size_t index = positionArgument(indexB, "indexB"); // 1-based; boundary, not a byte offset
+    // Since we have already decoded 2 codepoints, index cannot be length+1 or length or length-1
+    // I think the test should be (index > string->getLength() - 2) but an additional test should be made: (string->getLength() > 2)
+    // For the moment, I keep the test (index > string->getLength() + 1)
+    if (index > string->getLength() + 1) reportException(Error_Incorrect_method_position, index); // length+1 is accepted, but not beyond
+
+    requiredArgument(rexxCodepoint1, "codepoint1");
+    utf8proc_int32_t codepoint1 = (utf8proc_int32_t)integer(rexxCodepoint1, "codepoint1 must be an integer");
+
+    requiredArgument(rexxCodepoint2, "codepoint2");
+    utf8proc_int32_t codepoint2 = (utf8proc_int32_t)integer(rexxCodepoint2, "codepoint2 must be an integer");
+
+    const utf8proc_uint8_t *str = (const utf8proc_uint8_t *) string->getStringData();
+    const utf8proc_uint8_t *str_start  = str;
+    const utf8proc_uint8_t *buffer_end = str + string->getLength();
+    const utf8proc_uint8_t *str_end    = str + (index - 1); // 0-based boundary
+
+    utf8proc_bool graphemeBreak = utf8proc_grapheme_break_backward(str_start, buffer_end, str_end, codepoint1, codepoint2);
+
+    return graphemeBreak ? TheTrueObject : TheFalseObject;
+}
+
+
 /*
 utf8proc property field not exposed, internal use:
     utf8proc_uint16_t decomp_seqindex;
@@ -744,7 +1146,6 @@ utf8proc property field not exposed, internal use:
     utf8proc_uint16_t lowercase_seqindex;
     utf8proc_uint16_t titlecase_seqindex;
     utf8proc_uint16_t comb_index;
-    unsigned bidi_mirrored:1;
     unsigned comp_exclusion:1;
 */
 

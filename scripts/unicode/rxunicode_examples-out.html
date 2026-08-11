@@ -42,8 +42,8 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
-</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 5 Aug 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: Se98aQbc4826040
+</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 8 Aug 2026
+</span><span style="font-weight:bold;color:green;">Input queue name: S71f0Qbc48249c0
 </span>
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">Examples in rxunicode.md
@@ -196,6 +196,190 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~gra
  1
 ooRexx&gt; <span style="font-weight:bold;color:purple;">state=                                                  </span><span style="font-weight:bold;color:blue;">-- 1</span>
  1
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~graphemeBreakBackward
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;noël👩‍👨‍👩‍👧🎅&quot;</span>
+
+<span style="font-weight:bold;color:blue;">-- A reverse codepoint supplier does not depend on `graphemeBreakBackward`
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseCodepointSupplier~new(string, &quot;b&quot;, .RexxUnicodeCharacter)==</span>
+a RexxUnicodeReverseCodepointSupplier 
+ 31 : (&quot;🎅&quot; \x{F09F8E85} U+1F385 So Other_Symbol &quot;FATHER CHRISTMAS&quot;)
+ 27 : (&quot;👧&quot; \x{F09F91A7} U+1F467 So Other_Symbol &quot;GIRL&quot;)
+ 24 : (&lt;?&gt; \x{E2808D} U+200D Cf Format &quot;ZERO WIDTH JOINER&quot;)
+ 20 : (&quot;👩&quot; \x{F09F91A9} U+1F469 So Other_Symbol &quot;WOMAN&quot;)
+ 17 : (&lt;?&gt; \x{E2808D} U+200D Cf Format &quot;ZERO WIDTH JOINER&quot;)
+ 13 : (&quot;👨&quot; \x{F09F91A8} U+1F468 So Other_Symbol &quot;MAN&quot;)
+ 10 : (&lt;?&gt; \x{E2808D} U+200D Cf Format &quot;ZERO WIDTH JOINER&quot;)
+ 6  : (&quot;👩&quot; \x{F09F91A9} U+1F469 So Other_Symbol &quot;WOMAN&quot;)
+ 5  : (&quot;l&quot; \x6C U+006C Ll Lowercase_Letter &quot;LATIN SMALL LETTER L&quot;)
+ 3  : (&quot;ë&quot; \x{C3AB} U+00EB Ll Lowercase_Letter &quot;LATIN SMALL LETTER E WITH DIAERESIS&quot;)
+ 2  : (&quot;o&quot; \x6F U+006F Ll Lowercase_Letter &quot;LATIN SMALL LETTER O&quot;)
+ 1  : (&quot;n&quot; \x6E U+006E Ll Lowercase_Letter &quot;LATIN SMALL LETTER N&quot;)
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     31 : (&quot;🎅&quot; \x{F09F8E85} U+1F385 So Other_Symbol &quot;FATHER CHRISTMAS&quot;)
+</span><span style="font-weight:bold;color:blue;">     27 : (&quot;👧&quot; \x{F09F91A7} U+1F467 So Other_Symbol &quot;GIRL&quot;)
+</span><span style="font-weight:bold;color:blue;">     24 : (&lt;?&gt; \x{E2808D} U+200D Cf Format &quot;ZERO WIDTH JOINER&quot;)
+</span><span style="font-weight:bold;color:blue;">     20 : (&quot;👩&quot; \x{F09F91A9} U+1F469 So Other_Symbol &quot;WOMAN&quot;)
+</span><span style="font-weight:bold;color:blue;">     17 : (&lt;?&gt; \x{E2808D} U+200D Cf Format &quot;ZERO WIDTH JOINER&quot;)
+</span><span style="font-weight:bold;color:blue;">     13 : (&quot;👨&quot; \x{F09F91A8} U+1F468 So Other_Symbol &quot;MAN&quot;)
+</span><span style="font-weight:bold;color:blue;">     10 : (&lt;?&gt; \x{E2808D} U+200D Cf Format &quot;ZERO WIDTH JOINER&quot;)
+</span><span style="font-weight:bold;color:blue;">     6  : (&quot;👩&quot; \x{F09F91A9} U+1F469 So Other_Symbol &quot;WOMAN&quot;)
+</span><span style="font-weight:bold;color:blue;">     5  : (&quot;l&quot; \x6C U+006C Ll Lowercase_Letter &quot;LATIN SMALL LETTER L&quot;)
+</span><span style="font-weight:bold;color:blue;">     3  : (&quot;ë&quot; \x{C3AB} U+00EB Ll Lowercase_Letter &quot;LATIN SMALL LETTER E WITH DIAERESIS&quot;)
+</span><span style="font-weight:bold;color:blue;">     2  : (&quot;o&quot; \x6F U+006F Ll Lowercase_Letter &quot;LATIN SMALL LETTER O&quot;)
+</span><span style="font-weight:bold;color:blue;">     1  : (&quot;n&quot; \x6E U+006E Ll Lowercase_Letter &quot;LATIN SMALL LETTER N&quot;)
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- A reverse grapheme supplier depends on `graphemeBreakBackward`
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeReverseGraphemeSupplier~new(string, &quot;b&quot;, &quot;\&quot;)==</span>
+a RexxUnicodeReverseGraphemeSupplier 
+ 31 : '🎅'
+ 6  : '👩\u200D👨\u200D👩\u200D👧'
+ 5  : 'l'
+ 3  : 'ë'
+ 2  : 'o'
+ 1  : 'n'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeReverseGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">     31 : '🎅'
+</span><span style="font-weight:bold;color:blue;">     6  : '👩\u200D👨\u200D👩\u200D👧'
+</span><span style="font-weight:bold;color:blue;">     5  : 'l'
+</span><span style="font-weight:bold;color:blue;">     3  : 'ë'
+</span><span style="font-weight:bold;color:blue;">     2  : 'o'
+</span><span style="font-weight:bold;color:blue;">     1  : 'n'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Step by step procedure
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexB = string~length + 1; indexB=                                                     </span><span style="font-weight:bold;color:blue;">-- 35</span>
+ 35
+ooRexx&gt; <span style="font-weight:bold;color:purple;">codepoint2 = .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, &gt;size)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">codepoint2~d2x=; size=                                                                  </span><span style="font-weight:bold;color:blue;">-- '1F385'; 4</span>
+'1F385'
+ 4
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexB -= abs(size); indexB=                                                            </span><span style="font-weight:bold;color:blue;">-- 31</span>
+ 31
+ooRexx&gt; <span style="font-weight:bold;color:purple;">codepoint1 = .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, &gt;size)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">codepoint1~d2x=; size=                                                                  </span><span style="font-weight:bold;color:blue;">-- '1F467'; 4</span>
+'1F467'
+ 4
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexB -= abs(size); indexB=                                                            </span><span style="font-weight:bold;color:blue;">-- 27</span>
+ 27
+<span style="font-weight:bold;color:blue;">-- There is a grapheme break between '👧' and '🎅'
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~graphemeBreakBackward(string, indexB, codepoint1, codepoint2)=     </span><span style="font-weight:bold;color:blue;">-- 1</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">codepoint2 = codepoint1</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">codepoint1 = .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, &gt;size)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">codepoint1~d2x=; size=                                                                  </span><span style="font-weight:bold;color:blue;">-- '200D'; 3</span>
+'200D'
+ 3
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexB -= abs(size); indexB=                                                            </span><span style="font-weight:bold;color:blue;">-- 24</span>
+ 24
+<span style="font-weight:bold;color:blue;">-- There is no grapheme break between '\u200D' and '👧'
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~graphemeBreakBackward(string, indexB, codepoint1, codepoint2)=     </span><span style="font-weight:bold;color:blue;">-- 0</span>
+ 0
+
+
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">The reverse grapheme supplier is quadratic when RI.
+</span><span style="font-weight:bold;color:blue;">Repeat the Regional Indicator Symbol Letter, e.g. 🇦 = `U+1F1E6`:
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">🇦🇦🇦🇦🇦...🇦        (`N` copies of `U+1F1E6`)
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Durations on Macbook Pro M1 32GB, non-native suppliers, non-native indexers
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">RI_A = .RexxUnicode~U2C(&quot;U+1F1E6&quot;)</span>
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(RI_A~copies(100))=      </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 50 graphemes, 100 codepoints, 400 bytes, 0 error)'</span>
+'(not-ASCII, 50 graphemes, 100 codepoints, 400 bytes, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(RI_A~copies(100000))=   </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 50000 graphemes, 100000 codepoints, 400000 bytes, 0 error)'</span>
+'(not-ASCII, 50000 graphemes, 100000 codepoints, 400000 bytes, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(&quot;A&quot;~copies(100000))=    </span><span style="font-weight:bold;color:blue;">-- '(ASCII, 100000 graphemes, 100000 codepoints, 100000 bytes, 0 error)'</span>
+'(ASCII, 100000 graphemes, 100000 codepoints, 100000 bytes, 0 error)'
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(100)); do while s~available; s~next; end      </span><span style="font-weight:bold;color:blue;">-- Duration: 0.001217</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(1000)); do while s~available; s~next; end     </span><span style="font-weight:bold;color:blue;">-- Duration: 0.026591</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(10000)); do while s~available; s~next; end    </span><span style="font-weight:bold;color:blue;">-- Duration: 0.312036</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(20000)); do while s~available; s~next; end    </span><span style="font-weight:bold;color:blue;">-- Duration: 1.20119</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(30000)); do while s~available; s~next; end    </span><span style="font-weight:bold;color:blue;">-- Duration: 2.629657</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(40000)); do while s~available; s~next; end    </span><span style="font-weight:bold;color:blue;">-- Duration: 4.611944</span>
+<span style="font-weight:bold;color:blue;">-- too long: s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(100000)); do while s~available; s~next; end   -- Duration: 28.448092
+</span>
+<span style="font-weight:bold;color:blue;">-- The forward grapheme supplier is not quadratic
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeGraphemeSupplier~new(RI_A~copies(100000)); do while s~available; s~next; end          </span><span style="font-weight:bold;color:blue;">-- Duration: 0.257308</span>
+
+<span style="font-weight:bold;color:blue;">-- The reverse grapheme supplier is not quadratic when no RI
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(&quot;A&quot;~copies(100000)); do while s~available; s~next; end    </span><span style="font-weight:bold;color:blue;">-- Duration: 0.395018</span>
+
+
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">`GB9c` single-call example: a long run of `ZWJ` (boundclass `ZWJ`, `InCB=None`
+</span><span style="font-weight:bold;color:blue;">with no Consonant anywhere in it, terminated by one Consonant:
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">`U+200D` repeated `N` times, then `U+0915` (क, DEVANAGARI LETTER KA).
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Durations on Macbook Pro M1 32GB, non-native suppliers, non-native indexers
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">ZWJ = .RexxUnicode~U2C(&quot;U+200D&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">KA = .RexxUnicode~U2C(&quot;U+0915&quot;)</span>
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(ZWJ~copies(100) || KA)=         </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 2 graphemes, 101 codepoints, 303 bytes, 0 error)'                       Duration: 0.001262</span>
+'(not-ASCII, 2 graphemes, 101 codepoints, 303 bytes, 0 error)'
+<span style="font-weight:bold;color:blue;">-- too long: .RexxUnicode~stringInfo(ZWJ~copies(100000000) || KA)=   -- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'           Duration: 45.556058
+</span><span style="font-weight:bold;color:blue;">-- too long: .RexxUnicode~stringInfo(&quot;A&quot;~copies(100000000) || KA)=   -- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'   Duration: 53.451210
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(100) || KA); do while s~available; s~next; end         </span><span style="font-weight:bold;color:blue;">-- Duration: 0.000577</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(1000) || KA); do while s~available; s~next; end        </span><span style="font-weight:bold;color:blue;">-- Duration: 0.001165</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(10000) || KA); do while s~available; s~next; end       </span><span style="font-weight:bold;color:blue;">-- Duration: 0.016968</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(1000000) || KA); do while s~available; s~next; end     </span><span style="font-weight:bold;color:blue;">-- Duration: 0.395289</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(10000000) || KA); do while s~available; s~next; end    </span><span style="font-weight:bold;color:blue;">-- Duration: 3.669910</span>
+<span style="font-weight:bold;color:blue;">-- too long: s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(100000000) || KA); do while s~available; s~next; end   -- Duration: 36.272723
+</span>
+<span style="font-weight:bold;color:blue;">-- The forward grapheme supplier is not faster
+</span><span style="font-weight:bold;color:blue;">-- too long: s=.RexxUnicodeGraphemeSupplier~new(ZWJ~copies(100000000) || KA); do while s~available; s~next; end           -- Duration: 38.077146
+</span>
+<span style="font-weight:bold;color:blue;">-- The reverse grapheme supplier is much slower when GB9c is not applicable (100000001 graphemes instead of 2)
+</span><span style="font-weight:bold;color:blue;">-- too long: s=.RexxUnicodeReverseGraphemeSupplier~new(&quot;A&quot;~copies(100000000) || KA); do while s~available; s~next; end    -- Duration: 395.163515
+</span>
+
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">`GB11` single-call example: a long run of a plain combining mark (Extend, not pictographic)
+</span><span style="font-weight:bold;color:blue;">with no pictograph in it, then a `ZWJ`, then a pictograph:
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">`U+0301` (combining acute accent) repeated `N` times, then `U+200D`, then `U+1F600` (😀)
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Durations on Macbook Pro M1 32GB, non-native suppliers, non-native indexers
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">acute = .RexxUnicode~U2C(&quot;U+0301&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">ZWJ = .RexxUnicode~U2C(&quot;U+200D&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">grin = .RexxUnicode~U2C(&quot;U+1F600&quot;)</span>
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(acute~copies(100) || ZWJ || grin)=          </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 2 graphemes, 102 codepoints, 207 bytes, 0 error)'                       Duration: 0.000829</span>
+'(not-ASCII, 2 graphemes, 102 codepoints, 207 bytes, 0 error)'
+<span style="font-weight:bold;color:blue;">-- too long: .RexxUnicode~stringInfo(acute~copies(100000000) || ZWJ || grin)=    -- '(not-ASCII, 2 graphemes, 100000002 codepoints, 200000007 bytes, 0 error)'           Duration: 44.753312
+</span><span style="font-weight:bold;color:blue;">-- too long: .RexxUnicode~stringInfo(&quot;A&quot;~copies(100000000) || ZWJ || grin)=      -- '(not-ASCII, 100000001 graphemes, 100000002 codepoints, 100000007 bytes, 0 error)'   Duration: 53.045773
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100) || ZWJ || grin); do while s~available; s~next; end          </span><span style="font-weight:bold;color:blue;">-- Duration: 0.001653</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(1000) || ZWJ || grin); do while s~available; s~next; end         </span><span style="font-weight:bold;color:blue;">-- Duration: 0.001594</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(10000) || ZWJ || grin); do while s~available; s~next; end        </span><span style="font-weight:bold;color:blue;">-- Duration: 0.006053</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100000) || ZWJ || grin); do while s~available; s~next; end       </span><span style="font-weight:bold;color:blue;">-- Duration: 0.045627</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(1000000) || ZWJ || grin); do while s~available; s~next; end      </span><span style="font-weight:bold;color:blue;">-- Duration: 0.389713</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(10000000) || ZWJ || grin); do while s~available; s~next; end     </span><span style="font-weight:bold;color:blue;">-- Duration: 3.623596</span>
+<span style="font-weight:bold;color:blue;">-- too long: s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100000000) || ZWJ || grin); do while s~available; s~next; end    -- Duration: 35.995098
+</span>
+<span style="font-weight:bold;color:blue;">-- The forward grapheme supplier is not faster
+</span><span style="font-weight:bold;color:blue;">-- too long: s=.RexxUnicodeGraphemeSupplier~new(acute~copies(100000000) || ZWJ || grin); do while s~available; s~next; end           -- Duration: 37.414371
+</span>
+<span style="font-weight:bold;color:blue;">-- The reverse grapheme supplier is much slower when GB11 is not applicable (100000001 graphemes instead of 2)
+</span><span style="font-weight:bold;color:blue;">-- too long: s=.RexxUnicodeReverseGraphemeSupplier~new(&quot;A&quot;~copies(100000000) || ZWJ || grin); do while s~available; s~next; end      -- Duration: 398.995352
+</span>
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~utf8DecodePreviousCodepoint

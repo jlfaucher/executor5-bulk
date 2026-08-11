@@ -714,6 +714,8 @@ and always returns a single codepoint.
 
 Returns `.true` if there is a grapheme break between the two consecutive codepoints passed in `array`.
 
+[https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries][unicode_standard_annex_29_grapheme_cluster_boundaries]
+
 > [!WARNING]
 > This method is deprecated. Use [`graphemeBreak3`](#graphemeBreak3) instead.
 >
@@ -741,7 +743,15 @@ break = .RexxUnicodeServices~graphemeBreak(array) -- true or false
 
     .RexxUnicodeServices~graphemeBreak3(codepoint1, codepoint2, >refState)
 
+    .RexxUnicodeServices~graphemeBreak3(
+        codepoint1,     -- (in)     The first codepoint.
+        codepoint2,     -- (in)     The second codepoint.
+        >refState       -- (in-out) Initial value must be 0.
+        )
+
 Returns `.true` if there is a grapheme break between the two consecutive codepoints.
+
+[https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries][unicode_standard_annex_29_grapheme_cluster_boundaries]
 
 **Example:**
 
@@ -757,16 +767,247 @@ state=                                                  -- 1
 ```
 
 
+<a id="graphemeBreakBackward"></a>
+
+#### 1.1.19.   graphemeBreakBackward
+
+    .RexxUnicodeServices~graphemeBreakBackward(string, indexB, codepoint1, codepoint2)
+
+    .RexxUnicodeServices~graphemeBreakBackward(
+        string,     -- (in)     A UTF-8 string.
+        indexB,     -- (in)     The byte index (1-based) of codepoint1.
+        codepoint1, -- (in)     The first codepoint.
+        codepoint2  -- (in)     The second codepoint, immediatly following codepoint1 in forward order.
+        )
+    
+Given a pair of consecutive codepoints, return `.true` if a grapheme break
+is permitted between them when processing the pair backward.
+
+[https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries][unicode_standard_annex_29_grapheme_cluster_boundaries]
+
+Iterates backward from a KNOWN boundary (default: one past the end of the
+string, i.e. the whole string's right edge). This is deliberately not a
+random-access primitive -- per [UAX #29 6.4][unicode_standard_annex_29_random_access],
+starting from an arbitrary, unverified offset would require a separate
+"safe point" search. Starting from a genuine boundary avoids that; what remains
+is the residual cost described below.
+
+Rules `GB3`, `GB6-GB9b` are simple, direction-symmetric pairwise lookups: no
+lookback needed, forward or backward.
+
+Three rules are not:
+
+  - `GB9c`  (Indic conjunct clusters)
+  - `GB11`  (emoji ZWJ sequences)
+  - `GB12/13` (regional indicator / flag sequences)
+
+These are left-anchored: correctly resolving them going backward requires
+rescanning the run of `Extend/Linker/RI` scalars each time one is
+encountered, since (unlike forward iteration) there's no running "parity"
+or "seen a linker" state carried over from a previous step to reuse.
+
+Swift's stdlib has the exact same property and documents it as accepted,
+non-quadratic-in-practice behavior (see [StringGraphemeBreaking.swift][string_grapheme_breaking_swift],
+`_previousGraphemeClusterBoundary`).
+
+
+**Example - Step by step**
+
+```rexx
+string = "noël👩‍👨‍👩‍👧🎅"
+
+-- A reverse codepoint supplier does not depend on `graphemeBreakBackward`
+.RexxUnicodeReverseCodepointSupplier~new(string, "b", .RexxUnicodeCharacter)==
+    /*
+    a RexxUnicodeReverseCodepointSupplier 
+     31 : ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
+     27 : ("👧" \x{F09F91A7} U+1F467 So Other_Symbol "GIRL")
+     24 : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+     20 : ("👩" \x{F09F91A9} U+1F469 So Other_Symbol "WOMAN")
+     17 : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+     13 : ("👨" \x{F09F91A8} U+1F468 So Other_Symbol "MAN")
+     10 : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
+     6  : ("👩" \x{F09F91A9} U+1F469 So Other_Symbol "WOMAN")
+     5  : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
+     3  : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")
+     2  : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
+     1  : ("n" \x6E U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
+    */
+    
+-- A reverse grapheme supplier depends on `graphemeBreakBackward`
+.RexxUnicodeReverseGraphemeSupplier~new(string, "b", "\")==
+    /*
+    a RexxUnicodeReverseGraphemeSupplier 
+     31 : '🎅'
+     6  : '👩\u200D👨\u200D👩\u200D👧'
+     5  : 'l'
+     3  : 'ë'
+     2  : 'o'
+     1  : 'n'
+    */
+    
+-- Step by step procedure
+indexB = string~length + 1; indexB=                                                     -- 35
+codepoint2 = .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size)
+codepoint2~d2x=; size=                                                                  -- '1F385'; 4
+indexB -= abs(size); indexB=                                                            -- 31
+codepoint1 = .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size)
+codepoint1~d2x=; size=                                                                  -- '1F467'; 4
+indexB -= abs(size); indexB=                                                            -- 27
+-- There is a grapheme break between '👧' and '🎅'
+.RexxUnicodeServices~graphemeBreakBackward(string, indexB, codepoint1, codepoint2)=     -- 1
+codepoint2 = codepoint1
+codepoint1 = .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size)
+codepoint1~d2x=; size=                                                                  -- '200D'; 3 
+indexB -= abs(size); indexB=                                                            -- 24
+-- There is no grapheme break between '\u200D' and '👧'
+.RexxUnicodeServices~graphemeBreakBackward(string, indexB, codepoint1, codepoint2)=     -- 0
+
+```
+
+**Example - GB12/13 lookback**
+
+`GB12/13` (regional indicator / flag sequences) is quadratic.
+
+`GB12/13` lookback triggers on every internal pair of a homogeneous `RI` run,
+because its trigger condition is "both sides are the same class" (`prop1==RI && prop2==RI`).
+In a run of `N` consecutive `RI` codepoints, essentially every adjacent pair re-fires the check,
+and each firing rescans the whole preceding `RI` stretch from scratch.
+That's `O(N)` calls × `O(N)` average scan = `O(N²)`.
+
+Repeat the Regional Indicator Symbol Letter, e.g. 🇦 = `U+1F1E6`:
+
+🇦🇦🇦🇦🇦...🇦        (`N` copies of `U+1F1E6`)
+
+This isn't a sequence of valid flag pairs semantically — it doesn't matter,
+`GB12/13` only cares about the boundclass `RI`, not validity as a country code.
+
+```rexx
+-- Durations on Macbook Pro M1 32GB, non-native suppliers, non-native indexers
+
+RI_A = .RexxUnicode~U2C("U+1F1E6")
+
+.RexxUnicode~stringInfo(RI_A~copies(100))=      -- '(not-ASCII, 50 graphemes, 100 codepoints, 400 bytes, 0 error)'
+.RexxUnicode~stringInfo(RI_A~copies(100000))=   -- '(not-ASCII, 50000 graphemes, 100000 codepoints, 400000 bytes, 0 error)'
+.RexxUnicode~stringInfo("A"~copies(100000))=    -- '(ASCII, 100000 graphemes, 100000 codepoints, 100000 bytes, 0 error)'
+
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(100)); do while s~available; s~next; end      -- Duration: 0.001217
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(1000)); do while s~available; s~next; end     -- Duration: 0.026591
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(10000)); do while s~available; s~next; end    -- Duration: 0.312036
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(20000)); do while s~available; s~next; end    -- Duration: 1.20119
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(30000)); do while s~available; s~next; end    -- Duration: 2.629657
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(40000)); do while s~available; s~next; end    -- Duration: 4.611944
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(100000)); do while s~available; s~next; end   -- Duration: 28.448092
+
+-- The forward grapheme supplier is not quadratic
+s=.RexxUnicodeGraphemeSupplier~new(RI_A~copies(100000)); do while s~available; s~next; end          -- Duration: 0.257308
+
+-- The reverse grapheme supplier is not quadratic when no RI
+s=.RexxUnicodeReverseGraphemeSupplier~new("A"~copies(100000)); do while s~available; s~next; end    -- Duration: 0.395018
+
+```
+
+**Example - GB9c/GB11 lookback**
+
+`GB9c` and `GB11` are not quadratic.
+
+`GB9c` and `GB11` trigger on an asymmetric transition
+— "arriving at a Consonant" / "arriving at a Pictograph" — not on two sides matching.
+Hitting any Consonant (or Pictograph) during the backward scan halts it unconditionally,
+regardless of whether the rule's specific condition (a Linker in between, etc.) is satisfied.
+
+That means: for consonants c₁ < c₂ < ... < cₖ in the string, the scan triggered by cᵢ
+can never run past cᵢ₋₁ — it stops there. Since each pair is tested exactly once
+during a full traversal, these per-consonant scan intervals are disjoint and telescope
+to O(n) total, no matter how the consonants are spaced.
+
+Same argument for pictographs and GB11.
+
+So a single call can still be `O(run length)` — worth demonstrating for perf-testing
+one grapheme decode's worst case — but it can't accumulate to `O(n²)` over a full
+string traversal the way `RI` does.
+
+`GB9c` single-call example: a long run of `ZWJ` (boundclass `ZWJ`, `InCB=None`
+with no Consonant anywhere in it, terminated by one Consonant:
+
+`U+200D` repeated `N` times, then `U+0915` (क, DEVANAGARI LETTER KA).
+
+The single pair (last `ZWJ`, `KA`) triggers one `O(N)` scan that runs all the way to
+string start without finding a Consonant, then returns "break allowed."
+
+```rexx
+-- Durations on Macbook Pro M1 32GB, non-native suppliers, non-native indexers
+
+ZWJ = .RexxUnicode~U2C("U+200D")
+KA = .RexxUnicode~U2C("U+0915")
+
+.RexxUnicode~stringInfo(ZWJ~copies(100) || KA)=         -- '(not-ASCII, 2 graphemes, 101 codepoints, 303 bytes, 0 error)'                       Duration: 0.001262
+.RexxUnicode~stringInfo(ZWJ~copies(100000000) || KA)=   -- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'           Duration: 45.556058
+.RexxUnicode~stringInfo("A"~copies(100000000) || KA)=   -- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'   Duration: 53.451210
+
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(100) || KA); do while s~available; s~next; end         -- Duration: 0.000577
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(1000) || KA); do while s~available; s~next; end        -- Duration: 0.001165
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(10000) || KA); do while s~available; s~next; end       -- Duration: 0.016968
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(1000000) || KA); do while s~available; s~next; end     -- Duration: 0.395289
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(10000000) || KA); do while s~available; s~next; end    -- Duration: 3.669910
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(100000000) || KA); do while s~available; s~next; end   -- Duration: 36.272723
+
+-- The forward grapheme supplier is not faster
+s=.RexxUnicodeGraphemeSupplier~new(ZWJ~copies(100000000) || KA); do while s~available; s~next; end           -- Duration: 38.077146
+
+-- The reverse grapheme supplier is much slower when GB9c is not applicable (100000001 graphemes instead of 2)
+s=.RexxUnicodeReverseGraphemeSupplier~new("A"~copies(100000000) || KA); do while s~available; s~next; end    -- Duration: 395.163515
+
+```
+
+`GB11` single-call example: a long run of a plain combining mark (Extend, not pictographic)
+with no pictograph in it, then a `ZWJ`, then a pictograph:
+
+`U+0301` (combining acute accent) repeated `N` times, then `U+200D`, then `U+1F600` (😀)
+
+```rexx
+-- Durations on Macbook Pro M1 32GB, non-native suppliers, non-native indexers
+
+acute = .RexxUnicode~U2C("U+0301")
+ZWJ = .RexxUnicode~U2C("U+200D")
+grin = .RexxUnicode~U2C("U+1F600")
+
+.RexxUnicode~stringInfo(acute~copies(100) || ZWJ || grin)=          -- '(not-ASCII, 2 graphemes, 102 codepoints, 207 bytes, 0 error)'                       Duration: 0.000829
+.RexxUnicode~stringInfo(acute~copies(100000000) || ZWJ || grin)=    -- '(not-ASCII, 2 graphemes, 100000002 codepoints, 200000007 bytes, 0 error)'           Duration: 44.753312
+.RexxUnicode~stringInfo("A"~copies(100000000) || ZWJ || grin)=      -- '(not-ASCII, 100000001 graphemes, 100000002 codepoints, 100000007 bytes, 0 error)'   Duration: 53.045773
+
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100) || ZWJ || grin); do while s~available; s~next; end          -- Duration: 0.001653
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(1000) || ZWJ || grin); do while s~available; s~next; end         -- Duration: 0.001594
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(10000) || ZWJ || grin); do while s~available; s~next; end        -- Duration: 0.006053
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100000) || ZWJ || grin); do while s~available; s~next; end       -- Duration: 0.045627
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(1000000) || ZWJ || grin); do while s~available; s~next; end      -- Duration: 0.389713
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(10000000) || ZWJ || grin); do while s~available; s~next; end     -- Duration: 3.623596
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100000000) || ZWJ || grin); do while s~available; s~next; end    -- Duration: 35.995098
+
+-- The forward grapheme supplier is not faster
+s=.RexxUnicodeGraphemeSupplier~new(acute~copies(100000000) || ZWJ || grin); do while s~available; s~next; end           -- Duration: 37.414371
+
+-- The reverse grapheme supplier is much slower when GB11 is not applicable (100000001 graphemes instead of 2)
+s=.RexxUnicodeReverseGraphemeSupplier~new("A"~copies(100000000) || ZWJ || grin); do while s~available; s~next; end      -- Duration: 398.995352
+
+```
+
+If you want to see the "each call bounded, still linear overall" behavior rather
+than one big call, chain several `ZWJ^k` + Consonant (or `Extend^k` + `ZWJ` + Pictograph)
+blocks back to back — each block's scan is bounded by `k` and stops at the previous
+block's terminator, so `M` blocks of length `k` cost `O(M·k)` = `O(n)`, not `O(n²)`.
+
+
 <a id="RexxUnicodeServices_new"></a>
 
-#### 1.1.19.   new
+#### 1.1.20.   new
 
 This method raises an error because `RexxUnicodeServices` has no instance.
 
 
 <a id="systemIsLittleEndian"></a>
 
-#### 1.1.20.   systemIsLittleEndian
+#### 1.1.21.   systemIsLittleEndian
 
     .RexxUnicodeServices~systemIsLittleEndian
 
@@ -775,7 +1016,7 @@ Returns `.true` if the system is little-endian.
 
 <a id="unicodeVersion"></a>
 
-#### 1.1.21.   unicodeVersion
+#### 1.1.22.   unicodeVersion
 
     .RexxUnicodeServices~unicodeVersion
 
@@ -791,7 +1032,7 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 
 <a id="utf8DecodeCodepoint"></a>
 
-#### 1.1.22.   utf8DecodeCodepoint
+#### 1.1.23.   utf8DecodeCodepoint
 
 ```
 .RexxUnicodeServices~utf8DecodeCodepoint(string, indexB [, [>refSizeB] [, [>refErrorCode] [, >refErrorMsg]]])
@@ -862,7 +1103,7 @@ to follow the `U+FFFD` Substitution of Maximal Subparts.
 
 <a id="utf8DecodePreviousCodepoint"></a>
 
-#### 1.1.23.   utf8DecodePreviousCodepoint
+#### 1.1.24.   utf8DecodePreviousCodepoint
 
 ```
 .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, [, [>refSizeB] [, [>refErrorCode] [, >refErrorMsg]]])
@@ -980,7 +1221,7 @@ indexB -= abs(size); indexB=                                                    
 
 <a id="utf8EncodeCodepoint"></a>
 
-#### 1.1.24.   utf8EncodeCodepoint
+#### 1.1.25.   utf8EncodeCodepoint
 
 ```
 .RexxUnicodeServices~utf8EncodeCodepoint(codepoint, destination [, >refSizeB])
@@ -1024,7 +1265,7 @@ Append the UTF-8 encoding of 1114112 to mb: size = 0 mb = oë€🎅
 
 <a id="utf8procVersion"></a>
 
-#### 1.1.25.   utf8procVersion
+#### 1.1.26.   utf8procVersion
 
     .RexxUnicodeServices~utf8procVersion
 
@@ -1040,7 +1281,7 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 
 <a id="utf8Transform"></a>
 
-#### 1.1.26.   utf8Transform
+#### 1.1.27.   utf8Transform
 
 ```
 .RexxUnicodeServices~utf8Transform(string [, casefold = .false [, lump= .false [, nlf = 0 [, normalization = 0 [, stripCC = .false [, stripIgnorable= .false [, stripMark = .false [, stripNA = .false]]]]]]]])
@@ -1060,13 +1301,13 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 
 Returns the transformed string.
 
-##### 1.1.26.1.   'caseFold' argument
+##### 1.1.27.1.   'caseFold' argument
 
 Performs unicode case folding, to be able to do a case-insensitive
 string comparison.
 
 
-##### 1.1.26.2.   'lump' argument
+##### 1.1.27.2.   'lump' argument
 
 Maps certain characters to a common representative (i.e., several distinct characters produce the same output character).  
 All the concerned characters become the same character, but still remain distinct characters.
@@ -1108,7 +1349,7 @@ Mapping rules:
     U+007E  ~   <-- tilde operator U+223C
 
 
-##### 1.1.26.3.   'nlf' argument
+##### 1.1.27.3.   'nlf' argument
 
 [https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213][newline_guidelines]
 
@@ -1135,7 +1376,7 @@ NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are converted
 to the Unicode Paragraph Separator (PS) codepoint.
 
 
-##### 1.1.26.4.   'normalization' argument
+##### 1.1.27.4.   'normalization' argument
 
 ```rexx
 -- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).
@@ -1150,7 +1391,7 @@ to the Unicode Paragraph Separator (PS) codepoint.
 If `normalization` is not `0`, apply the requested normalization.
 
 
-##### 1.1.26.5.   'stripCC' argument
+##### 1.1.27.5.   'stripCC' argument
 
 Strips and/or converts control characters.
 
@@ -1161,13 +1402,13 @@ are treated as a NLF-sequence in this case.
 All other control characters are simply removed.
 
 
-##### 1.1.26.6.   'stripIgnorable' argument
+##### 1.1.27.6.   'stripIgnorable' argument
 
 Strips the characters whose property `Default_Ignorable_Code_Point` is true,
 such as `SOFT-HYPHEN` or `ZERO-WIDTH-SPACE`.
 
 
-##### 1.1.26.7.   'stripMark' argument
+##### 1.1.27.7.   'stripMark' argument
 
 Strips all character markings.
 
@@ -1180,12 +1421,12 @@ This includes non-spacing, spacing and enclosing (i.e. accents) categories:
 This option works only with a normalization applied.
 
 
-##### 1.1.26.8.   'stripNA' argument
+##### 1.1.27.8.   'stripNA' argument
 
 Strips the characters whose category is `Cn` Unassigned.
 
 
-##### 1.1.26.9.   Examples of transformations
+##### 1.1.27.9.   Examples of transformations
 
 ```rexx
 string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n"
@@ -4925,6 +5166,7 @@ The `ICU4ooRexxInterface` class defines no instance methods of its own.
 [feedback_2026]: https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/feedback.png "Feedbak as of 2026"
 [icu4oorexx_library]: https://github.com/jlfaucher/icu4oorexx "ICU4ooRexx Library"
 [newline_guidelines]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213 "Newline Guidelines"
+[string_grapheme_breaking_swift]: https://github.com/swiftlang/swift/blob/f3bea01d46e98ff8508b2e3a9cb6f49a087a3404/stdlib/public/core/StringGraphemeBreaking.swift#L685 " StringGraphemeBreaking.swif"
 [typographic_conventions_code_points]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083 "Typographic Conventions - Code Points"
 [uax44_lm2]: https://unicode.org/reports/tr44/#UAX44-LM2 "Loose matching rule UAX44-LM2"
 [uax44_lm3]: https://unicode.org/reports/tr44/#UAX44-LM3 "Loose matching rule UAX44-LM3"
@@ -4937,6 +5179,7 @@ The `ICU4ooRexxInterface` class defines no instance methods of its own.
 [unicode_standard_annex_15]: https://unicode.org/reports/tr15/ "Unicode Normalization Forms"
 [unicode_standard_annex_29]: https://www.unicode.org/reports/tr29/ "Standard Annex #29 Unicode Text Segmentation"
 [unicode_standard_annex_29_grapheme_cluster_boundaries]: https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries "Standard Annex #29 Unicode Text Segmentation - Grapheme Cluster Boundaries"
+[unicode_standard_annex_29_random_access]: https://www.unicode.org/reports/tr29/#Random_Access "Standard Annex #29 Unicode Text Segmentation - Random Access"
 [unicode_standard_annex_44_canonical_combining_class_values]: https://www.unicode.org/reports/tr44/#Canonical_Combining_Class_Values "Unicode Character Database - Canonical Combining Class Values"
 [unicode_standard_annex_44_derivation_incb]: https://www.unicode.org/reports/tr44/#Derivation_InCB "Unicode Character Database - Derivation of Indic_Conjunct_Break"
 [utf8proc]: https://juliastrings.github.io/utf8proc/ "utf8proc"
