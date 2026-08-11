@@ -1588,6 +1588,18 @@ bool RexxString::checkUpper()
 
 
 /**
+ * Rexx level isASCII
+ *
+ * @return .true if this string contains ASCII characters only,
+ *         .false otherwise.
+ */
+RexxInteger *RexxString::isASCIIRexx()
+{
+    return this->checkIsASCII() ? TheTrueObject : TheFalseObject;
+}
+
+
+/**
  * Translate a string to uppercase...will only create a new
  * string if characters actually have to be translated.
  *

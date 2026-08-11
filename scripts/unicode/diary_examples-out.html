@@ -42,8 +42,8 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
-</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 8 Aug 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S71e1Qbc48249c0
+</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 11 Aug 2026
+</span><span style="font-weight:bold;color:green;">Input queue name: S103edQbc4826340
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
@@ -94,10 +94,46 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexB -= abs(size); ind
  0
 
 
-<span style="font-weight:bold;color:blue;">-- ===============================================================================
-</span><span style="font-weight:bold;color:blue;">-- 2026 Aug 07
-</span>
 <span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">Add .String~isASCII
+</span><span style="font-weight:bold;color:blue;">Returns .true if this string contains ASCII characters only.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Examples
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">do i=0 to 1000; s1 = &quot;00&quot;x~copies(i); if \s1~isASCII then say &quot;ko:&quot; quoted(s1~c2x) &quot;=&quot; s1~isASCII; do j=1 to i; s2 = s1~replaceAt(&quot;80&quot;x, j, 1); if s2~isASCII then say &quot;ko:&quot; quoted(s2~c2x) &quot;=&quot; s2~isASCII; end; end</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    no &quot;ko:&quot; message
+</span><span style="font-weight:bold;color:blue;">    Generated strings:
+</span><span style="font-weight:bold;color:blue;">    &quot;&quot; = 1
+</span><span style="font-weight:bold;color:blue;">    &quot;00&quot; = 1
+</span><span style="font-weight:bold;color:blue;">    &quot;80&quot; = 0
+</span><span style="font-weight:bold;color:blue;">    &quot;0000&quot; = 1
+</span><span style="font-weight:bold;color:blue;">    &quot;8000&quot; = 0
+</span><span style="font-weight:bold;color:blue;">    &quot;0080&quot; = 0
+</span><span style="font-weight:bold;color:blue;">    &quot;000000&quot; = 1
+</span><span style="font-weight:bold;color:blue;">    &quot;800000&quot; = 0
+</span><span style="font-weight:bold;color:blue;">    &quot;008000&quot; = 0
+</span><span style="font-weight:bold;color:blue;">    &quot;000080&quot; = 0
+</span><span style="font-weight:bold;color:blue;">    &quot;00000000&quot; = 1
+</span><span style="font-weight:bold;color:blue;">    &quot;80000000&quot; = 0
+</span><span style="font-weight:bold;color:blue;">    &quot;00800000&quot; = 0
+</span><span style="font-weight:bold;color:blue;">    &quot;00008000&quot; = 0
+</span><span style="font-weight:bold;color:blue;">    &quot;00000080&quot; = 0
+</span><span style="font-weight:bold;color:blue;">    &quot;0000000000&quot; = 1
+</span><span style="font-weight:bold;color:blue;">    &quot;8000000000&quot; = 0
+</span><span style="font-weight:bold;color:blue;">    &quot;0080000000&quot; = 0
+</span><span style="font-weight:bold;color:blue;">    &quot;0000800000&quot; = 0
+</span><span style="font-weight:bold;color:blue;">    &quot;0000008000&quot; = 0
+</span><span style="font-weight:bold;color:blue;">    &quot;0000000080&quot; = 0
+</span><span style="font-weight:bold;color:blue;">    etc.
+</span><span style="font-weight:bold;color:blue;"> */
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">-- ===============================================================================
+</span><span style="font-weight:bold;color:blue;">-- 2026 Aug 07
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">[Unicode]
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">Add .RexxUnicodeServices~graphemeBreak3(codepoint1, codepoint2, &gt;refState)

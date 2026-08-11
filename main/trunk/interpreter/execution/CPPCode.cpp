@@ -1122,6 +1122,7 @@ PCPPM CPPCode::exportedMethods[] =
     CPPM(RexxString::endsWithRexx),
     CPPM(RexxString::caselessStartsWithRexx),
     CPPM(RexxString::caselessEndsWithRexx),
+    CPPM(RexxString::isASCIIRexx),
 
     CPPM(RexxString::makeArrayRexx),
 

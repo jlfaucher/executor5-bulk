@@ -694,6 +694,7 @@ StartClassDefinition(String)
         AddMethod("EndsWith", RexxString::endsWithRexx, 1);
         AddMethod("CaselessStartsWith", RexxString::caselessStartsWithRexx, 1);
         AddMethod("CaselessEndsWith", RexxString::caselessEndsWithRexx, 1);
+        AddMethod("IsASCII", RexxString::isASCIIRexx, 0);
 
     CompleteMethodDefinitions();
 

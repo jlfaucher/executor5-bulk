@@ -48,6 +48,42 @@ ooRexx> .RexxUnicodeServices~graphemeBreakBackward(string, indexB, codepoint1, c
  0
 
 
+/*
+Add .String~isASCII
+Returns .true if this string contains ASCII characters only.
+
+Examples
+*/
+
+ooRexx> do i=0 to 1000; s1 = "00"x~copies(i); if \s1~isASCII then say "ko:" quoted(s1~c2x) "=" s1~isASCII; do j=1 to i; s2 = s1~replaceAt("80"x, j, 1); if s2~isASCII then say "ko:" quoted(s2~c2x) "=" s2~isASCII; end; end
+/*
+    no "ko:" message
+    Generated strings:
+    "" = 1
+    "00" = 1
+    "80" = 0
+    "0000" = 1
+    "8000" = 0
+    "0080" = 0
+    "000000" = 1
+    "800000" = 0
+    "008000" = 0
+    "000080" = 0
+    "00000000" = 1
+    "80000000" = 0
+    "00800000" = 0
+    "00008000" = 0
+    "00000080" = 0
+    "0000000000" = 1
+    "8000000000" = 0
+    "0080000000" = 0
+    "0000800000" = 0
+    "0000008000" = 0
+    "0000000080" = 0
+    etc.
+ */
+
+
 -- ===============================================================================
 -- 2026 Aug 07
 

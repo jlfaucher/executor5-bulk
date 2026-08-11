@@ -51,6 +51,174 @@ Example
     .RexxUnicodeServices~graphemeBreakBackward(string, indexB, codepoint1, codepoint2)=     -- 0
 
 
+Add .String~isASCII
+Returns .true if this string contains ASCII characters only.
+
+Examples
+
+    do i=0 to 1000; s1 = "00"x~copies(i); if \s1~isASCII then say "ko:" quoted(s1~c2x) "=" s1~isASCII; do j=1 to i; s2 = s1~replaceAt("80"x, j, 1); if s2~isASCII then say "ko:" quoted(s2~c2x) "=" s2~isASCII; end; end
+    /*
+        no "ko:" message
+        Generated strings:
+        "" = 1
+        "00" = 1
+        "80" = 0
+        "0000" = 1
+        "8000" = 0
+        "0080" = 0
+        "000000" = 1
+        "800000" = 0
+        "008000" = 0
+        "000080" = 0
+        "00000000" = 1
+        "80000000" = 0
+        "00800000" = 0
+        "00008000" = 0
+        "00000080" = 0
+        "0000000000" = 1
+        "8000000000" = 0
+        "0080000000" = 0
+        "0000800000" = 0
+        "0000008000" = 0
+        "0000000080" = 0
+        etc.
+     */
+
+Benchmark using a version where the flag isASCII is not stored (the scanning is done each time).
+#define ISASCII_IMPLEMENTATION 1
+Word-at-a-time approach, with one ascending cursor (processing 4 or 8 bytes per iteration).
+
+    -- Macbook pro M1 32GB
+    tutor off
+    big10m = "0123456789"~copies(1e6)       -- 10 * 1 million
+    s = big10m                              -- 10 millions of ASCII characters, must check all of them
+    do 1000; s~isASCII; end                 -- Duration: 0.416186
+    s = "é" || big10m                       -- 1 non-ASCII character followed by 10 millions of ASCII characters
+    do 1000; s~isASCII; end                 -- Duration: 0.000140
+    s = big10m || "é"                       -- 10 millions of ASCII characters followed by 1 non-ASCII character
+    do 1000; s~isASCII; end                 -- Duration: 0.418350
+    big5m = "01234"~copies(1e6)             -- 5 * 1 million
+    s = big5m || "é" || big5m               -- 1 non-ASCII character in the middle of 10 millions of ASCII characters
+    do 1000; s~isASCII; end                 -- Duration: 0.202070
+    halfBig5m = "01234"~copies(5e5)         -- 5 * 500 000 = 2.5 million
+    s = halfBig5m || "é" || halfBig5m || big5m  -- 1 non-ASCII character in the middle of the left half (2.5 million of ASCII characters before, 7.5 million of ASCII characters after)
+    do 1000; s~isASCII; end                     -- Duration: 0.101131
+    s = big5m || halfBig5m || "é" || halfBig5m  -- 1 non-ASCII character in the middle of the right half (7.5 million of ASCII characters before, 2.5 millions of ASCII characters after)
+    do 1000; s~isASCII; end                     -- Duration: 0.326443
+
+Benchmark using a version where the flag isASCII is not stored (the scanning is done each time).
+#define ISASCII_IMPLEMENTATION 2
+Byte-at-a-time approach, with four converging cursors:
+check from start ascending, from middle descending, from middle ascending, from end descending.
+
+    -- Macbook pro M1 32GB
+    tutor off
+    big10m = "0123456789"~copies(1e6)
+    s = big10m                              -- 10 millions of ASCII characters, must check all of them
+    do 1000; s~isASCII; end                 -- Duration: 2.223735 (5 times slower)
+    s = "é" || big10m                       -- 1 non-ASCII character followed by 10 millions of ASCII characters
+    do 1000; s~isASCII; end                 -- Duration: 0.000438 (3 times slower)
+    s = big10m || "é"                       -- 10 millions of ASCII characters followed by 1 non-ASCII character
+    do 1000; s~isASCII; end                 -- Duration: 0.000304 (1376 times faster)
+    big5m = "01234"~copies(1e6)
+    s = big5m || "é" || big5m               -- 1 non-ASCII character in the middle of 10 millions of ASCII characters
+    do 1000; s~isASCII; end                 -- Duration: 0.000427 (473 times faster)
+    halfBig5m = "01234"~copies(5e5)         -- 5 * 500 000 = 2.5 million
+    s = halfBig5m || "é" || halfBig5m || big5m  -- 1 non-ASCII character in the middle of the left half (2.5 million of ASCII characters before, 7.5 million of ASCII characters after)
+    do 1000; s~isASCII; end                     -- Duration: 2.224347 (22 times slower)
+    s = big5m || halfBig5m || "é" || halfBig5m  -- 1 non-ASCII character in the middle of the right half (7.5 million of ASCII characters before, 2.5 millions of ASCII characters after)
+    do 1000; s~isASCII; end                     -- Duration: 2.234832 (7 times slower)
+
+Benchmark using a version where the flag isASCII is not stored (the scanning is done each time).
+#define ISASCII_IMPLEMENTATION 3
+Word-at-a-time approach, with two converging cursors in the left half, then two converging cursors in the right half.
+
+    -- Macbook pro M1 32GB
+    tutor off
+    big10m = "0123456789"~copies(1e6)
+    s = big10m                              -- 10 millions of ASCII characters, must check all of them
+    do 1000; s~isASCII; end                 -- Duration: 0.41078
+    s = "é" || big10m                       -- 1 non-ASCII character followed by 10 millions of ASCII characters
+    do 1000; s~isASCII; end                 -- Duration: 0.000185
+    s = big10m || "é"                       -- 10 millions of ASCII characters followed by 1 non-ASCII character
+    do 1000; s~isASCII; end                 -- Duration: 0.219086
+    big5m = "01234"~copies(1e6)
+    s = big5m || "é" || big5m               -- 1 non-ASCII character in the middle of 10 millions of ASCII characters
+    do 1000; s~isASCII; end                 -- Duration: 0.000652
+    halfBig5m = "01234"~copies(5e5)         -- 5 * 500 000 = 2.5 million
+    s = halfBig5m || "é" || halfBig5m || big5m  -- 1 non-ASCII character in the middle of the left half (2.5 million of ASCII characters before, 7.5 million of ASCII characters after)
+    do 1000; s~isASCII; end                     -- Duration: 0.20001
+    s = big5m || halfBig5m || "é" || halfBig5m  -- 1 non-ASCII character in the middle of the right half (7.5 million of ASCII characters before, 2.5 millions of ASCII characters after)
+    do 1000; s~isASCII; end                     -- Duration: 0.420035
+
+Benchmark using a version where the flag isASCII is not stored (the scanning is done each time).
+#define ISASCII_IMPLEMENTATION 4
+Word-at-a-time approach, with four converging cursors.
+
+    -- Macbook pro M1 32GB
+    tutor off
+    big10m = "0123456789"~copies(1e6)
+    s = big10m                              -- 10 millions of ASCII characters, must check all of them
+    do 1000; s~isASCII; end                 -- Duration: 0.553735
+    s = "é" || big10m                       -- 1 non-ASCII character followed by 10 millions of ASCII characters
+    do 1000; s~isASCII; end                 -- Duration: 0.000628
+    s = big10m || "é"                       -- 10 millions of ASCII characters followed by 1 non-ASCII character
+    do 1000; s~isASCII; end                 -- Duration: 0.000402
+    big5m = "01234"~copies(1e6)
+    s = big5m || "é" || big5m               -- 1 non-ASCII character in the middle of 10 millions of ASCII characters
+    do 1000; s~isASCII; end                 -- Duration: 0.001352
+    halfBig5m = "01234"~copies(5e5)         -- 5 * 500 000 = 2.5 million
+    s = halfBig5m || "é" || halfBig5m || big5m  -- 1 non-ASCII character in the middle of the left half (2.5 million of ASCII characters before, 7.5 million of ASCII characters after)
+    do 1000; s~isASCII; end                     -- Duration: 0.561390
+    s = big5m || halfBig5m || "é" || halfBig5m  -- 1 non-ASCII character in the middle of the right half (7.5 million of ASCII characters before, 2.5 millions of ASCII characters after)
+    do 1000; s~isASCII; end                     -- Duration: 0.565008
+
+Benchmark using a version where the flag isASCII is not stored (the scanning is done each time).
+#define ISASCII_IMPLEMENTATION 5
+Word-at-a-time approach, with four converging cursors and a merged check.
+
+    -- Macbook pro M1 32GB
+    tutor off
+    big10m = "0123456789"~copies(1e6)
+    s = big10m                              -- 10 millions of ASCII characters, must check all of them
+    do 1000; s~isASCII; end                 -- Duration: 0.296824
+    s = "é" || big10m                       -- 1 non-ASCII character followed by 10 millions of ASCII characters
+    do 1000; s~isASCII; end                 -- Duration: 0.00038
+    s = big10m || "é"                       -- 10 millions of ASCII characters followed by 1 non-ASCII character
+    do 1000; s~isASCII; end                 -- Duration: 0.000544
+    big5m = "01234"~copies(1e6)
+    s = big5m || "é" || big5m               -- 1 non-ASCII character in the middle of 10 millions of ASCII characters
+    do 1000; s~isASCII; end                 -- Duration: 0.000507
+    halfBig5m = "01234"~copies(5e5)         -- 5 * 500 000 = 2.5 million
+    s = halfBig5m || "é" || halfBig5m || big5m  -- 1 non-ASCII character in the middle of the left half (2.5 million of ASCII characters before, 7.5 million of ASCII characters after)
+    do 1000; s~isASCII; end                     -- Duration: 0.290811
+    s = big5m || halfBig5m || "é" || halfBig5m  -- 1 non-ASCII character in the middle of the right half (7.5 million of ASCII characters before, 2.5 millions of ASCII characters after)
+    do 1000; s~isASCII; end                     -- Duration: 0.301382
+
+
+
+                Implem 1        Implem 2        Implem 3        Implem 4        Implem 5
+-------------+--------------------------------------------------------------------------
+10M          |  0,416186        2,223735        0,410780        0,553735        0,296824                10 millions of ASCII characters
+é 10M        |  0,000140        0,000438        0,000185        0,000628        0,000380                1 non-ASCII character followed by 10 millions of ASCII characters
+10M é        |  0,418350        0,000304        0,219086        0,000402        0,000544                10 millions of ASCII characters followed by 1 non-ASCII character
+5M é 5M      |  0,202070        0,000427        0,000652        0,001352        0,000507                1 non-ASCII character in the middle of 10 millions of ASCII characters
+2.5M é 7.5M  |  0,101131        2,224347        0,200010        0,561390        0,290811                1 non-ASCII character in the middle of the left half (2.5 million of ASCII characters before, 7.5 million of ASCII characters after)
+7.5M é 2.5M  |  0,326443        2,234832        0,420035        0,565008        0,301382                1 non-ASCII character in the middle of the right half (7.5 million of ASCII characters before, 2.5 millions of ASCII characters after)
+
+average         0,244           1,114           0,208           0,280           0,148408
+
+
+Implem 1        Word-at-a-time approach, with one ascending cursor (processing 4 or 8 bytes per iteration)
+Implem 2        Byte-at-a-time approach, with four converging cursors
+Implem 3        Word-at-a-time approach, with two converging cursors in the left half, then two converging cursors in the right half.
+Implem 4        Word-at-a-time approach, with four converging cursors.
+Implem 4        Word-at-a-time approach, with four converging cursors. Optimized.
+
+
+Conclusion: ISASCII_IMPLEMENTATION 5 gives the best durations.
+
+
 ===============================================================================
 2026 Aug 08
 

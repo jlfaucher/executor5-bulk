@@ -134,10 +134,8 @@ Additional string services
 
 ::method stringIsASCII class
     use strict arg string
-    string = requestBaseString(string)
-    -- No need to optimize, will be replaced by a native method .string~isASCII
-    ASCII = xrange("00"x, "7F"x)
-    return string~verify(ASCII) == 0
+    -- not needed: string = requestBaseString(string)
+    return string~isASCII
 
 
 ::method stringToNFC class

@@ -1971,3 +1971,395 @@ void StringUtil::encodeBase64(const char *source, size_t inputLength, MutableBuf
         destination->append('\n');
     }
 }
+
+
+// 5 candidate implementations
+#define ISASCII_IMPLEMENTATION 5
+
+#if ISASCII_IMPLEMENTATION == 1
+
+/**
+ * Checks if the buffer of data contains only ASCII characters.
+ *
+ * @param data   the source data buffer.
+ * @param length the length of the buffer
+ *
+ * @return true if this string contains ASCII characters only,
+ *         false otherwise.
+ *
+ * The word-at-a-time approach (processing 4 or 8 bytes per iteration) is genuinely
+ * faster for the all-ASCII case because it reduces loop iterations by 4× or 8×.
+ * Using size_t as the word type is portable: it’s 4 bytes on 32-bit, 8 bytes on 64-bit, no #ifdef needed.
+ * The mask expression ~(size_t)0 / 0xFF * 0x80 computes 0x80808080 or 0x8080808080808080 at compile time depending on sizeof(size_t).
+ */
+bool StringUtil::checkIsASCII(const char *data, size_t length)
+{
+    const unsigned char *p = (const unsigned char *)data;
+
+    // Alignment prologue: process byte-by-byte until word-aligned
+    while (length > 0 && ((uintptr_t)p & (sizeof(size_t) - 1)))
+    {
+        if (*p & 0x80) return false;
+        p++;
+        length--;
+    }
+
+    // Word-at-a-time: use size_t which is the natural word size on all platforms
+    const size_t *w = (const size_t *)p;
+    size_t word_size = sizeof(size_t);
+    size_t chunks = length / word_size;
+
+    // Per-word early exit: stop as soon as any high bit is found.
+    // The branch predictor handles the all-ASCII case efficiently.
+    for (size_t i = 0; i < chunks; i++)
+    {
+        if (w[i] & (size_t)(~(size_t)0 / 0xFF * 0x80))  // 0x8080...80 for any word size
+            return false;
+    }
+
+    // Tail bytes
+    p += chunks * word_size;
+    length -= chunks * word_size;
+    while (length > 0)
+    {
+        if (*p & 0x80) return false;
+        p++;
+        length--;
+    }
+
+    return true;
+}
+
+#elif ISASCII_IMPLEMENTATION == 2
+
+/**
+ * Checks if the buffer of data contains only ASCII characters.
+ *
+ * @param data   the source data buffer.
+ * @param length the length of the buffer
+ *
+ * @return true if the buffer of data contains only ASCII characters
+ */
+bool StringUtil::checkIsASCII(const char *s, size_t length)
+{
+    if (length != 0)
+    {
+        // Check from start ascending, from middle descending, from middle ascending, from end descending.
+        // That will divide by 4 the number of iterations, while increasing the chance to find a not-ASCII character faster..
+        const char *i1 = s;
+        const char *i2 = s + (length - 1) / 2;
+        const char *i3 = i2;
+        const char *i4 = s + length - 1;
+
+        do
+        {
+            if ( (*i1++ | *i2-- | *i3++ | *i4--) & 0x80 ) return false;
+        }
+        while (i1 <= i2 || i3 <= i4);
+    }
+
+    return true;
+}
+
+#elif ISASCII_IMPLEMENTATION == 3
+
+/**
+ * Checks if the buffer of data contains only ASCII characters.
+ *
+ * @param data   the source data buffer.
+ * @param length the length of the buffer
+ *
+ * @return true if this string contains ASCII characters only,
+ *         false otherwise.
+ *
+ * Scans [lo, hi) bidirectionally, word-at-a-time, with two converging cursors.
+ * Assumes 'left' and 'right' are byte offsets into 'base'.
+ */
+static inline bool scanBidirectional(const unsigned char *base, size_t lo, size_t hi,
+                                      size_t WORD, size_t HIGH_BITS)
+{
+    if (lo >= hi) return true;
+
+    const unsigned char *left  = base + lo;
+    const unsigned char *right = base + hi - 1;   // last byte of the region (inclusive)
+
+    // Align 'left' up to a word boundary.
+    while (left <= right && ((uintptr_t)left & (WORD - 1)))
+    {
+        if (*left & 0x80) return false;
+        left++;
+    }
+    // Align 'right + 1' down to a word boundary.
+    while (left <= right && (((uintptr_t)(right + 1)) & (WORD - 1)))
+    {
+        if (*right & 0x80) return false;
+        right--;
+    }
+    if (left > right) return true;   // whole region consumed by the prologues
+
+    // left and right+1 are both word-aligned now, so (right+1 - left) is a
+    // multiple of WORD: no remainder bytes are left in the middle.
+    const size_t *wleft  = (const size_t *)left;
+    const size_t *wright = (const size_t *)(right + 1) - 1;
+
+    while (wleft <= wright)
+    {
+        if (*wleft & HIGH_BITS) return false;
+        if (wleft == wright) break;       // odd word count: don't recheck it
+        if (*wright & HIGH_BITS) return false;
+        wleft++;
+        wright--;
+    }
+
+    return true;
+}
+
+bool StringUtil::checkIsASCII(const char *s, size_t length)
+{
+    if (length == 0) return true;
+
+    const unsigned char *base = (const unsigned char *)s;
+    const size_t WORD = sizeof(size_t);
+    const size_t HIGH_BITS = ~(size_t)0 / 0xFF * 0x80;
+
+    size_t mid = length / 2;
+
+    if (!scanBidirectional(base, 0, mid, WORD, HIGH_BITS)) return false;
+    if (!scanBidirectional(base, mid, length, WORD, HIGH_BITS)) return false;
+
+    return true;
+}
+
+#elif ISASCII_IMPLEMENTATION == 4
+
+/**
+ * Checks if the buffer of data contains only ASCII characters.
+ *
+ * @param data   the source data buffer.
+ * @param length the length of the buffer
+ *
+ * @return true if this string contains ASCII characters only,
+ *         false otherwise.
+ *
+ * Scans word-at-a-time, with four converging cursors.
+ * The word-at-a-time approach (processing 4 or 8 bytes per iteration) is genuinely
+ * faster for the all-ASCII case because it reduces loop iterations by 4× or 8×.
+ * Using size_t as the word type is portable: it’s 4 bytes on 32-bit, 8 bytes on 64-bit, no #ifdef needed.
+ * The mask expression ~(size_t)0 / 0xFF * 0x80 computes 0x80808080 or 0x8080808080808080 at compile time depending on sizeof(size_t).
+ */
+bool StringUtil::checkIsASCII(const char *s, size_t length)
+{
+    if (length == 0) return true;
+
+    const unsigned char *base = (const unsigned char *)s;
+    const size_t WORD = sizeof(size_t);
+    const size_t HIGH_BITS = ~(size_t)0 / 0xFF * 0x80;
+
+    size_t mid = length / 2;
+
+    size_t lo1 = 0;
+    size_t lo2 = mid;
+
+    size_t hi1 = mid;
+    size_t hi2 = length;
+
+    // if (lo1 >= hi1) return true;
+    bool region1_done = (lo1 >= hi1);
+
+    // if (lo2 >= hi2) return true;
+    bool region2_done = (lo2 >= hi2);
+
+    const unsigned char *left1  = base + lo1;
+    const unsigned char *right1 = base + hi1 - 1;   // last byte of the region 1 (inclusive)
+
+    if (region1_done == false)
+    {
+        // Align 'left1' up to a word boundary.
+        while (left1 <= right1 && ((uintptr_t)left1 & (WORD - 1)))
+        {
+            if (*left1 & 0x80) return false;
+            left1++;
+        }
+        // Align 'right1 + 1' down to a word boundary.
+        while (left1 <= right1 && (((uintptr_t)(right1 + 1)) & (WORD - 1)))
+        {
+            if (*right1 & 0x80) return false;
+            right1--;
+        }
+        if (left1 > right1) region1_done = true;   // whole region 1 consumed by the prologues, all ASCII
+    }
+
+    const unsigned char *left2  = base + lo2;
+    const unsigned char *right2 = base + hi2 - 1;   // last byte of the region 2 (inclusive)
+
+    if (region2_done == false)
+    {
+        // Align 'left2' up to a word boundary.
+        while (left2 <= right2 && ((uintptr_t)left2 & (WORD - 1)))
+        {
+            if (*left2 & 0x80) return false;
+            left2++;
+        }
+        // Align 'right2 + 1' down to a word boundary.
+        while (left2 <= right2 && (((uintptr_t)(right2 + 1)) & (WORD - 1)))
+        {
+            if (*right2 & 0x80) return false;
+            right2--;
+        }
+        if (left2 > right2) region2_done = true;   // whole region 2 consumed by the prologues, all ASCII
+    }
+
+    if (region1_done && region2_done) return true;   // both regions consumed, all ASCII
+
+    // left1 and right1+1 are both word-aligned now, so (right1+1 - left1) is a
+    // multiple of WORD: no remainder bytes are left in the middle.
+    const size_t *wleft1  = (const size_t *)left1;
+    const size_t *wright1 = (const size_t *)(right1 + 1) - 1;
+
+     // left2 and right2+1 are both word-aligned now, so (right2+1 - left2) is a
+    // multiple of WORD: no remainder bytes are left in the middle.
+    const size_t *wleft2  = (const size_t *)left2;
+    const size_t *wright2 = (const size_t *)(right2 + 1) - 1;
+
+   while (wleft1 <= wright1 || wleft2 <= wright2)
+    {
+        if (wleft1 <= wright1)
+        {
+            if (*wleft1 & HIGH_BITS) return false;
+            // if (wleft1 == wright1) break;       // odd word count: don't recheck it
+            if (wleft1 != wright1 && *wright1 & HIGH_BITS) return false;
+            wleft1++;
+            wright1--;
+        }
+
+        if (wleft2 <= wright2)
+        {
+            if (*wleft2 & HIGH_BITS) return false;
+            // if (wleft2 == wright2) break;       // odd word count: don't recheck it
+            if (wleft2 != wright2 && *wright2 & HIGH_BITS) return false;
+            wleft2++;
+            wright2--;
+        }
+    }
+
+    return true;
+}
+
+#else // ISASCII_IMPLEMENTATION == 5
+
+/**
+ * Checks if the buffer of data contains only ASCII characters.
+ *
+ * @param data   the source data buffer.
+ * @param length the length of the buffer
+ *
+ * @return true if this string contains ASCII characters only,
+ *         false otherwise.
+ *
+ * Scans word-at-a-time, with four converging cursors. Optimized:
+ * Run all four cursors in genuine lockstep with a single combined check,
+ * for as long as both regions still have cursors left — then fall back to a
+ * plain 2-cursor loop for whichever region is bigger and outlives the other.
+ *
+ * The word-at-a-time approach (processing 4 or 8 bytes per iteration) is genuinely
+ * faster for the all-ASCII case because it reduces loop iterations by 4× or 8×.
+ * Using size_t as the word type is portable: it’s 4 bytes on 32-bit, 8 bytes on 64-bit, no #ifdef needed.
+ * The mask expression ~(size_t)0 / 0xFF * 0x80 computes 0x80808080 or 0x8080808080808080 at compile time depending on sizeof(size_t).
+ */
+bool StringUtil::checkIsASCII(const char *s, size_t length)
+{
+    if (length == 0) return true;
+
+    const unsigned char *base = (const unsigned char *)s;
+    const size_t WORD = sizeof(size_t);
+    const size_t HIGH_BITS = ~(size_t)0 / 0xFF * 0x80;
+
+    size_t mid = length / 2;
+
+    size_t lo1 = 0;
+    size_t lo2 = mid;
+
+    size_t hi1 = mid;
+    size_t hi2 = length;
+
+    // if (lo1 >= hi1) return true;
+    bool region1_done = (lo1 >= hi1);
+
+    // if (lo2 >= hi2) return true;
+    bool region2_done = (lo2 >= hi2);
+
+    const unsigned char *left1  = base + lo1;
+    const unsigned char *right1 = base + hi1 - 1;   // last byte of the region 1 (inclusive)
+
+    if (region1_done == false)
+    {
+        // Align 'left1' up to a word boundary.
+        while (left1 <= right1 && ((uintptr_t)left1 & (WORD - 1)))
+        {
+            if (*left1 & 0x80) return false;
+            left1++;
+        }
+        // Align 'right1 + 1' down to a word boundary.
+        while (left1 <= right1 && (((uintptr_t)(right1 + 1)) & (WORD - 1)))
+        {
+            if (*right1 & 0x80) return false;
+            right1--;
+        }
+        if (left1 > right1) region1_done = true;   // whole region 1 consumed by the prologues, all ASCII
+    }
+
+    const unsigned char *left2  = base + lo2;
+    const unsigned char *right2 = base + hi2 - 1;   // last byte of the region 2 (inclusive)
+
+    if (region2_done == false)
+    {
+        // Align 'left2' up to a word boundary.
+        while (left2 <= right2 && ((uintptr_t)left2 & (WORD - 1)))
+        {
+            if (*left2 & 0x80) return false;
+            left2++;
+        }
+        // Align 'right2 + 1' down to a word boundary.
+        while (left2 <= right2 && (((uintptr_t)(right2 + 1)) & (WORD - 1)))
+        {
+            if (*right2 & 0x80) return false;
+            right2--;
+        }
+        if (left2 > right2) region2_done = true;   // whole region 2 consumed by the prologues, all ASCII
+    }
+
+    if (region1_done && region2_done) return true;   // both regions consumed, all ASCII
+
+    const size_t *wleft1  = (const size_t *)left1;
+    const size_t *wright1 = (const size_t *)(right1 + 1) - 1;
+    const size_t *wleft2  = (const size_t *)left2;
+    const size_t *wright2 = (const size_t *)(right2 + 1) - 1;
+
+    // Phase 1: both regions active - ONE combined check, no per-region branching.
+    while (wleft1 <= wright1 && wleft2 <= wright2)
+    {
+        if ((*wleft1 | *wright1 | *wleft2 | *wright2) & HIGH_BITS) return false;
+        wleft1++;  wright1--;
+        wleft2++;  wright2--;
+    }
+
+    // Phase 2: only one region can still have work left - finish it alone.
+    while (wleft1 <= wright1)
+    {
+        if (*wleft1 & HIGH_BITS) return false;
+        if (wleft1 == wright1) break;
+        if (*wright1 & HIGH_BITS) return false;
+        wleft1++;  wright1--;
+    }
+    while (wleft2 <= wright2)
+    {
+        if (*wleft2 & HIGH_BITS) return false;
+        if (wleft2 == wright2) break;
+        if (*wright2 & HIGH_BITS) return false;
+        wleft2++;  wright2--;
+    }
+
+    return true;
+}
+
+#endif

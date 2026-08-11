@@ -77,6 +77,8 @@ class RexxString : public RexxObject
         STRING_HASUPPER,
         STRING_NOUPPER,
         STRING_NONNUMERIC,
+        STRING_ISASCII_CHECKED,
+        STRING_ISASCII,
      } StringFlag;
 
 
@@ -402,6 +404,7 @@ class RexxString : public RexxObject
     RexxString *lower();
     RexxString *lower(size_t, size_t);
     RexxString *lowerRexx(RexxInteger *, RexxInteger *);
+    RexxInteger*isASCIIRexx();
     RexxString *stringTrace();
     void        setNumberString(NumberString *);
     RexxString *concatWith(RexxString *, char);
@@ -559,6 +562,12 @@ class RexxString : public RexxObject
     inline void  setHasUpper() { attributes.set(STRING_HASUPPER);}
     inline bool  nonNumeric() const {return attributes[STRING_NONNUMERIC];}
     inline void  setNonNumeric() { attributes.set(STRING_NONNUMERIC);}
+    inline bool  isASCIIChecked() const { return attributes[STRING_ISASCII_CHECKED]; }
+    inline void  setIsASCIIChecked() { attributes.set(STRING_ISASCII_CHECKED); }
+    // if isASCII() is true then it's really ASCII
+    // if isASCII() is false then it's really not ASCII only when isASCIIChecked() is true, otherwise can't tell
+    inline bool  isASCII() const { return attributes[STRING_ISASCII]; }
+    inline void  setIsASCII() { attributes.set(STRING_ISASCII); }
     inline bool  strCompare(const char * s) const { return memCompare((s), strlen(s)); }
     inline bool  strCaselessCompare(const char * s) const { return (size_t)length == strlen(s) && Utilities::strCaselessCompare(s, stringData) == 0;}
     inline bool  strCaselessCompare(RexxString *s) const { return length == s->getLength() && Utilities::strCaselessCompare(s->getStringData(), stringData) == 0;}
@@ -703,6 +712,22 @@ class RexxString : public RexxObject
             }
         }
         return result;
+    }
+
+    /**
+     * Checks if the string contains only ASCII characters.
+     *
+     * @return true if this string contains ASCII characters only,
+     *         false otherwise.
+     *
+     */
+    inline bool checkIsASCII()
+    {
+        if (this->isASCIIChecked()) return this->isASCII();
+        bool isASCII = StringUtil::checkIsASCII(this->getStringData(), this->getLength());
+        if (isASCII) this->setIsASCII();
+        this->setIsASCIIChecked();
+        return isASCII;
     }
 
     static inline char intToHexDigit(int n)
