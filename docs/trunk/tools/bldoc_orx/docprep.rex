@@ -45,13 +45,13 @@
     if docpath = '' then do
         say 'You must specify the path to the ooRexx docs.'
         say 'Please run the DOCPATH command first.'
-        exit
+        exit 1
     end
     info? = props~getLogical('verbose') -- amount of information displayed
     -- check that the document name has been specified
     if arg(1, O) then do
         say 'You must specify the name of the ooRexx document to be built.'
-        exit
+        exit 1
     end
     parse arg whichdoc .
     -- verify that whichdoc is a valid document name
@@ -60,7 +60,7 @@
     doc_source = .file~new(srcdir)
     if \doc_source~exists then do
         say 'Unable to find' srcdir'; please check the spelling.'
-        exit
+        exit 1
     end
     say time() '- Preparing' whichdoc 'source files.'
 
@@ -211,6 +211,8 @@
     props~setProperty('whichdoc', whichdoc)
     call save_props                     -- save the updated properties
     say time() whichdoc 'source files are ready.'
+
+    exit 0
 
 ::requires "doc_props.rex"
 ::requires "delTree.rex"
