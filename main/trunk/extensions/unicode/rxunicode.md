@@ -219,7 +219,7 @@ Method-to-Unicode property mapping (PropertyAliases.txt):
 
 #### 1.1.1.   codepointBidiClass
 
-    .RexxUnicodeServices~codepointBidiClass(codepoint [, [>refCode] [, >refLabel]])
+    .RexxUnicodeServices~codepointBidiClass(codepoint [, [>refCode] [, [>refLabel]]])
 
 Returns the bidirectional character type of `codepoint` as an enumeration value.
 
@@ -284,7 +284,7 @@ Returns `.true` if the `Bidi_Mirrored` property value of `codepoint` is `Yes`.
 
 #### 1.1.3.   codepointBoundClass
 
-    .RexxUnicodeServices~codepointBoundClass(codepoint [, [>refCode] [, >refLabel]])
+    .RexxUnicodeServices~codepointBoundClass(codepoint [, [>refCode] [, [>refLabel]]])
 
 Returns the `Grapheme_Cluster_Break` property value of `codepoint` as an enumeration value.
 
@@ -343,7 +343,7 @@ For portability, use refCode instead.
 
 #### 1.1.4.   codepointCategory
 
-    .RexxUnicodeServices~codepointCategory(codepoint [, [>refCode] [, >refLabel]])
+    .RexxUnicodeServices~codepointCategory(codepoint [, [>refCode] [, [>refLabel]]])
 
 Returns the `General_Category` property value of `codepoint` as an enumeration value.
 
@@ -416,7 +416,7 @@ instead of -1 as in `wcwidth`.
 
 #### 1.1.6.   codepointCombiningClass
 
-    .RexxUnicodeServices~codepointCombiningClass(codepoint [, [>refCode] [, >refLabel]])
+    .RexxUnicodeServices~codepointCombiningClass(codepoint [, [>refCode] [, [>refLabel]]])
 
 Returns the `Canonical_Combining_Class` property value of `codepoint`.
 
@@ -541,7 +541,7 @@ Returns `.true` if `codepoint` belongs to the `Zl`, `Zp`, `Cc`, or `Cf` category
 
 #### 1.1.8.   codepointDecompositionType
 
-    .RexxUnicodeServices~codepointDecompositionType(codepoint [, [>refCode] [, >refLabel]])
+    .RexxUnicodeServices~codepointDecompositionType(codepoint [, [>refCode] [, [>refLabel]]])
 
 Returns the `Decomposition_Type` property value of `codepoint` as an enumeration value.
 
@@ -611,7 +611,7 @@ Returns the `Default_Ignorable_Code_Point` property value of `codepoint` (boolea
 
 #### 1.1.11.   codepointIndicConjunctBreak
 
-    .RexxUnicodeServices~codepointIndicConjunctBreak(codepoint [, [>refCode] [, >refLabel]])
+    .RexxUnicodeServices~codepointIndicConjunctBreak(codepoint [, [>refCode] [, [>refLabel]]])
 
 Returns the `Indic_Conjunct_Break (InCB)` property value of `codepoint` as an enumeration value.
 
@@ -887,9 +887,9 @@ This isn't a sequence of valid flag pairs semantically — it doesn't matter,
 
 RI_A = .RexxUnicode~U2C("U+1F1E6")
 
-.RexxUnicode~stringInfo(RI_A~copies(100))=      -- '(not-ASCII, 50 graphemes, 100 codepoints, 400 bytes, 0 error)'
-.RexxUnicode~stringInfo(RI_A~copies(100000))=   -- '(not-ASCII, 50000 graphemes, 100000 codepoints, 400000 bytes, 0 error)'
-.RexxUnicode~stringInfo("A"~copies(100000))=    -- '(ASCII, 100000 graphemes, 100000 codepoints, 100000 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo(RI_A~copies(100))=      -- '(not-ASCII, 50 graphemes, 100 codepoints, 400 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo(RI_A~copies(100000))=   -- '(not-ASCII, 50000 graphemes, 100000 codepoints, 400000 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo("A"~copies(100000))=    -- '(ASCII, 100000 graphemes, 100000 codepoints, 100000 bytes, 0 error)'
 
 s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(100)); do while s~available; s~next; end      -- Duration: 0.001217
 s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(1000)); do while s~available; s~next; end     -- Duration: 0.026591
@@ -941,9 +941,9 @@ string start without finding a Consonant, then returns "break allowed."
 ZWJ = .RexxUnicode~U2C("U+200D")
 KA = .RexxUnicode~U2C("U+0915")
 
-.RexxUnicode~stringInfo(ZWJ~copies(100) || KA)=         -- '(not-ASCII, 2 graphemes, 101 codepoints, 303 bytes, 0 error)'                       Duration: 0.001262
-.RexxUnicode~stringInfo(ZWJ~copies(100000000) || KA)=   -- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'           Duration: 45.556058
-.RexxUnicode~stringInfo("A"~copies(100000000) || KA)=   -- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'   Duration: 53.451210
+.RexxUnicode~utf8StringInfo(ZWJ~copies(100) || KA)=         -- '(not-ASCII, 2 graphemes, 101 codepoints, 303 bytes, 0 error)'                       Duration: 0.001262
+.RexxUnicode~utf8StringInfo(ZWJ~copies(100000000) || KA)=   -- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'           Duration: 45.556058
+.RexxUnicode~utf8StringInfo("A"~copies(100000000) || KA)=   -- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'   Duration: 53.451210
 
 s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(100) || KA); do while s~available; s~next; end         -- Duration: 0.000577
 s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(1000) || KA); do while s~available; s~next; end        -- Duration: 0.001165
@@ -972,9 +972,9 @@ acute = .RexxUnicode~U2C("U+0301")
 ZWJ = .RexxUnicode~U2C("U+200D")
 grin = .RexxUnicode~U2C("U+1F600")
 
-.RexxUnicode~stringInfo(acute~copies(100) || ZWJ || grin)=          -- '(not-ASCII, 2 graphemes, 102 codepoints, 207 bytes, 0 error)'                       Duration: 0.000829
-.RexxUnicode~stringInfo(acute~copies(100000000) || ZWJ || grin)=    -- '(not-ASCII, 2 graphemes, 100000002 codepoints, 200000007 bytes, 0 error)'           Duration: 44.753312
-.RexxUnicode~stringInfo("A"~copies(100000000) || ZWJ || grin)=      -- '(not-ASCII, 100000001 graphemes, 100000002 codepoints, 100000007 bytes, 0 error)'   Duration: 53.045773
+.RexxUnicode~utf8StringInfo(acute~copies(100) || ZWJ || grin)=          -- '(not-ASCII, 2 graphemes, 102 codepoints, 207 bytes, 0 error)'                       Duration: 0.000829
+.RexxUnicode~utf8StringInfo(acute~copies(100000000) || ZWJ || grin)=    -- '(not-ASCII, 2 graphemes, 100000002 codepoints, 200000007 bytes, 0 error)'           Duration: 44.753312
+.RexxUnicode~utf8StringInfo("A"~copies(100000000) || ZWJ || grin)=      -- '(not-ASCII, 100000001 graphemes, 100000002 codepoints, 100000007 bytes, 0 error)'   Duration: 53.045773
 
 s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100) || ZWJ || grin); do while s~available; s~next; end          -- Duration: 0.001653
 s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(1000) || ZWJ || grin); do while s~available; s~next; end         -- Duration: 0.001594
@@ -1035,7 +1035,7 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 #### 1.1.23.   utf8DecodeCodepoint
 
 ```
-.RexxUnicodeServices~utf8DecodeCodepoint(string, indexB [, [>refSizeB] [, [>refErrorCode] [, >refErrorMsg]]])
+.RexxUnicodeServices~utf8DecodeCodepoint(string, indexB [, [>refSizeB] [, [>refErrorCode] [, [>refErrorMsg]]]])
 
 .RexxUnicodeServices~utf8DecodeCodepoint(
     string,         -- (in)             A UTF-8 string.
@@ -1106,7 +1106,7 @@ to follow the `U+FFFD` Substitution of Maximal Subparts.
 #### 1.1.24.   utf8DecodePreviousCodepoint
 
 ```
-.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, [, [>refSizeB] [, [>refErrorCode] [, >refErrorMsg]]])
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB [, [>refSizeB] [, [>refErrorCode] [, [>refErrorMsg]]]])
 
 
 .RexxUnicodeServices~utf8DecodePreviousCodepoint(
@@ -1279,9 +1279,70 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 ```
 
 
+<a id="utf8StringInfo"></a>
+
+#### 1.1.27.   utf8StringInfo
+
+```
+.RexxUnicodeServices~utf8StringInfo(string [, [>refGraphemeCount] [, [>refCodepointCount] [, [>refErrorCount]]]])
+
+.RexxUnicodeServices~utf8StringInfo(
+    string,                 -- (in)             A UTF-8 string.
+    >refGraphemeCount,      -- (out, optional)  The count of graphemes
+    >refCodepointCount,     -- (out, optional)  The count of codepoints
+    >refErrorCount          -- (out, optional)  The count of errors
+    )
+```
+
+Performs a full scan of a UTF-8 string without storing indexes or error messages.  
+This native method gives a good indication of performance.
+
+Returns `.true` if `string` is a valid UTF-8 string.  
+Returns additional information through reference variables.
+
+`refGraphemeCount` receives the count of graphemes in `string`.  
+`refCodepointCount` receives the count of codepoints in `string`.  
+`refErrorCount` receives the count of errors detected in `string`.  
+
+**Examples:**
+
+```rexx
+.RexxUnicodeServices~utf8StringInfo("e", >g, >c, >e)=; g=; c=; e=      -- 1; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("é", >g, >c, >e)=; g=; c=; e=      -- 1; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("€", >g, >c, >e)=; g=; c=; e=      -- 1; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("🎅", >g, >c, >e)=; g=; c=; e=    -- 1; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("👨‍👩‍👧", >g, >c, >e)=; g=; c=; e=    -- 1; 1; 5; 0
+
+-- CAREFUL! An ASCII string can have a grapheme made of several codepoints
+string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")
+.RexxUnicode~utf8StringInfo(string)=                                    -- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
+.RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)=; g=; c=; e=    -- 1; 3; 4; 0
+
+-- Invalid string
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+.RexxUnicodeServices~utf8StringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >g, >c, >e)=; g=; c=; e=     -- 0; 5; 5; 4
+.RexxUnicodeServices~utf8StringInfo("F4 91 92 93 FF 41 80 BF 42"x, >g, >c, >e)=; g=; c=; e=     -- 0; 9; 9; 7
+
+-- 10 millions bytes, 10 millions codepoints, 10 millions graphemes
+-- Durations on Macbook Pro M1 32GB
+string = "Family 👨‍👩‍👧" || "*"~copies(10000000) || "🤶 and 🎅."
+.RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.1071422
+g=; c=; e=                                                  --  10000016; 10000020; 0
+
+-- 30 millions bytes, 10 millions codepoints, 2 graphemes
+-- Durations on Macbook Pro M1 32GB
+ZWJ = .RexxUnicode~U2C("U+200D")
+KA = .RexxUnicode~U2C("U+0915")
+.RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.1332700
+g=; c=; e=                                                                      --  2; 100000001; 0
+
+```
+
+
 <a id="utf8Transform"></a>
 
-#### 1.1.27.   utf8Transform
+#### 1.1.28.   utf8Transform
 
 ```
 .RexxUnicodeServices~utf8Transform(string [, casefold = .false [, lump= .false [, nlf = 0 [, normalization = 0 [, stripCC = .false [, stripIgnorable= .false [, stripMark = .false [, stripNA = .false]]]]]]]])
@@ -1301,13 +1362,13 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 
 Returns the transformed string.
 
-##### 1.1.27.1.   'caseFold' argument
+##### 1.1.28.1.   'caseFold' argument
 
 Performs unicode case folding, to be able to do a case-insensitive
 string comparison.
 
 
-##### 1.1.27.2.   'lump' argument
+##### 1.1.28.2.   'lump' argument
 
 Maps certain characters to a common representative (i.e., several distinct characters produce the same output character).  
 All the concerned characters become the same character, but still remain distinct characters.
@@ -1349,7 +1410,7 @@ Mapping rules:
     U+007E  ~   <-- tilde operator U+223C
 
 
-##### 1.1.27.3.   'nlf' argument
+##### 1.1.28.3.   'nlf' argument
 
 [https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213][newline_guidelines]
 
@@ -1376,7 +1437,7 @@ NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are converted
 to the Unicode Paragraph Separator (PS) codepoint.
 
 
-##### 1.1.27.4.   'normalization' argument
+##### 1.1.28.4.   'normalization' argument
 
 ```rexx
 -- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).
@@ -1391,7 +1452,7 @@ to the Unicode Paragraph Separator (PS) codepoint.
 If `normalization` is not `0`, apply the requested normalization.
 
 
-##### 1.1.27.5.   'stripCC' argument
+##### 1.1.28.5.   'stripCC' argument
 
 Strips and/or converts control characters.
 
@@ -1402,13 +1463,13 @@ are treated as a NLF-sequence in this case.
 All other control characters are simply removed.
 
 
-##### 1.1.27.6.   'stripIgnorable' argument
+##### 1.1.28.6.   'stripIgnorable' argument
 
 Strips the characters whose property `Default_Ignorable_Code_Point` is true,
 such as `SOFT-HYPHEN` or `ZERO-WIDTH-SPACE`.
 
 
-##### 1.1.27.7.   'stripMark' argument
+##### 1.1.28.7.   'stripMark' argument
 
 Strips all character markings.
 
@@ -1421,12 +1482,12 @@ This includes non-spacing, spacing and enclosing (i.e. accents) categories:
 This option works only with a normalization applied.
 
 
-##### 1.1.27.8.   'stripNA' argument
+##### 1.1.28.8.   'stripNA' argument
 
 Strips the characters whose category is `Cn` Unassigned.
 
 
-##### 1.1.27.9.   Examples of transformations
+##### 1.1.28.9.   Examples of transformations
 
 ```rexx
 string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n"
@@ -2177,13 +2238,13 @@ Escaping U+D800 is '\xED\xA0\x80' because \x{EDA080} can't be UTF-8 decoded as U
 ```
 
 
-<a id="stringInfo"></a>
+<a id="RexxUnicode_utf8StringInfo"></a>
 
-#### 2.4.17.   stringInfo
+#### 2.4.17.   utf8StringInfo
 
-    .RexxUnicode~stringInfo(string [, >indexer])
+    .RexxUnicode~utf8StringInfo(string [, >indexer])
 
-Returns a string providing information about the given string:
+Returns a string providing information about the given UTF-8 string:
 
 - Whether it is ASCII or non-ASCII
 - Grapheme count
@@ -2196,12 +2257,12 @@ If provided, `indexer` receives a `RexxUnicodeStringIndexer` instance.
 **Examples:**
 
 ```rexx
-.RexxUnicode~stringInfo("")=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
-.RexxUnicode~stringInfo("e")=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
-.RexxUnicode~stringInfo("é")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
-.RexxUnicode~stringInfo("€")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
-.RexxUnicode~stringInfo("🎅")=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
-.RexxUnicode~stringInfo("👨‍👩‍👧")=          -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo("")=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
+.RexxUnicode~utf8StringInfo("e")=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+.RexxUnicode~utf8StringInfo("é")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo("€")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo("🎅")=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo("👨‍👩‍👧")=          -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
 
 ```
 
@@ -2209,7 +2270,7 @@ If provided, `indexer` receives a `RexxUnicodeStringIndexer` instance.
 -- Invalid string
 -- U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
-.RexxUnicode~stringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >indexer)=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+.RexxUnicode~utf8StringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >indexer)=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
 indexer~errors==
     /*
     an Array (shape [4], 4 items)
@@ -2235,6 +2296,10 @@ Returns `.true` if the given string contains only characters <= "7F"x
 ```rexx
 .RexxUnicode~stringIsASCII("Noel")=     -- 1
 .RexxUnicode~stringIsASCII("Noël")=     -- 0
+
+-- CAREFUL! An ASCII string can have a grapheme made of several codepoints
+string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")
+.RexxUnicode~utf8StringInfo(string)=    -- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
 
 ```
 

@@ -123,7 +123,7 @@ Constants
 Additional string services
 *******************************************************************************/
 
-::method stringInfo class
+::method utf8StringInfo class
     if arg() == 2 then use strict arg string, >indexer
                   else use strict arg string
     string = requestBaseString(string)

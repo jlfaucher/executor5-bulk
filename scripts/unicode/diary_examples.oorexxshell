@@ -7,6 +7,118 @@ demo on
 
 
 -- ===============================================================================
+-- 2026 Aug 13
+
+/*
+[Unicode]
+
+Rename .RexxUnicode~stringInfo to .RexxUnicode~utf8StringInfo.
+
+Add .RexxUnicodeServices~utf8StringInfo(string [, [>refGraphemeCount] [, [>refCodepointCount] [, [>refErrorCount]]]])
+    string                  -- (in)             A UTF-8 string.
+    >refGraphemeCount       -- (out, optional)  The count of graphemes
+    >refCodepointCount      -- (out, optional)  The count of codepoints
+    >refErrorCount          -- (out, optional)  The count of errors
+
+    Performs a full scan of a UTF-8 string without storing indexes or error messages.
+    This native method gives a good indication of performance.
+
+Examples
+*/
+
+.RexxUnicodeServices~utf8StringInfo("")=                            -- 1
+.RexxUnicodeServices~utf8StringInfo("", >g)=; g=                    -- 1; 0
+.RexxUnicodeServices~utf8StringInfo("", , >c)=; c=                  -- 1; 0
+.RexxUnicodeServices~utf8StringInfo("", , , >e)=; e=                -- 1; 0
+.RexxUnicodeServices~utf8StringInfo("", >g, >c, >e)=; g=; c=; e=    -- 1; 0; 0; 0
+
+.RexxUnicodeServices~utf8StringInfo("e", >g, >c, >e)=; g=; c=; e=      -- 1; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("é", >g, >c, >e)=; g=; c=; e=      -- 1; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("€", >g, >c, >e)=; g=; c=; e=      -- 1; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("🎅", >g, >c, >e)=; g=; c=; e=    -- 1; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("👨‍👩‍👧", >g, >c, >e)=; g=; c=; e=    -- 1; 1; 5; 0
+
+-- CAREFUL! An ASCII string can have a grapheme made of several codepoints
+string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")
+.RexxUnicode~utf8StringInfo(string)=                                    -- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
+.RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)=; g=; c=; e=    -- 1; 3; 4; 0
+
+-- Invalid string
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+.RexxUnicodeServices~utf8StringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >g, >c, >e)=; g=; c=; e=     -- 0; 5; 5; 4
+.RexxUnicodeServices~utf8StringInfo("F4 91 92 93 FF 41 80 BF 42"x, >g, >c, >e)=; g=; c=; e=     -- 0; 9; 9; 7
+
+/*
+Benchmark
+*/
+
+-- Macbook pro M1 32GB
+-- .RexxUnicode~utf8StringInfo is slow: uses a RexxUnicodeStringIndexer with no storage, implemented in ooRexx
+-- .RexxUnicodeServices~utf8StringInfo is faster: native method
+
+-- optim 1: reuse the property record of previousCodepoint instead of retrieving 2 property records at each iteration.
+-- optim 2: if codepoint == previousCodepoint then no need to retrieve the property record of codepoint.
+-- optim 3: skip full decode when the raw bytes repeat (not activated)
+
+-- 10 millions bytes, 10 millions codepoints, 10 millions graphemes
+string = "Family 👨‍👩‍👧" || "*"~copies(10000000) || "🤶 and 🎅."
+-- too long: info = .RexxUnicode~utf8StringInfo(string)     -- Duration: 5.233037, 5.287271, 5.245505, 5.239272, 5.253515. Average = 5.25172
+-- info=                                                    -- '(not-ASCII, 10000016 graphemes, 10000020 codepoints, 10000039 bytes, 0 error)'
+.RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.105788, 0.103031, 0.100204, 0.111781, 0.114907. Average = 0.1071422
+g=; c=; e=                                                  --  10000016; 10000020; 0
+-- ratio = 49.06
+-- optim 1
+.RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.082261, 0.087612, 0.077739, 0.087773, 0.084461. Average = 0.0839692
+-- ratio = 62.54
+-- optim 2
+.RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.06872, 0.073200, 0.069776, 0.080893, 0.076436. Average = 0.073805
+-- ratio = 71.16
+-- optim 3
+.RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.089076, 0.068300, 0.071087, 0.085485, 0.084304. Average = 0.0796504
+-- ratio = 65.93
+
+-- 300 millions bytes, 100 millions codepoints, 2 graphemes
+ZWJ = .RexxUnicode~U2C("U+200D")
+KA = .RexxUnicode~U2C("U+0915")
+-- too long: info = .RexxUnicode~utf8StringInfo(ZWJ~copies(100000000) || KA)    -- Duration: 45.556058, 46.796244, 48.250135, 46.613391, 46.676635. Average = 46.7784926
+-- info=                                                                        -- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'
+.RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.337074, 1.309241, 1.367224, 1.351572, 1.298391. Average = 1.3327004
+g=; c=; e=                                                                      --  2; 100000001; 0
+-- ratio = 35.10
+-- optim 1
+.RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.302490, 1.101131, 1.264783, 1.243771, 1.119017. Average = 1.2062384
+-- ratio = 38.78
+-- optim 2
+.RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.045596, 1.028079, 1.094758, 1.114948, 1.039706. Average = 1.0646174
+-- ratio = 43.94
+-- optim 3
+.RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.291277, 1.117111, 1.203934, 1.146306, 1.108294. Average = 1.1733844
+-- ratio = 39.87
+
+-- 100 millions bytes, 100 millions codepoints, 100 millions graphemes
+KA = .RexxUnicode~U2C("U+0915")
+-- too long: info = .RexxUnicode~utf8StringInfo("A"~copies(100000000) || KA)    -- Duration: 53.451210, 52.015446, 51.984145, 52.098991, 52.183925. Average = 52.3467434
+-- info=                                                                        -- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'
+.RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.104649, 1.058669, 1.073647, 1.083256, 1.052081. Average = 1.0744604
+g=; c=; e=                                                                      --  100000001; 100000001; 0
+-- ratio = 48.72
+-- optim 1
+.RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.937448, 0.970168, 0.877471, 0.892368, 0.853769. Average = 0.9062448
+-- ratio = 57.76
+-- optim 2
+.RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.777837, 0.762745, 0.792339, 0.769909, 0.748684. Average = 0.7703028
+-- ratio = 67.96
+-- optim 3
+.RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.802837, 0.806789, 0.825034, 0.819688, 0.776116. Average = 0.8060928
+-- ratio = 64.94
+
+/*
+Conclusion: optim 3 reduces performance, stay with optim 2.
+*/
+
+
+-- ===============================================================================
 -- 2026 Aug 11
 
 /*
@@ -1113,7 +1225,7 @@ Don't complain if ICU4ooRexx is already registered with a different package.
 TUTOR can load ICU4ooRexx, the package will be different from ooRexxShell's.
 
 
-Add .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, [, [>refSizeB] [, [>refErrorCode] [, >refErrorMsg]]])
+Add .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB [, [>refSizeB] [, [>refErrorCode] [, [>refErrorMsg]]]])
     string          -- (in)             A UTF-8 string.
     indexB          -- (in)             The byte index (1-based) of the boundary before which to decode.
                     --                  Valid range: 1..length+1.
@@ -1229,7 +1341,7 @@ Add aRexxUnicodeStringIndexer~graphemeIndexG(indexB)
 
 Add aRexxUnicodeStringIndexer~info
     Returns a string providing information about the indexer's string.
-    Now .RexxUnicode~stringInfo delegates to this method.
+    Now .RexxUnicode~utf8StringInfo delegates to this method.
 
 
 Add routine requestRexxUnicodeStringIndexer(object)
@@ -1965,7 +2077,7 @@ Backward-incompatible changes:
 - the .RexxUnicode~graphemeAtIndexC method was removed, replaced by .RexxUnicodeStringIndexer~graphemeAtIndexG (yes, G).
 
 
-Add .RexxUnicode~stringInfo(string [, >indexer])
+Add .RexxUnicode~utf8StringInfo(string [, >indexer])
 
 Add .RexxUnicode~stringIsASCII(string)
     Returns .true if the string contains only characters <= "7F"x
@@ -1995,17 +2107,17 @@ Add .RexxUnicode~stringToNFKD(string, casefold = .false, lump= .false, nlf = 0, 
 Examples
 */
 
-.RexxUnicode~stringInfo("")=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
-.RexxUnicode~stringInfo("e")=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
-.RexxUnicode~stringInfo("é")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
-.RexxUnicode~stringInfo("€")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
-.RexxUnicode~stringInfo("🎅")=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
-.RexxUnicode~stringInfo("👨‍👩‍👧")=    -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo("")=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
+.RexxUnicode~utf8StringInfo("e")=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+.RexxUnicode~utf8StringInfo("é")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo("€")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo("🎅")=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo("👨‍👩‍👧")=    -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
 
 -- Invalid string
 -- U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
-.RexxUnicode~stringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >indexer)=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+.RexxUnicode~utf8StringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >indexer)=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
 indexer~errors==
 /*
         an Array (shape [4], 4 items)

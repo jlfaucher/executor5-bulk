@@ -199,6 +199,104 @@ ssize_t integer(RexxObject *obj, const char *errorMessage)
 
 /******************************************************************************/
 /*                                                                            */
+/* UTF8Proc Duplications (because not exposed)                                */
+/* Needed for optimization                                                    */
+/*                                                                            */
+/* grapheme_break_simple                                                      */
+/* grapheme_break_extended                                                    */
+/*                                                                            */
+/******************************************************************************/
+
+// Duplicated, to update if needed each time utf8proc is updated
+static utf8proc_bool grapheme_break_simple(int lbc, int tbc) {
+  return
+    (lbc == UTF8PROC_BOUNDCLASS_START) ? true :       // GB1
+    (lbc == UTF8PROC_BOUNDCLASS_CR &&                 // GB3
+     tbc == UTF8PROC_BOUNDCLASS_LF) ? false :         // ---
+    (lbc >= UTF8PROC_BOUNDCLASS_CR && lbc <= UTF8PROC_BOUNDCLASS_CONTROL) ? true :  // GB4
+    (tbc >= UTF8PROC_BOUNDCLASS_CR && tbc <= UTF8PROC_BOUNDCLASS_CONTROL) ? true :  // GB5
+    (lbc == UTF8PROC_BOUNDCLASS_L &&                  // GB6
+     (tbc == UTF8PROC_BOUNDCLASS_L ||                 // ---
+      tbc == UTF8PROC_BOUNDCLASS_V ||                 // ---
+      tbc == UTF8PROC_BOUNDCLASS_LV ||                // ---
+      tbc == UTF8PROC_BOUNDCLASS_LVT)) ? false :      // ---
+    ((lbc == UTF8PROC_BOUNDCLASS_LV ||                // GB7
+      lbc == UTF8PROC_BOUNDCLASS_V) &&                // ---
+     (tbc == UTF8PROC_BOUNDCLASS_V ||                 // ---
+      tbc == UTF8PROC_BOUNDCLASS_T)) ? false :        // ---
+    ((lbc == UTF8PROC_BOUNDCLASS_LVT ||               // GB8
+      lbc == UTF8PROC_BOUNDCLASS_T) &&                // ---
+     tbc == UTF8PROC_BOUNDCLASS_T) ? false :          // ---
+    (tbc == UTF8PROC_BOUNDCLASS_EXTEND ||             // GB9
+     tbc == UTF8PROC_BOUNDCLASS_ZWJ ||                // ---
+     tbc == UTF8PROC_BOUNDCLASS_SPACINGMARK ||        // GB9a
+     lbc == UTF8PROC_BOUNDCLASS_PREPEND) ? false :    // GB9b
+    (lbc == UTF8PROC_BOUNDCLASS_E_ZWG &&              // GB11 (requires additional handling below)
+     tbc == UTF8PROC_BOUNDCLASS_EXTENDED_PICTOGRAPHIC) ? false : // ----
+    (lbc == UTF8PROC_BOUNDCLASS_REGIONAL_INDICATOR &&          // GB12/13 (requires additional handling below)
+     tbc == UTF8PROC_BOUNDCLASS_REGIONAL_INDICATOR) ? false :  // ----
+    true; // GB999
+}
+
+
+// Duplicated, to update if needed each time utf8proc is updated
+static utf8proc_bool grapheme_break_extended(int lbc, int tbc, int licb, int ticb, utf8proc_int32_t *state)
+{
+  if (state) {
+    int state_bc, state_icb; /* boundclass and indic_conjunct_break state */
+    if (*state == 0) { /* state initialization */
+      state_bc = lbc;
+      state_icb = licb == UTF8PROC_INDIC_CONJUNCT_BREAK_CONSONANT ? licb : UTF8PROC_INDIC_CONJUNCT_BREAK_NONE;
+    }
+    else { /* lbc and licb are already encoded in *state */
+      state_bc = *state & 0xff;  // 1st byte of state is bound class
+      state_icb = *state >> 8;   // 2nd byte of state is indic conjunct break
+    }
+
+    utf8proc_bool break_permitted = grapheme_break_simple(state_bc, tbc) &&
+       !(state_icb == UTF8PROC_INDIC_CONJUNCT_BREAK_LINKER
+        && ticb == UTF8PROC_INDIC_CONJUNCT_BREAK_CONSONANT); // GB9c
+
+    // Special support for GB9c.  Don't break between two consonants
+    // separated 1+ linker characters and 0+ extend characters in any order.
+    // After a consonant, we enter LINKER state after at least one linker.
+    if (ticb == UTF8PROC_INDIC_CONJUNCT_BREAK_CONSONANT
+        || state_icb == UTF8PROC_INDIC_CONJUNCT_BREAK_CONSONANT
+        || state_icb == UTF8PROC_INDIC_CONJUNCT_BREAK_EXTEND)
+      state_icb = ticb;
+    else if (state_icb == UTF8PROC_INDIC_CONJUNCT_BREAK_LINKER)
+      state_icb = ticb == UTF8PROC_INDIC_CONJUNCT_BREAK_EXTEND ?
+                  UTF8PROC_INDIC_CONJUNCT_BREAK_LINKER : ticb;
+
+    // Special support for GB 12/13 made possible by GB999. After two RI
+    // class codepoints we want to force a break. Do this by resetting the
+    // second RI's bound class to UTF8PROC_BOUNDCLASS_OTHER, to force a break
+    // after that character according to GB999 (unless of course such a break is
+    // forbidden by a different rule such as GB9).
+    if (state_bc == tbc && tbc == UTF8PROC_BOUNDCLASS_REGIONAL_INDICATOR)
+      state_bc = UTF8PROC_BOUNDCLASS_OTHER;
+    // Special support for GB11 (emoji extend* zwj / emoji)
+    else if (state_bc == UTF8PROC_BOUNDCLASS_EXTENDED_PICTOGRAPHIC) {
+      if (tbc == UTF8PROC_BOUNDCLASS_EXTEND) // fold EXTEND codepoints into emoji
+        state_bc = UTF8PROC_BOUNDCLASS_EXTENDED_PICTOGRAPHIC;
+      else if (tbc == UTF8PROC_BOUNDCLASS_ZWJ)
+        state_bc = UTF8PROC_BOUNDCLASS_E_ZWG; // state to record emoji+zwg combo
+      else
+        state_bc = tbc;
+    }
+    else
+      state_bc = tbc;
+
+    *state = state_bc + (state_icb << 8);
+    return break_permitted;
+  }
+  else
+    return grapheme_break_simple(lbc, tbc);
+}
+
+
+/******************************************************************************/
+/*                                                                            */
 /* UTF8Proc Extensions                                                        */
 /*                                                                            */
 /* utf8proc_iterate_extended                                                  */
@@ -831,14 +929,14 @@ RexxString *RexxUnicodeServicesClass::unicodeVersion()
 /**
  * Given a string and a byte index, return a codepoint and its size in bytes.
  *
- * @param string        (in)  A UTF-8 string.
- * @param indexB        (in)  The byte index (1-based) of the encoded codepoint in rexxString
- * @param refSizeB      (out) The number of bytes read to decode the codepoint (negative if error),
- *                            or 0 if indexB is at the end of the string (indexB == length+1).
- * @param refErrorCode  (out) The null string "" if a valid codepoint could be read,
- *                            or the error code otherwise.
- * @param refErrorMsg   (out) The null string "" if a valid codepoint could be read,
- *                            or the error message otherwise.
+ * @param string        (in)            A UTF-8 string.
+ * @param indexB        (in)            The byte index (1-based) of the encoded codepoint in rexxString
+ * @param refSizeB      (out, optional) The number of bytes read to decode the codepoint (negative if error),
+ *                                      or 0 if indexB is at the end of the string (indexB == length+1).
+ * @param refErrorCode  (out, optional) The null string "" if a valid codepoint could be read,
+ *                                      or the error code otherwise.
+ * @param refErrorMsg   (out, optional) The null string "" if a valid codepoint could be read,
+ *                                      or the error message otherwise.
  *
  * @return The codepoint if a valid codepoint could be read,
  *         or -1 otherwise.
@@ -883,7 +981,7 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodeCodepoint(RexxString *string, R
     char errmsg[errmsgSize];
     utf8proc_ssize_t size = utf8proc_iterate_extended(str + pos, remainingLength, &codepoint, index, errcode, errcodeSize, errmsg, errmsgSize);
 
-    if (refSizeB != OREF_NULL && refSizeB != 0)
+    if (refSizeB != OREF_NULL && size != 0)
     {
         RexxInteger *rexxSize = new_integer(size); // Protected<RexxInteger> not needed
         refSizeB->setValue(rexxSize);
@@ -916,16 +1014,16 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodeCodepoint(RexxString *string, R
  * and "the one right before it" respectively. Passing indexB = length+1 returns
  * the last codepoint of the string.
  *
- * @param string        (in)  A UTF-8 string.
- * @param indexB        (in)  The byte index (1-based) of the boundary before which
- *                            to decode. Valid range: 1..length+1. (1 means "nothing
- *                            precedes the start of the string".)
- * @param refSizeB      (out) The number of bytes read to decode the codepoint (negative if error),
- *                            or 0 if indexB is at the begining of the string (indexB == 1).
- * @param refErrorCode  (out) The null string "" if a valid codepoint could be read,
- *                            or the error code otherwise.
- * @param refErrorMsg   (out) The null string "" if a valid codepoint could be read,
- *                            or the error message otherwise.
+ * @param string        (in)            A UTF-8 string.
+ * @param indexB        (in)            The byte index (1-based) of the boundary before which
+ *                                      to decode. Valid range: 1..length+1. (1 means "nothing
+ *                                      precedes the start of the string".)
+ * @param refSizeB      (out, optional) The number of bytes read to decode the codepoint (negative if error),
+ *                                      or 0 if indexB is at the begining of the string (indexB == 1).
+ * @param refErrorCode  (out, optional) The null string "" if a valid codepoint could be read,
+ *                                      or the error code otherwise.
+ * @param refErrorMsg   (out, optional) The null string "" if a valid codepoint could be read,
+ *                                      or the error message otherwise.
  *
  * @return The codepoint if a valid codepoint could be read,
  *         or -1 otherwise.
@@ -970,7 +1068,7 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodePreviousCodepoint(RexxString *s
     char errmsg[errmsgSize];
     utf8proc_ssize_t size = utf8proc_iterate_extended_backward(str_start, str_end, buffer_end, &codepoint, index, errcode, errcodeSize, errmsg, errmsgSize);
 
-    if (refSizeB != OREF_NULL && refSizeB != 0)
+    if (refSizeB != OREF_NULL && size != 0)
     {
         RexxInteger *rexxSize = new_integer(size); // Protected<RexxInteger> not needed
         refSizeB->setValue(rexxSize);
@@ -995,11 +1093,11 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodePreviousCodepoint(RexxString *s
 /**
  * Append a codepoint's UTF-8 encoding into the specified mutable buffer.
  *
- * @param rexxCodepoint (in)     The codepoint to encode.
- * @param destination   (in-out) The mutable buffer to update.
- * @param refSizeB      (out)    The size of the encoded byte sequence (0..4)
- *                               The size is 0 if the codepoint is not in the
- *                               range 0..10FFFF
+ * @param rexxCodepoint (in)            The codepoint to encode.
+ * @param destination   (in-out)        The mutable buffer to update.
+ * @param refSizeB      (out, optional) The size of the encoded byte sequence (0..4)
+ *                                      The size is 0 if the codepoint is not in the
+ *                                      range 0..10FFFF
  *
  * @return The mutable buffer passed with the destination argument.
  */
@@ -1025,6 +1123,118 @@ MutableBuffer *RexxUnicodeServicesClass::utf8EncodeCodepoint(RexxInteger *rexxCo
 
     destination->append(buffer, size);
     return destination;
+}
+
+
+/**
+ * Performs a full scan of a UTF-8 string without storing indexes or error messages.
+ * Returns .true if `string` is a valid UTF-8 string.
+ * Returns additional information through reference variables.
+ *
+ * @param string            (in)                A UTF-8 string.
+ * @param refCodepointCount (out, optional)     The count of codepoints.
+ * @param refGraphemeCount  (out, optional)     The count of graphemes.
+ * @param refErrorCount     (out, optional)     The count of errors.
+ *
+ * @return .true if `string` is a valid UTF-8 string, .false otherwise.
+ */
+RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, VariableReference *refGraphemeCount, VariableReference *refCodepointCount, VariableReference *refErrorCount)
+{
+    // Check arguments
+
+    requiredArgument(string, "string");
+    if (string->classObject() != TheStringClass)
+    {
+        Protected<RexxString> errmsg = new_string("Argument string class: expected String, found ");
+        errmsg = errmsg->concat(string->classObject()->getId());
+        reportException(Error_Invalid_argument_user_defined, errmsg);
+    }
+
+    if (refGraphemeCount != OREF_NULL) classArgument(refGraphemeCount, TheVariableReferenceClass, "refGraphemeCount");
+    if (refCodepointCount != OREF_NULL) classArgument(refCodepointCount, TheVariableReferenceClass, "refCodepointCount");
+    if (refErrorCount != OREF_NULL) classArgument(refErrorCount, TheVariableReferenceClass, "refErrorCount");
+
+    const utf8proc_uint8_t *str = (const utf8proc_uint8_t *) string->getStringData();
+    utf8proc_ssize_t remainingLength = string->getLength();
+
+    size_t codepointCount = 0;
+    size_t graphemeCount = 0;
+    size_t errorCount = 0;
+
+    utf8proc_int32_t previousCodepoint = -1;
+    const utf8proc_property_t *previousCodepointProperty = NULL;
+
+    utf8proc_int32_t codepoint = -1;
+    const utf8proc_property_t *codepointProperty = NULL;
+
+    utf8proc_int32_t graphemeBreakState = 0;
+
+
+    for (;;)
+    {
+        utf8proc_ssize_t sizeB = utf8proc_iterate_extended(str, remainingLength, &codepoint);
+        if (sizeB == 0) break;
+        if (sizeB < 0)
+        {
+            // Here, codepoint == -1, so previousCodepoint will become -1
+            codepointProperty = NULL;
+            errorCount += 1;
+            codepointCount += 1;
+            graphemeCount += 1;
+            graphemeBreakState = 0;
+            sizeB = -sizeB;
+        }
+        else
+        {
+            // optim 2: if codepoint == previousCodepoint then no need to retrieve the property record of codepoint.
+            if (codepoint != previousCodepoint) codepointProperty = utf8proc_get_property(codepoint); // must get it now, will be assigned to previousCodepointProperty
+
+            codepointCount += 1;
+            if (previousCodepoint < 0)
+            {
+                // First codepoint or Error recovery
+                graphemeCount += 1;
+            }
+            else
+            {
+                // optim 1: reuse the property record of previousCodepoint instead of retrieving 2 property records at each iteration.
+
+                // Here, previousCodepoint is >= 0, so previousCodepointProperty has already the right value
+                utf8proc_bool graphemeBreak = grapheme_break_extended(  previousCodepointProperty->boundclass,
+                                                                        codepointProperty->boundclass,
+                                                                        previousCodepointProperty->indic_conjunct_break,
+                                                                        codepointProperty->indic_conjunct_break,
+                                                                        &graphemeBreakState);
+
+                //utf8proc_bool graphemeBreak = utf8proc_grapheme_break_stateful(previousCodepoint, codepoint, &graphemeBreakState);
+                if (graphemeBreak) graphemeCount += 1;
+            }
+        }
+        previousCodepoint = codepoint;
+        previousCodepointProperty = codepointProperty;
+        str += sizeB;
+        remainingLength -= sizeB;
+    }
+
+    if (refGraphemeCount != OREF_NULL)
+    {
+        RexxInteger *rexxGraphemeCount = new_integer(graphemeCount); // Protected<RexxString> not needed
+        refGraphemeCount->setValue(rexxGraphemeCount);
+    }
+
+    if (refCodepointCount != OREF_NULL)
+    {
+        RexxInteger *rexxCodepointCount = new_integer(codepointCount); // Protected<RexxInteger> not needed
+        refCodepointCount->setValue(rexxCodepointCount);
+    }
+
+    if (refErrorCount != OREF_NULL)
+    {
+        RexxInteger *rexxErrorCount = new_integer(errorCount); // Protected<RexxString> not needed
+        refErrorCount->setValue(rexxErrorCount);
+    }
+
+    return (errorCount == 0) ? TheTrueObject : TheFalseObject;
 }
 
 

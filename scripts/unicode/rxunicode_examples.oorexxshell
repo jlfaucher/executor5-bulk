@@ -146,9 +146,9 @@ Repeat the Regional Indicator Symbol Letter, e.g. 🇦 = `U+1F1E6`:
 
 RI_A = .RexxUnicode~U2C("U+1F1E6")
 
-.RexxUnicode~stringInfo(RI_A~copies(100))=      -- '(not-ASCII, 50 graphemes, 100 codepoints, 400 bytes, 0 error)'
-.RexxUnicode~stringInfo(RI_A~copies(100000))=   -- '(not-ASCII, 50000 graphemes, 100000 codepoints, 400000 bytes, 0 error)'
-.RexxUnicode~stringInfo("A"~copies(100000))=    -- '(ASCII, 100000 graphemes, 100000 codepoints, 100000 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo(RI_A~copies(100))=      -- '(not-ASCII, 50 graphemes, 100 codepoints, 400 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo(RI_A~copies(100000))=   -- '(not-ASCII, 50000 graphemes, 100000 codepoints, 400000 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo("A"~copies(100000))=    -- '(ASCII, 100000 graphemes, 100000 codepoints, 100000 bytes, 0 error)'
 
 s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(100)); do while s~available; s~next; end      -- Duration: 0.001217
 s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(1000)); do while s~available; s~next; end     -- Duration: 0.026591
@@ -177,9 +177,9 @@ with no Consonant anywhere in it, terminated by one Consonant:
 ZWJ = .RexxUnicode~U2C("U+200D")
 KA = .RexxUnicode~U2C("U+0915")
 
-.RexxUnicode~stringInfo(ZWJ~copies(100) || KA)=         -- '(not-ASCII, 2 graphemes, 101 codepoints, 303 bytes, 0 error)'                       Duration: 0.001262
--- too long: .RexxUnicode~stringInfo(ZWJ~copies(100000000) || KA)=   -- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'           Duration: 45.556058
--- too long: .RexxUnicode~stringInfo("A"~copies(100000000) || KA)=   -- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'   Duration: 53.451210
+.RexxUnicode~utf8StringInfo(ZWJ~copies(100) || KA)=         -- '(not-ASCII, 2 graphemes, 101 codepoints, 303 bytes, 0 error)'                       Duration: 0.001262
+-- too long: .RexxUnicode~utf8StringInfo(ZWJ~copies(100000000) || KA)=   -- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'           Duration: 45.556058
+-- too long: .RexxUnicode~utf8StringInfo("A"~copies(100000000) || KA)=   -- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'   Duration: 53.451210
 
 s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(100) || KA); do while s~available; s~next; end         -- Duration: 0.000577
 s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(1000) || KA); do while s~available; s~next; end        -- Duration: 0.001165
@@ -208,9 +208,9 @@ acute = .RexxUnicode~U2C("U+0301")
 ZWJ = .RexxUnicode~U2C("U+200D")
 grin = .RexxUnicode~U2C("U+1F600")
 
-.RexxUnicode~stringInfo(acute~copies(100) || ZWJ || grin)=          -- '(not-ASCII, 2 graphemes, 102 codepoints, 207 bytes, 0 error)'                       Duration: 0.000829
--- too long: .RexxUnicode~stringInfo(acute~copies(100000000) || ZWJ || grin)=    -- '(not-ASCII, 2 graphemes, 100000002 codepoints, 200000007 bytes, 0 error)'           Duration: 44.753312
--- too long: .RexxUnicode~stringInfo("A"~copies(100000000) || ZWJ || grin)=      -- '(not-ASCII, 100000001 graphemes, 100000002 codepoints, 100000007 bytes, 0 error)'   Duration: 53.045773
+.RexxUnicode~utf8StringInfo(acute~copies(100) || ZWJ || grin)=          -- '(not-ASCII, 2 graphemes, 102 codepoints, 207 bytes, 0 error)'                       Duration: 0.000829
+-- too long: .RexxUnicode~utf8StringInfo(acute~copies(100000000) || ZWJ || grin)=    -- '(not-ASCII, 2 graphemes, 100000002 codepoints, 200000007 bytes, 0 error)'           Duration: 44.753312
+-- too long: .RexxUnicode~utf8StringInfo("A"~copies(100000000) || ZWJ || grin)=      -- '(not-ASCII, 100000001 graphemes, 100000002 codepoints, 100000007 bytes, 0 error)'   Duration: 53.045773
 
 s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100) || ZWJ || grin); do while s~available; s~next; end          -- Duration: 0.001653
 s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(1000) || ZWJ || grin); do while s~available; s~next; end         -- Duration: 0.001594
@@ -292,6 +292,41 @@ indexB -= abs(size); indexB=                                                    
 */
 indexB -= abs(size); indexB=                                                                                                    -- 1                                                                                                  -- 3
 .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, >size, >errorCode, >errorMsg)=; size=; errorCode=; errorMsg=   -- -1; 0; ''; ''
+
+
+--------------------------------------------------------------------------------
+--  .RexxUnicodeServices~utf8StringInfo
+--------------------------------------------------------------------------------
+
+.RexxUnicodeServices~utf8StringInfo("e", >g, >c, >e)=; g=; c=; e=      -- 1; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("é", >g, >c, >e)=; g=; c=; e=      -- 1; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("€", >g, >c, >e)=; g=; c=; e=      -- 1; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("🎅", >g, >c, >e)=; g=; c=; e=    -- 1; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("👨‍👩‍👧", >g, >c, >e)=; g=; c=; e=    -- 1; 1; 5; 0
+
+-- CAREFUL! An ASCII string can have a grapheme made of several codepoints
+string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")
+.RexxUnicode~utf8StringInfo(string)=                                    -- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
+.RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)=; g=; c=; e=    -- 1; 3; 4; 0
+
+-- Invalid string
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+.RexxUnicodeServices~utf8StringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >g, >c, >e)=; g=; c=; e=     -- 0; 5; 5; 4
+.RexxUnicodeServices~utf8StringInfo("F4 91 92 93 FF 41 80 BF 42"x, >g, >c, >e)=; g=; c=; e=     -- 0; 9; 9; 7
+
+-- 10 millions bytes, 10 millions codepoints, 10 millions graphemes
+-- Durations on Macbook Pro M1 32GB
+string = "Family 👨‍👩‍👧" || "*"~copies(10000000) || "🤶 and 🎅."
+.RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.1071422
+g=; c=; e=                                                  --  10000016; 10000020; 0
+
+-- 30 millions bytes, 10 millions codepoints, 2 graphemes
+-- Durations on Macbook Pro M1 32GB
+ZWJ = .RexxUnicode~U2C("U+200D")
+KA = .RexxUnicode~U2C("U+0915")
+.RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.1332700
+g=; c=; e=                                                                      --  2; 100000001; 0
 
 
 --------------------------------------------------------------------------------
@@ -664,21 +699,21 @@ Escaping U+D800 is '\xED\xA0\x80' because \x{EDA080} can't be UTF-8 decoded as U
 
 
 --------------------------------------------------------------------------------
---  .RexxUnicode~stringInfo
+--  .RexxUnicode~utf8StringInfo
 --------------------------------------------------------------------------------
 
-.RexxUnicode~stringInfo("")=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
-.RexxUnicode~stringInfo("e")=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
-.RexxUnicode~stringInfo("é")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
-.RexxUnicode~stringInfo("€")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
-.RexxUnicode~stringInfo("🎅")=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
-.RexxUnicode~stringInfo("👨‍👩‍👧")=          -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo("")=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
+.RexxUnicode~utf8StringInfo("e")=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+.RexxUnicode~utf8StringInfo("é")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo("€")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo("🎅")=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+.RexxUnicode~utf8StringInfo("👨‍👩‍👧")=          -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
 
 
 -- Invalid string
 -- U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
-.RexxUnicode~stringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >indexer)=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+.RexxUnicode~utf8StringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >indexer)=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
 indexer~errors==
 /*
     an Array (shape [4], 4 items)
@@ -695,6 +730,10 @@ indexer~errors==
 
 .RexxUnicode~stringIsASCII("Noel")=     -- 1
 .RexxUnicode~stringIsASCII("Noël")=     -- 0
+
+-- CAREFUL! An ASCII string can have a grapheme made of several codepoints
+string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")
+.RexxUnicode~utf8StringInfo(string)=    -- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
 
 
 --------------------------------------------------------------------------------

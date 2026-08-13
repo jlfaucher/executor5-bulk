@@ -42,13 +42,178 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
-</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 11 Aug 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S103edQbc4826340
+</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 12 Aug 2026
+</span><span style="font-weight:bold;color:green;">Input queue name: S1826bQbc4828a80
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
 
+
+<span style="font-weight:bold;color:blue;">-- ===============================================================================
+</span><span style="font-weight:bold;color:blue;">-- 2026 Aug 13
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">[Unicode]
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Rename .RexxUnicode~stringInfo to .RexxUnicode~utf8StringInfo.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Add .RexxUnicodeServices~utf8StringInfo(string [, [&gt;refGraphemeCount] [, [&gt;refCodepointCount] [, [&gt;refErrorCount]]]])
+</span><span style="font-weight:bold;color:blue;">    string                  -- (in)             A UTF-8 string.
+</span><span style="font-weight:bold;color:blue;">    &gt;refGraphemeCount       -- (out, optional)  The count of graphemes
+</span><span style="font-weight:bold;color:blue;">    &gt;refCodepointCount      -- (out, optional)  The count of codepoints
+</span><span style="font-weight:bold;color:blue;">    &gt;refErrorCount          -- (out, optional)  The count of errors
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">    Performs a full scan of a UTF-8 string without storing indexes or error messages.
+</span><span style="font-weight:bold;color:blue;">    This native method gives a good indication of performance.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Examples
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;&quot;)=                            </span><span style="font-weight:bold;color:blue;">-- 1</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;&quot;, &gt;g)=; g=                    </span><span style="font-weight:bold;color:blue;">-- 1; 0</span>
+ 1
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;&quot;, , &gt;c)=; c=                  </span><span style="font-weight:bold;color:blue;">-- 1; 0</span>
+ 1
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;&quot;, , , &gt;e)=; e=                </span><span style="font-weight:bold;color:blue;">-- 1; 0</span>
+ 1
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=    </span><span style="font-weight:bold;color:blue;">-- 1; 0; 0; 0</span>
+ 1
+ 0
+ 0
+ 0
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;e&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=      </span><span style="font-weight:bold;color:blue;">-- 1; 1; 1; 0</span>
+ 1
+ 1
+ 1
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;é&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=      </span><span style="font-weight:bold;color:blue;">-- 1; 1; 1; 0</span>
+ 1
+ 1
+ 1
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;€&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=      </span><span style="font-weight:bold;color:blue;">-- 1; 1; 1; 0</span>
+ 1
+ 1
+ 1
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;🎅&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=    </span><span style="font-weight:bold;color:blue;">-- 1; 1; 1; 0</span>
+ 1
+ 1
+ 1
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;👨‍👩‍👧&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=    </span><span style="font-weight:bold;color:blue;">-- 1; 1; 5; 0</span>
+ 1
+ 1
+ 5
+ 0
+
+<span style="font-weight:bold;color:blue;">-- CAREFUL! An ASCII string can have a grapheme made of several codepoints
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0041 U+000D U+000A U+0042&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringInfo(string)=                                    </span><span style="font-weight:bold;color:blue;">-- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'</span>
+'(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(string, &gt;g, &gt;c, &gt;e)=; g=; c=; e=    </span><span style="font-weight:bold;color:blue;">-- 1; 3; 4; 0</span>
+ 1
+ 3
+ 4
+ 0
+
+<span style="font-weight:bold;color:blue;">-- Invalid string
+</span><span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts
+</span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x, &gt;g, &gt;c, &gt;e)=; g=; c=; e=     </span><span style="font-weight:bold;color:blue;">-- 0; 5; 5; 4</span>
+ 0
+ 5
+ 5
+ 4
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, &gt;g, &gt;c, &gt;e)=; g=; c=; e=     </span><span style="font-weight:bold;color:blue;">-- 0; 9; 9; 7</span>
+ 0
+ 9
+ 9
+ 7
+
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">Benchmark
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Macbook pro M1 32GB
+</span><span style="font-weight:bold;color:blue;">-- .RexxUnicode~utf8StringInfo is slow: uses a RexxUnicodeStringIndexer with no storage, implemented in ooRexx
+</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~utf8StringInfo is faster: native method
+</span>
+<span style="font-weight:bold;color:blue;">-- optim 1: reuse the property record of previousCodepoint instead of retrieving 2 property records at each iteration.
+</span><span style="font-weight:bold;color:blue;">-- optim 2: if codepoint == previousCodepoint then no need to retrieve the property record of codepoint.
+</span><span style="font-weight:bold;color:blue;">-- optim 3: skip full decode when the raw bytes repeat (not activated)
+</span>
+<span style="font-weight:bold;color:blue;">-- 10 millions bytes, 10 millions codepoints, 10 millions graphemes
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;Family 👨‍👩‍👧&quot; || &quot;*&quot;~copies(10000000) || &quot;🤶 and 🎅.&quot;</span>
+<span style="font-weight:bold;color:blue;">-- too long: info = .RexxUnicode~utf8StringInfo(string)     -- Duration: 5.233037, 5.287271, 5.245505, 5.239272, 5.253515. Average = 5.25172
+</span><span style="font-weight:bold;color:blue;">-- info=                                                    -- '(not-ASCII, 10000016 graphemes, 10000020 codepoints, 10000039 bytes, 0 error)'
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(string, &gt;g, &gt;c, &gt;e)     </span><span style="font-weight:bold;color:blue;">-- Duration: 0.105788, 0.103031, 0.100204, 0.111781, 0.114907. Average = 0.1071422</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">g=; c=; e=                                                  </span><span style="font-weight:bold;color:blue;">--  10000016; 10000020; 0</span>
+ 10000016
+ 10000020
+ 0
+<span style="font-weight:bold;color:blue;">-- ratio = 49.06
+</span><span style="font-weight:bold;color:blue;">-- optim 1
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(string, &gt;g, &gt;c, &gt;e)     </span><span style="font-weight:bold;color:blue;">-- Duration: 0.082261, 0.087612, 0.077739, 0.087773, 0.084461. Average = 0.0839692</span>
+<span style="font-weight:bold;color:blue;">-- ratio = 62.54
+</span><span style="font-weight:bold;color:blue;">-- optim 2
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(string, &gt;g, &gt;c, &gt;e)     </span><span style="font-weight:bold;color:blue;">-- Duration: 0.06872, 0.073200, 0.069776, 0.080893, 0.076436. Average = 0.073805</span>
+<span style="font-weight:bold;color:blue;">-- ratio = 71.16
+</span><span style="font-weight:bold;color:blue;">-- optim 3
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(string, &gt;g, &gt;c, &gt;e)     </span><span style="font-weight:bold;color:blue;">-- Duration: 0.089076, 0.068300, 0.071087, 0.085485, 0.084304. Average = 0.0796504</span>
+<span style="font-weight:bold;color:blue;">-- ratio = 65.93
+</span>
+<span style="font-weight:bold;color:blue;">-- 300 millions bytes, 100 millions codepoints, 2 graphemes
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">ZWJ = .RexxUnicode~U2C(&quot;U+200D&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">KA = .RexxUnicode~U2C(&quot;U+0915&quot;)</span>
+<span style="font-weight:bold;color:blue;">-- too long: info = .RexxUnicode~utf8StringInfo(ZWJ~copies(100000000) || KA)    -- Duration: 45.556058, 46.796244, 48.250135, 46.613391, 46.676635. Average = 46.7784926
+</span><span style="font-weight:bold;color:blue;">-- info=                                                                        -- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, &gt;g, &gt;c, &gt;e)    </span><span style="font-weight:bold;color:blue;">-- Duration: 1.337074, 1.309241, 1.367224, 1.351572, 1.298391. Average = 1.3327004</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">g=; c=; e=                                                                      </span><span style="font-weight:bold;color:blue;">--  2; 100000001; 0</span>
+ 2
+ 100000001
+ 0
+<span style="font-weight:bold;color:blue;">-- ratio = 35.10
+</span><span style="font-weight:bold;color:blue;">-- optim 1
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, &gt;g, &gt;c, &gt;e)    </span><span style="font-weight:bold;color:blue;">-- Duration: 1.302490, 1.101131, 1.264783, 1.243771, 1.119017. Average = 1.2062384</span>
+<span style="font-weight:bold;color:blue;">-- ratio = 38.78
+</span><span style="font-weight:bold;color:blue;">-- optim 2
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, &gt;g, &gt;c, &gt;e)    </span><span style="font-weight:bold;color:blue;">-- Duration: 1.045596, 1.028079, 1.094758, 1.114948, 1.039706. Average = 1.0646174</span>
+<span style="font-weight:bold;color:blue;">-- ratio = 43.94
+</span><span style="font-weight:bold;color:blue;">-- optim 3
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, &gt;g, &gt;c, &gt;e)    </span><span style="font-weight:bold;color:blue;">-- Duration: 1.291277, 1.117111, 1.203934, 1.146306, 1.108294. Average = 1.1733844</span>
+<span style="font-weight:bold;color:blue;">-- ratio = 39.87
+</span>
+<span style="font-weight:bold;color:blue;">-- 100 millions bytes, 100 millions codepoints, 100 millions graphemes
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">KA = .RexxUnicode~U2C(&quot;U+0915&quot;)</span>
+<span style="font-weight:bold;color:blue;">-- too long: info = .RexxUnicode~utf8StringInfo(&quot;A&quot;~copies(100000000) || KA)    -- Duration: 53.451210, 52.015446, 51.984145, 52.098991, 52.183925. Average = 52.3467434
+</span><span style="font-weight:bold;color:blue;">-- info=                                                                        -- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;A&quot;~copies(100000000) || KA, &gt;g, &gt;c, &gt;e)    </span><span style="font-weight:bold;color:blue;">-- Duration: 1.104649, 1.058669, 1.073647, 1.083256, 1.052081. Average = 1.0744604</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">g=; c=; e=                                                                      </span><span style="font-weight:bold;color:blue;">--  100000001; 100000001; 0</span>
+ 100000001
+ 100000001
+ 0
+<span style="font-weight:bold;color:blue;">-- ratio = 48.72
+</span><span style="font-weight:bold;color:blue;">-- optim 1
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;A&quot;~copies(100000000) || KA, &gt;g, &gt;c, &gt;e)    </span><span style="font-weight:bold;color:blue;">-- Duration: 0.937448, 0.970168, 0.877471, 0.892368, 0.853769. Average = 0.9062448</span>
+<span style="font-weight:bold;color:blue;">-- ratio = 57.76
+</span><span style="font-weight:bold;color:blue;">-- optim 2
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;A&quot;~copies(100000000) || KA, &gt;g, &gt;c, &gt;e)    </span><span style="font-weight:bold;color:blue;">-- Duration: 0.777837, 0.762745, 0.792339, 0.769909, 0.748684. Average = 0.7703028</span>
+<span style="font-weight:bold;color:blue;">-- ratio = 67.96
+</span><span style="font-weight:bold;color:blue;">-- optim 3
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;A&quot;~copies(100000000) || KA, &gt;g, &gt;c, &gt;e)    </span><span style="font-weight:bold;color:blue;">-- Duration: 0.802837, 0.806789, 0.825034, 0.819688, 0.776116. Average = 0.8060928</span>
+<span style="font-weight:bold;color:blue;">-- ratio = 64.94
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">Conclusion: optim 3 reduces performance, stay with optim 2.
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
 
 <span style="font-weight:bold;color:blue;">-- ===============================================================================
 </span><span style="font-weight:bold;color:blue;">-- 2026 Aug 11
@@ -1680,7 +1845,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~ne
 </span><span style="font-weight:bold;color:blue;">TUTOR can load ICU4ooRexx, the package will be different from ooRexxShell's.
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">
-</span><span style="font-weight:bold;color:blue;">Add .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB, [, [&gt;refSizeB] [, [&gt;refErrorCode] [, &gt;refErrorMsg]]])
+</span><span style="font-weight:bold;color:blue;">Add .RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB [, [&gt;refSizeB] [, [&gt;refErrorCode] [, [&gt;refErrorMsg]]]])
 </span><span style="font-weight:bold;color:blue;">    string          -- (in)             A UTF-8 string.
 </span><span style="font-weight:bold;color:blue;">    indexB          -- (in)             The byte index (1-based) of the boundary before which to decode.
 </span><span style="font-weight:bold;color:blue;">                    --                  Valid range: 1..length+1.
@@ -1855,7 +2020,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">Add aRexxUnicodeStringIndexer~info
 </span><span style="font-weight:bold;color:blue;">    Returns a string providing information about the indexer's string.
-</span><span style="font-weight:bold;color:blue;">    Now .RexxUnicode~stringInfo delegates to this method.
+</span><span style="font-weight:bold;color:blue;">    Now .RexxUnicode~utf8StringInfo delegates to this method.
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">Add routine requestRexxUnicodeStringIndexer(object)
@@ -3114,7 +3279,7 @@ a StringTable (27 items)
 </span><span style="font-weight:bold;color:blue;">- the .RexxUnicode~graphemeAtIndexC method was removed, replaced by .RexxUnicodeStringIndexer~graphemeAtIndexG (yes, G).
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">
-</span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~stringInfo(string [, &gt;indexer])
+</span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~utf8StringInfo(string [, &gt;indexer])
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~stringIsASCII(string)
 </span><span style="font-weight:bold;color:blue;">    Returns .true if the string contains only characters &lt;= &quot;7F&quot;x
@@ -3144,23 +3309,23 @@ a StringTable (27 items)
 </span><span style="font-weight:bold;color:blue;">Examples
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(&quot;&quot;)=            </span><span style="font-weight:bold;color:blue;">-- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringInfo(&quot;&quot;)=            </span><span style="font-weight:bold;color:blue;">-- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'</span>
 '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(&quot;e&quot;)=           </span><span style="font-weight:bold;color:blue;">-- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringInfo(&quot;e&quot;)=           </span><span style="font-weight:bold;color:blue;">-- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'</span>
 '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(&quot;é&quot;)=           </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringInfo(&quot;é&quot;)=           </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'</span>
 '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(&quot;€&quot;)=           </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringInfo(&quot;€&quot;)=           </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'</span>
 '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(&quot;🎅&quot;)=          </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringInfo(&quot;🎅&quot;)=          </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'</span>
 '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(&quot;👨‍👩‍👧&quot;)=    </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringInfo(&quot;👨‍👩‍👧&quot;)=    </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'</span>
 '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
 
 <span style="font-weight:bold;color:blue;">-- Invalid string
 </span><span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts
 </span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x, &gt;indexer)=    </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringInfo(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x, &gt;indexer)=    </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'</span>
 '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errors==</span>
 an Array (shape [4], 4 items)
