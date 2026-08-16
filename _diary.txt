@@ -22,11 +22,76 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 Aug 15
+
+[Unicode]
+
+Undo the renaming of .RexxUnicode~stringInfo to .RexxUnicode~utf8StringInfo.
+Reasons:
+- other .RexxUnicode~stringXXXX methods were not renamed to utf8StringXXXX.
+- it is better not to override .RexxUnicodeServices~utf8StringInfo because the
+  arguments are different.
+
+
+.RexxUnicodeServices~utf8StringInfo:
+    Use a fast path when the count of graphemes is not requested.
+
+Benchmark
+
+    -- Macbook pro M1 32GB
+
+    -- 10 millions bytes, 10 millions codepoints, 10 millions graphemes
+    string = "Family 👨‍👩‍👧" || "*"~copies(10000000) || "🤶 and 🎅."
+    -- Before fast path implementation
+    .RexxUnicodeServices~utf8StringInfo(string, , >c, >e)   -- Duration: 0.062237, 0.071701, 0.078885, 0.081974, 0.068852. Average = 0.0727298
+    c=; e=                                                  --  10000020; 0
+    -- After fast path implementation
+    .RexxUnicodeServices~utf8StringInfo(string, , >c, >e)   -- Duration: 0.027473, 0.033450, 0.032635, 0.027523, 0.036320. Average = 0.0314802
+    c=; e=                                                  --  10000020; 0
+    -- ratio = 2.31
+
+    -- 300 millions bytes, 100 millions codepoints, 2 graphemes
+    ZWJ = .RexxUnicode~U2C("U+200D")
+    KA = .RexxUnicode~U2C("U+0915")
+    -- Before fast path implementation
+    .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, , >c, >e)      -- Duration: 1.154527, 0.999663, 1.122248, 1.081164, 1.012818. Average = 1.074084
+    c=; e=                                                                          --  100000001; 0
+    -- After fast path implementation
+    .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, , >c, >e)      -- Duration: 0.805320, 0.774022, 0.812426, 0.792617, 0.772113. Average = 0.7912996
+    c=; e=                                                                          --  100000001; 0
+    -- ratio = 1.36
+
+    -- 100 millions bytes, 100 millions codepoints, 100 millions graphemes
+    KA = .RexxUnicode~U2C("U+0915")
+    -- Before fast path implementation
+    .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, , >c, >e)      -- Duration: 0.795994, 0.751816, 0.838142, 0.771332, 0.746149. Average = 0.7806866
+    c=; e=                                                                          --  100000001; 0
+    -- After fast path implementation
+    .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, , >c, >e)      -- Duration: 0.384425, 0.387391, 0.414862, 0.395159, 0.396718. Average = 0.395711
+    c=; e=                                                                          --  100000001; 0
+    -- ratio = 1.97
+
+
+RexxUnicodeStringIndexer:
+    - Use a fast path when creating a RexxUnicodeStringIndexer instance with no storage.
+      The native method .RexxUnicodeServices~utf8StringInfo is called to collect the counters.
+    - No longer create arrays when a storage limit is 0 and the indexer is not incremental.
+      Assign .nil, like end storages.
+
+
+Bug
+    .RexxUnicode~stringUnescape("\u{0000}")=    -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
+    should not raise an error.
+Fixed:
+    .RexxUnicode~stringUnescape("\u{0000}")=    -- '[00]'
+
+
+===============================================================================
 2026 Aug 13
 
 [Unicode]
 
-Rename .RexxUnicode~stringInfo to .RexxUnicode~utf8StringInfo.
+[CANCELLED] Rename .RexxUnicode~stringInfo to .RexxUnicode~utf8StringInfo.
 
 Add .RexxUnicodeServices~utf8StringInfo(string [, [>refGraphemeCount] [, [>refCodepointCount] [, [>refErrorCount]]]])
     string                  -- (in)             A UTF-8 string.
@@ -53,7 +118,7 @@ Examples
 
     -- CAREFUL! An ASCII string can have a grapheme made of several codepoints
     string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")
-    .RexxUnicode~utf8StringInfo(string)=                                    -- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
+    .RexxUnicode~stringInfo(string)=                                        -- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
     .RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)=; g=; c=; e=    -- 1; 3; 4; 0
 
     -- Invalid string
@@ -65,7 +130,7 @@ Examples
 Benchmark
 
     -- Macbook pro M1 32GB
-    -- .RexxUnicode~utf8StringInfo is slow: uses a RexxUnicodeStringIndexer with no storage, implemented in ooRexx
+    -- .RexxUnicode~stringInfo(string)= is slow: uses a RexxUnicodeStringIndexer with no storage, implemented in ooRexx
     -- .RexxUnicodeServices~utf8StringInfo is faster: native method
 
     -- optim 1: reuse the property record of previousCodepoint instead of retrieving 2 property records at each iteration.
@@ -74,7 +139,7 @@ Benchmark
 
     -- 10 millions bytes, 10 millions codepoints, 10 millions graphemes
     string = "Family 👨‍👩‍👧" || "*"~copies(10000000) || "🤶 and 🎅."
-    info = .RexxUnicode~utf8StringInfo(string)                  -- Duration: 5.233037, 5.287271, 5.245505, 5.239272, 5.253515. Average = 5.25172
+    info = .RexxUnicode~stringInfo(string)                      -- Duration: 5.233037, 5.287271, 5.245505, 5.239272, 5.253515. Average = 5.25172
     info=                                                       -- '(not-ASCII, 10000016 graphemes, 10000020 codepoints, 10000039 bytes, 0 error)'
     .RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.105788, 0.103031, 0.100204, 0.111781, 0.114907. Average = 0.1071422
     g=; c=; e=                                                  --  10000016; 10000020; 0
@@ -92,7 +157,7 @@ Benchmark
     -- 300 millions bytes, 100 millions codepoints, 2 graphemes
     ZWJ = .RexxUnicode~U2C("U+200D")
     KA = .RexxUnicode~U2C("U+0915")
-    -- too long: info = .RexxUnicode~utf8StringInfo(ZWJ~copies(100000000) || KA)    -- Duration: 45.556058, 46.796244, 48.250135, 46.613391, 46.676635. Average = 46.7784926
+    -- too long: info = .RexxUnicode~stringInfo(ZWJ~copies(100000000) || KA)        -- Duration: 45.556058, 46.796244, 48.250135, 46.613391, 46.676635. Average = 46.7784926
     -- info=                                                                        -- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'
     .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.337074, 1.309241, 1.367224, 1.351572, 1.298391. Average = 1.3327004
     g=; c=; e=                                                                      --  2; 100000001; 0
@@ -109,7 +174,7 @@ Benchmark
 
     -- 100 millions bytes, 100 millions codepoints, 100 millions graphemes
     KA = .RexxUnicode~U2C("U+0915")
-    -- too long: info = .RexxUnicode~utf8StringInfo("A"~copies(100000000) || KA)    -- Duration: 53.451210, 52.015446, 51.984145, 52.098991, 52.183925. Average = 52.3467434
+    -- too long: info = .RexxUnicode~stringInfo("A"~copies(100000000) || KA)        -- Duration: 53.451210, 52.015446, 51.984145, 52.098991, 52.183925. Average = 52.3467434
     -- info=                                                                        -- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'
     .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.104649, 1.058669, 1.073647, 1.083256, 1.052081. Average = 1.0744604
     g=; c=; e=                                                                      --  100000001; 100000001; 0
@@ -164,7 +229,7 @@ Examples
 
     -- CAREFUL! An ASCII string can have a grapheme made of several codepoints
     string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")
-    .RexxUnicode~utf8StringInfo(string)=                                    -- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
+    .RexxUnicode~stringInfo(string)=    -- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
 
     -- Validation
     do i=0 to 1000; s1 = "00"x~copies(i); if \s1~isASCII then say "ko:" quoted(s1~c2x) "=" s1~isASCII; do j=1 to i; s2 = s1~replaceAt("80"x, j, 1); if s2~isASCII then say "ko:" quoted(s2~c2x) "=" s2~isASCII; end; end
@@ -253,7 +318,7 @@ Benchmark "1000 loops" common to all candidate implementations:
 2.5M é 7.5M  |  0,101131        2,224347        0,200010        0,561390        0,290811                1 non-ASCII character in the middle of the left half (2.5 million of ASCII characters before, 7.5 million of ASCII characters after)
 7.5M é 2.5M  |  0,326443        2,234832        0,420035        0,565008        0,301382                1 non-ASCII character in the middle of the right half (7.5 million of ASCII characters before, 2.5 millions of ASCII characters after)
 
-average         0,244           1,114           0,208           0,280           0,148408
+average         0,244           1,114           0,208           0,280           0,148
 
 
 Similar benchmark, but with 10000 loops per test case:
@@ -1271,17 +1336,17 @@ Add aRexxUnicodeStringIndexer~codepointIndexC(indexB)
     Returns the codepoint index corresponding to byte index `indexB`.
     It is negative if the byte index is not aligned with a codepoint boundary.
     Performs a binary search.
-    Supports negative byte indexes and sparse storage, even though the latter does not make much sense.
+    Supports negative byte indexes and sparse storage, even though the latter does not make much sense when non-incremental .
 
 Add aRexxUnicodeStringIndexer~graphemeIndexG(indexB)
     Returns the grapheme index corresponding to byte index `indexB`.
     It is negative if the byte index is not aligned with a grapheme boundary.
     Performs a binary search.
-    Supports negative byte indexes and sparse storage, even though the latter does not make much sense.
+    Supports negative byte indexes and sparse storage, even though the latter does not make much sense when non-incremental .
 
 Add aRexxUnicodeStringIndexer~info
     Returns a string providing information about the indexer's string.
-    Now .RexxUnicode~utf8StringInfo delegates to this method.
+    Now .RexxUnicode~stringInfo delegates to this method.
 
 
 Add routine requestRexxUnicodeStringIndexer(object)
@@ -1327,7 +1392,10 @@ Examples
     indexer~codepointIndexC(0)=     -- Invalid byte index: 0.
     indexer~codepointIndexC(-100)=  -- Invalid byte index: -100 exceeds the byte string length 20.
 
-    -- Binary search for codepoint indexes cannot work with sparse storage
+    -- Binary search for codepoint indexes in an empty string raises an error
+    .RexxUnicodeStringIndexer~new("")~codepointIndexC(1)=   -- Invalid byte index: 1 exceeds the byte string length 0.
+
+    -- Binary search for codepoint indexes cannot work with non-incremental sparse storage
     indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 1, 0, 0, 1)
     do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
         Codepoint index 4 is not stored. Binary search for byte index 1 requires unlimited storage.
@@ -1369,7 +1437,7 @@ Examples
     indexer~graphemeIndexG(0)=      -- Invalid byte index: 0.
     indexer~graphemeIndexG(-100)=   -- Invalid byte index: -100 exceeds the byte string length 20.
 
-    -- Binary search for grapheme index cannot work with sparse storage
+    -- Binary search for grapheme index cannot work with non-incremental sparse storage
     indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
     do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
         Grapheme index 2 is not stored. Binary search for byte index 1 requires unlimited storage.
@@ -2128,7 +2196,7 @@ Backward-incompatible changes:
 - the .RexxUnicode~graphemeAtIndexC method was removed, replaced by .RexxUnicodeStringIndexer~graphemeAtIndexG (yes, G).
 
 
-Add .RexxUnicode~utf8StringInfo(string [, >indexer])
+Add .RexxUnicode~stringInfo(string [, >indexer])
 
 Add .RexxUnicode~stringIsASCII(string)
     Returns .true if the string contains only characters <= "7F"x
@@ -2157,17 +2225,17 @@ Add .RexxUnicode~stringToNFKD(string, casefold = .false, lump= .false, nlf = 0, 
 
 Examples
 
-    .RexxUnicode~utf8StringInfo("")=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
-    .RexxUnicode~utf8StringInfo("e")=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
-    .RexxUnicode~utf8StringInfo("é")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
-    .RexxUnicode~utf8StringInfo("€")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
-    .RexxUnicode~utf8StringInfo("🎅")=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
-    .RexxUnicode~utf8StringInfo("👨‍👩‍👧")=    -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+    .RexxUnicode~stringInfo("")=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
+    .RexxUnicode~stringInfo("e")=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+    .RexxUnicode~stringInfo("é")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
+    .RexxUnicode~stringInfo("€")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
+    .RexxUnicode~stringInfo("🎅")=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+    .RexxUnicode~stringInfo("👨‍👩‍👧")=    -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
 
     -- Invalid string
     -- U+FFFD Substitution of Maximal Subparts
     -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
-    .RexxUnicode~utf8StringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >indexer)=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+    .RexxUnicode~stringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >indexer)=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
     indexer~errors==
         an Array (shape [4], 4 items)
          1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'

@@ -81,6 +81,7 @@ public:
     MutableBuffer *utf8EncodeCodepoint(RexxInteger *rexxCodepoint, MutableBuffer *destination, VariableReference *refSizeB);
 
     RexxInteger *utf8StringInfo(RexxString *string, VariableReference *refGraphemeCount, VariableReference *refCodepointCount, VariableReference *refErrorCount);
+    RexxInteger *utf8StringWidth(RexxString *string, VariableReference *refGraphemeWidthSum, VariableReference *refCodepointWidthSum, VariableReference *refGraphemeEastAsianWidthSum, VariableReference *refCodepointEastAsianWidthSum);
 
     RexxString *utf8Transform(RexxObject **arguments, size_t argCount);
     // use strict arg string, casefold = .false, lump= .false, nlf = 0, normalization = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false

@@ -10,7 +10,7 @@ supported by `ooRexx`. Its current implementation is based on the [`utf8proc`][u
 library embedded in `ooRexx`.
 
 
-`rxunicode.cls` is a package that defines:
+[`rxunicode.cls`][rxunicode_cls] is a package that defines:
 
 - The [`RexxUnicode`](#RexxUnicode) class, a subclass of `RexxUnicodeServices`.
 - The [`RexxUnicodeCodepointSupplier`](#RexxUnicodeCodepointSupplier) class.
@@ -22,7 +22,7 @@ library embedded in `ooRexx`.
 - The [`ICU4ooRexxInterface`](#ICU4ooRexxInterface) class.
 
 > [!CAUTION]  
-> Testing these classes from `ooRexxShell` with `TUTOR` enabled showed that a
+> Testing these classes from [`ooRexxShell`][oorexxshell_demo_interpreters] with [`TUTOR`][tutor] enabled showed that a
 > defensive barrier is needed. This problem is not limited to `TUTOR` classes;
 > it can occur with any `String` subclass that overrides `~length` or `~substr`.
 >
@@ -34,7 +34,7 @@ library embedded in `ooRexx`.
 > use `tutor off` for a permanent workaround,  
 > or use `~string` for a temporary workaround.
 >
-> The `requestBaseString` routine ensures that any string passed as an argument
+> The [`requestBaseString`][requestbasestring] routine ensures that any string passed as an argument
 > is a `.String` instance, not an instance of a subclass of `.String`.
 >
 > No attempt is made to obtain a string from these arguments.
@@ -229,6 +229,8 @@ Returns the bidirectional character type of `codepoint` as an enumeration value.
 The returned enumeration value is implementation-specific.  
 For portability, use refCode instead.
 
+[https://www.unicode.org/reports/tr9/#Table_Bidirectional_Character_Types][unicode_standard_annex_9_table_bidirectional_character_Types]
+
 **Enumeration values**
 
 ```rexx
@@ -294,6 +296,8 @@ Returns the `Grapheme_Cluster_Break` property value of `codepoint` as an enumera
 The returned enumeration value is implementation-specific.  
 For portability, use refCode instead.
 
+[https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries][unicode_standard_annex_29_grapheme_cluster_boundaries]
+
 **Enumeration values**
 
 ```rexx
@@ -353,6 +357,8 @@ Returns the `General_Category` property value of `codepoint` as an enumeration v
 The returned enumeration value is implementation-specific.  
 For portability, use refCode instead.
 
+[https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-4/#G124142][unicode_core_spec_general_category]
+
 **Enumeration values**
 
 ```rexx
@@ -411,6 +417,9 @@ Given a codepoint, returns a character width analogous to `wcwidth(codepoint)`,
 except that a width of 0 is returned for non-printable codepoints
 instead of -1 as in `wcwidth`.
 
+Unfortunately, this isn't the whole story.  
+[How is the Rust compiler able to tell the visible width of unicode characters?][rust_visible_width]
+
 
 <a id="codepointCombiningClass"></a>
 
@@ -429,6 +438,8 @@ defined as property value aliases to make their intended use easier to understan
 
 The numeric values from `0` to `254` returned by `codepointCombiningClass` are standard Unicode values.  
 Some values have neither a `refCode` nor a `refLabel`.
+
+[https://www.unicode.org/reports/tr44/#Canonical_Combining_Class_Values][unicode_standard_annex_44_canonical_combining_class_values]
 
 **Enumeration values**
 
@@ -551,6 +562,8 @@ Returns the `Decomposition_Type` property value of `codepoint` as an enumeration
 The returned enumeration value is implementation-specific.  
 For portability, use refCode instead.
 
+[https://unicode.org/reports/tr15/][unicode_standard_annex_15]
+
 **Enumeration values**
 
 ```rexx
@@ -606,6 +619,8 @@ Returns `.true` if the `East_Asian_Width` property value of `codepoint` is `"A"`
 
 Returns the `Default_Ignorable_Code_Point` property value of `codepoint` (boolean value).
 
+[https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G40025][unicode_core_spec_ignoring_characters]
+
 
 <a id="codepointIndicConjunctBreak"></a>
 
@@ -620,6 +635,8 @@ Returns the `Indic_Conjunct_Break (InCB)` property value of `codepoint` as an en
 
 The returned enumeration value is implementation-specific.  
 For portability, use refCode instead.
+
+[https://www.unicode.org/reports/tr44/#Derivation_InCB][unicode_standard_annex_44_derivation_incb]
 
 **Enumeration values**
 
@@ -887,9 +904,10 @@ This isn't a sequence of valid flag pairs semantically — it doesn't matter,
 
 RI_A = .RexxUnicode~U2C("U+1F1E6")
 
-.RexxUnicode~utf8StringInfo(RI_A~copies(100))=      -- '(not-ASCII, 50 graphemes, 100 codepoints, 400 bytes, 0 error)'
-.RexxUnicode~utf8StringInfo(RI_A~copies(100000))=   -- '(not-ASCII, 50000 graphemes, 100000 codepoints, 400000 bytes, 0 error)'
-.RexxUnicode~utf8StringInfo("A"~copies(100000))=    -- '(ASCII, 100000 graphemes, 100000 codepoints, 100000 bytes, 0 error)'
+.RexxUnicode~stringInfo(RI_A)=              -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+.RexxUnicode~stringInfo(RI_A~copies(2))=    -- '(not-ASCII, 1 grapheme, 2 codepoints, 8 bytes, 0 error)'
+.RexxUnicode~stringInfo(RI_A~copies(3))=    -- '(not-ASCII, 2 graphemes, 3 codepoints, 12 bytes, 0 error)'
+.RexxUnicode~stringInfo(RI_A~copies(4))=    -- '(not-ASCII, 2 graphemes, 4 codepoints, 16 bytes, 0 error)'
 
 s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(100)); do while s~available; s~next; end      -- Duration: 0.001217
 s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(1000)); do while s~available; s~next; end     -- Duration: 0.026591
@@ -941,9 +959,9 @@ string start without finding a Consonant, then returns "break allowed."
 ZWJ = .RexxUnicode~U2C("U+200D")
 KA = .RexxUnicode~U2C("U+0915")
 
-.RexxUnicode~utf8StringInfo(ZWJ~copies(100) || KA)=         -- '(not-ASCII, 2 graphemes, 101 codepoints, 303 bytes, 0 error)'                       Duration: 0.001262
-.RexxUnicode~utf8StringInfo(ZWJ~copies(100000000) || KA)=   -- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'           Duration: 45.556058
-.RexxUnicode~utf8StringInfo("A"~copies(100000000) || KA)=   -- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'   Duration: 53.451210
+.RexxUnicode~stringInfo(ZWJ~copies(100) || KA)=         -- '(not-ASCII, 2 graphemes, 101 codepoints, 303 bytes, 0 error)'                       Duration: 0.001262
+.RexxUnicode~stringInfo(ZWJ~copies(100000000) || KA)=   -- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'           Duration: 45.556058
+.RexxUnicode~stringInfo("A"~copies(100000000) || KA)=   -- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'   Duration: 53.451210
 
 s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(100) || KA); do while s~available; s~next; end         -- Duration: 0.000577
 s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(1000) || KA); do while s~available; s~next; end        -- Duration: 0.001165
@@ -972,9 +990,9 @@ acute = .RexxUnicode~U2C("U+0301")
 ZWJ = .RexxUnicode~U2C("U+200D")
 grin = .RexxUnicode~U2C("U+1F600")
 
-.RexxUnicode~utf8StringInfo(acute~copies(100) || ZWJ || grin)=          -- '(not-ASCII, 2 graphemes, 102 codepoints, 207 bytes, 0 error)'                       Duration: 0.000829
-.RexxUnicode~utf8StringInfo(acute~copies(100000000) || ZWJ || grin)=    -- '(not-ASCII, 2 graphemes, 100000002 codepoints, 200000007 bytes, 0 error)'           Duration: 44.753312
-.RexxUnicode~utf8StringInfo("A"~copies(100000000) || ZWJ || grin)=      -- '(not-ASCII, 100000001 graphemes, 100000002 codepoints, 100000007 bytes, 0 error)'   Duration: 53.045773
+.RexxUnicode~stringInfo(acute~copies(100) || ZWJ || grin)=          -- '(not-ASCII, 2 graphemes, 102 codepoints, 207 bytes, 0 error)'                       Duration: 0.000829
+.RexxUnicode~stringInfo(acute~copies(100000000) || ZWJ || grin)=    -- '(not-ASCII, 2 graphemes, 100000002 codepoints, 200000007 bytes, 0 error)'           Duration: 44.753312
+.RexxUnicode~stringInfo("A"~copies(100000000) || ZWJ || grin)=      -- '(not-ASCII, 100000001 graphemes, 100000002 codepoints, 100000007 bytes, 0 error)'   Duration: 53.045773
 
 s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100) || ZWJ || grin); do while s~available; s~next; end          -- Duration: 0.001653
 s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(1000) || ZWJ || grin); do while s~available; s~next; end         -- Duration: 0.001594
@@ -1315,7 +1333,7 @@ Returns additional information through reference variables.
 
 -- CAREFUL! An ASCII string can have a grapheme made of several codepoints
 string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")
-.RexxUnicode~utf8StringInfo(string)=                                    -- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
+.RexxUnicode~stringInfo(string)=                                        -- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
 .RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)=; g=; c=; e=    -- 1; 3; 4; 0
 
 -- Invalid string
@@ -1714,6 +1732,7 @@ Inherited methods:
 - [`utf8DecodePreviousCodepoint`](#utf8DecodePreviousCodepoint)
 - [`utf8EncodeCodepoint`](#utf8EncodeCodepoint)
 - [`utf8procVersion`](#utf8procVersion)
+- [`utf8StringInfo`](#utf8StringInfo)
 - [`utf8Transform`](#utf8Transform)
 
 
@@ -2238,11 +2257,11 @@ Escaping U+D800 is '\xED\xA0\x80' because \x{EDA080} can't be UTF-8 decoded as U
 ```
 
 
-<a id="RexxUnicode_utf8StringInfo"></a>
+<a id="RexxUnicode_stringInfo"></a>
 
-#### 2.4.17.   utf8StringInfo
+#### 2.4.17.   stringInfo
 
-    .RexxUnicode~utf8StringInfo(string [, >indexer])
+    .RexxUnicode~stringInfo(string [, >indexer])
 
 Returns a string providing information about the given UTF-8 string:
 
@@ -2257,12 +2276,12 @@ If provided, `indexer` receives a `RexxUnicodeStringIndexer` instance.
 **Examples:**
 
 ```rexx
-.RexxUnicode~utf8StringInfo("")=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
-.RexxUnicode~utf8StringInfo("e")=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
-.RexxUnicode~utf8StringInfo("é")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
-.RexxUnicode~utf8StringInfo("€")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
-.RexxUnicode~utf8StringInfo("🎅")=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
-.RexxUnicode~utf8StringInfo("👨‍👩‍👧")=          -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+.RexxUnicode~stringInfo("")=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
+.RexxUnicode~stringInfo("e")=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+.RexxUnicode~stringInfo("é")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
+.RexxUnicode~stringInfo("€")=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
+.RexxUnicode~stringInfo("🎅")=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+.RexxUnicode~stringInfo("👨‍👩‍👧")=          -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
 
 ```
 
@@ -2270,7 +2289,7 @@ If provided, `indexer` receives a `RexxUnicodeStringIndexer` instance.
 -- Invalid string
 -- U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
-.RexxUnicode~utf8StringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >indexer)=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+.RexxUnicode~stringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >indexer)=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
 indexer~errors==
     /*
     an Array (shape [4], 4 items)
@@ -2299,7 +2318,7 @@ Returns `.true` if the given string contains only characters <= "7F"x
 
 -- CAREFUL! An ASCII string can have a grapheme made of several codepoints
 string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")
-.RexxUnicode~utf8StringInfo(string)=    -- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
+.RexxUnicode~stringInfo(string)=    -- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
 
 ```
 
@@ -2482,6 +2501,14 @@ This method handles them at run time instead.
 
 ```
 
+```rexx
+-- Spaces between consecutive \u{...} sequences are significant.
+-- Spaces between consecutive U+... sequences are not significant.
+.RexxUnicode~stringUnescape(" \u{0041} \u{0042} ")=     -- ' A B '
+.RexxUnicode~U2C(           "  U+0041   U+0042  ")=     -- 'AB'
+
+```
+
 
 <a id="U2C"></a>
 
@@ -2500,6 +2527,14 @@ If an error occurs, any characters appended during this call are discarded.
 The result is either a string or the buffer passed as argument.
 
 **Examples:**
+
+```rexx
+-- Spaces between consecutive \u{...} sequences are significant.
+-- Spaces between consecutive U+... sequences are not significant.
+.RexxUnicode~stringUnescape(" \u{0041} \u{0042} ")=     -- ' A B '
+.RexxUnicode~U2C(           "  U+0041   U+0042  ")=     -- 'AB'
+
+```
 
 ```rexx
 .RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385")=                         -- 'Noël 🎅'
@@ -3686,7 +3721,22 @@ supplier raises an error.
 
 A `RexxUnicodeStringIndexer` instance provides direct access to codepoints and graphemes in a UTF-8 string.
 
-This is a temporary implementation that will be replaced by a native indexer.
+When a `RexxUnicodeStringIndexer` instance is created, a full scan of the UTF-8 string
+is performed, updating the index and error storage according to the storage settings passed
+to the `new` method.
+
+If the indexer is incremental, these methods may complete the storage on demand:
+
+- codepointAtIndexC
+- codepointIndexB
+- codepointIndexC
+- graphemeAtIndexG
+- graphemeIndexB
+- graphemeIndexG
+
+By default, a `RexxUnicodeStringIndexer` instance is non-incremental.
+
+For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
 `::requires "rxunicode.cls"`
 
@@ -3760,7 +3810,10 @@ Returns the codepoint at codepoint index `indexC` as a whole number.
 `indexC` must be a positive or negative whole number.  
 If `indexC` is negative, the codepoint index is counted from the end of the string.
 
-If `abs(indexC)` exceeds the codepoint count, or if the requested index is not stored in the indexer, an error is raised.
+An error is raised when
+
+- `abs(indexC)` exceeds the codepoint count.
+- the requested index is not stored and the indexer is non-incremental.
 
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
@@ -3781,13 +3834,16 @@ This result is not impacted by `codepointStorageLimit`.
 
     aRexxUnicodeStringIndexer~codepointIndexB(indexC)
 
-Returns the byte index corresponding to codepoint index `indexC`.  
+Returns the byte index (1-based) corresponding to codepoint index (1-based) `indexC`.  
 It is negative if the codepoint's byte sequence is invalid.
 
 `indexC` must be a positive or negative whole number.  
 If `indexC` is negative, the codepoint index is counted from the end of the string.
 
-If `abs(indexC)` exceeds the codepoint count, or if the requested index is not stored in the indexer, an error is raised.
+An error is raised when
+
+- `abs(indexC)` exceeds the codepoint count.
+- the requested index is not stored and the indexer is non-incremental.
 
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
@@ -3798,7 +3854,8 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
     aRexxUnicodeStringIndexer~codepointIndexC(indexB)
 
-Returns the codepoint index corresponding to byte index `indexB`.  
+Returns the codepoint index (1-based) corresponding to byte index (1-based) `indexB`.  
+It is zero if the codepoint index cannot be found with a binary search.  
 It is negative if the byte index is not aligned with a codepoint boundary.
 
 `indexB` must be a positive or negative whole number.  
@@ -3806,8 +3863,9 @@ If `indexB` is negative, the byte index is counted from the end of the string.
 
 If `abs(indexB)` exceeds the byte string length, an error is raised.
 
-Performs a binary search.
-With sparse storage, a binary search may fail if the requested index is not stored.
+Performs a binary search.  
+With sparse storage, a binary search may fail if the requested index or any of 
+the intermediate indexes are not stored and the indexer is non-incremental.
 
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
@@ -3851,11 +3909,30 @@ indexer~codepointIndexC(-5)=    -- 6
 ```
 
 ```rexx
--- Binary search for codeppoint indexes cannot work with sparse storage
+-- Binary search for codepoint indexes cannot work with non-incremental sparse storage
 indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
 do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
     /*
-    Codepoint index 4 is not stored. Binary search for byte index 1 requires unlimited storage.
+    1 : 0
+    2 : 0
+    3 : 0
+    4 : 0
+    5 : 0
+    6 : 0
+    7 : 0
+    8 : 0
+    9 : 0
+    10: 0
+    11: 0
+    12: 0
+    13: 0
+    14: 0
+    15: 0
+    16: 0
+    17: 0
+    18: 0
+    19: 0
+    20: 0
     */
 
 ```
@@ -3867,7 +3944,7 @@ do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); 
 
     aRexxUnicodeStringIndexer~codepointIndexes
 
-Returns the array of stored codepoint indexes.
+Returns the array of stored codepoint indexes, or `.nil` if `isIncremental` is `.false` and `codepointStorageLimit` is `0`.
 
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
@@ -3878,7 +3955,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
     aRexxUnicodeStringIndexer~codepointStorageLimit
 
-Returns the maximum number of codepoint indexes that can be stored in `codepointIndexes`.
+Returns the maximum number of codepoint indexes that can be stored in `codepointIndexes` during the full scan.
 
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
@@ -3889,7 +3966,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
     aRexxUnicodeStringIndexer~endCodepointIndexes
 
-Returns the array of codepoint indexes stored in the end storage, or `.nil` if `endCodepointStorageSize` is `0`.
+Returns the array of codepoint indexes stored in the end storage, or `.nil` if `isIncremental` is `.false` and `endCodepointStorageSize` is `0`.
 
 Codepoint indexes are stored in reverse order: the first item is the last codepoint index.
 
@@ -3911,7 +3988,7 @@ indexer~endCodepointIndexes=    -- [ 20, 16, 13, 9, 6]
 
     aRexxUnicodeStringIndexer~endCodepointStorageSize
 
-Returns the maximum number of codepoint indexes that can be stored in `endCodepointIndexes`.
+Returns the maximum number of codepoint indexes that can be stored in `endCodepointIndexes` during the full scan.
 
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
@@ -3922,7 +3999,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
     aRexxUnicodeStringIndexer~endErrors
 
-Returns the array of error messages stored in the end storage, or `.nil` if `endErrorStorageSize` is `0`.
+Returns the array of error messages stored in the end storage, or `.nil` if `isIncremental` is `.false` and `endErrorStorageSize` is `0`.
 
 Error messages are stored in reverse order: the first item corresponds to the last error encountered.
 
@@ -3963,7 +4040,7 @@ indexer~endErrors==
 
     aRexxUnicodeStringIndexer~endErrorStorageSize
 
-Returns the maximum number of error messages that can be stored in `endErrors`.
+Returns the maximum number of error messages that can be stored in `endErrors` during the full scan.
 
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
@@ -3974,7 +4051,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
     aRexxUnicodeStringIndexer~endGraphemeIndexes
 
-Returns the array of grapheme indexes stored in the end storage, or `.nil` if `endGraphemeStorageSize` is `0`.
+Returns the array of grapheme indexes stored in the end storage, or `.nil` if `isIncremental` is `.false` and `endGraphemeStorageSize` is `0`.
 
 Grapheme indexes are stored in reverse order: the first item is the last grapheme index.
 
@@ -3996,7 +4073,7 @@ indexer~endGraphemeIndexes=     -- [ 20, 2, 1]
 
     aRexxUnicodeStringIndexer~endGraphemeStorageSize
 
-Returns the maximum number of grapheme indexes that can be stored in `endGraphemeIndexes`.
+Returns the maximum number of grapheme indexes that can be stored in `endGraphemeIndexes` during the full scan.
 
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
@@ -4029,7 +4106,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
     aRexxUnicodeStringIndexer~errorStorageLimit
 
-Returns the maximum number of error messages that can be stored in `errors`.
+Returns the maximum number of error messages that can be stored in `errors` during the full scan.
 
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
@@ -4045,7 +4122,10 @@ Returns the grapheme at grapheme index `indexG` as a string.
 `indexG` must be a positive or negative whole number.  
 If `indexG` is negative, the grapheme index is counted from the end of the string.
 
-If `abs(indexG)` exceeds the grapheme count, or if the requested index is not stored in the indexer, an error is raised.
+An error is raised when
+
+- `abs(indexG)` exceeds the grapheme count.  
+- the requested index is not stored and the indexer is non-incremental.
 
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
@@ -4073,7 +4153,10 @@ It is negative if the grapheme's byte sequence is invalid.
 `indexG` must be a positive or negative whole number.  
 If `indexG` is negative, the grapheme index is counted from the end of the string.
 
-If `abs(indexG)` exceeds the grapheme count, or if the requested index is not stored in the indexer, an error is raised.
+An error is raised when
+
+- `abs(indexG)` exceeds the grapheme count.
+- the requested index is not stored and the indexer is non-incremental.
 
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
@@ -4085,6 +4168,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
     aRexxUnicodeStringIndexer~graphemeIndexG(indexB)
 
 Returns the grapheme index corresponding to byte index `indexB`.  
+It is zero if the grapheme index cannot be found with a binary search.
 It is negative if the byte index is not aligned with a grapheme boundary.
 
 `indexB` must be a positive or negative whole number.  
@@ -4092,8 +4176,9 @@ If `indexB` is negative, the byte index is counted from the end of the string.
 
 If `abs(indexB)` exceeds the byte string length, an error is raised.
 
-Performs a binary search.
-With sparse storage, a binary search may fail if the requested index is not stored.
+Performs a binary search.  
+With sparse storage, a binary search may fail if the requested index or any of 
+the intermediate indexes are not stored and the indexer is non-incremental.
 
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
@@ -4137,7 +4222,7 @@ indexer~graphemeIndexG(-19)=   -- 2
 ```
 
 ```rexx
--- Binary search for grapheme indexes cannot work with sparse storage
+-- Binary search for grapheme indexes cannot work with non-incremental sparse storage
 indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
 do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
     /*
@@ -4489,6 +4574,7 @@ Returns `.true` if the `Bidi_Mirrored` property value is `Yes`.
 
 [https://unicode.org/reports/tr9/#Mirroring][unicode_standard_annex_9_mirroring]
 
+Returns the same result as [`.RexxUnicodeServices~codepointBidiMirrored`](#codepointBidiMirrored).
 
 <a id="RexxUnicodeCharacter_boundClass"></a>
 
@@ -4588,6 +4674,7 @@ Returns a character width analogous to `wcwidth(self~codepoint)`,
 except that a width of 0 is returned for non-printable codepoints
 instead of -1 as in `wcwidth`.
 
+Returns the same value as [`.RexxUnicodeServices~codepointCharWidth`](#codepointCharWidth).
 
 <a id="RexxUnicodeCharacter_codepoint"></a>
 
@@ -4714,6 +4801,8 @@ Returns `.true` if the character's codepoint belongs to the `Zl`, `Zp`, `Cc`, or
 > and does not appear in [Unicode Standard Annex #29][unicode_standard_annex_29].
 > Therefore, this method may be deprecated in the future unless a use case is identified.
 
+Returns the same result as [`.RexxUnicodeServices~codepointControlBoundary`](#codepointControlBoundary).
+
 
 <a id="RexxUnicodeCharacter_decompositionType"></a>
 
@@ -4773,6 +4862,8 @@ Returns `.true` if the `East_Asian_Width` property value is `"A"` (`"Ambiguous"`
 
 [https://www.unicode.org/reports/tr11/][unicode_standard_annex_11]
 
+Returns the same result as [`.RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous`](#codepointEastAsianWidthIsAmbiguous).
+
 
 <a id="RexxUnicodeCharacter_extendedName"></a>
 
@@ -4809,6 +4900,8 @@ An extended name is either the standard name if defined, or a codepoint label al
 Returns the `Default_Ignorable_Code_Point` property value (boolean value).
 
 [https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G40025][unicode_core_spec_ignoring_characters]
+
+Returns the same result as [`.RexxUnicodeServices~codepointIgnorable`](#codepointIgnorable).
 
 
 <a id="RexxUnicodeCharacter_indicConjunctBreak"></a>
@@ -4867,7 +4960,7 @@ See [`.RexxUnicodeServices~codepointIndicConjunctBreak`](#codepointIndicConjunct
 
     aRexxUnicodeCharacter~info
 
-Returns a string table whose keys are property names returned by `.RexxUnicodeCharacter~properties`.  
+Returns a string table whose keys are property names returned by [`.RexxUnicodeCharacter~properties`](#RexxUnicodeCharacter_properties).  
 Each property name is used as a message name to retrieve the corresponding property value from the Unicode character.
 
 The following properties have a special representation:
@@ -4930,6 +5023,8 @@ Initializes a `RexxUnicodeCharacter` instance with the specified `codepoint`.
 Returns `.true` if the Unicode character is a lowercase character
 and `.false` otherwise.
 
+Returns the same result as [`.RexxUnicodeServices~codepointIsLower`](#codepointIsLower).
+
 
 <a id="RexxUnicodeCharacter_isUpper"></a>
 
@@ -4939,6 +5034,8 @@ and `.false` otherwise.
 
 Returns `.true` if the Unicode character is an uppercase character
 and `.false` otherwise.
+
+Returns the same result as [`.RexxUnicodeServices~codepointIsUpper`](#codepointIsUpper).
 
 
 <a id="RexxUnicodeCharacter_name"></a>
@@ -5035,6 +5132,8 @@ If the Unicode character has no lowercase mapping, returns its codepoint.
 This method uses the simple case mappings defined in `UnicodeData.txt`
 and always returns a single codepoint.
 
+Returns the same result as [`.RexxUnicodeServices~codepointToLower`](#codepointToLower).
+
 
 <a id="RexxUnicodeCharacter_toLowerFull"></a>
 
@@ -5063,6 +5162,8 @@ If the Unicode character has no titlecase mapping, returns its codepoint.
 This method uses the simple case mappings defined in `UnicodeData.txt`
 and always returns a single codepoint.
 
+Returns the same result as [`.RexxUnicodeServices~codepointToTitle`](#codepointToTitle).
+
 
 <a id="RexxUnicodeCharacter_toTitleFull"></a>
 
@@ -5090,6 +5191,8 @@ If the Unicode character has no uppercase mapping, returns its codepoint.
 
 This method uses the simple case mappings defined in `UnicodeData.txt`
 and always returns a single codepoint.
+
+Returns the same result as [`.RexxUnicodeServices~codepointToUpper`](#codepointToUpper).
 
 
 <a id="RexxUnicodeCharacter_toUpperFull"></a>
@@ -5233,7 +5336,14 @@ The `ICU4ooRexxInterface` class defines no instance methods of its own.
 [feedback_2026]: https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/feedback.png "Feedbak as of 2026"
 [icu4oorexx_library]: https://github.com/jlfaucher/icu4oorexx "ICU4ooRexx Library"
 [newline_guidelines]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213 "Newline Guidelines"
+[oorexxshell_demo_interpreters]: https://jlfaucher.github.io/executor.master/demos/index.html#interpreters "ooRexxShell demo interpreters"
+[requestbasestring]: https://github.com/jlfaucher/executor5-bulk/blob/bf6db4d6720fd1adb4110af8423a53cd1f7d1f62/main/trunk/extensions/unicode/rxunicode.cls#L2372-L2384 "requestBaseString"
+[rust_crate_unicode_width]: https://docs.rs/unicode-width/latest/unicode_width/#rules-for-determining-width "Rust Crate unicode_width"
+[rust_unicode_width_tests]: https://github.com/unicode-rs/unicode-width/blob/master/tests/tests.rs "Tests of Rust Crate unicode-width"
+[rust_visible_width]: https://www.reddit.com/r/rust/comments/gpw2ra/how_is_the_rust_compiler_able_to_tell_the_visible/ "How is the Rust compiler able to tell the visible width of unicode characters?"
+[rxunicode_cls]: https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/rxunicode.cls "rxunicode.cls"
 [string_grapheme_breaking_swift]: https://github.com/swiftlang/swift/blob/f3bea01d46e98ff8508b2e3a9cb6f49a087a3404/stdlib/public/core/StringGraphemeBreaking.swift#L685 " StringGraphemeBreaking.swif"
+[tutor]: https://rexx.epbcn.com/TUTOR/ "TUTOR"
 [typographic_conventions_code_points]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083 "Typographic Conventions - Code Points"
 [uax44_lm2]: https://unicode.org/reports/tr44/#UAX44-LM2 "Loose matching rule UAX44-LM2"
 [uax44_lm3]: https://unicode.org/reports/tr44/#UAX44-LM3 "Loose matching rule UAX44-LM3"
@@ -5242,6 +5352,7 @@ The `ICU4ooRexxInterface` class defines no instance methods of its own.
 [unicode_core_spec_ignoring_characters]: https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G40025 "Unicode Core Specification - Ignoring Characters in Processing"
 [unicode_standard_annex_9_bidirectional_character_types]: https://www.unicode.org/reports/tr9/#Bidirectional_Character_Types "Standard Annex #9 Unicode Bidirectional Algorithm - Bidirectional Character Types"
 [unicode_standard_annex_9_mirroring]: https://unicode.org/reports/tr9/#Mirroring "Standard Annex #9 Unicode Bidirectional Algorithm - Mirroring"
+[unicode_standard_annex_9_table_bidirectional_character_Types]: https://www.unicode.org/reports/tr9/#Table_Bidirectional_Character_Types "Standard Annex #9 Unicode Bidirectional Algorithm - Bidirectional Character Types"
 [unicode_standard_annex_11]: https://www.unicode.org/reports/tr11/ "Standard Annex #11 East Asian Width"
 [unicode_standard_annex_15]: https://unicode.org/reports/tr15/ "Unicode Normalization Forms"
 [unicode_standard_annex_29]: https://www.unicode.org/reports/tr29/ "Standard Annex #29 Unicode Text Segmentation"

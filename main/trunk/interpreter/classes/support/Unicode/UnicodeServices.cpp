@@ -1127,7 +1127,7 @@ MutableBuffer *RexxUnicodeServicesClass::utf8EncodeCodepoint(RexxInteger *rexxCo
 
 
 /**
- * Performs a full scan of a UTF-8 string without storing indexes or error messages.
+ * Performs a full scan of a UTF-8 string.
  * Returns .true if `string` is a valid UTF-8 string.
  * Returns additional information through reference variables.
  *
@@ -1157,63 +1157,90 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
     const utf8proc_uint8_t *str = (const utf8proc_uint8_t *) string->getStringData();
     utf8proc_ssize_t remainingLength = string->getLength();
 
-    size_t codepointCount = 0;
     size_t graphemeCount = 0;
+    size_t codepointCount = 0;
     size_t errorCount = 0;
 
-    utf8proc_int32_t previousCodepoint = -1;
-    const utf8proc_property_t *previousCodepointProperty = NULL;
-
-    utf8proc_int32_t codepoint = -1;
-    const utf8proc_property_t *codepointProperty = NULL;
-
-    utf8proc_int32_t graphemeBreakState = 0;
-
-
-    for (;;)
+    if (refGraphemeCount == OREF_NULL)
     {
-        utf8proc_ssize_t sizeB = utf8proc_iterate_extended(str, remainingLength, &codepoint);
-        if (sizeB == 0) break;
-        if (sizeB < 0)
-        {
-            // Here, codepoint == -1, so previousCodepoint will become -1
-            codepointProperty = NULL;
-            errorCount += 1;
-            codepointCount += 1;
-            graphemeCount += 1;
-            graphemeBreakState = 0;
-            sizeB = -sizeB;
-        }
-        else
-        {
-            // optim 2: if codepoint == previousCodepoint then no need to retrieve the property record of codepoint.
-            if (codepoint != previousCodepoint) codepointProperty = utf8proc_get_property(codepoint); // must get it now, will be assigned to previousCodepointProperty
+        // Fast path, no need to count graphemes
 
-            codepointCount += 1;
-            if (previousCodepoint < 0)
+        for (;;)
+        {
+            utf8proc_int32_t codepoint;
+            utf8proc_ssize_t sizeB = utf8proc_iterate_extended(str, remainingLength, &codepoint);
+            if (sizeB == 0) break;
+            if (sizeB < 0)
             {
-                // First codepoint or Error recovery
-                graphemeCount += 1;
+                // Here, codepoint == -1
+                errorCount += 1;
+                codepointCount += 1;
+                sizeB = -sizeB;
             }
             else
             {
-                // optim 1: reuse the property record of previousCodepoint instead of retrieving 2 property records at each iteration.
-
-                // Here, previousCodepoint is >= 0, so previousCodepointProperty has already the right value
-                utf8proc_bool graphemeBreak = grapheme_break_extended(  previousCodepointProperty->boundclass,
-                                                                        codepointProperty->boundclass,
-                                                                        previousCodepointProperty->indic_conjunct_break,
-                                                                        codepointProperty->indic_conjunct_break,
-                                                                        &graphemeBreakState);
-
-                //utf8proc_bool graphemeBreak = utf8proc_grapheme_break_stateful(previousCodepoint, codepoint, &graphemeBreakState);
-                if (graphemeBreak) graphemeCount += 1;
+                codepointCount += 1;
             }
+            str += sizeB;
+            remainingLength -= sizeB;
         }
-        previousCodepoint = codepoint;
-        previousCodepointProperty = codepointProperty;
-        str += sizeB;
-        remainingLength -= sizeB;
+    }
+    else
+    {
+        // Slower path, must count graphemes
+        utf8proc_int32_t previousCodepoint = -1;
+        const utf8proc_property_t *previousCodepointProperty = NULL;
+
+        utf8proc_int32_t codepoint = -1;
+        const utf8proc_property_t *codepointProperty = NULL;
+
+        utf8proc_int32_t graphemeBreakState = 0;
+
+        for (;;)
+        {
+            utf8proc_ssize_t sizeB = utf8proc_iterate_extended(str, remainingLength, &codepoint);
+            if (sizeB == 0) break;
+            if (sizeB < 0)
+            {
+                // Here, codepoint == -1, so previousCodepoint will become -1
+                codepointProperty = NULL;
+                errorCount += 1;
+                codepointCount += 1;
+                graphemeCount += 1;
+                graphemeBreakState = 0;
+                sizeB = -sizeB;
+            }
+            else
+            {
+                // optim 2: if codepoint == previousCodepoint then no need to retrieve the property record of codepoint.
+                if (codepoint != previousCodepoint) codepointProperty = utf8proc_get_property(codepoint); // must get it now, will be assigned to previousCodepointProperty
+
+                codepointCount += 1;
+                if (previousCodepoint < 0)
+                {
+                    // First codepoint or Error recovery
+                    graphemeCount += 1;
+                }
+                else
+                {
+                    // optim 1: reuse the property record of previousCodepoint instead of retrieving 2 property records at each iteration.
+
+                    // Here, previousCodepoint is >= 0, so previousCodepointProperty has already the right value
+                    utf8proc_bool graphemeBreak = grapheme_break_extended(  previousCodepointProperty->boundclass,
+                                                                            codepointProperty->boundclass,
+                                                                            previousCodepointProperty->indic_conjunct_break,
+                                                                            codepointProperty->indic_conjunct_break,
+                                                                            &graphemeBreakState);
+
+                    //utf8proc_bool graphemeBreak = utf8proc_grapheme_break_stateful(previousCodepoint, codepoint, &graphemeBreakState);
+                    if (graphemeBreak) graphemeCount += 1;
+                }
+            }
+            previousCodepoint = codepoint;
+            previousCodepointProperty = codepointProperty;
+            str += sizeB;
+            remainingLength -= sizeB;
+        }
     }
 
     if (refGraphemeCount != OREF_NULL)
@@ -1235,6 +1262,74 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
     }
 
     return (errorCount == 0) ? TheTrueObject : TheFalseObject;
+}
+
+
+/**
+ * Calculates the width in console columns of a UTF-8 string.
+ * If `string` is an invalid UTF-8 string, the width is limited to the portion before the first invalid byte sequence.
+ * Returns width information through reference variables.
+ *
+ * @param string                            (in)                A UTF-8 string.
+ * @param refGraphemeWidthSum               (out, optional)     The sum of grapheme widths, where the width of a grapheme is the maximum codepoint width within the grapheme cluster.
+ * @param refCodepointWidthSum              (out, optional)     The sum of codepoint widths.
+ * @param refGraphemeEastAsianWidthSum      (out, optional)     The sum of grapheme East Asian widths, where the width of a grapheme is the maximum codepoint East Asian width within the grapheme cluster.
+ * @param refCodepointEastAsianWidthSum     (out, optional)     The sum of codepoint East Asian widths, where ambiguous-width codepoints have a width of 2.
+ *
+ * @return .true if `string` is a valid UTF-8 string, .false otherwise.
+ */
+RexxInteger *RexxUnicodeServicesClass::utf8StringWidth(RexxString *string, VariableReference *refGraphemeWidthSum, VariableReference *refCodepointWidthSum, VariableReference *refGraphemeEastAsianWidthSum, VariableReference *refCodepointEastAsianWidthSum)
+{
+    // Check arguments
+
+    requiredArgument(string, "string");
+    if (string->classObject() != TheStringClass)
+    {
+        Protected<RexxString> errmsg = new_string("Argument string class: expected String, found ");
+        errmsg = errmsg->concat(string->classObject()->getId());
+        reportException(Error_Invalid_argument_user_defined, errmsg);
+    }
+
+    if (refGraphemeWidthSum != OREF_NULL) classArgument(refGraphemeWidthSum, TheVariableReferenceClass, "refGraphemeWidthSum");
+    if (refCodepointWidthSum != OREF_NULL) classArgument(refCodepointWidthSum, TheVariableReferenceClass, "refCodepointWidthSum");
+    if (refGraphemeEastAsianWidthSum != OREF_NULL) classArgument(refGraphemeEastAsianWidthSum, TheVariableReferenceClass, "refGraphemeEastAsianWidthSum");
+    if (refCodepointEastAsianWidthSum != OREF_NULL) classArgument(refCodepointEastAsianWidthSum, TheVariableReferenceClass, "refCodepointEastAsianWidthSum");
+
+    const utf8proc_uint8_t *str = (const utf8proc_uint8_t *) string->getStringData();
+    utf8proc_size_t length = string->getLength();
+
+    size_t graphemeWidthSum = 0;
+    size_t codepointWidthSum = 0;
+    size_t graphemeEastAsianWidthSum = 0;
+    size_t codepointEastAsianWidthSum = 0;
+
+    bool validUtf8 = true;
+
+    if (refGraphemeWidthSum != OREF_NULL)
+    {
+        RexxInteger *rexxGraphemeWidthSum = new_integer(graphemeWidthSum); // Protected<RexxString> not needed
+        refGraphemeWidthSum->setValue(rexxGraphemeWidthSum);
+    }
+
+    if (refCodepointWidthSum != OREF_NULL)
+    {
+        RexxInteger *rexxCodepointWidthSum = new_integer(codepointWidthSum); // Protected<RexxString> not needed
+        refCodepointWidthSum->setValue(rexxCodepointWidthSum);
+    }
+
+    if (refGraphemeEastAsianWidthSum != OREF_NULL)
+    {
+        RexxInteger *rexxGraphemeEastAsianWidthSum = new_integer(graphemeEastAsianWidthSum); // Protected<RexxString> not needed
+        refGraphemeEastAsianWidthSum->setValue(rexxGraphemeEastAsianWidthSum);
+    }
+
+    if (refCodepointEastAsianWidthSum != OREF_NULL)
+    {
+        RexxInteger *rexxCodepointEastAsianWidthSum = new_integer(codepointEastAsianWidthSum); // Protected<RexxString> not needed
+        refCodepointEastAsianWidthSum->setValue(rexxCodepointEastAsianWidthSum);
+    }
+
+   return (validUtf8) ? TheTrueObject : TheFalseObject;
 }
 
 
@@ -1948,10 +2043,6 @@ RexxInteger *RexxUnicodeServicesClass::codepointCharWidth(RexxInteger *rexxCodep
     utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
     const utf8proc_property_t *property = utf8proc_get_property(codepoint);
     return new_integer(property->charwidth);
-
-    /* not returned, not used?
-    unsigned pad:2;
-    */
 }
 
 

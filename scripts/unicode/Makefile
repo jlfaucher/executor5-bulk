@@ -12,6 +12,7 @@ ooRexxShellFiles = diary_examples \
 
 # ooRexx scripts in the current directory
 scriptsFiles = controlBoundary_test \
+               eastAsianWidthIsAmbiguous_test \
                enums_test \
                incorrect_character \
                RexxUnicode_test \

@@ -123,7 +123,7 @@ Constants
 Additional string services
 *******************************************************************************/
 
-::method utf8StringInfo class
+::method stringInfo class
     if arg() == 2 then use strict arg string, >indexer
                   else use strict arg string
     string = requestBaseString(string)
@@ -776,7 +776,9 @@ How other languages are supporting escape characters for Unicode:
                     pos += 1 -- skip }
                     hexdigits = string~substr(first, length)
                     hexdigits = hexdigits~space(0) -- remove all spaces
+                    if hexdigits~length == 0 then signal expected_4_or_1_8_hexdigits
                     hexdigits = hexdigits~strip("L", "0") -- remove leading zeros
+                    if hexdigits~length == 0 then hexdigits = "0" -- 0 or 00 or 000 or ...
                     if hexdigits~length == 0 | hexdigits~length > 8 then signal expected_4_or_1_8_hexdigits
                     if \hexdigits~datatype("X") then signal expected_4_or_1_8_hexdigits
                     numeric digits 10 -- to support FFFFFFFF, even if way too big for a codepoint
@@ -1502,35 +1504,37 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
                    endCodepointStorageSize = 0, endGraphemeStorageSize = 0, endErrorStorageSize = 0
     string = requestBaseString(string)
 
-    codepointIndexes = .array~new
+    codepointIndexes = .nil
+    if codepointStorageLimit > 0 then codepointIndexes = .array~new
     codepointCount = 0
 
-    graphemeIndexes = .array~new
+    graphemeIndexes = .nil
+    /* if graphemeStorageLimit > 0 then */ graphemeIndexes = .array~new
     graphemeCount = 0
     -- hidden index to let calculate the grapheme's length of the grapheme at graphemeStorageLimit.
     -- This index is not put in graphemeIndexes to keep graphemeIndexes's items <=  graphemeStorageLimit.
     lastGraphemeSuccessorIndex = string~length + 1
 
-    errors = .array~new
+    errors = .nil
+    /* if errorStorageLimit > 0 then */ errors = .array~new
     errorCount = 0
 
 
     endCodepointIndexes = .nil
-    if endCodepointStorageSize > 0 then do
-        -- if codepointStorageLimit == .RexxInfo~internalMaxNumber then raise syntax 88.900 array ("Specifying endCodepointStorageSize is allowed only if the regular storage is limited")
-        endCodepointIndexes = .CircularQueue~new(endCodepointStorageSize)
-    end
+    if endCodepointStorageSize > 0 then endCodepointIndexes = .CircularQueue~new(endCodepointStorageSize)
 
     endGraphemeIndexes = .nil
-    if endGraphemeStorageSize > 0 then do
-        -- if graphemeStorageLimit == .RexxInfo~internalMaxNumber then raise syntax 88.900 array ("Specifying endGraphemeStorageSize is allowed only if the regular storage is limited")
-        endGraphemeIndexes = .CircularQueue~new(endGraphemeStorageSize)
-    end
+    if endGraphemeStorageSize > 0 then endGraphemeIndexes = .CircularQueue~new(endGraphemeStorageSize)
 
     endErrors = .nil
-    if endErrorStorageSize > 0 then do
-        -- if errorStorageLimit == .RexxInfo~internalMaxNumber then raise syntax 88.900 array ("Specifying endErrorStorageSize is allowed only if the regular storage is limited")
-        endErrors = .CircularQueue~new(endErrorStorageSize)
+    if endErrorStorageSize > 0 then endErrors = .CircularQueue~new(endErrorStorageSize)
+
+    if codepointStorageLimit == 0, graphemeStorageLimit == 0, errorStorageLimit == 0 -
+       endCodepointStorageSize == 0, endGraphemeStorageSize == 0, endErrorStorageSize == 0 -
+    then do
+        -- No storage, fast path
+        .RexxUnicodeServices~utf8StringInfo(string, >graphemeCount, >codepointCount, >errorCount)
+        return
     end
 
     indexB = 1
@@ -1638,18 +1642,21 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     end
 
     -- Here, no end storage (either because not requested, or because the string is empty), or end storage not applicable for the request index
-    if indexC > codepointIndexes~items then do
-        if codepointCount > codepointIndexes~items then do
+    items = 0
+    if .nil \== codepointIndexes then items = codepointIndexes~items
+    if indexC > items then do
+        if codepointCount > items then do
             -- Limited storage
             if indexC <= codepointCount then raise syntax 88.900 array ("Code point index" signedIndexC "is not stored")
         end
         -- indexC is too large because the string has not enough codepoints.
-        raise syntax 88.900 array ("Invalid code point index:" signedIndexC "exceeds the codepoint count" codepointIndexes~items)
+        raise syntax 88.900 array ("Invalid code point index:" signedIndexC "exceeds the codepoint count" items)
     end
     return codepointIndexes[indexC]
 
 
--- Returns the codepoint index corresponding to byte index `indexB`.
+-- Returns the codepoint index (1-based) corresponding to byte index (1-based) `indexB`.
+-- It is zero if the codepoint index, or any of the intermediate codepoint indexes are not stored.
 -- It is negative if the byte index is not aligned with a codepoint boundary.
 -- Performs a binary search.
 -- Supports negative byte indexes and sparse storage, even though the latter does not make much sense.
@@ -1657,19 +1664,25 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     expose codepointIndexes endCodepointIndexes codepointCount
     use strict arg indexB
 
+    if indexB == 0 then raise syntax 88.900 array ("Invalid byte index:" indexB)
+
+    -- If self~string is empty, an error is raised because abs(indexB), which is not 0, can't be > self~string~length
     signedIndexB = indexB -- used in error messages
-    if indexB <= 0 then do
+    if indexB < 0 then do
         -- Index from the end
         indexB = self~string~length - abs(indexB) + 1
-        if signedIndexB == 0 then raise syntax 88.900 array ("Invalid byte index:" signedIndexB)
         if indexB <= 0 then raise syntax 88.900 array ("Invalid byte index:" signedIndexB "exceeds the byte string length" self~string~length)
-        if indexB > self~string~length then raise syntax 88.900 array ("Invalid byte index:" signedIndexB "exceeds the byte string length" self~string~length)
+        -- here, we are sure that indexB is in the range 1..self~string~length
     end
     else do
         -- Index from the start
         -- Here, indexB > 0
         if indexB > self~string~length then raise syntax 88.900 array ("Invalid byte index:" indexB "exceeds the byte string length" self~string~length)
     end
+
+    -- here, codepointCount can't be zero because self~string is not empty
+
+    if .nil == codepointIndexes then return 0 -- no storage
 
     indexC1 = 1
     indexC2 = codepointCount
@@ -1678,7 +1691,8 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
         indexC = (indexC1 + indexC2) % 2
         item = codepointIndexes[indexC]
         if .nil == item, .nil \== endCodepointIndexes then item = endCodepointIndexes[codepointCount - indexC + 1]
-        if .nil == item then raise syntax 88.900 array ("Codepoint index" indexC "is not stored. Binary search for byte index" signedIndexB "requires unlimited storage")
+        -- if .nil == item then raise syntax 88.900 array ("Codepoint index" indexC "is not stored. Binary search for byte index" signedIndexB "requires unlimited storage")
+        if .nil == item then return 0
         item = abs(item) -- the stored index can be negative to indicate an invalid byte sequence
         if item == indexB then return indexC
         if item > indexB then indexC2 = indexC - 1

@@ -37,7 +37,10 @@ is a native class that exposes the Unicode services supported by
 href="https://juliastrings.github.io/utf8proc/"
 title="utf8proc"><code>utf8proc</code></a> library embedded in
 <code>ooRexx</code>.</p>
-<p><code>rxunicode.cls</code> is a package that defines:</p>
+<p><a
+href="https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/rxunicode.cls"
+title="rxunicode.cls"><code>rxunicode.cls</code></a> is a package that
+defines:</p>
 <ul>
 <li>The <a href="#RexxUnicode"><code>RexxUnicode</code></a> class, a
 subclass of <code>RexxUnicodeServices</code>.</li>
@@ -65,11 +68,14 @@ class.</li>
 </ul>
 <blockquote>
 <p>[!CAUTION]<br />
-Testing these classes from <code>ooRexxShell</code> with
-<code>TUTOR</code> enabled showed that a defensive barrier is needed.
-This problem is not limited to <code>TUTOR</code> classes; it can occur
-with any <code>String</code> subclass that overrides
-<code>~length</code> or <code>~substr</code>.</p>
+Testing these classes from <a
+href="https://jlfaucher.github.io/executor.master/demos/index.html#interpreters"
+title="ooRexxShell demo interpreters"><code>ooRexxShell</code></a> with
+<a href="https://rexx.epbcn.com/TUTOR/"
+title="TUTOR"><code>TUTOR</code></a> enabled showed that a defensive
+barrier is needed. This problem is not limited to <code>TUTOR</code>
+classes; it can occur with any <code>String</code> subclass that
+overrides <code>~length</code> or <code>~substr</code>.</p>
 <p>In case of errors like</p>
 <ul>
 <li><code>Argument &lt;name&gt; class: expected String, found Text.</code></li>
@@ -77,9 +83,11 @@ with any <code>String</code> subclass that overrides
 </ul>
 <p>use <code>tutor off</code> for a permanent workaround,<br />
 or use <code>~string</code> for a temporary workaround.</p>
-<p>The <code>requestBaseString</code> routine ensures that any string
-passed as an argument is a <code>.String</code> instance, not an
-instance of a subclass of <code>.String</code>.</p>
+<p>The <a
+href="https://github.com/jlfaucher/executor5-bulk/blob/bf6db4d6720fd1adb4110af8423a53cd1f7d1f62/main/trunk/extensions/unicode/rxunicode.cls#L2372-L2384"
+title="requestBaseString"><code>requestBaseString</code></a> routine
+ensures that any string passed as an argument is a <code>.String</code>
+instance, not an instance of a subclass of <code>.String</code>.</p>
 <p>No attempt is made to obtain a string from these arguments.</p>
 <p>This check is intended to detect accidental mixing of Unicode-aware
 objects with byte strings and to allow users to adapt their code
@@ -424,6 +432,9 @@ an enumeration value.</p>
 </ul>
 <p>The returned enumeration value is implementation-specific.<br />
 For portability, use refCode instead.</p>
+<p><a
+href="https://www.unicode.org/reports/tr9/#Table_Bidirectional_Character_Types"
+title="Standard Annex #9 Unicode Bidirectional Algorithm - Bidirectional Character Types">https://www.unicode.org/reports/tr9/#Table_Bidirectional_Character_Types</a></p>
 <p><strong>Enumeration values</strong></p>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- first column: short name (from PropertyValueAliases.txt and DerivedBidiClass.txt)</span></code>
@@ -480,6 +491,9 @@ title="Standard Annex #9 Unicode Bidirectional Algorithm - Mirroring">https://un
 </ul>
 <p>The returned enumeration value is implementation-specific.<br />
 For portability, use refCode instead.</p>
+<p><a
+href="https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries"
+title="Standard Annex #29 Unicode Text Segmentation - Grapheme Cluster Boundaries">https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries</a></p>
 <p><strong>Enumeration values</strong></p>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries</span></code>
@@ -533,6 +547,9 @@ For portability, use refCode instead.</p>
 </ul>
 <p>The returned enumeration value is implementation-specific.<br />
 For portability, use refCode instead.</p>
+<p><a
+href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-4/#G124142"
+title="Unicode Core Specification - General Category">https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-4/#G124142</a></p>
 <p><strong>Enumeration values</strong></p>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-4/#G124142</span></code>
@@ -585,6 +602,12 @@ For portability, use refCode instead.</p>
 <code>wcwidth(codepoint)</code>, except that a width of 0 is returned
 for non-printable codepoints instead of -1 as in
 <code>wcwidth</code>.</p>
+<p>Unfortunately, this isn't the whole story.<br />
+<a
+href="https://www.reddit.com/r/rust/comments/gpw2ra/how_is_the_rust_compiler_able_to_tell_the_visible/"
+title="How is the Rust compiler able to tell the visible width of unicode characters?">How
+is the Rust compiler able to tell the visible width of unicode
+characters?</a></p>
 <p><a id="codepointCombiningClass"></a></p>
 <h4 id="codepointcombiningclass">1.1.6.   codepointCombiningClass</h4>
 <pre><code>.RexxUnicodeServices~codepointCombiningClass(codepoint [, [&gt;refCode] [, [&gt;refLabel]]])</code></pre>
@@ -604,6 +627,9 @@ by <code>codepointCombiningClass</code> are standard Unicode
 values.<br />
 Some values have neither a <code>refCode</code> nor a
 <code>refLabel</code>.</p>
+<p><a
+href="https://www.unicode.org/reports/tr44/#Canonical_Combining_Class_Values"
+title="Unicode Character Database - Canonical Combining Class Values">https://www.unicode.org/reports/tr44/#Canonical_Combining_Class_Values</a></p>
 <p><strong>Enumeration values</strong></p>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- https://www.unicode.org/reports/tr44/#Canonical_Combining_Class_Values</span></code>
@@ -721,6 +747,8 @@ id="codepointdecompositiontype">1.1.8.   codepointDecompositionType</h4>
 </ul>
 <p>The returned enumeration value is implementation-specific.<br />
 For portability, use refCode instead.</p>
+<p><a href="https://unicode.org/reports/tr15/"
+title="Unicode Normalization Forms">https://unicode.org/reports/tr15/</a></p>
 <p><strong>Enumeration values</strong></p>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- https://unicode.org/reports/tr15/</span></code>
@@ -768,6 +796,9 @@ title="Standard Annex #11 East Asian Width">https://www.unicode.org/reports/tr11
 <pre><code>.RexxUnicodeServices~codepointIgnorable(codepoint)</code></pre>
 <p>Returns the <code>Default_Ignorable_Code_Point</code> property value
 of <code>codepoint</code> (boolean value).</p>
+<p><a
+href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G40025"
+title="Unicode Core Specification - Ignoring Characters in Processing">https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G40025</a></p>
 <p><a id="codepointIndicConjunctBreak"></a></p>
 <h4
 id="codepointindicconjunctbreak">1.1.11.   codepointIndicConjunctBreak</h4>
@@ -782,6 +813,8 @@ of <code>codepoint</code> as an enumeration value.</p>
 </ul>
 <p>The returned enumeration value is implementation-specific.<br />
 For portability, use refCode instead.</p>
+<p><a href="https://www.unicode.org/reports/tr44/#Derivation_InCB"
+title="Unicode Character Database - Derivation of Indic_Conjunct_Break">https://www.unicode.org/reports/tr44/#Derivation_InCB</a></p>
 <p><strong>Enumeration values</strong></p>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- https://www.unicode.org/reports/tr44/#Derivation_InCB</span></code>
@@ -1007,24 +1040,25 @@ matter, <code>GB12/13</code> only cares about the boundclass
 <code lineno="2"></code>
 <code lineno="3"><span class="rx-var">RI_A</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+1F1E6</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span></code>
 <code lineno="4"></code>
-<code lineno="5"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- '(not-ASCII, 50 graphemes, 100 codepoints, 400 bytes, 0 error)'</span></code>
-<code lineno="6"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- '(not-ASCII, 50000 graphemes, 100000 codepoints, 400000 bytes, 0 error)'</span></code>
-<code lineno="7"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">A</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '(ASCII, 100000 graphemes, 100000 codepoints, 100000 bytes, 0 error)'</span></code>
-<code lineno="8"></code>
-<code lineno="9"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">      </span><span class="rx-lncm">-- Duration: 0.001217</span></code>
-<code lineno="10"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">1000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">     </span><span class="rx-lncm">-- Duration: 0.026591</span></code>
-<code lineno="11"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">10000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">    </span><span class="rx-lncm">-- Duration: 0.312036</span></code>
-<code lineno="12"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">20000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">    </span><span class="rx-lncm">-- Duration: 1.20119</span></code>
-<code lineno="13"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">30000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">    </span><span class="rx-lncm">-- Duration: 2.629657</span></code>
-<code lineno="14"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">40000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">    </span><span class="rx-lncm">-- Duration: 4.611944</span></code>
-<code lineno="15"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">   </span><span class="rx-lncm">-- Duration: 28.448092</span></code>
-<code lineno="16"></code>
-<code lineno="17"><span class="rx-lncm">-- The forward grapheme supplier is not quadratic</span></code>
-<code lineno="18"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">          </span><span class="rx-lncm">-- Duration: 0.257308</span></code>
-<code lineno="19"></code>
-<code lineno="20"><span class="rx-lncm">-- The reverse grapheme supplier is not quadratic when no RI</span></code>
-<code lineno="21"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">A</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">    </span><span class="rx-lncm">-- Duration: 0.395018</span></code>
-<code lineno="22">
+<code lineno="5"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">              </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'</span></code>
+<code lineno="6"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 2 codepoints, 8 bytes, 0 error)'</span></code>
+<code lineno="7"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">3</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '(not-ASCII, 2 graphemes, 3 codepoints, 12 bytes, 0 error)'</span></code>
+<code lineno="8"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">4</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '(not-ASCII, 2 graphemes, 4 codepoints, 16 bytes, 0 error)'</span></code>
+<code lineno="9"></code>
+<code lineno="10"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">      </span><span class="rx-lncm">-- Duration: 0.001217</span></code>
+<code lineno="11"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">1000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">     </span><span class="rx-lncm">-- Duration: 0.026591</span></code>
+<code lineno="12"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">10000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">    </span><span class="rx-lncm">-- Duration: 0.312036</span></code>
+<code lineno="13"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">20000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">    </span><span class="rx-lncm">-- Duration: 1.20119</span></code>
+<code lineno="14"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">30000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">    </span><span class="rx-lncm">-- Duration: 2.629657</span></code>
+<code lineno="15"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">40000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">    </span><span class="rx-lncm">-- Duration: 4.611944</span></code>
+<code lineno="16"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">   </span><span class="rx-lncm">-- Duration: 28.448092</span></code>
+<code lineno="17"></code>
+<code lineno="18"><span class="rx-lncm">-- The forward grapheme supplier is not quadratic</span></code>
+<code lineno="19"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">RI_A</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">          </span><span class="rx-lncm">-- Duration: 0.257308</span></code>
+<code lineno="20"></code>
+<code lineno="21"><span class="rx-lncm">-- The reverse grapheme supplier is not quadratic when no RI</span></code>
+<code lineno="22"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">A</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">    </span><span class="rx-lncm">-- Duration: 0.395018</span></code>
+<code lineno="23">
 </code></pre>
 </div>
 <p><strong>Example - GB9c/GB11 lookback</strong></p>
@@ -1058,9 +1092,9 @@ finding a Consonant, then returns "break allowed."</p>
 <code lineno="3"><span class="rx-var">ZWJ</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+200D</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span></code>
 <code lineno="4"><span class="rx-var">KA</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+0915</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span></code>
 <code lineno="5"></code>
-<code lineno="6"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-var">ZWJ</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">KA</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- '(not-ASCII, 2 graphemes, 101 codepoints, 303 bytes, 0 error)'                       Duration: 0.001262</span></code>
-<code lineno="7"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-var">ZWJ</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000000</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">KA</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'           Duration: 45.556058</span></code>
-<code lineno="8"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">A</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000000</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">KA</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'   Duration: 53.451210</span></code>
+<code lineno="6"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-var">ZWJ</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">KA</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- '(not-ASCII, 2 graphemes, 101 codepoints, 303 bytes, 0 error)'                       Duration: 0.001262</span></code>
+<code lineno="7"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-var">ZWJ</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000000</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">KA</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'           Duration: 45.556058</span></code>
+<code lineno="8"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">A</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000000</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">KA</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'   Duration: 53.451210</span></code>
 <code lineno="9"></code>
 <code lineno="10"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">ZWJ</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">KA</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">         </span><span class="rx-lncm">-- Duration: 0.000577</span></code>
 <code lineno="11"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">ZWJ</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">1000</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">KA</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">        </span><span class="rx-lncm">-- Duration: 0.001165</span></code>
@@ -1089,9 +1123,9 @@ times, then <code>U+200D</code>, then <code>U+1F600</code> (😀)</p>
 <code lineno="4"><span class="rx-var">ZWJ</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+200D</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span></code>
 <code lineno="5"><span class="rx-var">grin</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+1F600</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span></code>
 <code lineno="6"></code>
-<code lineno="7"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-var">acute</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">ZWJ</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">grin</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '(not-ASCII, 2 graphemes, 102 codepoints, 207 bytes, 0 error)'                       Duration: 0.000829</span></code>
-<code lineno="8"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-var">acute</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000000</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">ZWJ</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">grin</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '(not-ASCII, 2 graphemes, 100000002 codepoints, 200000007 bytes, 0 error)'           Duration: 44.753312</span></code>
-<code lineno="9"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">A</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000000</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">ZWJ</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">grin</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- '(not-ASCII, 100000001 graphemes, 100000002 codepoints, 100000007 bytes, 0 error)'   Duration: 53.045773</span></code>
+<code lineno="7"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-var">acute</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">ZWJ</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">grin</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '(not-ASCII, 2 graphemes, 102 codepoints, 207 bytes, 0 error)'                       Duration: 0.000829</span></code>
+<code lineno="8"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-var">acute</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000000</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">ZWJ</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">grin</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '(not-ASCII, 2 graphemes, 100000002 codepoints, 200000007 bytes, 0 error)'           Duration: 44.753312</span></code>
+<code lineno="9"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">A</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100000000</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">ZWJ</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">grin</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- '(not-ASCII, 100000001 graphemes, 100000002 codepoints, 100000007 bytes, 0 error)'   Duration: 53.045773</span></code>
 <code lineno="10"></code>
 <code lineno="11"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">acute</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">100</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">ZWJ</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">grin</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">          </span><span class="rx-lncm">-- Duration: 0.001653</span></code>
 <code lineno="12"><span class="rx-var">s</span><span class="rx-asg">=</span><span class="rx-env">.RexxUnicodeReverseGraphemeSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">acute</span><span class="rx-op">~</span><span class="rx-const rx-method">copies</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">1000</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">ZWJ</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-var">grin</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-skw">while</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">available</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">s</span><span class="rx-op">~</span><span class="rx-const rx-method">next</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span><span class="rx-ws">         </span><span class="rx-lncm">-- Duration: 0.001594</span></code>
@@ -1402,7 +1436,7 @@ Returns additional information through reference variables.</p>
 <code lineno="6"></code>
 <code lineno="7"><span class="rx-lncm">-- CAREFUL! An ASCII string can have a grapheme made of several codepoints</span></code>
 <code lineno="8"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+0041 U+000D U+000A U+0042</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span></code>
-<code lineno="9"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                                    </span><span class="rx-lncm">-- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'</span></code>
+<code lineno="9"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                                        </span><span class="rx-lncm">-- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'</span></code>
 <code lineno="10"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">g</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">c</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">e</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">g</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">c</span><span class="rx-spe">=</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-var">e</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 1; 3; 4; 0</span></code>
 <code lineno="11"></code>
 <code lineno="12"><span class="rx-lncm">-- Invalid string</span></code>
@@ -1781,6 +1815,7 @@ href="#utf8DecodePreviousCodepoint"><code>utf8DecodePreviousCodepoint</code></a>
 <li><a
 href="#utf8EncodeCodepoint"><code>utf8EncodeCodepoint</code></a></li>
 <li><a href="#utf8procVersion"><code>utf8procVersion</code></a></li>
+<li><a href="#utf8StringInfo"><code>utf8StringInfo</code></a></li>
 <li><a href="#utf8Transform"><code>utf8Transform</code></a></li>
 </ul>
 <h3 id="constants">2.3.   Constants</h3>
@@ -2211,9 +2246,9 @@ appended to the buffer, and the buffer is returned.</p>
 <code lineno="15">
 </code></pre>
 </div>
-<p><a id="RexxUnicode_utf8StringInfo"></a></p>
-<h4 id="utf8stringinfo-1">2.4.17.   utf8StringInfo</h4>
-<pre><code>.RexxUnicode~utf8StringInfo(string [, &gt;indexer])</code></pre>
+<p><a id="RexxUnicode_stringInfo"></a></p>
+<h4 id="stringinfo">2.4.17.   stringInfo</h4>
+<pre><code>.RexxUnicode~stringInfo(string [, &gt;indexer])</code></pre>
 <p>Returns a string providing information about the given UTF-8
 string:</p>
 <ul>
@@ -2227,12 +2262,12 @@ string:</p>
 <code>RexxUnicodeStringIndexer</code> instance.</p>
 <p><strong>Examples:</strong></p>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"></span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">e</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">é</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'</span></code>
-<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">€</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'</span></code>
-<code lineno="5"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'</span></code>
-<code lineno="6"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">👨‍👩‍👧</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'</span></code>
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"></span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">e</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">é</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">€</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'</span></code>
+<code lineno="5"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'</span></code>
+<code lineno="6"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">👨‍👩‍👧</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'</span></code>
 <code lineno="7">
 </code></pre>
 </div>
@@ -2240,7 +2275,7 @@ string:</p>
 <pre><code lineNo="1"><span class="rx-lncm">-- Invalid string</span></code>
 <code lineno="2"><span class="rx-lncm">-- U+FFFD Substitution of Maximal Subparts</span></code>
 <code lineno="3"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202</span></code>
-<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">indexer</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">indexer</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'</span></code>
 <code lineno="5"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errors</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="6"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="7"><span class="rx-cm">    an Array (shape [4], 4 items)</span></code>
@@ -2264,7 +2299,7 @@ characters &lt;= "7F"x</p>
 <code lineno="3"></code>
 <code lineno="4"><span class="rx-lncm">-- CAREFUL! An ASCII string can have a grapheme made of several codepoints</span></code>
 <code lineno="5"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+0041 U+000D U+000A U+0042</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span></code>
-<code lineno="6"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringInfo</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'</span></code>
+<code lineno="6"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'</span></code>
 <code lineno="7">
 </code></pre>
 </div>
@@ -2419,6 +2454,14 @@ time. This method handles them at run time instead.</p>
 <code lineno="2">
 </code></pre>
 </div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Spaces between consecutive \u{...} sequences are significant.</span></code>
+<code lineno="2"><span class="rx-lncm">-- Spaces between consecutive U+... sequences are not significant.</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"> \u{0041} \u{0042} </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- ' A B '</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-ws">           </span><span class="rx-str rx-oquo">"</span><span class="rx-str">  U+0041   U+0042  </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 'AB'</span></code>
+<code lineno="5">
+</code></pre>
+</div>
 <p><a id="U2C"></a></p>
 <h4 id="u2c">2.4.25.   U2C</h4>
 <pre><code>.RexxUnicode~U2C(UPlusCodepoints, buffer=.nil)</code></pre>
@@ -2433,6 +2476,14 @@ If an error occurs, any characters appended during this call are
 discarded.</p>
 <p>The result is either a string or the buffer passed as argument.</p>
 <p><strong>Examples:</strong></p>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Spaces between consecutive \u{...} sequences are significant.</span></code>
+<code lineno="2"><span class="rx-lncm">-- Spaces between consecutive U+... sequences are not significant.</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"> \u{0041} \u{0042} </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- ' A B '</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-ws">           </span><span class="rx-str rx-oquo">"</span><span class="rx-str">  U+0041   U+0042  </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 'AB'</span></code>
+<code lineno="5">
+</code></pre>
+</div>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+004E U+006F U+00EB U+006C U+0020 U+1F385</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                         </span><span class="rx-lncm">-- 'Noël 🎅'</span></code>
 <code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+004E U+006F U+00EB U+006C U+0020 U+1F385</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- M'Noël 🎅'</span></code>
@@ -3535,8 +3586,24 @@ Class</h2>
 <!----------------------------------------------------------------------------->
 <p>A <code>RexxUnicodeStringIndexer</code> instance provides direct
 access to codepoints and graphemes in a UTF-8 string.</p>
-<p>This is a temporary implementation that will be replaced by a native
-indexer.</p>
+<p>When a <code>RexxUnicodeStringIndexer</code> instance is created, a
+full scan of the UTF-8 string is performed, updating the index and error
+storage according to the storage settings passed to the <code>new</code>
+method.</p>
+<p>If the indexer is incremental, these methods may complete the storage
+on demand:</p>
+<ul>
+<li>codepointAtIndexC</li>
+<li>codepointIndexB</li>
+<li>codepointIndexC</li>
+<li>graphemeAtIndexG</li>
+<li>graphemeIndexB</li>
+<li>graphemeIndexG</li>
+</ul>
+<p>By default, a <code>RexxUnicodeStringIndexer</code> instance is
+non-incremental.</p>
+<p>For an explanation of storage, see <a
+href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><code>::requires "rxunicode.cls"</code></p>
 <p><strong>Examples:</strong></p>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
@@ -3599,8 +3666,12 @@ whole number.</p>
 number.<br />
 If <code>indexC</code> is negative, the codepoint index is counted from
 the end of the string.</p>
-<p>If <code>abs(indexC)</code> exceeds the codepoint count, or if the
-requested index is not stored in the indexer, an error is raised.</p>
+<p>An error is raised when</p>
+<ul>
+<li><code>abs(indexC)</code> exceeds the codepoint count.</li>
+<li>the requested index is not stored and the indexer is
+non-incremental.</li>
+</ul>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_codepointCount"></a></p>
@@ -3612,22 +3683,28 @@ This result is not impacted by <code>codepointStorageLimit</code>.</p>
 <p><a id="RexxUnicodeStringIndexer_codepointIndexB"></a></p>
 <h4 id="codepointindexb">7.3.3.   codepointIndexB</h4>
 <pre><code>aRexxUnicodeStringIndexer~codepointIndexB(indexC)</code></pre>
-<p>Returns the byte index corresponding to codepoint index
-<code>indexC</code>.<br />
+<p>Returns the byte index (1-based) corresponding to codepoint index
+(1-based) <code>indexC</code>.<br />
 It is negative if the codepoint's byte sequence is invalid.</p>
 <p><code>indexC</code> must be a positive or negative whole
 number.<br />
 If <code>indexC</code> is negative, the codepoint index is counted from
 the end of the string.</p>
-<p>If <code>abs(indexC)</code> exceeds the codepoint count, or if the
-requested index is not stored in the indexer, an error is raised.</p>
+<p>An error is raised when</p>
+<ul>
+<li><code>abs(indexC)</code> exceeds the codepoint count.</li>
+<li>the requested index is not stored and the indexer is
+non-incremental.</li>
+</ul>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_codepointIndexC"></a></p>
 <h4 id="codepointindexc">7.3.4.   codepointIndexC</h4>
 <pre><code>aRexxUnicodeStringIndexer~codepointIndexC(indexB)</code></pre>
-<p>Returns the codepoint index corresponding to byte index
-<code>indexB</code>.<br />
+<p>Returns the codepoint index (1-based) corresponding to byte index
+(1-based) <code>indexB</code>.<br />
+It is zero if the codepoint index cannot be found with a binary
+search.<br />
 It is negative if the byte index is not aligned with a codepoint
 boundary.</p>
 <p><code>indexB</code> must be a positive or negative whole
@@ -3636,8 +3713,10 @@ If <code>indexB</code> is negative, the byte index is counted from the
 end of the string.</p>
 <p>If <code>abs(indexB)</code> exceeds the byte string length, an error
 is raised.</p>
-<p>Performs a binary search. With sparse storage, a binary search may
-fail if the requested index is not stored.</p>
+<p>Performs a binary search.<br />
+With sparse storage, a binary search may fail if the requested index or
+any of the intermediate indexes are not stored and the indexer is
+non-incremental.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><strong>Examples</strong></p>
@@ -3679,34 +3758,55 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 </code></pre>
 </div>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-lncm">-- Binary search for codeppoint indexes cannot work with sparse storage</span></code>
+<pre><code lineNo="1"><span class="rx-lncm">-- Binary search for codepoint indexes cannot work with non-incremental sparse storage</span></code>
 <code lineno="2"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span></code>
 <code lineno="3"><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-ws"> </span><span class="rx-skw">to</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">string</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-op">~</span><span class="rx-const rx-method">left</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIndexC</span><span class="rx-spe">(</span><span class="rx-var">i</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
 <code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
-<code lineno="5"><span class="rx-cm">    Codepoint index 4 is not stored. Binary search for byte index 1 requires unlimited storage.</span></code>
-<code lineno="6"><span class="rx-cm">    */</span></code>
-<code lineno="7">
+<code lineno="5"><span class="rx-cm">    1 : 0</span></code>
+<code lineno="6"><span class="rx-cm">    2 : 0</span></code>
+<code lineno="7"><span class="rx-cm">    3 : 0</span></code>
+<code lineno="8"><span class="rx-cm">    4 : 0</span></code>
+<code lineno="9"><span class="rx-cm">    5 : 0</span></code>
+<code lineno="10"><span class="rx-cm">    6 : 0</span></code>
+<code lineno="11"><span class="rx-cm">    7 : 0</span></code>
+<code lineno="12"><span class="rx-cm">    8 : 0</span></code>
+<code lineno="13"><span class="rx-cm">    9 : 0</span></code>
+<code lineno="14"><span class="rx-cm">    10: 0</span></code>
+<code lineno="15"><span class="rx-cm">    11: 0</span></code>
+<code lineno="16"><span class="rx-cm">    12: 0</span></code>
+<code lineno="17"><span class="rx-cm">    13: 0</span></code>
+<code lineno="18"><span class="rx-cm">    14: 0</span></code>
+<code lineno="19"><span class="rx-cm">    15: 0</span></code>
+<code lineno="20"><span class="rx-cm">    16: 0</span></code>
+<code lineno="21"><span class="rx-cm">    17: 0</span></code>
+<code lineno="22"><span class="rx-cm">    18: 0</span></code>
+<code lineno="23"><span class="rx-cm">    19: 0</span></code>
+<code lineno="24"><span class="rx-cm">    20: 0</span></code>
+<code lineno="25"><span class="rx-cm">    */</span></code>
+<code lineno="26">
 </code></pre>
 </div>
 <p><a id="RexxUnicodeStringIndexer_codepointIndexes"></a></p>
 <h4 id="codepointindexes">7.3.5.   codepointIndexes</h4>
 <pre><code>aRexxUnicodeStringIndexer~codepointIndexes</code></pre>
-<p>Returns the array of stored codepoint indexes.</p>
+<p>Returns the array of stored codepoint indexes, or <code>.nil</code>
+if <code>isIncremental</code> is <code>.false</code> and
+<code>codepointStorageLimit</code> is <code>0</code>.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_codepointStorageLimit"></a></p>
 <h4 id="codepointstoragelimit">7.3.6.   codepointStorageLimit</h4>
 <pre><code>aRexxUnicodeStringIndexer~codepointStorageLimit</code></pre>
 <p>Returns the maximum number of codepoint indexes that can be stored in
-<code>codepointIndexes</code>.</p>
+<code>codepointIndexes</code> during the full scan.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_endCodepointIndexes"></a></p>
 <h4 id="endcodepointindexes">7.3.7.   endCodepointIndexes</h4>
 <pre><code>aRexxUnicodeStringIndexer~endCodepointIndexes</code></pre>
 <p>Returns the array of codepoint indexes stored in the end storage, or
-<code>.nil</code> if <code>endCodepointStorageSize</code> is
-<code>0</code>.</p>
+<code>.nil</code> if <code>isIncremental</code> is <code>.false</code>
+and <code>endCodepointStorageSize</code> is <code>0</code>.</p>
 <p>Codepoint indexes are stored in reverse order: the first item is the
 last codepoint index.</p>
 <p>For an explanation of storage, see <a
@@ -3723,15 +3823,15 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 <h4 id="endcodepointstoragesize">7.3.8.   endCodepointStorageSize</h4>
 <pre><code>aRexxUnicodeStringIndexer~endCodepointStorageSize</code></pre>
 <p>Returns the maximum number of codepoint indexes that can be stored in
-<code>endCodepointIndexes</code>.</p>
+<code>endCodepointIndexes</code> during the full scan.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_endErrors"></a></p>
 <h4 id="enderrors">7.3.9.   endErrors</h4>
 <pre><code>aRexxUnicodeStringIndexer~endErrors</code></pre>
 <p>Returns the array of error messages stored in the end storage, or
-<code>.nil</code> if <code>endErrorStorageSize</code> is
-<code>0</code>.</p>
+<code>.nil</code> if <code>isIncremental</code> is <code>.false</code>
+and <code>endErrorStorageSize</code> is <code>0</code>.</p>
 <p>Error messages are stored in reverse order: the first item
 corresponds to the last error encountered.</p>
 <p>For an explanation of storage, see <a
@@ -3767,15 +3867,15 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 <h4 id="enderrorstoragesize">7.3.10.   endErrorStorageSize</h4>
 <pre><code>aRexxUnicodeStringIndexer~endErrorStorageSize</code></pre>
 <p>Returns the maximum number of error messages that can be stored in
-<code>endErrors</code>.</p>
+<code>endErrors</code> during the full scan.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_endGraphemeIndexes"></a></p>
 <h4 id="endgraphemeindexes">7.3.11.   endGraphemeIndexes</h4>
 <pre><code>aRexxUnicodeStringIndexer~endGraphemeIndexes</code></pre>
 <p>Returns the array of grapheme indexes stored in the end storage, or
-<code>.nil</code> if <code>endGraphemeStorageSize</code> is
-<code>0</code>.</p>
+<code>.nil</code> if <code>isIncremental</code> is <code>.false</code>
+and <code>endGraphemeStorageSize</code> is <code>0</code>.</p>
 <p>Grapheme indexes are stored in reverse order: the first item is the
 last grapheme index.</p>
 <p>For an explanation of storage, see <a
@@ -3792,7 +3892,7 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 <h4 id="endgraphemestoragesize">7.3.12.   endGraphemeStorageSize</h4>
 <pre><code>aRexxUnicodeStringIndexer~endGraphemeStorageSize</code></pre>
 <p>Returns the maximum number of grapheme indexes that can be stored in
-<code>endGraphemeIndexes</code>.</p>
+<code>endGraphemeIndexes</code> during the full scan.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_errorCount"></a></p>
@@ -3811,7 +3911,7 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 <h4 id="errorstoragelimit">7.3.15.   errorStorageLimit</h4>
 <pre><code>aRexxUnicodeStringIndexer~errorStorageLimit</code></pre>
 <p>Returns the maximum number of error messages that can be stored in
-<code>errors</code>.</p>
+<code>errors</code> during the full scan.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_graphemeAtIndexG"></a></p>
@@ -3823,8 +3923,13 @@ string.</p>
 number.<br />
 If <code>indexG</code> is negative, the grapheme index is counted from
 the end of the string.</p>
-<p>If <code>abs(indexG)</code> exceeds the grapheme count, or if the
-requested index is not stored in the indexer, an error is raised.</p>
+<p>An error is raised when</p>
+<ul>
+<li><code>abs(indexG)</code> exceeds the grapheme count.<br />
+</li>
+<li>the requested index is not stored and the indexer is
+non-incremental.</li>
+</ul>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_graphemeCount"></a></p>
@@ -3843,8 +3948,12 @@ It is negative if the grapheme's byte sequence is invalid.</p>
 number.<br />
 If <code>indexG</code> is negative, the grapheme index is counted from
 the end of the string.</p>
-<p>If <code>abs(indexG)</code> exceeds the grapheme count, or if the
-requested index is not stored in the indexer, an error is raised.</p>
+<p>An error is raised when</p>
+<ul>
+<li><code>abs(indexG)</code> exceeds the grapheme count.</li>
+<li>the requested index is not stored and the indexer is
+non-incremental.</li>
+</ul>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_graphemeIndexG"></a></p>
@@ -3852,6 +3961,7 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 <pre><code>aRexxUnicodeStringIndexer~graphemeIndexG(indexB)</code></pre>
 <p>Returns the grapheme index corresponding to byte index
 <code>indexB</code>.<br />
+It is zero if the grapheme index cannot be found with a binary search.
 It is negative if the byte index is not aligned with a grapheme
 boundary.</p>
 <p><code>indexB</code> must be a positive or negative whole
@@ -3860,8 +3970,10 @@ If <code>indexB</code> is negative, the byte index is counted from the
 end of the string.</p>
 <p>If <code>abs(indexB)</code> exceeds the byte string length, an error
 is raised.</p>
-<p>Performs a binary search. With sparse storage, a binary search may
-fail if the requested index is not stored.</p>
+<p>Performs a binary search.<br />
+With sparse storage, a binary search may fail if the requested index or
+any of the intermediate indexes are not stored and the indexer is
+non-incremental.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><strong>Examples</strong></p>
@@ -3903,7 +4015,7 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 </code></pre>
 </div>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-lncm">-- Binary search for grapheme indexes cannot work with sparse storage</span></code>
+<pre><code lineNo="1"><span class="rx-lncm">-- Binary search for grapheme indexes cannot work with non-incremental sparse storage</span></code>
 <code lineno="2"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span></code>
 <code lineno="3"><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-ws"> </span><span class="rx-skw">to</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">string</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-op">~</span><span class="rx-const rx-method">left</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeIndexG</span><span class="rx-spe">(</span><span class="rx-var">i</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
 <code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
@@ -4217,6 +4329,8 @@ for the list of enumeration values.</p>
 value is <code>Yes</code>.</p>
 <p><a href="https://unicode.org/reports/tr9/#Mirroring"
 title="Standard Annex #9 Unicode Bidirectional Algorithm - Mirroring">https://unicode.org/reports/tr9/#Mirroring</a></p>
+<p>Returns the same result as <a
+href="#codepointBidiMirrored"><code>.RexxUnicodeServices~codepointBidiMirrored</code></a>.</p>
 <p><a id="RexxUnicodeCharacter_boundClass"></a></p>
 <h4 id="boundclass">8.2.4.   boundClass</h4>
 <pre><code>aRexxUnicodeCharacter~boundClass</code></pre>
@@ -4300,6 +4414,8 @@ for the list of enumeration values.</p>
 <code>wcwidth(self~codepoint)</code>, except that a width of 0 is
 returned for non-printable codepoints instead of -1 as in
 <code>wcwidth</code>.</p>
+<p>Returns the same value as <a
+href="#codepointCharWidth"><code>.RexxUnicodeServices~codepointCharWidth</code></a>.</p>
 <p><a id="RexxUnicodeCharacter_codepoint"></a></p>
 <h4 id="codepoint-1">8.2.9.   codepoint</h4>
 <pre><code>aRexxUnicodeCharacter~codepoint</code></pre>
@@ -4416,6 +4532,8 @@ title="Standard Annex #29 Unicode Text Segmentation">Unicode Standard
 Annex #29</a>. Therefore, this method may be deprecated in the future
 unless a use case is identified.</p>
 </blockquote>
+<p>Returns the same result as <a
+href="#codepointControlBoundary"><code>.RexxUnicodeServices~codepointControlBoundary</code></a>.</p>
 <p><a id="RexxUnicodeCharacter_decompositionType"></a></p>
 <h4 id="decompositiontype">8.2.15.   decompositionType</h4>
 <pre><code>aRexxUnicodeCharacter~decompositionType</code></pre>
@@ -4464,6 +4582,8 @@ id="eastasianwidthisambiguous">8.2.17.   eastAsianWidthIsAmbiguous</h4>
 property value is <code>"A"</code> (<code>"Ambiguous"</code>).</p>
 <p><a href="https://www.unicode.org/reports/tr11/"
 title="Standard Annex #11 East Asian Width">https://www.unicode.org/reports/tr11/</a></p>
+<p>Returns the same result as <a
+href="#codepointEastAsianWidthIsAmbiguous"><code>.RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous</code></a>.</p>
 <p><a id="RexxUnicodeCharacter_extendedName"></a></p>
 <h4 id="extendedname">8.2.18.   extendedName</h4>
 <pre><code>aRexxUnicodeCharacter~extendedName</code></pre>
@@ -4493,6 +4613,8 @@ label algorithmically generated.</p>
 <p><a
 href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G40025"
 title="Unicode Core Specification - Ignoring Characters in Processing">https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G40025</a></p>
+<p>Returns the same result as <a
+href="#codepointIgnorable"><code>.RexxUnicodeServices~codepointIgnorable</code></a>.</p>
 <p><a id="RexxUnicodeCharacter_indicConjunctBreak"></a></p>
 <h4 id="indicconjunctbreak">8.2.20.   indicConjunctBreak</h4>
 <pre><code>aRexxUnicodeCharacter~indicConjunctBreak</code></pre>
@@ -4538,8 +4660,8 @@ for the list of enumeration values.</p>
 <p><a id="RexxUnicodeCharacter_info"></a></p>
 <h4 id="info-2">8.2.22.   info</h4>
 <pre><code>aRexxUnicodeCharacter~info</code></pre>
-<p>Returns a string table whose keys are property names returned by
-<code>.RexxUnicodeCharacter~properties</code>.<br />
+<p>Returns a string table whose keys are property names returned by <a
+href="#RexxUnicodeCharacter_properties"><code>.RexxUnicodeCharacter~properties</code></a>.<br />
 Each property name is used as a message name to retrieve the
 corresponding property value from the Unicode character.</p>
 <p>The following properties have a special representation:</p>
@@ -4595,11 +4717,15 @@ specified <code>codepoint</code>.</p>
 <pre><code>aRexxUnicodeCharacter~isLower</code></pre>
 <p>Returns <code>.true</code> if the Unicode character is a lowercase
 character and <code>.false</code> otherwise.</p>
+<p>Returns the same result as <a
+href="#codepointIsLower"><code>.RexxUnicodeServices~codepointIsLower</code></a>.</p>
 <p><a id="RexxUnicodeCharacter_isUpper"></a></p>
 <h4 id="isupper">8.2.25.   isUpper</h4>
 <pre><code>aRexxUnicodeCharacter~isUpper</code></pre>
 <p>Returns <code>.true</code> if the Unicode character is an uppercase
 character and <code>.false</code> otherwise.</p>
+<p>Returns the same result as <a
+href="#codepointIsUpper"><code>.RexxUnicodeServices~codepointIsUpper</code></a>.</p>
 <p><a id="RexxUnicodeCharacter_name"></a></p>
 <h4 id="name">8.2.26.   name</h4>
 <pre><code>aRexxUnicodeCharacter~name</code></pre>
@@ -4679,6 +4805,8 @@ If the Unicode character has no lowercase mapping, returns its
 codepoint.</p>
 <p>This method uses the simple case mappings defined in
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
+<p>Returns the same result as <a
+href="#codepointToLower"><code>.RexxUnicodeServices~codepointToLower</code></a>.</p>
 <p><a id="RexxUnicodeCharacter_toLowerFull"></a></p>
 <h4 id="tolowerfull-not-supported">8.2.30.   toLowerFull (not
 supported)</h4>
@@ -4698,6 +4826,8 @@ If the Unicode character has no titlecase mapping, returns its
 codepoint.</p>
 <p>This method uses the simple case mappings defined in
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
+<p>Returns the same result as <a
+href="#codepointToTitle"><code>.RexxUnicodeServices~codepointToTitle</code></a>.</p>
 <p><a id="RexxUnicodeCharacter_toTitleFull"></a></p>
 <h4 id="totitlefull-not-supported">8.2.32.   toTitleFull (not
 supported)</h4>
@@ -4717,6 +4847,8 @@ If the Unicode character has no uppercase mapping, returns its
 codepoint.</p>
 <p>This method uses the simple case mappings defined in
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
+<p>Returns the same result as <a
+href="#codepointToUpper"><code>.RexxUnicodeServices~codepointToUpper</code></a>.</p>
 <p><a id="RexxUnicodeCharacter_toUpperFull"></a></p>
 <h4 id="toupperfull-not-supported">8.2.34.   toUpperFull (not
 supported)</h4>
