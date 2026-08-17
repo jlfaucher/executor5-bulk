@@ -718,6 +718,17 @@ set (classes_support_sources ${build_classes_support_dir}/HashCollection.cpp
             ${build_classes_support_dir}/RexxDateTime.cpp
             ${build_classes_support_dir}/StringUtil.cpp
             ${build_classes_support_dir}/Unicode/UnicodeServices.cpp
+#[[
+            # C++ port of Rust crate unicode-width
+            ${build_classes_support_dir}/Unicode/unicode-width/src-cpp/gen/lookup.cpp
+            ${build_classes_support_dir}/Unicode/unicode-width/src-cpp/gen/props.cpp
+            ${build_classes_support_dir}/Unicode/unicode-width/src-cpp/gen/tables_test.cpp
+            ${build_classes_support_dir}/Unicode/unicode-width/src-cpp/gen/tables.cpp
+            ${build_classes_support_dir}/Unicode/unicode-width/src-cpp/gen/width_info.cpp
+            ${build_classes_support_dir}/Unicode/unicode-width/src-cpp/lookup.cpp
+            ${build_classes_support_dir}/Unicode/unicode-width/src-cpp/props.cpp
+]]
+            # utf8proc
             ${build_classes_support_dir}/Unicode/utf8proc/utf8proc.c)
 set (classes_sources ${build_classes_dir}/ArrayClass.cpp
             ${build_classes_dir}/BagClass.cpp

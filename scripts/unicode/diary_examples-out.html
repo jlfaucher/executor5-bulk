@@ -43,11 +43,130 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 12 Aug 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S10b89Qbc4829380
+</span><span style="font-weight:bold;color:green;">Input queue name: Sca02Qbc4829800
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
+
+
+<span style="font-weight:bold;color:blue;">-- ===============================================================================
+</span><span style="font-weight:bold;color:blue;">-- 2026 Aug 17
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">[Unicode]
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Modify .RexxUnicodeServices~utf8StringInfo:
+</span><span style="font-weight:bold;color:blue;">utf8StringInfo(string [, [&gt;refGraphemeCount] [, [&gt;refCodepointCount] [, [&gt;refErrorCount [, stopAtFirstError = .false]]]]])
+</span><span style="font-weight:bold;color:blue;">    - add the `stopAtFirstError` parameter (default value `.false`)
+</span><span style="font-weight:bold;color:blue;">    - return the byte position (1-based) of the first invalid byte sequence, or 0
+</span><span style="font-weight:bold;color:blue;">    If `stopAtFirstError` is .true, the scan stops at the first invalid byte sequence.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Examples
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, &gt;g, &gt;c, &gt;e)=; g=; c=; e=                     </span><span style="font-weight:bold;color:blue;">-- 1; 9; 9; 7</span>
+ 1
+ 9
+ 9
+ 7
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, &gt;g, &gt;c, &gt;e, .true)=; g=; c=; e=              </span><span style="font-weight:bold;color:blue;">-- 1; 0; 0; 1</span>
+ 1
+ 0
+ 0
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;👨‍👩‍👧&quot; || &quot;F4 91 92 93 FF 41 80 BF 42&quot;x, &gt;g, &gt;c, &gt;e)=; g=; c=; e=           </span><span style="font-weight:bold;color:blue;">-- 19; 10; 14; 7</span>
+ 19
+ 10
+ 14
+ 7
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;👨‍👩‍👧&quot; || &quot;F4 91 92 93 FF 41 80 BF 42&quot;x, &gt;g, &gt;c, &gt;e, .true)=; g=; c=; e=    </span><span style="font-weight:bold;color:blue;">-- 19; 1; 5; 1</span>
+ 19
+ 1
+ 5
+ 1
+
+
+<span style="font-weight:bold;color:blue;">-- ===============================================================================
+</span><span style="font-weight:bold;color:blue;">-- 2026 Aug 15
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">[Unicode]
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Undo the renaming of .RexxUnicode~stringInfo to .RexxUnicode~utf8StringInfo.
+</span><span style="font-weight:bold;color:blue;">Reasons:
+</span><span style="font-weight:bold;color:blue;">- other .RexxUnicode~stringXXXX methods were not renamed to utf8StringXXXX.
+</span><span style="font-weight:bold;color:blue;">- it is better not to override .RexxUnicodeServices~utf8StringInfo because the
+</span><span style="font-weight:bold;color:blue;">  arguments are different.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">.RexxUnicodeServices~utf8StringInfo:
+</span><span style="font-weight:bold;color:blue;">    Use a fast path when the count of graphemes is not requested.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Benchmark
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- Macbook pro M1 32GB
+</span>
+<span style="font-weight:bold;color:blue;">-- 10 millions bytes, 10 millions codepoints, 10 millions graphemes
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;Family 👨‍👩‍👧&quot; || &quot;*&quot;~copies(10000000) || &quot;🤶 and 🎅.&quot;</span>
+<span style="font-weight:bold;color:blue;">-- Before fast path implementation
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(string, , &gt;c, &gt;e)   </span><span style="font-weight:bold;color:blue;">-- Duration: 0.062237, 0.071701, 0.078885, 0.081974, 0.068852. Average = 0.0727298</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">c=; e=                                                  </span><span style="font-weight:bold;color:blue;">--  10000020; 0</span>
+ 10000020
+ 0
+<span style="font-weight:bold;color:blue;">-- After fast path implementation
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(string, , &gt;c, &gt;e)   </span><span style="font-weight:bold;color:blue;">-- Duration: 0.027473, 0.033450, 0.032635, 0.027523, 0.036320. Average = 0.0314802</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">c=; e=                                                  </span><span style="font-weight:bold;color:blue;">--  10000020; 0</span>
+ 10000020
+ 0
+<span style="font-weight:bold;color:blue;">-- ratio = 2.31
+</span>
+<span style="font-weight:bold;color:blue;">-- 300 millions bytes, 100 millions codepoints, 2 graphemes
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">ZWJ = .RexxUnicode~U2C(&quot;U+200D&quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">KA = .RexxUnicode~U2C(&quot;U+0915&quot;)</span>
+<span style="font-weight:bold;color:blue;">-- Before fast path implementation
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, , &gt;c, &gt;e)      </span><span style="font-weight:bold;color:blue;">-- Duration: 1.154527, 0.999663, 1.122248, 1.081164, 1.012818. Average = 1.074084</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">c=; e=                                                                          </span><span style="font-weight:bold;color:blue;">--  100000001; 0</span>
+ 100000001
+ 0
+<span style="font-weight:bold;color:blue;">-- After fast path implementation
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, , &gt;c, &gt;e)      </span><span style="font-weight:bold;color:blue;">-- Duration: 0.805320, 0.774022, 0.812426, 0.792617, 0.772113. Average = 0.7912996</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">c=; e=                                                                          </span><span style="font-weight:bold;color:blue;">--  100000001; 0</span>
+ 100000001
+ 0
+<span style="font-weight:bold;color:blue;">-- ratio = 1.36
+</span>
+<span style="font-weight:bold;color:blue;">-- 100 millions bytes, 100 millions codepoints, 100 millions graphemes
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">KA = .RexxUnicode~U2C(&quot;U+0915&quot;)</span>
+<span style="font-weight:bold;color:blue;">-- Before fast path implementation
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;A&quot;~copies(100000000) || KA, , &gt;c, &gt;e)      </span><span style="font-weight:bold;color:blue;">-- Duration: 0.795994, 0.751816, 0.838142, 0.771332, 0.746149. Average = 0.7806866</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">c=; e=                                                                          </span><span style="font-weight:bold;color:blue;">--  100000001; 0</span>
+ 100000001
+ 0
+<span style="font-weight:bold;color:blue;">-- After fast path implementation
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;A&quot;~copies(100000000) || KA, , &gt;c, &gt;e)      </span><span style="font-weight:bold;color:blue;">-- Duration: 0.384425, 0.387391, 0.414862, 0.395159, 0.396718. Average = 0.395711</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">c=; e=                                                                          </span><span style="font-weight:bold;color:blue;">--  100000001; 0</span>
+ 100000001
+ 0
+<span style="font-weight:bold;color:blue;">-- ratio = 1.97
+</span>
+
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">RexxUnicodeStringIndexer:
+</span><span style="font-weight:bold;color:blue;">    - Use a fast path when creating a RexxUnicodeStringIndexer instance with no storage.
+</span><span style="font-weight:bold;color:blue;">      The native method .RexxUnicodeServices~utf8StringInfo is called to collect the counters.
+</span><span style="font-weight:bold;color:blue;">    - No longer create arrays when a storage limit is 0 and the indexer is not incremental.
+</span><span style="font-weight:bold;color:blue;">      Assign .nil, like end storages.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Bug
+</span><span style="font-weight:bold;color:blue;">    .RexxUnicode~stringUnescape(&quot;\u{0000}&quot;)=    -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
+</span><span style="font-weight:bold;color:blue;">    should not raise an error.
+</span><span style="font-weight:bold;color:blue;">Fixed:
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\u{0000}&quot;)=    </span><span style="font-weight:bold;color:blue;">-- '[00]'</span>
+'[00]'
 
 
 <span style="font-weight:bold;color:blue;">-- ===============================================================================
@@ -70,45 +189,45 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
 </span><span style="font-weight:bold;color:blue;">Examples
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;&quot;)=                            </span><span style="font-weight:bold;color:blue;">-- 1</span>
- 1
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;&quot;, &gt;g)=; g=                    </span><span style="font-weight:bold;color:blue;">-- 1; 0</span>
- 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;&quot;)=                            </span><span style="font-weight:bold;color:blue;">-- 0</span>
  0
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;&quot;, , &gt;c)=; c=                  </span><span style="font-weight:bold;color:blue;">-- 1; 0</span>
- 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;&quot;, &gt;g)=; g=                    </span><span style="font-weight:bold;color:blue;">-- 0; 0</span>
  0
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;&quot;, , , &gt;e)=; e=                </span><span style="font-weight:bold;color:blue;">-- 1; 0</span>
- 1
  0
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=    </span><span style="font-weight:bold;color:blue;">-- 1; 0; 0; 0</span>
- 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;&quot;, , &gt;c)=; c=                  </span><span style="font-weight:bold;color:blue;">-- 0; 0</span>
+ 0
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;&quot;, , , &gt;e)=; e=                </span><span style="font-weight:bold;color:blue;">-- 0; 0</span>
+ 0
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=    </span><span style="font-weight:bold;color:blue;">-- 0; 0; 0; 0</span>
+ 0
  0
  0
  0
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;e&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=      </span><span style="font-weight:bold;color:blue;">-- 1; 1; 1; 0</span>
- 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;e&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=      </span><span style="font-weight:bold;color:blue;">-- 0; 1; 1; 0</span>
+ 0
  1
  1
  0
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;é&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=      </span><span style="font-weight:bold;color:blue;">-- 1; 1; 1; 0</span>
- 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;é&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=      </span><span style="font-weight:bold;color:blue;">-- 0; 1; 1; 0</span>
+ 0
  1
  1
  0
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;€&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=      </span><span style="font-weight:bold;color:blue;">-- 1; 1; 1; 0</span>
- 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;€&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=      </span><span style="font-weight:bold;color:blue;">-- 0; 1; 1; 0</span>
+ 0
  1
  1
  0
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;🎅&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=    </span><span style="font-weight:bold;color:blue;">-- 1; 1; 1; 0</span>
- 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;🎅&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=    </span><span style="font-weight:bold;color:blue;">-- 0; 1; 1; 0</span>
+ 0
  1
  1
  0
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;👨‍👩‍👧&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=    </span><span style="font-weight:bold;color:blue;">-- 1; 1; 5; 0</span>
- 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;👨‍👩‍👧&quot;, &gt;g, &gt;c, &gt;e)=; g=; c=; e=    </span><span style="font-weight:bold;color:blue;">-- 0; 1; 5; 0</span>
+ 0
  1
  5
  0
@@ -117,8 +236,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = .RexxUnicode~U2C(&quot;U+0041 U+000D U+000A U+0042&quot;)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(string)=                                        </span><span style="font-weight:bold;color:blue;">-- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'</span>
 '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(string, &gt;g, &gt;c, &gt;e)=; g=; c=; e=    </span><span style="font-weight:bold;color:blue;">-- 1; 3; 4; 0</span>
- 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(string, &gt;g, &gt;c, &gt;e)=; g=; c=; e=    </span><span style="font-weight:bold;color:blue;">-- 0; 3; 4; 0</span>
+ 0
  3
  4
  0
@@ -126,13 +245,13 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf
 <span style="font-weight:bold;color:blue;">-- Invalid string
 </span><span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts
 </span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x, &gt;g, &gt;c, &gt;e)=; g=; c=; e=     </span><span style="font-weight:bold;color:blue;">-- 0; 5; 5; 4</span>
- 0
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x, &gt;g, &gt;c, &gt;e)=; g=; c=; e=     </span><span style="font-weight:bold;color:blue;">-- 1; 5; 5; 4</span>
+ 1
  5
  5
  4
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, &gt;g, &gt;c, &gt;e)=; g=; c=; e=     </span><span style="font-weight:bold;color:blue;">-- 0; 9; 9; 7</span>
- 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, &gt;g, &gt;c, &gt;e)=; g=; c=; e=     </span><span style="font-weight:bold;color:blue;">-- 1; 9; 9; 7</span>
+ 1
  9
  9
  7

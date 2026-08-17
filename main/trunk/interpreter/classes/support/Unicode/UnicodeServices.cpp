@@ -1138,7 +1138,7 @@ MutableBuffer *RexxUnicodeServicesClass::utf8EncodeCodepoint(RexxInteger *rexxCo
  *
  * @return .true if `string` is a valid UTF-8 string, .false otherwise.
  */
-RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, VariableReference *refGraphemeCount, VariableReference *refCodepointCount, VariableReference *refErrorCount)
+RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, VariableReference *refGraphemeCount, VariableReference *refCodepointCount, VariableReference *refErrorCount, RexxInteger *rexxStopAtFirstError)
 {
     // Check arguments
 
@@ -1154,12 +1154,18 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
     if (refCodepointCount != OREF_NULL) classArgument(refCodepointCount, TheVariableReferenceClass, "refCodepointCount");
     if (refErrorCount != OREF_NULL) classArgument(refErrorCount, TheVariableReferenceClass, "refErrorCount");
 
-    const utf8proc_uint8_t *str = (const utf8proc_uint8_t *) string->getStringData();
+    bool stopAtFirstError = false;
+    if (rexxStopAtFirstError != OREF_NULL) stopAtFirstError = (bool)integerRange(rexxStopAtFirstError, 0, 1, Error_Logical_value_user_defined, "Value of argument stopAtFirstError must be 0 or 1");
+
+    const utf8proc_uint8_t *start = (const utf8proc_uint8_t *) string->getStringData();
     utf8proc_ssize_t remainingLength = string->getLength();
 
     size_t graphemeCount = 0;
     size_t codepointCount = 0;
     size_t errorCount = 0;
+
+    const utf8proc_uint8_t *str = start;
+    const utf8proc_uint8_t *firstInvalidByteSequence = NULL;
 
     if (refGraphemeCount == OREF_NULL)
     {
@@ -1174,6 +1180,10 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
             {
                 // Here, codepoint == -1
                 errorCount += 1;
+
+                if (firstInvalidByteSequence == NULL) firstInvalidByteSequence = str;
+                if (stopAtFirstError) break;
+
                 codepointCount += 1;
                 sizeB = -sizeB;
             }
@@ -1205,6 +1215,10 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
                 // Here, codepoint == -1, so previousCodepoint will become -1
                 codepointProperty = NULL;
                 errorCount += 1;
+
+                if (firstInvalidByteSequence == NULL) firstInvalidByteSequence = str;
+                if (stopAtFirstError) break;
+
                 codepointCount += 1;
                 graphemeCount += 1;
                 graphemeBreakState = 0;
@@ -1261,7 +1275,7 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
         refErrorCount->setValue(rexxErrorCount);
     }
 
-    return (errorCount == 0) ? TheTrueObject : TheFalseObject;
+    return (errorCount == 0) ? RexxInteger::integerZero : new_integer(firstInvalidByteSequence - start + 1);
 }
 
 

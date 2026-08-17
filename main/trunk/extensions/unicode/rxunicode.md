@@ -1302,58 +1302,71 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 #### 1.1.27.   utf8StringInfo
 
 ```
-.RexxUnicodeServices~utf8StringInfo(string [, [>refGraphemeCount] [, [>refCodepointCount] [, [>refErrorCount]]]])
+.RexxUnicodeServices~utf8StringInfo(string [, [>refGraphemeCount] [, [>refCodepointCount] [, [>refErrorCount [, stopAtFirstError = .false]]]]])
 
 .RexxUnicodeServices~utf8StringInfo(
-    string,                 -- (in)             A UTF-8 string.
-    >refGraphemeCount,      -- (out, optional)  The count of graphemes
-    >refCodepointCount,     -- (out, optional)  The count of codepoints
-    >refErrorCount          -- (out, optional)  The count of errors
+    string,                     -- (in)             A UTF-8 string.
+    >refGraphemeCount,          -- (out, optional)  The count of graphemes
+    >refCodepointCount,         -- (out, optional)  The count of codepoints
+    >refErrorCount              -- (out, optional)  The count of errors
+    stopAtFirstError = .false   -- (in, optional)   behavior when an invalid byte sequence is encountered
     )
 ```
 
-Performs a full scan of a UTF-8 string without storing indexes or error messages.  
-This native method gives a good indication of performance.
+If `stopAtFirstError` is `.false` (default), performs a full scan of the UTF-8
+string without storing indexes or error messages. Otherwise the scan stops at
+the first invalid byte sequence.  
+This native method gives a good indication of performance (uses a fast path when
+the count of graphemes is not requested).
 
-Returns `.true` if `string` is a valid UTF-8 string.  
+If `string` is a valid UTF-8 string, returns `0`. Otherwise returns the byte
+position (1-based) of the first invalid byte sequence.  
 Returns additional information through reference variables.
 
-`refGraphemeCount` receives the count of graphemes in `string`.  
-`refCodepointCount` receives the count of codepoints in `string`.  
-`refErrorCount` receives the count of errors detected in `string`.  
+`refGraphemeCount` receives the count of graphemes in `string` (graphemes before the first error if the scan stopped at the first error).  
+`refCodepointCount` receives the count of codepoints in `string` (codepoints before the first error if the scan stopped at the first error).  
+`refErrorCount` receives the count of errors detected in `string` (`1` if the scan stopped at the first error).  
 
 **Examples:**
 
 ```rexx
-.RexxUnicodeServices~utf8StringInfo("e", >g, >c, >e)=; g=; c=; e=      -- 1; 1; 1; 0
-.RexxUnicodeServices~utf8StringInfo("é", >g, >c, >e)=; g=; c=; e=      -- 1; 1; 1; 0
-.RexxUnicodeServices~utf8StringInfo("€", >g, >c, >e)=; g=; c=; e=      -- 1; 1; 1; 0
-.RexxUnicodeServices~utf8StringInfo("🎅", >g, >c, >e)=; g=; c=; e=    -- 1; 1; 1; 0
-.RexxUnicodeServices~utf8StringInfo("👨‍👩‍👧", >g, >c, >e)=; g=; c=; e=    -- 1; 1; 5; 0
+.RexxUnicodeServices~utf8StringInfo("e", >g, >c, >e)=; g=; c=; e=      -- 0; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("é", >g, >c, >e)=; g=; c=; e=      -- 0; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("€", >g, >c, >e)=; g=; c=; e=      -- 0; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("🎅", >g, >c, >e)=; g=; c=; e=    -- 0; 1; 1; 0
+.RexxUnicodeServices~utf8StringInfo("👨‍👩‍👧", >g, >c, >e)=; g=; c=; e=    -- 0; 1; 5; 0
 
 -- CAREFUL! An ASCII string can have a grapheme made of several codepoints
 string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")
 .RexxUnicode~stringInfo(string)=                                        -- '(ASCII, 3 graphemes, 4 codepoints, 4 bytes, 0 error)'
-.RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)=; g=; c=; e=    -- 1; 3; 4; 0
+.RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)=; g=; c=; e=    -- 0; 3; 4; 0
 
 -- Invalid string
 -- U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
-.RexxUnicodeServices~utf8StringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >g, >c, >e)=; g=; c=; e=     -- 0; 5; 5; 4
-.RexxUnicodeServices~utf8StringInfo("F4 91 92 93 FF 41 80 BF 42"x, >g, >c, >e)=; g=; c=; e=     -- 0; 9; 9; 7
+.RexxUnicodeServices~utf8StringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >g, >c, >e)=; g=; c=; e=                     -- 1; 5; 5; 4
+.RexxUnicodeServices~utf8StringInfo("E1 80 E2 F0 91 92 F1 BF 41"x, >g, >c, >e, .true)=; g=; c=; e=              -- 1; 0; 0; 1
+.RexxUnicodeServices~utf8StringInfo("👨‍👩‍👧" || "E1 80 E2 F0 91 92 F1 BF 41"x, >g, >c, >e)=; g=; c=; e=           -- 19; 6; 10; 4
+.RexxUnicodeServices~utf8StringInfo("👨‍👩‍👧" || "E1 80 E2 F0 91 92 F1 BF 41"x, >g, >c, >e, .true)=; g=; c=; e=    -- 1; 1; 5; 1
+.RexxUnicodeServices~utf8StringInfo("F4 91 92 93 FF 41 80 BF 42"x, >g, >c, >e)=; g=; c=; e=                     -- 1; 9; 9; 7
+.RexxUnicodeServices~utf8StringInfo("F4 91 92 93 FF 41 80 BF 42"x, >g, >c, >e, .true)=; g=; c=; e=              -- 1; 0; 0; 7
+.RexxUnicodeServices~utf8StringInfo("👨‍👩‍👧" || "F4 91 92 93 FF 41 80 BF 42"x, >g, >c, >e)=; g=; c=; e=           -- 19; 10; 14; 7
+.RexxUnicodeServices~utf8StringInfo("👨‍👩‍👧" || "F4 91 92 93 FF 41 80 BF 42"x, >g, >c, >e, .true)=; g=; c=; e=    -- 19; 1; 5; 1
 
--- 10 millions bytes, 10 millions codepoints, 10 millions graphemes
+-- 100 millions bytes, 100 millions codepoints, 100 millions graphemes
 -- Durations on Macbook Pro M1 32GB
-string = "Family 👨‍👩‍👧" || "*"~copies(10000000) || "🤶 and 🎅."
-.RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.1071422
-g=; c=; e=                                                  --  10000016; 10000020; 0
+string = "Family 👨‍👩‍👧" || "*"~copies(100e6) || "🤶 and 🎅."
+.RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.578770
+.RexxUnicodeServices~utf8StringInfo(string,   , >c, >e)     -- Duration: 0.235276 (fast path)
+g=; c=; e=                                                  --  100000016; 100000020; 0
 
--- 30 millions bytes, 10 millions codepoints, 2 graphemes
+-- 300 millions bytes, 100 millions codepoints, 2 graphemes
 -- Durations on Macbook Pro M1 32GB
 ZWJ = .RexxUnicode~U2C("U+200D")
 KA = .RexxUnicode~U2C("U+0915")
-.RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.1332700
-g=; c=; e=                                                                      --  2; 100000001; 0
+.RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100e6) || KA, >g, >c, >e)    -- Duration: 1.056442
+.RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100e6) || KA,   , >c, >e)    -- Duration: 0.823040 (fast path)
+g=; c=; e=                                                                  --  2; 100000001; 0
 
 ```
 
