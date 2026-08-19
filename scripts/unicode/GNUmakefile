@@ -43,10 +43,12 @@ html:
 	@for f in $(ooRexxShellFiles); do make $$f-out.html; done
 
 $(ooRexxShellFiles):
+	rm -f $@-out.txt
 	bash -i -c '( cat $@.oorexxshell ; echo RC = 0 ) | oorexxshell test regression > $@-out.txt 2>&1'
 	diff -q $@-out-ref.txt $@-out.txt
 
 $(scriptsFiles):
+	rm -f $@-out.txt
 	bash -i -c 'rexx $@.rex  --testRegression > $@-out.txt 2>&1'
 	diff -q $@-out-ref.txt $@-out.txt
 

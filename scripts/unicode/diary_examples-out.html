@@ -37,17 +37,199 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for jdor.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for oorexxshell_queries_std.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for pipeline/pipe_std.cls
-</span><span style="font-weight:bold;color:green;">loadPackage OK for Rexx.Parser.cls
-</span><span style="font-weight:bold;color:green;">loadPackage OK for Unicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
-</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 12 Aug 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: Sca02Qbc4829800
+</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 19 Aug 2026
+</span><span style="font-weight:bold;color:green;">Input queue name: Sa5b7Qbc482a040
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
+
+
+<span style="font-weight:bold;color:blue;">-- ===============================================================================
+</span><span style="font-weight:bold;color:blue;">-- 2026 Aug 19
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">[Unicode]
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Modify .RexxUnicodeServices~utf8DecodeCodepoint:
+</span><span style="font-weight:bold;color:blue;">    The `indexB` argument is now optional, its default value is 1.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Example
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8DecodeCodepoint(&quot;Test&quot;)=   </span><span style="font-weight:bold;color:blue;">-- 84</span>
+ 84
+
+
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">Modify .RexxUnicodeServices~utf8DecodePreviousCodepoint:
+</span><span style="font-weight:bold;color:blue;">    The `indexB` argument is now optional, its default value is the string's length + 1.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Example
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8DecodePreviousCodepoint(&quot;Test&quot;)=   </span><span style="font-weight:bold;color:blue;">-- 116</span>
+ 116
+
+
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">Modify .RexxUnicode~stringEscape:
+</span><span style="font-weight:bold;color:blue;">    stringEscape(string, escapeBy=&quot;c&quot;, buffer=.nil)
+</span><span style="font-weight:bold;color:blue;">    - Add the `escapeBy` parameter.
+</span><span style="font-weight:bold;color:blue;">      Possible values are &quot;codepoint&quot; (default) and &quot;grapheme&quot;.
+</span><span style="font-weight:bold;color:blue;">      You only need to specify the first letter; any following characters are ignored.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Examples
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;👨‍👩‍👧&quot; || &quot;F4 91&quot;x</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringEscape(string)=          </span><span style="font-weight:bold;color:blue;">-- '👨\u200D👩\u200D👧\xF4\x91'</span>
+'👨\u200D👩\u200D👧\xF4\x91'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringEscape(string, &quot;g&quot;)=     </span><span style="font-weight:bold;color:blue;">-- '👨‍👩‍👧\xF4\x91'</span>
+'👨‍👩‍👧\xF4\x91'
+
+
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">Add .RexxUnicodeServices~utf8StringWidth(string [, indexB])
+</span><span style="font-weight:bold;color:blue;">    Given a UTF-8 string and a byte index treated as a boundary, returns the width
+</span><span style="font-weight:bold;color:blue;">    in console columns of the section immediately preceding that boundary.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">    string    (in)    A UTF-8 string.
+</span><span style="font-weight:bold;color:blue;">    indexB    (in)    The byte index (1-based) of the boundary up to which to
+</span><span style="font-weight:bold;color:blue;">                      calculate the width in console columns.
+</span><span style="font-weight:bold;color:blue;">                      Valid range: 1..length+1. (1 means &quot;nothing precedes the
+</span><span style="font-weight:bold;color:blue;">                      start of the string&quot;).
+</span><span style="font-weight:bold;color:blue;">                      The default value is the length of string + 1.
+</span><span style="font-weight:bold;color:blue;">    Precondition: indexB must be a grapheme boundary.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">    This method is a port of the Rust crate unicode_width.
+</span><span style="font-weight:bold;color:blue;">    https://docs.rs/unicode-width/latest/unicode_width/#rules-for-determining-width
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Examples
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringWidth(&quot;&quot;)=                                       </span><span style="font-weight:bold;color:blue;">-- 0</span>
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringWidth(&quot;❤️&quot;)=                                     </span><span style="font-weight:bold;color:blue;">-- 2</span>
+ 2
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(&quot;❤️&quot;)=                                                  </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 2 codepoints, 6 bytes, 0 error)'</span>
+'(not-ASCII, 1 grapheme, 2 codepoints, 6 bytes, 0 error)'
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringWidth(&quot;👩&quot;)=                                    </span><span style="font-weight:bold;color:blue;">-- 2     Woman</span>
+ 2
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(&quot;👩&quot;)=                                                  </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'</span>
+'(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringWidth(&quot;🔬&quot;)=                                    </span><span style="font-weight:bold;color:blue;">-- 2     Microscope</span>
+ 2
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(&quot;🔬&quot;)=                                                  </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'</span>
+'(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringWidth(&quot;👩‍🔬&quot;)=                                      </span><span style="font-weight:bold;color:blue;">-- 2    Woman scientist</span>
+ 2
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(&quot;👩‍🔬&quot;)=                                                   </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 3 codepoints, 11 bytes, 0 error)'</span>
+'(not-ASCII, 1 grapheme, 3 codepoints, 11 bytes, 0 error)'
+
+<span style="font-weight:bold;color:blue;">-- 2 exceeding carets in macOS Terminal (Menlo Regular 11) (incorrect display: flags overlap, &quot;!&quot; in the last flag, as if each flag had a width of 1)
+</span><span style="font-weight:bold;color:blue;">-- 1/2 missing caret in macOS TextEdit (Menlo Regular 11)
+</span><span style="font-weight:bold;color:blue;">-- 1 missing carets in macOS BBEdit (Inconsolata Regular - 13)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">width = .RexxUnicodeServices~utf8StringWidth(&quot;🇩🇪🏳️‍🌈!&quot;); width=                     </span><span style="font-weight:bold;color:blue;">-- 5</span>
+ 5
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(&quot;🇩🇪🏳️‍🌈!&quot;)=                                                 </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 3 graphemes, 7 codepoints, 23 bytes, 0 error)'</span>
+'(not-ASCII, 3 graphemes, 7 codepoints, 23 bytes, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">say &quot;🇩🇪🏳️‍🌈!&quot;; say &quot;^&quot;~copies(width)</span>
+🇩🇪🏳️‍🌈!
+^^^^^
+<span style="font-weight:bold;color:blue;">-- 🇩🇪🏳️‍🌈!
+</span><span style="font-weight:bold;color:blue;">-- ^^^^^
+</span>
+<span style="font-weight:bold;color:blue;">-- Alignment ok in macOS Terminal (Menlo Regular 11)
+</span><span style="font-weight:bold;color:blue;">-- 1/2 missing space in macOS TextEdit (Menlo Regular 11)
+</span><span style="font-weight:bold;color:blue;">-- 1/2 missing space in macOS BBEdit (Inconsolata Regular - 13)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;👨‍👩‍👧&quot; || &quot;F4 91&quot;x</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">firstInvalidByteSequence = .RexxUnicodeServices~utf8StringInfo(string)          </span><span style="font-weight:bold;color:blue;">-- Always return a grapheme boundary</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">firstInvalidByteSequence=                                                       </span><span style="font-weight:bold;color:blue;">-- 19</span>
+ 19
+ooRexx&gt; <span style="font-weight:bold;color:purple;">width = .RexxUnicodeServices~utf8StringWidth(string, firstInvalidByteSequence)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">width=                                                                          </span><span style="font-weight:bold;color:blue;">-- 2</span>
+ 2
+ooRexx&gt; <span style="font-weight:bold;color:purple;">say .RexxUnicode~stringEscape(string, &quot;g&quot;); say &quot; &quot;~copies(width) || &quot;^&quot;</span>
+👨‍👩‍👧\xF4\x91
+  ^
+<span style="font-weight:bold;color:blue;">-- 👨‍👩‍👧\xF4\x91
+</span><span style="font-weight:bold;color:blue;">--   ^
+</span>
+
+<span style="font-weight:bold;color:blue;">-- JMB Unicode string used in demos
+</span><span style="font-weight:bold;color:blue;">-- The display is rarely aligned with the width returned by utf8StringWidth
+</span>
+<span style="font-weight:bold;color:blue;">-- 1 exceeding caret in macOS Terminal (Menlo Regular 11)
+</span><span style="font-weight:bold;color:blue;">-- 1/2 missing caret in macOS TextEdit (Menlo Regular 11)
+</span><span style="font-weight:bold;color:blue;">-- 2.5 missing carets in macOS BBEdit (Inconsolata Regular - 13)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = 'Exit &quot;नमस्ते&quot;G,  &quot;P ≝ 𝔐&quot;,  &quot;🦞🍐&quot;'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">width = .RexxUnicodeServices~utf8StringWidth(string); width=        </span><span style="font-weight:bold;color:blue;">-- 31</span>
+ 31
+ooRexx&gt; <span style="font-weight:bold;color:purple;">say string; say &quot;^&quot;~copies(width)</span>
+Exit &quot;नमस्ते&quot;G,  &quot;P ≝ 𝔐&quot;,  &quot;🦞🍐&quot;
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<span style="font-weight:bold;color:blue;">-- Exit &quot;नमस्ते&quot;G,  &quot;P ≝ 𝔐&quot;,  &quot;🦞🍐&quot;
+</span><span style="font-weight:bold;color:blue;">-- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+</span>
+<span style="font-weight:bold;color:blue;">-- 1 exceeding caret in macOS Terminal (Menlo Regular 11)
+</span><span style="font-weight:bold;color:blue;">-- 1/2 exceeding caret in macOS TextEdit (Menlo Regular 11)
+</span><span style="font-weight:bold;color:blue;">-- Alignment ok in macOS BBEdit (Inconsolata Regular - 13)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = '&quot;नमस्ते&quot;'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">width = .RexxUnicodeServices~utf8StringWidth(string); width=        </span><span style="font-weight:bold;color:blue;">-- 6</span>
+ 6
+ooRexx&gt; <span style="font-weight:bold;color:purple;">say string; say &quot;^&quot;~copies(width)</span>
+&quot;नमस्ते&quot;
+^^^^^^
+<span style="font-weight:bold;color:blue;">-- &quot;नमस्ते&quot;
+</span><span style="font-weight:bold;color:blue;">-- ^^^^^^
+</span>
+<span style="font-weight:bold;color:blue;">-- Alignment ok in macOS Terminal (Menlo Regular 11)
+</span><span style="font-weight:bold;color:blue;">-- 1/2 missing caret in macOS TextEdit (Menlo Regular 11)
+</span><span style="font-weight:bold;color:blue;">-- 1.25 missing caret in macOS BBEdit (Inconsolata Regular - 13)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = '&quot;P ≝ 𝔐&quot;'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">width = .RexxUnicodeServices~utf8StringWidth(string); width=        </span><span style="font-weight:bold;color:blue;">-- 7</span>
+ 7
+ooRexx&gt; <span style="font-weight:bold;color:purple;">say string; say &quot;^&quot;~copies(width)</span>
+&quot;P ≝ 𝔐&quot;
+^^^^^^^
+<span style="font-weight:bold;color:blue;">-- &quot;P ≝ 𝔐&quot;
+</span><span style="font-weight:bold;color:blue;">-- ^^^^^^^
+</span>
+<span style="font-weight:bold;color:blue;">-- Alignment ok in macOS Terminal (Menlo Regular 11)
+</span><span style="font-weight:bold;color:blue;">-- 1/2 missing caret in macOS TextEdit (Menlo Regular 11)
+</span><span style="font-weight:bold;color:blue;">-- 1.25 missing caret in macOS BBEdit (Inconsolata Regular - 13)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = '&quot;🦞🍐&quot;'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">width = .RexxUnicodeServices~utf8StringWidth(string); width=        </span><span style="font-weight:bold;color:blue;">-- 6</span>
+ 6
+ooRexx&gt; <span style="font-weight:bold;color:purple;">say string; say &quot;^&quot;~copies(width)</span>
+&quot;🦞🍐&quot;
+^^^^^^
+<span style="font-weight:bold;color:blue;">-- &quot;🦞🍐&quot;
+</span><span style="font-weight:bold;color:blue;">-- ^^^^^^
+</span>
+
+<span style="font-weight:bold;color:blue;">-- East Asian context
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;“𘀀”&quot;</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCodepointSupplier~new(string, , .RexxUnicodeCharacter)==</span>
+a RexxUnicodeCodepointSupplier 
+ 1 : (&quot;“&quot; \x{E2809C} U+201C Pi Initial_Punctuation &quot;LEFT DOUBLE QUOTATION MARK&quot;)
+ 2 : (&quot;𘀀&quot; \x{F0988080} U+18000 Lo Other_Letter &quot;TANGUT IDEOGRAPH-18000&quot;)
+ 3 : (&quot;”&quot; \x{E2809D} U+201D Pf Final_Punctuation &quot;RIGHT DOUBLE QUOTATION MARK&quot;)
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     1 : (&quot;“&quot; \x{E2809C} U+201C Pi Initial_Punctuation &quot;LEFT DOUBLE QUOTATION MARK&quot;)
+</span><span style="font-weight:bold;color:blue;">     2 : (&quot;𘀀&quot; \x{F0988080} U+18000 Lo Other_Letter &quot;TANGUT IDEOGRAPH-18000&quot;)
+</span><span style="font-weight:bold;color:blue;">     3 : (&quot;”&quot; \x{E2809D} U+201D Pf Final_Punctuation &quot;RIGHT DOUBLE QUOTATION MARK&quot;)
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringWidth(string)=                                   </span><span style="font-weight:bold;color:blue;">-- 4</span>
+ 4
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringWidth(string, , /*eastAsianContext:*/ .true)=    </span><span style="font-weight:bold;color:blue;">-- 6</span>
+ 6
 
 
 <span style="font-weight:bold;color:blue;">-- ===============================================================================

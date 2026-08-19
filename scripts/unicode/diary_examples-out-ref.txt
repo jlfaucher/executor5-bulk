@@ -5,6 +5,190 @@ ooRexx> tutor off
 
 
 -- ===============================================================================
+-- 2026 Aug 19
+
+/*
+[Unicode]
+
+Modify .RexxUnicodeServices~utf8DecodeCodepoint:
+    The `indexB` argument is now optional, its default value is 1.
+
+Example
+*/
+
+ooRexx> .RexxUnicodeServices~utf8DecodeCodepoint("Test")=   -- 84
+ 84
+
+
+/*
+Modify .RexxUnicodeServices~utf8DecodePreviousCodepoint:
+    The `indexB` argument is now optional, its default value is the string's length + 1.
+
+Example
+*/
+
+ooRexx> .RexxUnicodeServices~utf8DecodePreviousCodepoint("Test")=   -- 116
+ 116
+
+
+/*
+Modify .RexxUnicode~stringEscape:
+    stringEscape(string, escapeBy="c", buffer=.nil)
+    - Add the `escapeBy` parameter.
+      Possible values are "codepoint" (default) and "grapheme".
+      You only need to specify the first letter; any following characters are ignored.
+
+Examples
+*/
+
+ooRexx> string = "👨‍👩‍👧" || "F4 91"x
+ooRexx> .RexxUnicode~stringEscape(string)=          -- '👨\u200D👩\u200D👧\xF4\x91'
+'👨\u200D👩\u200D👧\xF4\x91'
+ooRexx> .RexxUnicode~stringEscape(string, "g")=     -- '👨‍👩‍👧\xF4\x91'
+'👨‍👩‍👧\xF4\x91'
+
+
+/*
+Add .RexxUnicodeServices~utf8StringWidth(string [, indexB])
+    Given a UTF-8 string and a byte index treated as a boundary, returns the width
+    in console columns of the section immediately preceding that boundary.
+
+    string    (in)    A UTF-8 string.
+    indexB    (in)    The byte index (1-based) of the boundary up to which to
+                      calculate the width in console columns.
+                      Valid range: 1..length+1. (1 means "nothing precedes the
+                      start of the string").
+                      The default value is the length of string + 1.
+    Precondition: indexB must be a grapheme boundary.
+
+    This method is a port of the Rust crate unicode_width.
+    https://docs.rs/unicode-width/latest/unicode_width/#rules-for-determining-width
+
+Examples
+*/
+
+ooRexx> .RexxUnicodeServices~utf8StringWidth("")=                                       -- 0
+ 0
+ooRexx> .RexxUnicodeServices~utf8StringWidth("❤️")=                                     -- 2
+ 2
+ooRexx> .RexxUnicode~stringInfo("❤️")=                                                  -- '(not-ASCII, 1 grapheme, 2 codepoints, 6 bytes, 0 error)'
+'(not-ASCII, 1 grapheme, 2 codepoints, 6 bytes, 0 error)'
+
+ooRexx> .RexxUnicodeServices~utf8StringWidth("👩")=                                    -- 2     Woman
+ 2
+ooRexx> .RexxUnicode~stringInfo("👩")=                                                  -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+'(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+ooRexx> .RexxUnicodeServices~utf8StringWidth("🔬")=                                    -- 2     Microscope
+ 2
+ooRexx> .RexxUnicode~stringInfo("🔬")=                                                  -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+'(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+ooRexx> .RexxUnicodeServices~utf8StringWidth("👩‍🔬")=                                      -- 2    Woman scientist
+ 2
+ooRexx> .RexxUnicode~stringInfo("👩‍🔬")=                                                   -- '(not-ASCII, 1 grapheme, 3 codepoints, 11 bytes, 0 error)'
+'(not-ASCII, 1 grapheme, 3 codepoints, 11 bytes, 0 error)'
+
+-- 2 exceeding carets in macOS Terminal (Menlo Regular 11) (incorrect display: flags overlap, "!" in the last flag, as if each flag had a width of 1)
+-- 1/2 missing caret in macOS TextEdit (Menlo Regular 11)
+-- 1 missing carets in macOS BBEdit (Inconsolata Regular - 13)
+ooRexx> width = .RexxUnicodeServices~utf8StringWidth("🇩🇪🏳️‍🌈!"); width=                     -- 5
+ 5
+ooRexx> .RexxUnicode~stringInfo("🇩🇪🏳️‍🌈!")=                                                 -- '(not-ASCII, 3 graphemes, 7 codepoints, 23 bytes, 0 error)'
+'(not-ASCII, 3 graphemes, 7 codepoints, 23 bytes, 0 error)'
+ooRexx> say "🇩🇪🏳️‍🌈!"; say "^"~copies(width)
+🇩🇪🏳️‍🌈!
+^^^^^
+-- 🇩🇪🏳️‍🌈!
+-- ^^^^^
+
+-- Alignment ok in macOS Terminal (Menlo Regular 11)
+-- 1/2 missing space in macOS TextEdit (Menlo Regular 11)
+-- 1/2 missing space in macOS BBEdit (Inconsolata Regular - 13)
+ooRexx> string = "👨‍👩‍👧" || "F4 91"x
+ooRexx> firstInvalidByteSequence = .RexxUnicodeServices~utf8StringInfo(string)          -- Always return a grapheme boundary
+ooRexx> firstInvalidByteSequence=                                                       -- 19
+ 19
+ooRexx> width = .RexxUnicodeServices~utf8StringWidth(string, firstInvalidByteSequence)
+ooRexx> width=                                                                          -- 2
+ 2
+ooRexx> say .RexxUnicode~stringEscape(string, "g"); say " "~copies(width) || "^"
+👨‍👩‍👧\xF4\x91
+  ^
+-- 👨‍👩‍👧\xF4\x91
+--   ^
+
+
+-- JMB Unicode string used in demos
+-- The display is rarely aligned with the width returned by utf8StringWidth
+
+-- 1 exceeding caret in macOS Terminal (Menlo Regular 11)
+-- 1/2 missing caret in macOS TextEdit (Menlo Regular 11)
+-- 2.5 missing carets in macOS BBEdit (Inconsolata Regular - 13)
+ooRexx> string = 'Exit "नमस्ते"G,  "P ≝ 𝔐",  "🦞🍐"'
+ooRexx> width = .RexxUnicodeServices~utf8StringWidth(string); width=        -- 31
+ 31
+ooRexx> say string; say "^"~copies(width)
+Exit "नमस्ते"G,  "P ≝ 𝔐",  "🦞🍐"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-- Exit "नमस्ते"G,  "P ≝ 𝔐",  "🦞🍐"
+-- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+-- 1 exceeding caret in macOS Terminal (Menlo Regular 11)
+-- 1/2 exceeding caret in macOS TextEdit (Menlo Regular 11)
+-- Alignment ok in macOS BBEdit (Inconsolata Regular - 13)
+ooRexx> string = '"नमस्ते"'
+ooRexx> width = .RexxUnicodeServices~utf8StringWidth(string); width=        -- 6
+ 6
+ooRexx> say string; say "^"~copies(width)
+"नमस्ते"
+^^^^^^
+-- "नमस्ते"
+-- ^^^^^^
+
+-- Alignment ok in macOS Terminal (Menlo Regular 11)
+-- 1/2 missing caret in macOS TextEdit (Menlo Regular 11)
+-- 1.25 missing caret in macOS BBEdit (Inconsolata Regular - 13)
+ooRexx> string = '"P ≝ 𝔐"'
+ooRexx> width = .RexxUnicodeServices~utf8StringWidth(string); width=        -- 7
+ 7
+ooRexx> say string; say "^"~copies(width)
+"P ≝ 𝔐"
+^^^^^^^
+-- "P ≝ 𝔐"
+-- ^^^^^^^
+
+-- Alignment ok in macOS Terminal (Menlo Regular 11)
+-- 1/2 missing caret in macOS TextEdit (Menlo Regular 11)
+-- 1.25 missing caret in macOS BBEdit (Inconsolata Regular - 13)
+ooRexx> string = '"🦞🍐"'
+ooRexx> width = .RexxUnicodeServices~utf8StringWidth(string); width=        -- 6
+ 6
+ooRexx> say string; say "^"~copies(width)
+"🦞🍐"
+^^^^^^
+-- "🦞🍐"
+-- ^^^^^^
+
+
+-- East Asian context
+ooRexx> string = "“𘀀”"
+ooRexx> .RexxUnicodeCodepointSupplier~new(string, , .RexxUnicodeCharacter)==
+a RexxUnicodeCodepointSupplier 
+ 1 : ("“" \x{E2809C} U+201C Pi Initial_Punctuation "LEFT DOUBLE QUOTATION MARK")
+ 2 : ("𘀀" \x{F0988080} U+18000 Lo Other_Letter "TANGUT IDEOGRAPH-18000")
+ 3 : ("”" \x{E2809D} U+201D Pf Final_Punctuation "RIGHT DOUBLE QUOTATION MARK")
+/*
+    a RexxUnicodeCodepointSupplier
+     1 : ("“" \x{E2809C} U+201C Pi Initial_Punctuation "LEFT DOUBLE QUOTATION MARK")
+     2 : ("𘀀" \x{F0988080} U+18000 Lo Other_Letter "TANGUT IDEOGRAPH-18000")
+     3 : ("”" \x{E2809D} U+201D Pf Final_Punctuation "RIGHT DOUBLE QUOTATION MARK")
+*/
+ooRexx> .RexxUnicodeServices~utf8StringWidth(string)=                                   -- 4
+ 4
+ooRexx> .RexxUnicodeServices~utf8StringWidth(string, , /*eastAsianContext:*/ .true)=    -- 6
+ 6
+
+
+-- ===============================================================================
 -- 2026 Aug 17
 
 /*

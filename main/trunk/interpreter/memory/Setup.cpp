@@ -1741,6 +1741,7 @@ StartClassDefinition(RexxUnicodeServices)
         AddClassUnguardedMethod("UTF8DecodePreviousCodepoint", RexxUnicodeServicesClass::utf8DecodePreviousCodepoint, 5);
         AddClassUnguardedMethod("UTF8EncodeCodepoint", RexxUnicodeServicesClass::utf8EncodeCodepoint, 3);
         AddClassUnguardedMethod("UTF8StringInfo", RexxUnicodeServicesClass::utf8StringInfo, 5);
+        AddClassUnguardedMethod("UTF8StringWidth", RexxUnicodeServicesClass::utf8StringWidth, 3);
         AddClassUnguardedMethod("UTF8Transform", RexxUnicodeServicesClass::utf8Transform, A_COUNT);
         AddClassUnguardedMethod("GraphemeBreak", RexxUnicodeServicesClass::graphemeBreak, 1);
         AddClassUnguardedMethod("GraphemeBreak3", RexxUnicodeServicesClass::graphemeBreak3, 3);
@@ -1761,6 +1762,7 @@ StartClassDefinition(RexxUnicodeServices)
         AddClassUnguardedMethod("CodepointToTitle", RexxUnicodeServicesClass::codepointToTitle, 1);
         AddClassUnguardedMethod("CodepointIsLower", RexxUnicodeServicesClass::codepointIsLower, 1);
         AddClassUnguardedMethod("CodepointIsUpper", RexxUnicodeServicesClass::codepointIsUpper, 1);
+        AddClassUnguardedMethod("SizeofUnicodeWidthTables", RexxUnicodeServicesClass::sizeofUnicodeWidthTables, 0);
 
     CompleteClassMethodDefinitions();
 

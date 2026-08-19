@@ -860,14 +860,6 @@ How other languages are supporting escape characters for Unicode:
                                         if \ self~ICU4ooRexxIsRegistered then additional = " (ICU4ooRexx not loaded)"
                                         raise syntax 98.900 array("Name" quoted(name) "at position" slashPos "not found" || additional)
 
-    -- not used, to delete
-    /*
-    expected_1_8_hexdigits:             raise syntax 23.900 array("Expected {1..8 hex digits} after \"character "at position" slashPos)
-    expected_2_hexdigits:               raise syntax 23.900 array("Expected 2 hex digits after \"character "at position" slashPos)
-    expected_4_hexdigits:               raise syntax 23.900 array("Expected 4 hex digits after \"character "at position" slashPos)
-    expected_1_n_hexdigits:             raise syntax 23.900 array("Expected {1..n hex digits} after \"character "at position" slashPos)
-    */
-
     expected_8_hexdigits:               raise syntax 23.900 array("Expected 8 hex digits after \"character "at position" slashPos)
     expected_4_or_1_8_hexdigits:        raise syntax 23.900 array("Expected either 4 hex digits or {1..8 hex digits} after \"character "at position" slashPos)
     expected_2_or_1_n_hexdigits:        raise syntax 23.900 array("Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \"character "at position" slashPos)
@@ -878,37 +870,55 @@ How other languages are supporting escape characters for Unicode:
 
 
 ::method stringEscape class
-    use strict arg string, buffer=.nil
+    use strict arg string, escapeBy="c", buffer=.nil
     string = requestBaseString(string, "string")
 
     returnBuffer = .nil \== buffer
     if .nil == buffer then buffer = .MutableBuffer~new(, string~length)
 
-    codepoints = .RexxUnicodeCodepointSupplier~new(string)
-    do while codepoints~available
-        codepoint = codepoints~item -- whole number
-        bytes = codepoints~item("b") -- byte sequence as string
-        error = codepoints~item("e")
-        if error \== "" then do
-            xbytes = bytes~c2x
-            if xbytes~length == 2 then buffer~append("\x", xbytes)
-                                  else buffer~append("\x{", xbytes, "}")
-        end
-        else do
-            select case codepoint
-                when 7 then buffer~append("\a")
-                when 8 then buffer~append("\b")
-                when 9 then buffer~append("\t")
-                when 10 then buffer~append("\n")
-                when 11 then buffer~append("\v")
-                when 12 then buffer~append("\f")
-                when 13 then buffer~append("\r")
-                when 92 then buffer~append("\\")
-                otherwise .RexxUnicode~codepointPrintableString(codepoint, buffer)
+    select case escapeBy~left(1)~lower
+
+        when "c" then do
+            codepoints = .RexxUnicodeCodepointSupplier~new(string)
+            do while codepoints~available
+                error = codepoints~item("e")
+                if error \== "" then do
+                    bytes = codepoints~item("b") -- byte sequence as string
+                    xbytes = bytes~c2x
+                    if xbytes~length == 2 then buffer~append("\x", xbytes)
+                                          else buffer~append("\x{", xbytes, "}")
+                end
+                else do
+                    codepoint = codepoints~item -- whole number
+                    select case codepoint
+                        when 7 then buffer~append("\a")
+                        when 8 then buffer~append("\b")
+                        when 9 then buffer~append("\t")
+                        when 10 then buffer~append("\n")
+                        when 11 then buffer~append("\v")
+                        when 12 then buffer~append("\f")
+                        when 13 then buffer~append("\r")
+                        when 92 then buffer~append("\\")
+                        otherwise .RexxUnicode~codepointPrintableString(codepoint, buffer)
+                    end
+                end
+                codepoints~next
             end
         end
-        codepoints~next
-    end
+
+        when "g" then do
+            graphemes = .RexxUnicodeGraphemeSupplier~new(string)
+            do while graphemes~available
+                error = graphemes~item("e")
+                if error \== "" then buffer~append(graphemes~item("\")) -- escaped string
+                else buffer~append(graphemes~item) -- string
+                graphemes~next
+            end
+        end
+
+        otherwise raise syntax 88.900 array ("Expected argument escapeBy to start with 'C' or 'G'; found" quoted(escapeBy))
+
+    end -- select
 
     if returnBuffer then return buffer
     return buffer~string

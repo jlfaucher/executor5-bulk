@@ -420,6 +420,8 @@ instead of -1 as in `wcwidth`.
 Unfortunately, this isn't the whole story.  
 [How is the Rust compiler able to tell the visible width of unicode characters?][rust_visible_width]
 
+See [`.RexxUnicodeServices~utf8StringWidth`](#utf8StringWidth).
+
 
 <a id="codepointCombiningClass"></a>
 
@@ -1057,8 +1059,9 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 
 .RexxUnicodeServices~utf8DecodeCodepoint(
     string,         -- (in)             A UTF-8 string.
-    indexB,         -- (in)             The byte index (1-based) of the encoded codepoint in string.
+    indexB,         -- (in, optional)   The byte index (1-based) of the encoded codepoint in string.
                     --                  Valid range: 1..length+1.
+                    --                  The default value is 1.
     >refSizeB,      -- (out, optional)  The number of bytes read to decode the codepoint:
                     --                      > 0 if no error,
                     --                      < 0 if error,
@@ -1124,14 +1127,15 @@ to follow the `U+FFFD` Substitution of Maximal Subparts.
 #### 1.1.24.   utf8DecodePreviousCodepoint
 
 ```
-.RexxUnicodeServices~utf8DecodePreviousCodepoint(string, indexB [, [>refSizeB] [, [>refErrorCode] [, [>refErrorMsg]]]])
+.RexxUnicodeServices~utf8DecodePreviousCodepoint(string [, indexB [, [>refSizeB] [, [>refErrorCode] [, [>refErrorMsg]]]]])
 
 
 .RexxUnicodeServices~utf8DecodePreviousCodepoint(
     string,         -- (in)             A UTF-8 string.
-    indexB,         -- (in)             The byte index (1-based) of the boundary before which to decode.
+    indexB,         -- (in, optional)   The byte index (1-based) of the boundary before which to decode.
                     --                  Valid range: 1..length+1.
                     --                  1 means "nothing precedes the start of the string".
+                    --                  The default value is the length of `string` + 1
     >refSizeB,      -- (out, optional)  The number of bytes read to decode the codepoint:
                     --                      > 0 if no error,
                     --                      < 0 if error,
@@ -1302,14 +1306,14 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 #### 1.1.27.   utf8StringInfo
 
 ```
-.RexxUnicodeServices~utf8StringInfo(string [, [>refGraphemeCount] [, [>refCodepointCount] [, [>refErrorCount [, stopAtFirstError = .false]]]]])
+.RexxUnicodeServices~utf8StringInfo(string [, [>refGraphemeCount] [, [>refCodepointCount] [, [>refErrorCount [, stopAtFirstError]]]]])
 
 .RexxUnicodeServices~utf8StringInfo(
-    string,                     -- (in)             A UTF-8 string.
-    >refGraphemeCount,          -- (out, optional)  The count of graphemes
-    >refCodepointCount,         -- (out, optional)  The count of codepoints
-    >refErrorCount              -- (out, optional)  The count of errors
-    stopAtFirstError = .false   -- (in, optional)   behavior when an invalid byte sequence is encountered
+    string,             -- (in)             A UTF-8 string.
+    >refGraphemeCount,  -- (out, optional)  The count of graphemes
+    >refCodepointCount, -- (out, optional)  The count of codepoints
+    >refErrorCount      -- (out, optional)  The count of errors
+    stopAtFirstError    -- (in, optional)   behavior when an invalid byte sequence is encountered
     )
 ```
 
@@ -1320,7 +1324,7 @@ This native method gives a good indication of performance (uses a fast path when
 the count of graphemes is not requested).
 
 If `string` is a valid UTF-8 string, returns `0`. Otherwise returns the byte
-position (1-based) of the first invalid byte sequence.  
+position (1-based) of the first invalid byte sequence (always a grapheme boundary).  
 Returns additional information through reference variables.
 
 `refGraphemeCount` receives the count of graphemes in `string` (graphemes before the first error if the scan stopped at the first error).  
@@ -1371,9 +1375,56 @@ g=; c=; e=                                                                  --  
 ```
 
 
+<a id="utf8StringWidth"></a>
+
+#### 1.1.28.   utf8StringWidth
+
+```
+.RexxUnicodeServices~utf8StringWidth(string [, [indexB=string~length] [, [eastAsianContext]]])
+
+.RexxUnicodeServices~utf8StringWidth(
+    string          (in)            A UTF-8 string.
+    indexB          (in, optional)  The byte index (1-based) of the boundary up to which
+                                    to calculate the width in console columns.
+                                    Valid range: 1..length+1. (1 means "nothing precedes the
+                                    start of the string").
+                                    The default value is the length of string + 1.
+    eastAianContext (in, optional)  .true to use East Asian context.
+                                    The default value is .false.
+    )
+```
+
+Given a UTF-8 string and a byte index treated as a boundary, returns the width
+in console columns of the section immediately preceding that boundary.
+
+Precondition: indexB must be a grapheme boundary.
+
+This method is a port of the Rust crate [`unicode_width`][rust_crate_unicode_width].
+
+**Examples**
+
+```rexx
+.RexxUnicodeServices~utf8StringWidth("👩‍🔬")=                                      -- 2
+.RexxUnicode~stringInfo("👩‍🔬")=                                                   -- '(not-ASCII, 1 grapheme, 3 codepoints, 11 bytes, 0 error)'
+
+width = .RexxUnicodeServices~utf8StringWidth("🇩🇪🏳️‍🌈!"); width=                     -- 5
+.RexxUnicode~stringInfo("🇩🇪🏳️‍🌈!")=                                                 -- '(not-ASCII, 3 graphemes, 7 codepoints, 23 bytes, 0 error)'
+
+string = "👨‍👩‍👧" || "F4 91"x
+firstInvalidByteSequence = .RexxUnicodeServices~utf8StringInfo(string)          -- Always return a grapheme boundary
+firstInvalidByteSequence=                                                       -- 19
+width = .RexxUnicodeServices~utf8StringWidth(string, firstInvalidByteSequence)
+width=                                                                          -- 2
+say .RexxUnicode~stringEscape(string, "g"); say " "~copies(width) || "^"
+-- 👨‍👩‍👧\xF4\x91
+--   ^
+
+```
+
+
 <a id="utf8Transform"></a>
 
-#### 1.1.28.   utf8Transform
+#### 1.1.29.   utf8Transform
 
 ```
 .RexxUnicodeServices~utf8Transform(string [, casefold = .false [, lump= .false [, nlf = 0 [, normalization = 0 [, stripCC = .false [, stripIgnorable= .false [, stripMark = .false [, stripNA = .false]]]]]]]])
@@ -1393,13 +1444,13 @@ g=; c=; e=                                                                  --  
 
 Returns the transformed string.
 
-##### 1.1.28.1.   'caseFold' argument
+##### 1.1.29.1.   'caseFold' argument
 
 Performs unicode case folding, to be able to do a case-insensitive
 string comparison.
 
 
-##### 1.1.28.2.   'lump' argument
+##### 1.1.29.2.   'lump' argument
 
 Maps certain characters to a common representative (i.e., several distinct characters produce the same output character).  
 All the concerned characters become the same character, but still remain distinct characters.
@@ -1441,7 +1492,7 @@ Mapping rules:
     U+007E  ~   <-- tilde operator U+223C
 
 
-##### 1.1.28.3.   'nlf' argument
+##### 1.1.29.3.   'nlf' argument
 
 [https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213][newline_guidelines]
 
@@ -1468,7 +1519,7 @@ NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are converted
 to the Unicode Paragraph Separator (PS) codepoint.
 
 
-##### 1.1.28.4.   'normalization' argument
+##### 1.1.29.4.   'normalization' argument
 
 ```rexx
 -- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).
@@ -1483,7 +1534,7 @@ to the Unicode Paragraph Separator (PS) codepoint.
 If `normalization` is not `0`, apply the requested normalization.
 
 
-##### 1.1.28.5.   'stripCC' argument
+##### 1.1.29.5.   'stripCC' argument
 
 Strips and/or converts control characters.
 
@@ -1494,13 +1545,13 @@ are treated as a NLF-sequence in this case.
 All other control characters are simply removed.
 
 
-##### 1.1.28.6.   'stripIgnorable' argument
+##### 1.1.29.6.   'stripIgnorable' argument
 
 Strips the characters whose property `Default_Ignorable_Code_Point` is true,
 such as `SOFT-HYPHEN` or `ZERO-WIDTH-SPACE`.
 
 
-##### 1.1.28.7.   'stripMark' argument
+##### 1.1.29.7.   'stripMark' argument
 
 Strips all character markings.
 
@@ -1513,12 +1564,12 @@ This includes non-spacing, spacing and enclosing (i.e. accents) categories:
 This option works only with a normalization applied.
 
 
-##### 1.1.28.8.   'stripNA' argument
+##### 1.1.29.8.   'stripNA' argument
 
 Strips the characters whose category is `Cn` Unassigned.
 
 
-##### 1.1.28.9.   Examples of transformations
+##### 1.1.29.9.   Examples of transformations
 
 ```rexx
 string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n"
@@ -2232,15 +2283,25 @@ Returns a `StringTable` containing information about the Unicode environment.
 
 #### 2.4.16.   stringEscape
 
-    .RexxUnicode~stringEscape(string, buffer=.nil)
+    .RexxUnicode~stringEscape(string, escapeBy="c", buffer=.nil)
 
-Returns a string in which non-printable codepoints and invalid byte sequences are replaced with escape sequences.
+Possible values for the `escapeBy` parameter are `"codepoint"` (default) and `"grapheme"`.  
+You only need to specify the first letter; any following characters are ignored.
 
-- Invalid byte sequences are represented as escaped hexadecimal byte sequences: `\xXX` or `\x{XX..XX}`.
-- Non-printable codepoints are represented using the standard escape sequences (`\a`, `\b`, `\t`, `\n`, `\v`, `\f`, `\r`) when applicable;  
+When `escapeBy` is `"codepoint"`, returns a string in which non-printable codepoints
+and invalid byte sequences are replaced with escape sequences.
+
+- Invalid byte sequences are represented as escaped hexadecimal byte sequences:
+  `\xXX` or `\x{XX..XX}`.
+- Non-printable codepoints are represented using the standard escape sequences
+  (`\a`, `\b`, `\t`, `\n`, `\v`, `\f`, `\r`) when applicable;  
   otherwise, Unicode escape notation (`\uXXXX` or `\UXXXXXXXX`) is used.
 
-If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
+When `escapeBy` is `"grapheme"`, returns a string in which invalid byte sequences
+are replaced with escape sequences.
+
+If a buffer is passed as an argument, the resulting string is appended to the buffer,
+and the buffer is returned.
 
 **Examples:**
 
@@ -2248,6 +2309,13 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 .RexxUnicode~stringEscape(xrange("00"x, "FF"x))=          -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'
 
 .RexxUnicode~stringEscape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF'
+
+```
+
+```rexx
+string = "👨‍👩‍👧" || "F4 91"x
+.RexxUnicode~stringEscape(string)=          -- '👨\u200D👩\u200D👧\xF4\x91'
+.RexxUnicode~stringEscape(string, "g")=     -- '👨‍👩‍👧\xF4\x91'
 
 ```
 
@@ -3740,12 +3808,12 @@ to the `new` method.
 
 If the indexer is incremental, these methods may complete the storage on demand:
 
-- codepointAtIndexC
-- codepointIndexB
-- codepointIndexC
-- graphemeAtIndexG
-- graphemeIndexB
-- graphemeIndexG
+- [`codepointAtIndexC`](#RexxUnicodeStringIndexer_codepointAtIndexC)
+- [`codepointIndexB`](#RexxUnicodeStringIndexer_codepointIndexB)
+- [`codepointIndexC`](#RexxUnicodeStringIndexer_codepointIndexC)
+- [`graphemeAtIndexG`](#RexxUnicodeStringIndexer_graphemeAtIndexG)
+- [`graphemeIndexB`](#RexxUnicodeStringIndexer_graphemeIndexB)
+- [`graphemeIndexG`](#RexxUnicodeStringIndexer_graphemeIndexG)
 
 By default, a `RexxUnicodeStringIndexer` instance is non-incremental.
 

@@ -48,6 +48,8 @@
 
 
 #include "Unicode/utf8proc/utf8proc.h"
+#include "Unicode/unicode-width/src-cpp/lookup.hpp"
+
 #include "UnicodeServices.hpp"
 
 // singleton class instance
@@ -927,10 +929,11 @@ RexxString *RexxUnicodeServicesClass::unicodeVersion()
 
 
 /**
- * Given a string and a byte index, return a codepoint and its size in bytes.
+ * Given a UTF-8 string and a byte index, return a codepoint and its size in bytes.
  *
  * @param string        (in)            A UTF-8 string.
- * @param indexB        (in)            The byte index (1-based) of the encoded codepoint in rexxString
+ * @param indexB        (in, optional)  The byte index (1-based) of the encoded codepoint in rexxString.
+ *                                      The default value is 1.
  * @param refSizeB      (out, optional) The number of bytes read to decode the codepoint (negative if error),
  *                                      or 0 if indexB is at the end of the string (indexB == length+1).
  * @param refErrorCode  (out, optional) The null string "" if a valid codepoint could be read,
@@ -957,7 +960,8 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodeCodepoint(RexxString *string, R
     }
     // if (string->classObject() != TheStringClass) reportException(Error_Invalid_argument_noclass, "string", TheStringClass->getId());
 
-    size_t index = positionArgument(indexB, "indexB"); // 1-based, range 1..length+1
+    size_t index = 1;
+    if (indexB != OREF_NULL) index = positionArgument(indexB, "indexB"); // 1-based, range 1..length+1
     if (index > string->getLength() + 1) reportException(Error_Incorrect_method_position, index); // length+1 is accepted, but not beyond
     if (refSizeB != OREF_NULL) classArgument(refSizeB, TheVariableReferenceClass, "refSizeB");
     if (refErrorCode != OREF_NULL) classArgument(refErrorCode, TheVariableReferenceClass, "refErrorCode");
@@ -1004,7 +1008,7 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodeCodepoint(RexxString *string, R
 
 
 /**
- * Given a string and a byte index treated as a boundary, return the codepoint
+ * Given a UTF-8 string and a byte index treated as a boundary, return the codepoint
  * immediately preceding that boundary, and its size in bytes.
  *
  * The index has the same meaning as in utf8DecodeCodepoint: the 1-based byte
@@ -1015,9 +1019,10 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodeCodepoint(RexxString *string, R
  * the last codepoint of the string.
  *
  * @param string        (in)            A UTF-8 string.
- * @param indexB        (in)            The byte index (1-based) of the boundary before which
+ * @param indexB        (in, optional)  The byte index (1-based) of the boundary before which
  *                                      to decode. Valid range: 1..length+1. (1 means "nothing
- *                                      precedes the start of the string".)
+ *                                      precedes the start of the string").
+ *                                      The default value is the lenght of string + 1.
  * @param refSizeB      (out, optional) The number of bytes read to decode the codepoint (negative if error),
  *                                      or 0 if indexB is at the begining of the string (indexB == 1).
  * @param refErrorCode  (out, optional) The null string "" if a valid codepoint could be read,
@@ -1040,7 +1045,8 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodePreviousCodepoint(RexxString *s
         reportException(Error_Invalid_argument_user_defined, errmsg);
     }
 
-    size_t index = positionArgument(indexB, "indexB"); // 1-based; boundary, not a byte offset
+    size_t index = string->getLength() + 1;
+    if (indexB != OREF_NULL) index = positionArgument(indexB, "indexB"); // 1-based; boundary, not a byte offset
     if (index > string->getLength() + 1) reportException(Error_Incorrect_method_position, index); // length+1 is accepted, but not beyond
     if (refSizeB != OREF_NULL) classArgument(refSizeB, TheVariableReferenceClass, "refSizeB");
     if (refErrorCode != OREF_NULL) classArgument(refErrorCode, TheVariableReferenceClass, "refErrorCode");
@@ -1276,74 +1282,6 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
     }
 
     return (errorCount == 0) ? RexxInteger::integerZero : new_integer(firstInvalidByteSequence - start + 1);
-}
-
-
-/**
- * Calculates the width in console columns of a UTF-8 string.
- * If `string` is an invalid UTF-8 string, the width is limited to the portion before the first invalid byte sequence.
- * Returns width information through reference variables.
- *
- * @param string                            (in)                A UTF-8 string.
- * @param refGraphemeWidthSum               (out, optional)     The sum of grapheme widths, where the width of a grapheme is the maximum codepoint width within the grapheme cluster.
- * @param refCodepointWidthSum              (out, optional)     The sum of codepoint widths.
- * @param refGraphemeEastAsianWidthSum      (out, optional)     The sum of grapheme East Asian widths, where the width of a grapheme is the maximum codepoint East Asian width within the grapheme cluster.
- * @param refCodepointEastAsianWidthSum     (out, optional)     The sum of codepoint East Asian widths, where ambiguous-width codepoints have a width of 2.
- *
- * @return .true if `string` is a valid UTF-8 string, .false otherwise.
- */
-RexxInteger *RexxUnicodeServicesClass::utf8StringWidth(RexxString *string, VariableReference *refGraphemeWidthSum, VariableReference *refCodepointWidthSum, VariableReference *refGraphemeEastAsianWidthSum, VariableReference *refCodepointEastAsianWidthSum)
-{
-    // Check arguments
-
-    requiredArgument(string, "string");
-    if (string->classObject() != TheStringClass)
-    {
-        Protected<RexxString> errmsg = new_string("Argument string class: expected String, found ");
-        errmsg = errmsg->concat(string->classObject()->getId());
-        reportException(Error_Invalid_argument_user_defined, errmsg);
-    }
-
-    if (refGraphemeWidthSum != OREF_NULL) classArgument(refGraphemeWidthSum, TheVariableReferenceClass, "refGraphemeWidthSum");
-    if (refCodepointWidthSum != OREF_NULL) classArgument(refCodepointWidthSum, TheVariableReferenceClass, "refCodepointWidthSum");
-    if (refGraphemeEastAsianWidthSum != OREF_NULL) classArgument(refGraphemeEastAsianWidthSum, TheVariableReferenceClass, "refGraphemeEastAsianWidthSum");
-    if (refCodepointEastAsianWidthSum != OREF_NULL) classArgument(refCodepointEastAsianWidthSum, TheVariableReferenceClass, "refCodepointEastAsianWidthSum");
-
-    const utf8proc_uint8_t *str = (const utf8proc_uint8_t *) string->getStringData();
-    utf8proc_size_t length = string->getLength();
-
-    size_t graphemeWidthSum = 0;
-    size_t codepointWidthSum = 0;
-    size_t graphemeEastAsianWidthSum = 0;
-    size_t codepointEastAsianWidthSum = 0;
-
-    bool validUtf8 = true;
-
-    if (refGraphemeWidthSum != OREF_NULL)
-    {
-        RexxInteger *rexxGraphemeWidthSum = new_integer(graphemeWidthSum); // Protected<RexxString> not needed
-        refGraphemeWidthSum->setValue(rexxGraphemeWidthSum);
-    }
-
-    if (refCodepointWidthSum != OREF_NULL)
-    {
-        RexxInteger *rexxCodepointWidthSum = new_integer(codepointWidthSum); // Protected<RexxString> not needed
-        refCodepointWidthSum->setValue(rexxCodepointWidthSum);
-    }
-
-    if (refGraphemeEastAsianWidthSum != OREF_NULL)
-    {
-        RexxInteger *rexxGraphemeEastAsianWidthSum = new_integer(graphemeEastAsianWidthSum); // Protected<RexxString> not needed
-        refGraphemeEastAsianWidthSum->setValue(rexxGraphemeEastAsianWidthSum);
-    }
-
-    if (refCodepointEastAsianWidthSum != OREF_NULL)
-    {
-        RexxInteger *rexxCodepointEastAsianWidthSum = new_integer(codepointEastAsianWidthSum); // Protected<RexxString> not needed
-        refCodepointEastAsianWidthSum->setValue(rexxCodepointEastAsianWidthSum);
-    }
-
-   return (validUtf8) ? TheTrueObject : TheFalseObject;
 }
 
 
@@ -1840,7 +1778,7 @@ RexxInteger *RexxUnicodeServicesClass::codepointCombiningClass(RexxInteger *rexx
         refLabel->setValue(rexxLabel);
     }
 
-    return new_integer(combining_class); // see utf8proc_category_t
+    return new_integer(combining_class);
 }
 
 
@@ -2343,3 +2281,82 @@ RexxString *RexxUnicodeServicesClass::utf8Transform(RexxObject **arguments, size
   UTF8PROC_STRIPNA    = (1<<14),
 
 #endif
+
+
+/******************************************************************************/
+/*                                                                            */
+/* unicode_width Services                                                     */
+/*                                                                            */
+/******************************************************************************/
+
+RexxObject *RexxUnicodeServicesClass::sizeofUnicodeWidthTables()
+{
+    unicode_width::sizeofUnicodeWidthTables();
+    return OREF_NULL;
+}
+
+/**
+ * Given a UTF-8 string and a byte index treated as a boundary, return the width
+ * in console columns of the section immediately preceding that boundary.
+ *
+ * @param string           (in)             A UTF-8 string.
+ * @param indexB           (in, optional)   The byte index (1-based) of the boundary up to which
+ *                                          to calculate the width in console columns.
+ *                                          Valid range: 1..length+1. (1 means "nothing precedes
+ *                                          the start of the string".)
+ *                                          The default value is the length of string + 1.
+ * @param eastAsianContext (in, optional)   .true to use East Asian context.
+ *                                          The default value is .false.
+ *
+ * Precondition: indexB must be a grapheme boundary.
+ *
+ * @return The width in console columns.
+ */
+RexxInteger *RexxUnicodeServicesClass::utf8StringWidth(RexxString *string, RexxInteger *indexB, RexxInteger *eastAsianContext)
+{
+    // Check arguments
+
+    requiredArgument(string, "string");
+    if (string->classObject() != TheStringClass)
+    {
+        Protected<RexxString> errmsg = new_string("Argument string class: expected String, found ");
+        errmsg = errmsg->concat(string->classObject()->getId());
+        reportException(Error_Invalid_argument_user_defined, errmsg);
+    }
+
+    size_t index = string->getLength() + 1;
+    if (indexB != OREF_NULL) index = positionArgument(indexB, "indexB"); // 1-based; boundary, not a byte offset
+    if (index > string->getLength() + 1) reportException(Error_Incorrect_method_position, index); // length+1 is accepted, but not beyond
+
+    bool eastAsian = false;
+    if (eastAsianContext != OREF_NULL) eastAsian = (bool)integerRange(eastAsianContext, 0, 1, Error_Logical_value_user_defined, "Value of argument eastAsianContext must be 0 or 1");
+
+    const utf8proc_uint8_t *str_start = (const utf8proc_uint8_t *) string->getStringData();
+    const utf8proc_uint8_t *str_end = str_start + string->getLength();
+    const utf8proc_uint8_t *pos = str_start + (index - 1); // 0-based boundary
+
+    unicode_width::WidthInfo info = unicode_width::WidthInfo::DEFAULT;
+    std::int64_t widthSum = 0;
+    for (;;) {
+        utf8proc_int32_t cp;
+        utf8proc_ssize_t sizeB = utf8proc_iterate_extended_backward(str_start, pos, str_end, &cp);
+
+        if (sizeB == 0) break; // reached the start of string
+
+        if (sizeB < 0) {
+            // Invalid byte sequence
+            cp = 0xFFFD; // replacement character
+            sizeB = -sizeB;
+        }
+
+        std::pair<std::int8_t, unicode_width::WidthInfo> result = eastAsian ?
+                                                                  unicode_width::width_in_generic<true>(cp, info) :
+                                                                  unicode_width::width_in_generic<false>(cp, info);
+        widthSum += result.first;
+        info = result.second;
+
+        pos -= sizeB;
+    }
+
+    return new_integer(widthSum);
+}

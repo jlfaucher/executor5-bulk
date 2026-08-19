@@ -1340,6 +1340,7 @@ PCPPM CPPCode::exportedMethods[] =
     CPPM(RexxUnicodeServicesClass::utf8DecodePreviousCodepoint),
     CPPM(RexxUnicodeServicesClass::utf8EncodeCodepoint),
     CPPM(RexxUnicodeServicesClass::utf8StringInfo),
+    CPPM(RexxUnicodeServicesClass::utf8StringWidth),
     CPPM(RexxUnicodeServicesClass::utf8Transform),
     CPPM(RexxUnicodeServicesClass::graphemeBreak),
     CPPM(RexxUnicodeServicesClass::graphemeBreak3),
@@ -1360,6 +1361,8 @@ PCPPM CPPCode::exportedMethods[] =
     CPPM(RexxUnicodeServicesClass::codepointToTitle),
     CPPM(RexxUnicodeServicesClass::codepointIsLower),
     CPPM(RexxUnicodeServicesClass::codepointIsUpper),
+    CPPM(RexxUnicodeServicesClass::utf8StringWidth),
+    CPPM(RexxUnicodeServicesClass::sizeofUnicodeWidthTables),
 
     // This NULL terminator is important to mark the end of the table.
     NULL

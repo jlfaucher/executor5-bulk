@@ -45,10 +45,12 @@ all:
 	@-for %%f in ($(scriptsFiles)) do @$(NMAKE) %%f
 
 $(ooRexxShellFiles):
+	del /F $@-out.txt > nul
 	( type $@.oorexxshell & echo RC = 0 ) | oorexxshell test regression > $@-out.txt 2>&1
 	$(DIFF) $@-out-ref.txt $@-out.txt > nul
 
 $(scriptsFiles):
+	del /F $@-out.txt > nul
 	rexx $@.rex --testRegression > $@-out.txt 2>&1
 	$(DIFF) $@-out-ref.txt $@-out.txt > nul
 

@@ -81,7 +81,7 @@ public:
     MutableBuffer *utf8EncodeCodepoint(RexxInteger *rexxCodepoint, MutableBuffer *destination, VariableReference *refSizeB);
 
     RexxInteger *utf8StringInfo(RexxString *string, VariableReference *refGraphemeCount, VariableReference *refCodepointCount, VariableReference *refErrorCount, RexxInteger *rexxStopAtFirstError);
-    RexxInteger *utf8StringWidth(RexxString *string, VariableReference *refGraphemeWidthSum, VariableReference *refCodepointWidthSum, VariableReference *refGraphemeEastAsianWidthSum, VariableReference *refCodepointEastAsianWidthSum);
+    RexxInteger *utf8StringWidth(RexxString *string, RexxInteger *indexB, RexxInteger *eastAsianContext);
 
     RexxString *utf8Transform(RexxObject **arguments, size_t argCount);
     // use strict arg string, casefold = .false, lump= .false, nlf = 0, normalization = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false
@@ -108,6 +108,8 @@ public:
     RexxInteger *codepointToLower(RexxInteger *rexxCodepoint);
     RexxInteger *codepointToUpper(RexxInteger *rexxCodepoint);
     RexxInteger *codepointToTitle(RexxInteger *rexxCodepoint);
+
+    RexxObject *sizeofUnicodeWidthTables();
 };
 
 #endif

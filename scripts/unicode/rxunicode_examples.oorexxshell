@@ -331,6 +331,26 @@ g=; c=; e=                                                                      
 
 
 --------------------------------------------------------------------------------
+--  .RexxUnicodeServices~utf8StringWidth
+--------------------------------------------------------------------------------
+
+.RexxUnicodeServices~utf8StringWidth("👩‍🔬")=                                      -- 2
+.RexxUnicode~stringInfo("👩‍🔬")=                                                   -- '(not-ASCII, 1 grapheme, 3 codepoints, 11 bytes, 0 error)'
+
+width = .RexxUnicodeServices~utf8StringWidth("🇩🇪🏳️‍🌈!"); width=                     -- 5
+.RexxUnicode~stringInfo("🇩🇪🏳️‍🌈!")=                                                 -- '(not-ASCII, 3 graphemes, 7 codepoints, 23 bytes, 0 error)'
+
+string = "👨‍👩‍👧" || "F4 91"x
+firstInvalidByteSequence = .RexxUnicodeServices~utf8StringInfo(string)          -- Always return a grapheme boundary
+firstInvalidByteSequence=                                                       -- 19
+width = .RexxUnicodeServices~utf8StringWidth(string, firstInvalidByteSequence)
+width=                                                                          -- 2
+say .RexxUnicode~stringEscape(string, "g"); say " "~copies(width) || "^"
+-- 👨‍👩‍👧\xF4\x91
+--   ^
+
+
+--------------------------------------------------------------------------------
 -- .RexxUnicodeServices~utf8Transform
 --------------------------------------------------------------------------------
 
@@ -682,6 +702,10 @@ tstring=; .RexxUnicode~C2U(tstring)=
 
 .RexxUnicode~stringEscape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF'
 
+
+string = "👨‍👩‍👧" || "F4 91"x
+.RexxUnicode~stringEscape(string)=          -- '👨\u200D👩\u200D👧\xF4\x91'
+.RexxUnicode~stringEscape(string, "g")=     -- '👨‍👩‍👧\xF4\x91'
 
 .RexxUnicode~stringEscape(.RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}"))=    -- '\xED\xA0\x80'
 /*

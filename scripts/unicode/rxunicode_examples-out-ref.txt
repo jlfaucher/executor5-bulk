@@ -542,6 +542,34 @@ ooRexx> g=; c=; e=                                                              
 
 
 --------------------------------------------------------------------------------
+--  .RexxUnicodeServices~utf8StringWidth
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeServices~utf8StringWidth("👩‍🔬")=                                      -- 2
+ 2
+ooRexx> .RexxUnicode~stringInfo("👩‍🔬")=                                                   -- '(not-ASCII, 1 grapheme, 3 codepoints, 11 bytes, 0 error)'
+'(not-ASCII, 1 grapheme, 3 codepoints, 11 bytes, 0 error)'
+
+ooRexx> width = .RexxUnicodeServices~utf8StringWidth("🇩🇪🏳️‍🌈!"); width=                     -- 5
+ 5
+ooRexx> .RexxUnicode~stringInfo("🇩🇪🏳️‍🌈!")=                                                 -- '(not-ASCII, 3 graphemes, 7 codepoints, 23 bytes, 0 error)'
+'(not-ASCII, 3 graphemes, 7 codepoints, 23 bytes, 0 error)'
+
+ooRexx> string = "👨‍👩‍👧" || "F4 91"x
+ooRexx> firstInvalidByteSequence = .RexxUnicodeServices~utf8StringInfo(string)          -- Always return a grapheme boundary
+ooRexx> firstInvalidByteSequence=                                                       -- 19
+ 19
+ooRexx> width = .RexxUnicodeServices~utf8StringWidth(string, firstInvalidByteSequence)
+ooRexx> width=                                                                          -- 2
+ 2
+ooRexx> say .RexxUnicode~stringEscape(string, "g"); say " "~copies(width) || "^"
+👨‍👩‍👧\xF4\x91
+  ^
+-- 👨‍👩‍👧\xF4\x91
+--   ^
+
+
+--------------------------------------------------------------------------------
 -- .RexxUnicodeServices~utf8Transform
 --------------------------------------------------------------------------------
 
@@ -1024,6 +1052,12 @@ ooRexx> .RexxUnicode~stringEscape(xrange("00"x, "FF"x))=          -- '\u0000\u00
 ooRexx> .RexxUnicode~stringEscape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF'
 '\U00010FFF'
 
+
+ooRexx> string = "👨‍👩‍👧" || "F4 91"x
+ooRexx> .RexxUnicode~stringEscape(string)=          -- '👨\u200D👩\u200D👧\xF4\x91'
+'👨\u200D👩\u200D👧\xF4\x91'
+ooRexx> .RexxUnicode~stringEscape(string, "g")=     -- '👨‍👩‍👧\xF4\x91'
+'👨‍👩‍👧\xF4\x91'
 
 ooRexx> .RexxUnicode~stringEscape(.RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}"))=    -- '\xED\xA0\x80'
 '\xED\xA0\x80'
