@@ -421,7 +421,7 @@ deprecated)</small></small>
 </table>
 <p><a id="codepointBidiClass"></a></p>
 <h4 id="codepointbidiclass">1.1.1.   codepointBidiClass</h4>
-<pre><code>.RexxUnicodeServices~codepointBidiClass(codepoint [, [&gt;refCode] [, [&gt;refLabel]]])</code></pre>
+<pre><code>.RexxUnicodeServices~codepointBidiClass( codepoint, [&gt;refCode], [&gt;refLabel] )</code></pre>
 <p>Returns the bidirectional character type of <code>codepoint</code> as
 an enumeration value.</p>
 <ul>
@@ -475,14 +475,14 @@ title="Standard Annex #9 Unicode Bidirectional Algorithm - Bidirectional Charact
 </div>
 <p><a id="codepointBidiMirrored"></a></p>
 <h4 id="codepointbidimirrored">1.1.2.   codepointBidiMirrored</h4>
-<pre><code>.RexxUnicodeServices~codepointBidiMirrored(codepoint)</code></pre>
+<pre><code>.RexxUnicodeServices~codepointBidiMirrored( codepoint )</code></pre>
 <p>Returns <code>.true</code> if the <code>Bidi_Mirrored</code> property
 value of <code>codepoint</code> is <code>Yes</code>.</p>
 <p><a href="https://unicode.org/reports/tr9/#Mirroring"
 title="Standard Annex #9 Unicode Bidirectional Algorithm - Mirroring">https://unicode.org/reports/tr9/#Mirroring</a></p>
 <p><a id="codepointBoundClass"></a></p>
 <h4 id="codepointboundclass">1.1.3.   codepointBoundClass</h4>
-<pre><code>.RexxUnicodeServices~codepointBoundClass(codepoint [, [&gt;refCode] [, [&gt;refLabel]]])</code></pre>
+<pre><code>.RexxUnicodeServices~codepointBoundClass( codepoint, [&gt;refCode], [&gt;refLabel] )</code></pre>
 <p>Returns the <code>Grapheme_Cluster_Break</code> property value of
 <code>codepoint</code> as an enumeration value.</p>
 <ul>
@@ -538,7 +538,7 @@ title="Standard Annex #29 Unicode Text Segmentation - Grapheme Cluster Boundarie
 </div>
 <p><a id="codepointCategory"></a></p>
 <h4 id="codepointcategory">1.1.4.   codepointCategory</h4>
-<pre><code>.RexxUnicodeServices~codepointCategory(codepoint [, [&gt;refCode] [, [&gt;refLabel]]])</code></pre>
+<pre><code>.RexxUnicodeServices~codepointCategory( codepoint, [&gt;refCode], [&gt;refLabel] )</code></pre>
 <p>Returns the <code>General_Category</code> property value of
 <code>codepoint</code> as an enumeration value.</p>
 <ul>
@@ -597,7 +597,7 @@ title="Unicode Core Specification - General Category">https://www.unicode.org/ve
 </div>
 <p><a id="codepointCharWidth"></a></p>
 <h4 id="codepointcharwidth">1.1.5.   codepointCharWidth</h4>
-<pre><code>.RexxUnicodeServices~codepointCharWidth(codepoint)</code></pre>
+<pre><code>.RexxUnicodeServices~codepointCharWidth( codepoint )</code></pre>
 <p>Given a codepoint, returns a character width analogous to
 <code>wcwidth(codepoint)</code>, except that a width of 0 is returned
 for non-printable codepoints instead of -1 as in
@@ -612,7 +612,7 @@ characters?</a></p>
 href="#utf8StringWidth"><code>.RexxUnicodeServices~utf8StringWidth</code></a>.</p>
 <p><a id="codepointCombiningClass"></a></p>
 <h4 id="codepointcombiningclass">1.1.6.   codepointCombiningClass</h4>
-<pre><code>.RexxUnicodeServices~codepointCombiningClass(codepoint [, [&gt;refCode] [, [&gt;refLabel]]])</code></pre>
+<pre><code>.RexxUnicodeServices~codepointCombiningClass( codepoint, [&gt;refCode], [&gt;refLabel] )</code></pre>
 <p>Returns the <code>Canonical_Combining_Class</code> property value of
 <code>codepoint</code>.</p>
 <p>The values in the <code>Canonical_Combining_Class</code> field in
@@ -721,7 +721,7 @@ title="Unicode Character Database - Canonical Combining Class Values">https://ww
 </div>
 <p><a id="codepointControlBoundary"></a></p>
 <h4 id="codepointcontrolboundary">1.1.7.   codepointControlBoundary</h4>
-<pre><code>.RexxUnicodeServices~codepointControlBoundary(codepoint)</code></pre>
+<pre><code>.RexxUnicodeServices~codepointControlBoundary( codepoint )</code></pre>
 <p>Returns <code>.true</code> if <code>codepoint</code> belongs to the
 <code>Zl</code>, <code>Zp</code>, <code>Cc</code>, or <code>Cf</code>
 category, except for:</p>
@@ -738,7 +738,7 @@ unless a use case is identified.</p>
 <p><a id="codepointDecompositionType"></a></p>
 <h4
 id="codepointdecompositiontype">1.1.8.   codepointDecompositionType</h4>
-<pre><code>.RexxUnicodeServices~codepointDecompositionType(codepoint [, [&gt;refCode] [, [&gt;refLabel]]])</code></pre>
+<pre><code>.RexxUnicodeServices~codepointDecompositionType( codepoint, [&gt;refCode], [&gt;refLabel] )</code></pre>
 <p>Returns the <code>Decomposition_Type</code> property value of
 <code>codepoint</code> as an enumeration value.</p>
 <ul>
@@ -787,7 +787,7 @@ title="Unicode Normalization Forms">https://unicode.org/reports/tr15/</a></p>
 <p><a id="codepointEastAsianWidthIsAmbiguous"></a></p>
 <h4
 id="codepointeastasianwidthisambiguous">1.1.9.   codepointEastAsianWidthIsAmbiguous</h4>
-<pre><code>.RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous(codepoint)</code></pre>
+<pre><code>.RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous( codepoint )</code></pre>
 <p>Returns <code>.true</code> if the <code>East_Asian_Width</code>
 property value of <code>codepoint</code> is <code>"A"</code>
 (<code>"Ambiguous"</code>).</p>
@@ -795,7 +795,7 @@ property value of <code>codepoint</code> is <code>"A"</code>
 title="Standard Annex #11 East Asian Width">https://www.unicode.org/reports/tr11/</a></p>
 <p><a id="codepointIgnorable"></a></p>
 <h4 id="codepointignorable">1.1.10.   codepointIgnorable</h4>
-<pre><code>.RexxUnicodeServices~codepointIgnorable(codepoint)</code></pre>
+<pre><code>.RexxUnicodeServices~codepointIgnorable( codepoint )</code></pre>
 <p>Returns the <code>Default_Ignorable_Code_Point</code> property value
 of <code>codepoint</code> (boolean value).</p>
 <p><a
@@ -804,7 +804,7 @@ title="Unicode Core Specification - Ignoring Characters in Processing">https://w
 <p><a id="codepointIndicConjunctBreak"></a></p>
 <h4
 id="codepointindicconjunctbreak">1.1.11.   codepointIndicConjunctBreak</h4>
-<pre><code>.RexxUnicodeServices~codepointIndicConjunctBreak(codepoint [, [&gt;refCode] [, [&gt;refLabel]]])</code></pre>
+<pre><code>.RexxUnicodeServices~codepointIndicConjunctBreak( codepoint, [&gt;refCode], [&gt;refLabel] )</code></pre>
 <p>Returns the <code>Indic_Conjunct_Break (InCB)</code> property value
 of <code>codepoint</code> as an enumeration value.</p>
 <ul>
@@ -841,17 +841,17 @@ title="Unicode Character Database - Derivation of Indic_Conjunct_Break">https://
 </div>
 <p><a id="codepointIsLower"></a></p>
 <h4 id="codepointislower">1.1.12.   codepointIsLower</h4>
-<pre><code>.RexxUnicodeServices~codepointIsLower(codepoint)</code></pre>
+<pre><code>.RexxUnicodeServices~codepointIsLower( codepoint )</code></pre>
 <p>Returns <code>.true</code> if the codepoint corresponds to a
 lowercase character and <code>.false</code> otherwise.</p>
 <p><a id="codepointIsUpper"></a></p>
 <h4 id="codepointisupper">1.1.13.   codepointIsUpper</h4>
-<pre><code>.RexxUnicodeServices~codepointIsUpper(codepoint)</code></pre>
+<pre><code>.RexxUnicodeServices~codepointIsUpper( codepoint )</code></pre>
 <p>Returns <code>.true</code> if the codepoint corresponds to an
 uppercase character and <code>.false</code> otherwise.</p>
 <p><a id="codepointToLower"></a></p>
 <h4 id="codepointtolower">1.1.14.   codepointToLower</h4>
-<pre><code>.RexxUnicodeServices~codepointToLower(codepoint)</code></pre>
+<pre><code>.RexxUnicodeServices~codepointToLower( codepoint )</code></pre>
 <p>Returns the codepoint of the corresponding lowercase character.<br />
 If <code>codepoint</code> has no lowercase mapping, returns
 <code>codepoint</code>.</p>
@@ -859,7 +859,7 @@ If <code>codepoint</code> has no lowercase mapping, returns
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
 <p><a id="codepointToTitle"></a></p>
 <h4 id="codepointtotitle">1.1.15.   codepointToTitle</h4>
-<pre><code>.RexxUnicodeServices~codepointToTitle(codepoint)</code></pre>
+<pre><code>.RexxUnicodeServices~codepointToTitle( codepoint )</code></pre>
 <p>Returns the codepoint of the corresponding titlecase character.<br />
 If <code>codepoint</code> has no titlecase mapping, returns
 <code>codepoint</code>.</p>
@@ -867,7 +867,7 @@ If <code>codepoint</code> has no titlecase mapping, returns
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
 <p><a id="codepointToUpper"></a></p>
 <h4 id="codepointtoupper">1.1.16.   codepointToUpper</h4>
-<pre><code>.RexxUnicodeServices~codepointToUpper(codepoint)</code></pre>
+<pre><code>.RexxUnicodeServices~codepointToUpper( codepoint )</code></pre>
 <p>Returns the codepoint of the corresponding uppercase character.<br />
 If <code>codepoint</code> has no uppercase mapping, returns
 <code>codepoint</code>.</p>
@@ -875,7 +875,7 @@ If <code>codepoint</code> has no uppercase mapping, returns
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
 <p><a id="graphemeBreak"></a></p>
 <h4 id="graphemebreak">1.1.17.   graphemeBreak</h4>
-<pre><code>.RexxUnicodeServices~graphemeBreak(array)</code></pre>
+<pre><code>.RexxUnicodeServices~graphemeBreak( array )</code></pre>
 <p>Returns <code>.true</code> if there is a grapheme break between the
 two consecutive codepoints passed in <code>array</code>.</p>
 <p><a
@@ -901,7 +901,7 @@ on the sequence of calls made on the original object and its copies.</p>
 </div>
 <p><a id="graphemeBreak3"></a></p>
 <h4 id="graphemebreak3">1.1.18.   graphemeBreak3</h4>
-<pre><code>.RexxUnicodeServices~graphemeBreak3(codepoint1, codepoint2, &gt;refState)
+<pre><code>.RexxUnicodeServices~graphemeBreak3( codepoint1, codepoint2, &gt;refState )
 
 .RexxUnicodeServices~graphemeBreak3(
     codepoint1,     -- (in)     The first codepoint.
@@ -927,7 +927,7 @@ title="Standard Annex #29 Unicode Text Segmentation - Grapheme Cluster Boundarie
 </div>
 <p><a id="graphemeBreakBackward"></a></p>
 <h4 id="graphemebreakbackward">1.1.19.   graphemeBreakBackward</h4>
-<pre><code>.RexxUnicodeServices~graphemeBreakBackward(string, indexB, codepoint1, codepoint2)
+<pre><code>.RexxUnicodeServices~graphemeBreakBackward( string, indexB, codepoint1, codepoint2 )
 
 .RexxUnicodeServices~graphemeBreakBackward(
     string,     -- (in)     A UTF-8 string.
@@ -1173,7 +1173,7 @@ library.</p>
 </div>
 <p><a id="utf8DecodeCodepoint"></a></p>
 <h4 id="utf8decodecodepoint">1.1.23.   utf8DecodeCodepoint</h4>
-<pre><code>.RexxUnicodeServices~utf8DecodeCodepoint(string, indexB [, [&gt;refSizeB] [, [&gt;refErrorCode] [, [&gt;refErrorMsg]]]])
+<pre><code>.RexxUnicodeServices~utf8DecodeCodepoint( string, indexB = 1, [&gt;refSizeB], [&gt;refErrorCode], [&gt;refErrorMsg] )
 
 .RexxUnicodeServices~utf8DecodeCodepoint(
     string,         -- (in)             A UTF-8 string.
@@ -1243,7 +1243,7 @@ detailed description of the error.</p>
 <p><a id="utf8DecodePreviousCodepoint"></a></p>
 <h4
 id="utf8decodepreviouscodepoint">1.1.24.   utf8DecodePreviousCodepoint</h4>
-<pre><code>.RexxUnicodeServices~utf8DecodePreviousCodepoint(string [, indexB [, [&gt;refSizeB] [, [&gt;refErrorCode] [, [&gt;refErrorMsg]]]]])
+<pre><code>.RexxUnicodeServices~utf8DecodePreviousCodepoint( string, indexB = string~length + 1, [&gt;refSizeB], [&gt;refErrorCode], [&gt;refErrorMsg] )
 
 
 .RexxUnicodeServices~utf8DecodePreviousCodepoint(
@@ -1364,7 +1364,7 @@ detailed description of the error.</p>
 </div>
 <p><a id="utf8EncodeCodepoint"></a></p>
 <h4 id="utf8encodecodepoint">1.1.25.   utf8EncodeCodepoint</h4>
-<pre><code>.RexxUnicodeServices~utf8EncodeCodepoint(codepoint, destination [, &gt;refSizeB])
+<pre><code>.RexxUnicodeServices~utf8EncodeCodepoint( codepoint, destination, [&gt;refSizeB] )
 
 .RexxUnicodeServices~utf8EncodeCodepoint(
     codepoint,      -- (in)             The codepoint to encode (a non-negative whole number).
@@ -1410,7 +1410,7 @@ byte sequence (0..4).</p>
 </div>
 <p><a id="utf8StringInfo"></a></p>
 <h4 id="utf8stringinfo">1.1.27.   utf8StringInfo</h4>
-<pre><code>.RexxUnicodeServices~utf8StringInfo(string [, [&gt;refGraphemeCount] [, [&gt;refCodepointCount] [, [&gt;refErrorCount [, stopAtFirstError]]]]])
+<pre><code>.RexxUnicodeServices~utf8StringInfo( string, [&gt;refGraphemeCount], [&gt;refCodepointCount], [&gt;refErrorCount], stopAtFirstError = .false )
 
 .RexxUnicodeServices~utf8StringInfo(
     string,             -- (in)             A UTF-8 string.
@@ -1482,7 +1482,7 @@ error).</p>
 </div>
 <p><a id="utf8StringWidth"></a></p>
 <h4 id="utf8stringwidth">1.1.28.   utf8StringWidth</h4>
-<pre><code>.RexxUnicodeServices~utf8StringWidth(string [, [indexB=string~length] [, [eastAsianContext]]])
+<pre><code>.RexxUnicodeServices~utf8StringWidth( string, indexB = string~length + 1, eastAsianContext = .false )
 
 .RexxUnicodeServices~utf8StringWidth(
     string          (in)            A UTF-8 string.
@@ -1522,7 +1522,7 @@ title="Rust Crate unicode_width"><code>unicode_width</code></a>.</p>
 </div>
 <p><a id="utf8Transform"></a></p>
 <h4 id="utf8transform">1.1.29.   utf8Transform</h4>
-<pre><code>.RexxUnicodeServices~utf8Transform(string [, casefold = .false [, lump= .false [, nlf = 0 [, normalization = 0 [, stripCC = .false [, stripIgnorable= .false [, stripMark = .false [, stripNA = .false]]]]]]]])
+<pre><code>.RexxUnicodeServices~utf8Transform( string, casefold = .false, lump= .false, nlf = 0, normalization = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false )
 
 .RexxUnicodeServices~utf8Transform(
     string,                 -- The UTF-8 string to transform
@@ -1882,7 +1882,7 @@ href="#utf8EncodeCodepoint"><code>utf8EncodeCodepoint</code></a></li>
 <p><a id="maxCodepoint"></a></p>
 <h4 id="maxcodepoint">2.3.1.   maxCodepoint</h4>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-dir">::</span><span class="rx-dkw">constant</span><span class="rx-ws"> </span><span class="rx-const rx-method">maxCodepoint</span><span class="rx-ws"> </span><span class="rx-const rx-constant-value">1114111</span>
+<pre><code lineNo="1"><span class="rx-dir">::</span><span class="rx-dkw">constant</span><span class="rx-ws"> </span><span class="rx-const rx-method">maxCodepoint</span><span class="rx-ws"> </span><span class="rx-const rx-constant-value">1114111</span><span class="rx-ws"> </span><span class="rx-lncm">-- ("10ffff"~x2d)</span>
 </code></pre>
 </div>
 <p><a id="NFC_NFD_NFKC_NFKD"></a></p>
@@ -1909,7 +1909,7 @@ for a description of these values.</p>
 <h3 id="class-methods-1">2.4.   Class methods</h3>
 <p><a id="C2U"></a></p>
 <h4 id="c2u">2.4.1.   C2U</h4>
-<pre><code>.RexxUnicode~C2U(string, buffer=.nil)</code></pre>
+<pre><code>.RexxUnicode~C2U( string, buffer = .nil )</code></pre>
 <p>Returns an ASCII string containing a sequence of <code>U+XXXX</code>
 (4 to 6 hex digits).</p>
 <p>If a buffer is passed as an argument, the resulting string is
@@ -1935,7 +1935,7 @@ appended to the buffer, and the buffer is returned.</p>
 </div>
 <p><a id="C2X"></a></p>
 <h4 id="c2x">2.4.2.   C2X</h4>
-<pre><code>.RexxUnicode~C2X(string, buffer=.nil)</code></pre>
+<pre><code>.RexxUnicode~C2X( string, buffer = .nil )</code></pre>
 <p>Returns a string representing the encoded codepoints of
 <code>string</code> in hexadecimal.<br />
 The codepoints are separated by a single space.</p>
@@ -1950,7 +1950,7 @@ appended to the buffer, and the buffer is returned.</p>
 </div>
 <p><a id="character"></a></p>
 <h4 id="character">2.4.3.   character</h4>
-<pre><code>.RexxUnicode~character(identifier)</code></pre>
+<pre><code>.RexxUnicode~character( identifier )</code></pre>
 <p>Gets a RexxUnicodeCharacter from a codepoint identifier.<br />
 See the <a href="#codepoint"><code>codepoint</code></a> method for a
 definition of "codepoint identifier".</p>
@@ -1998,7 +1998,7 @@ definition of "codepoint identifier".</p>
 </div>
 <p><a id="checkCodepoint"></a></p>
 <h4 id="checkcodepoint">2.4.4.   checkCodepoint</h4>
-<pre><code>.RexxUnicode~checkCodepoint(codepoint, minusOneAllowed=.false)</code></pre>
+<pre><code>.RexxUnicode~checkCodepoint( codepoint, minusOneAllowed =.false )</code></pre>
 <p>Returns <code>.true</code> if <code>codepoint</code> is in the range
 0...RexxUnicode~maxCodepoint.<br />
 The range <code>U+D800-U+DFFF</code> is allowed (surrogates).<br />
@@ -2006,7 +2006,7 @@ If <code>minusOneAllowed</code> is true then -1 is allowed (special
 value used in case of error).</p>
 <p><a id="codepoint"></a></p>
 <h4 id="codepoint">2.4.5.   codepoint</h4>
-<pre><code>.RexxUnicode~codepoint(identifier)</code></pre>
+<pre><code>.RexxUnicode~codepoint( identifier )</code></pre>
 <p>Gets a codepoint from a codepoint identifier.</p>
 <p>A codepoint identifier may be:</p>
 <ul>
@@ -2059,7 +2059,7 @@ value used in case of error).</p>
 </div>
 <p><a id="codepointCharName"></a></p>
 <h4 id="codepointcharname">2.4.6.   codepointCharName</h4>
-<pre><code>.RexxUnicode~codepointCharName(codepoint, raiseError=.false)</code></pre>
+<pre><code>.RexxUnicode~codepointCharName( codepoint, raiseError = .false )</code></pre>
 <p>Returns the Unicode standard name for the given codepoint, or an
 empty string if the codepoint has no Unicode standard name.</p>
 <p>This method requires the <code>ICU4ooRexx</code> class. If it is not
@@ -2074,7 +2074,7 @@ error.</p>
 </code></pre>
 <p><a id="codepointCharNameAlias"></a></p>
 <h4 id="codepointcharnamealias">2.4.7.   codepointCharNameAlias</h4>
-<pre><code>.RexxUnicode~codepointCharNameAlias(codepoint, raiseError=.false)</code></pre>
+<pre><code>.RexxUnicode~codepointCharNameAlias( codepoint, raiseError = .false )</code></pre>
 <p>Returns the Unicode name alias for the given codepoint, or an empty
 string if the codepoint has no Unicode name alias.</p>
 <p>This method requires the <code>ICU4ooRexx</code> class. If it is not
@@ -2090,7 +2090,7 @@ error.</p>
 <p><a id="codepointExtendedCharName"></a></p>
 <h4
 id="codepointextendedcharname">2.4.8.   codepointExtendedCharName</h4>
-<pre><code>.RexxUnicode~codepointExtendedCharName(codepoint, raiseError=.false)</code></pre>
+<pre><code>.RexxUnicode~codepointExtendedCharName( codepoint, raiseError = .false )</code></pre>
 <p>Returns the Unicode extended name for the given codepoint.</p>
 <p>All Unicode characters have an extended name.<br />
 An extended name is either the standard name if defined, or a codepoint
@@ -2110,7 +2110,7 @@ error.</p>
 </div>
 <p><a id="codepointIsPrintable"></a></p>
 <h4 id="codepointisprintable">2.4.9.   codepointIsPrintable</h4>
-<pre><code>.RexxUnicode~codepointIsPrintable(codepoint)</code></pre>
+<pre><code>.RexxUnicode~codepointIsPrintable( codepoint )</code></pre>
 <p>Returns <code>.true</code> if the codepoint is printable.</p>
 <p>Rules:</p>
 <ul>
@@ -2141,7 +2141,7 @@ width of 1.</li>
 <p><a id="codepointPrintableString"></a></p>
 <h4
 id="codepointprintablestring">2.4.10.   codepointPrintableString</h4>
-<pre><code>.RexxUnicode~codepointPrintableString( codepoint, buffer=.nil)</code></pre>
+<pre><code>.RexxUnicode~codepointPrintableString( codepoint, buffer = .nil )</code></pre>
 <p>Returns a printable string representation for the given
 codepoint.</p>
 <p>Printable codepoints are returned as their UTF-8 character
@@ -2166,7 +2166,7 @@ appended to the buffer, and the buffer is returned.</p>
 <p><a id="codepointUnicodeEscapeNotation"></a></p>
 <h4
 id="codepointunicodeescapenotation">2.4.11.   codepointUnicodeEscapeNotation</h4>
-<pre><code>.RexxUnicode~codepointUnicodeEscapeNotation(codepoint, buffer=.nil)</code></pre>
+<pre><code>.RexxUnicode~codepointUnicodeEscapeNotation( codepoint, buffer = .nil )</code></pre>
 <p>Returns the Unicode escape notation <code>\uXXXX</code> or
 <code>\UXXXXXXXX</code> for the given codepoint.</p>
 <p>If a buffer is passed as an argument, the resulting string is
@@ -2186,7 +2186,7 @@ appended to the buffer, and the buffer is returned.</p>
 </div>
 <p><a id="codepointUTF8Encoding"></a></p>
 <h4 id="codepointutf8encoding">2.4.12.   codepointUTF8Encoding</h4>
-<pre><code>.RexxUnicode~codepointUTF8Encoding(codepoint, buffer=.nil)</code></pre>
+<pre><code>.RexxUnicode~codepointUTF8Encoding( codepoint, buffer = .nil )</code></pre>
 <p>Returns the UTF-8 encoding for the given codepoint.</p>
 <p>If a buffer is passed as an argument, the resulting string is
 appended to the buffer, and the buffer is returned.</p>
@@ -2203,7 +2203,7 @@ appended to the buffer, and the buffer is returned.</p>
 </div>
 <p><a id="D2U"></a></p>
 <h4 id="d2u">2.4.13.   D2U</h4>
-<pre><code>.RexxUnicode~D2U(codepoint, buffer=.nil)</code></pre>
+<pre><code>.RexxUnicode~D2U( codepoint, buffer = .nil )</code></pre>
 <p>Returns a <code>U+XXXX</code> string (4 to 6 hex digits) representing
 the codepoint passed as a decimal value.</p>
 <p>If a buffer is passed as an argument, the resulting string is
@@ -2228,7 +2228,7 @@ title="Typographic Conventions - Code Points">https://www.unicode.org/versions/U
 </div>
 <p><a id="h_UAX44_LM2"></a></p>
 <h4 id="h_uax44_lm2">2.4.14.   h_UAX44_LM2</h4>
-<pre><code>.RexxUnicode~h_UAX44_LM2(name)</code></pre>
+<pre><code>.RexxUnicode~h_UAX44_LM2( name )</code></pre>
 <p><code>h_UAX44_LM2</code> delegates either to <code>ICU4ooRexx</code>,
 if registered, or to <code>.RexxUnicode~UAX44_LM2</code> (slower, but
 always available).</p>
@@ -2265,7 +2265,7 @@ Unicode environment.</p>
 </div>
 <p><a id="stringEscape"></a></p>
 <h4 id="stringescape">2.4.16.   stringEscape</h4>
-<pre><code>.RexxUnicode~stringEscape(string, escapeBy=&quot;c&quot;, buffer=.nil)</code></pre>
+<pre><code>.RexxUnicode~stringEscape( string, escapeBy = &quot;c&quot;, buffer = .nil )</code></pre>
 <p>Possible values for the <code>escapeBy</code> parameter are
 <code>"codepoint"</code> (default) and <code>"grapheme"</code>.<br />
 You only need to specify the first letter; any following characters are
@@ -2323,7 +2323,7 @@ appended to the buffer, and the buffer is returned.</p>
 </div>
 <p><a id="RexxUnicode_stringInfo"></a></p>
 <h4 id="stringinfo">2.4.17.   stringInfo</h4>
-<pre><code>.RexxUnicode~stringInfo(string [, &gt;indexer])</code></pre>
+<pre><code>.RexxUnicode~stringInfo( string, [&gt;indexer] )</code></pre>
 <p>Returns a string providing information about the given UTF-8
 string:</p>
 <ul>
@@ -2364,7 +2364,7 @@ string:</p>
 </div>
 <p><a id="stringIsASCII"></a></p>
 <h4 id="stringisascii">2.4.18.   stringIsASCII</h4>
-<pre><code>.RexxUnicode~stringIsASCII(string)</code></pre>
+<pre><code>.RexxUnicode~stringIsASCII( string )</code></pre>
 <p>Returns <code>.true</code> if the given string contains only
 characters &lt;= "7F"x</p>
 <p><strong>Examples:</strong></p>
@@ -2380,7 +2380,7 @@ characters &lt;= "7F"x</p>
 </div>
 <p><a id="stringToNFC"></a></p>
 <h4 id="stringtonfc">2.4.19.   stringToNFC</h4>
-<pre><code>.RexxUnicode~stringToNFC(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)</code></pre>
+<pre><code>.RexxUnicode~stringToNFC( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable = .false, stripMark = .false, stripNA = .false )</code></pre>
 <p>Returns the input string normalized to NFC, with optional
 transformations applied.</p>
 <p>See the <a href="#utf8Transform"><code>utf8Transform</code></a>
@@ -2394,7 +2394,7 @@ method for a description of the optional transformation parameters.</p>
 </div>
 <p><a id="stringToNFD"></a></p>
 <h4 id="stringtonfd">2.4.20.   stringToNFD</h4>
-<pre><code>.RexxUnicode~stringToNFD(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)</code></pre>
+<pre><code>.RexxUnicode~stringToNFD( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable = .false, stripMark = .false, stripNA = .false )</code></pre>
 <p>Returns the input string normalized to NFD, with optional
 transformations applied.</p>
 <p>See the <a href="#utf8Transform"><code>utf8Transform</code></a>
@@ -2408,7 +2408,7 @@ method for a description of the optional transformation parameters.</p>
 </div>
 <p><a id="stringToNFKC"></a></p>
 <h4 id="stringtonfkc">2.4.21.   stringToNFKC</h4>
-<pre><code>.RexxUnicode~stringToNFKC(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)</code></pre>
+<pre><code>.RexxUnicode~stringToNFKC( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable = .false, stripMark = .false, stripNA = .false )</code></pre>
 <p>Returns the input string normalized to NFKC, with optional
 transformations applied.</p>
 <p>See the <a href="#utf8Transform"><code>utf8Transform</code></a>
@@ -2422,7 +2422,7 @@ method for a description of the optional transformation parameters.</p>
 </div>
 <p><a id="stringToNFKC_CF"></a></p>
 <h4 id="stringtonfkc_cf">2.4.22.   stringToNFKC_CF</h4>
-<pre><code>.RexxUnicode~stringToNFKC_CF(string, lump= .false, nlf = 0, stripCC = .false, stripMark = .false, stripNA = .false)</code></pre>
+<pre><code>.RexxUnicode~stringToNFKC_CF( string, lump= .false, nlf = 0, stripCC = .false, stripMark = .false, stripNA = .false )</code></pre>
 <p>Returns the input string normalized to NFKC_CF, with optional
 transformations applied.</p>
 <p>NFKC preserves the original case of letters (e.g., 'A' remains
@@ -2451,7 +2451,7 @@ method for a description of the optional transformation parameters.</p>
 </div>
 <p><a id="stringToNFKD"></a></p>
 <h4 id="stringtonfkd">2.4.23.   stringToNFKD</h4>
-<pre><code>.RexxUnicode~stringToNFKD(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)</code></pre>
+<pre><code>.RexxUnicode~stringToNFKD( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false )</code></pre>
 <p>Returns the input string normalized to NFKD, with optional
 transformations applied.</p>
 <p>See the <a href="#utf8Transform"><code>utf8Transform</code></a>
@@ -2465,7 +2465,7 @@ method for a description of the optional transformation parameters.</p>
 </div>
 <p><a id="stringUnescape"></a></p>
 <h4 id="stringunescape">2.4.24.   stringUnescape</h4>
-<pre><code>.RexxUnicode~stringUnescape(string, buffer=.nil)</code></pre>
+<pre><code>.RexxUnicode~stringUnescape( string, buffer = .nil )</code></pre>
 <p>Returns a string in which escape sequences are replaced with their
 corresponding values.</p>
 <p>If a buffer is passed as an argument, the resulting string is
@@ -2539,7 +2539,7 @@ time. This method handles them at run time instead.</p>
 </div>
 <p><a id="U2C"></a></p>
 <h4 id="u2c">2.4.25.   U2C</h4>
-<pre><code>.RexxUnicode~U2C(UPlusCodepoints, buffer=.nil)</code></pre>
+<pre><code>.RexxUnicode~U2C( UPlusCodepoints, buffer = .nil )</code></pre>
 <p>Encodes an ASCII string of the form
 <code>"U+XXXX.. U+XXXX.. ..."</code> into a UTF-8 string.</p>
 <p>The only valid separators are one or more spaces.</p>
@@ -2581,7 +2581,7 @@ discarded.</p>
 </div>
 <p><a id="U2D"></a></p>
 <h4 id="u2d">2.4.26.   U2D</h4>
-<pre><code>.RexxUnicode~U2D(UPlusCodepoint, start=1, raiseError=.false [, &gt;refLength]</code></pre>
+<pre><code>.RexxUnicode~U2D( UPlusCodepoint, start = 1, raiseError =.false, [&gt;refLength] )</code></pre>
 <p>Converts <code>"U+XXXX.."</code> to a decimal value.</p>
 <p>If <code>refLength</code> is provided by the caller, extra characters
 after the <code>U+XXXX..</code> are allowed.<br />
@@ -2605,7 +2605,7 @@ Otherwise, returns -1 or, if requested, raises an error.</p>
 </div>
 <p><a id="UAX44_LM2"></a></p>
 <h4 id="uax44_lm2">2.4.27.   UAX44_LM2</h4>
-<pre><code>.RexxUnicode~UAX44_LM2(string)</code></pre>
+<pre><code>.RexxUnicode~UAX44_LM2( string )</code></pre>
 <p>Returns a string ready for comparison using the <a
 href="https://unicode.org/reports/tr44/#UAX44-LM2"
 title="Loose matching rule UAX44-LM2">loose matching rule UAX44-LM2</a>
@@ -2625,7 +2625,7 @@ the hyphen in <code>U+1180</code> HANGUL JUNGSEONG O-E are removed.</p>
 </div>
 <p><a id="UAX44_LM3"></a></p>
 <h4 id="uax44_lm3">2.4.28.   UAX44_LM3</h4>
-<pre><code>.RexxUnicode~UAX44_LM3(string)</code></pre>
+<pre><code>.RexxUnicode~UAX44_LM3( string )</code></pre>
 <p>Returns a string ready for comparison using the <a
 href="https://unicode.org/reports/tr44/#UAX44-LM3"
 title="Loose matching rule UAX44-LM3">loose matching rule UAX44-LM3</a>
@@ -2839,7 +2839,7 @@ Returns <code>.false</code> if the supplier has already enumerated all
 codepoints.</p>
 <p><a id="RexxUnicodeCodepointSupplier_codepointAtIndexC"></a></p>
 <h4 id="codepointatindexc">3.2.2.   codepointAtIndexC</h4>
-<pre><code>aRexxUnicodeCodepointSupplier~codepointAtIndexC(indexC)</code></pre>
+<pre><code>aRexxUnicodeCodepointSupplier~codepointAtIndexC( indexC )</code></pre>
 <p>Convenience method.<br />
 Advances the supplier to codepoint index <code>indexC</code> and returns
 the corresponding codepoint as a whole number.<br />
@@ -2852,7 +2852,7 @@ of the string).</p>
 href="#RexxUnicodeStringIndexer_codepointAtIndexC"><code>aRexxUnicodeStringIndexer~codepointAtIndexC</code></a>.</p>
 <p><a id="RexxUnicodeCodepointSupplier_index"></a></p>
 <h4 id="index">3.2.3.   index</h4>
-<pre><code>aRexxUnicodeCodepointSupplier~index(type=defaultIndexType)</code></pre>
+<pre><code>aRexxUnicodeCodepointSupplier~index( type = defaultIndexType )</code></pre>
 <p>Returns the index of the current codepoint in the string.<br />
 If no codepoint is available, that is, if <code>available</code> would
 return <code>.false</code>, the supplier raises an error.</p>
@@ -2868,7 +2868,7 @@ returned.</li>
 Codepoint indexes are counted from the beginning of the string.</p>
 <p><a id="RexxUnicodeCodepointSupplier_init"></a></p>
 <h4 id="init">3.2.4.   init</h4>
-<pre><code>aRexxUnicodeCodepointSupplier~init(string, defaultIndexType=&quot;&quot;, defaultItemType=&quot;&quot;)</code></pre>
+<pre><code>aRexxUnicodeCodepointSupplier~init( string, defaultIndexType = &quot;&quot;, defaultItemType = &quot;&quot; )</code></pre>
 <p>Initializes a <code>RexxUnicodeCodepointSupplier</code> instance with
 the UTF-8 string <code>string</code>.</p>
 <p>If specified, <code>defaultIndexType</code> defines the default index
@@ -2886,7 +2886,7 @@ href="#RexxUnicodeCodepointSupplier_item"><code>item</code></a> method
 for the list of possible values.</p>
 <p><a id="RexxUnicodeCodepointSupplier_item"></a></p>
 <h4 id="item">3.2.5.   item</h4>
-<pre><code>aRexxUnicodeCodepointSupplier~item(type=defaultItemType)</code></pre>
+<pre><code>aRexxUnicodeCodepointSupplier~item( type = defaultItemType )</code></pre>
 <p>Returns the current codepoint in the string.<br />
 If no codepoint is available, that is, if <code>available</code> would
 return <code>.false</code>, the supplier raises an error.</p>
@@ -3071,7 +3071,7 @@ Returns <code>.false</code> if the supplier has already enumerated all
 graphemes.</p>
 <p><a id="RexxUnicodeGraphemeSupplier_graphemeAtIndexG"></a></p>
 <h4 id="graphemeatindexg">4.2.2.   graphemeAtIndexG</h4>
-<pre><code>aRexxUnicodeGraphemeSupplier~graphemeAtIndexG(indexG)</code></pre>
+<pre><code>aRexxUnicodeGraphemeSupplier~graphemeAtIndexG( indexG )</code></pre>
 <p>Convenience method.<br />
 Advances the supplier to grapheme index <code>indexG</code> and returns
 the corresponding grapheme as a string.<br />
@@ -3083,7 +3083,7 @@ the string).</p>
 href="#RexxUnicodeStringIndexer_graphemeAtIndexG"><code>aRexxUnicodeStringIndexer~graphemeAtIndexG</code></a>.</p>
 <p><a id="RexxUnicodeGraphemeSupplier_index"></a></p>
 <h4 id="index-1">4.2.3.   index</h4>
-<pre><code>aRexxUnicodeGraphemeSupplier~index(type=defaultIndexType)</code></pre>
+<pre><code>aRexxUnicodeGraphemeSupplier~index( type = defaultIndexType )</code></pre>
 <p>Returns the index of the current grapheme in the string.<br />
 If no grapheme is available, that is, if <code>available</code> would
 return <code>.false</code>, the supplier raises an error.</p>
@@ -3099,7 +3099,7 @@ returned.</li>
 Grapheme indexes are counted from the beginning of the string.</p>
 <p><a id="RexxUnicodeGraphemeSupplier_init"></a></p>
 <h4 id="init-1">4.2.4.   init</h4>
-<pre><code>aRexxUnicodeGraphemeSupplier~init(string, defaultIndexType=&quot;&quot;, defaultItemType=&quot;&quot;)</code></pre>
+<pre><code>aRexxUnicodeGraphemeSupplier~init( string, defaultIndexType = &quot;&quot;, defaultItemType = &quot;&quot; )</code></pre>
 <p>Initializes a <code>RexxUnicodeGraphemeSupplier</code> instance with
 the UTF-8 string <code>string</code>.</p>
 <p>If specified, <code>defaultIndexType</code> defines the default index
@@ -3116,7 +3116,7 @@ href="#RexxUnicodeGraphemeSupplier_item"><code>item</code></a> method
 for the list of possible values.</p>
 <p><a id="RexxUnicodeGraphemeSupplier_item"></a></p>
 <h4 id="item-1">4.2.5.   item</h4>
-<pre><code>aRexxUnicodeGraphemeSupplier~item(type=defaultItemType)</code></pre>
+<pre><code>aRexxUnicodeGraphemeSupplier~item( type = defaultItemType )</code></pre>
 <p>Returns the current grapheme in the string.<br />
 If no grapheme is available, that is, if <code>available</code> would
 return <code>.false</code>, the supplier raises an error.</p>
@@ -3340,7 +3340,7 @@ Returns <code>.false</code> if the supplier has already enumerated all
 codepoints.</p>
 <p><a id="RexxUnicodeReverseCodepointSupplier_codepointAtIndexC"></a></p>
 <h4 id="codepointatindexc-1">5.2.2.   codepointAtIndexC</h4>
-<pre><code>aRexxUnicodeReverseCodepointSupplier~codepointAtIndexC(indexC)</code></pre>
+<pre><code>aRexxUnicodeReverseCodepointSupplier~codepointAtIndexC( indexC )</code></pre>
 <p>Convenience method.<br />
 Advances the supplier to codepoint index <code>indexC</code> and returns
 the corresponding codepoint as a whole number.<br />
@@ -3355,7 +3355,7 @@ beginning of the string).</p>
 href="#RexxUnicodeStringIndexer_codepointAtIndexC"><code>aRexxUnicodeStringIndexer~codepointAtIndexC</code></a>.</p>
 <p><a id="RexxUnicodeReverseCodepointSupplier_index"></a></p>
 <h4 id="index-2">5.2.3.   index</h4>
-<pre><code>aRexxUnicodeReverseCodepointSupplier~index(type=defaultIndexType)</code></pre>
+<pre><code>aRexxUnicodeReverseCodepointSupplier~index( type = defaultIndexType )</code></pre>
 <p>Returns the index of the current codepoint in the string.<br />
 If no codepoint is available, that is, if <code>available</code> would
 return <code>.false</code>, the supplier raises an error.</p>
@@ -3371,7 +3371,7 @@ returned.</li>
 Codepoint indexes are counted from the end of the string.</p>
 <p><a id="RexxUnicodeReverseCodepointSupplier_init"></a></p>
 <h4 id="init-2">5.2.4.   init</h4>
-<pre><code>aRexxUnicodeReverseCodepointSupplier~init(string, defaultIndexType=&quot;&quot;, defaultItemType=&quot;&quot;)</code></pre>
+<pre><code>aRexxUnicodeReverseCodepointSupplier~init( string, defaultIndexType = &quot;&quot;, defaultItemType = &quot;&quot; )</code></pre>
 <p>Initializes a <code>RexxUnicodeReverseCodepointSupplier</code>
 instance with the UTF-8 string <code>string</code>.</p>
 <p>If specified, <code>defaultIndexType</code> defines the default index
@@ -3389,7 +3389,7 @@ href="#RexxUnicodeReverseCodepointSupplier_item"><code>item</code></a>
 method for the list of possible values.</p>
 <p><a id="RexxUnicodeReverseCodepointSupplier_item"></a></p>
 <h4 id="item-2">5.2.5.   item</h4>
-<pre><code>aRexxUnicodeReverseCodepointSupplier~item(type=defaultItemType)</code></pre>
+<pre><code>aRexxUnicodeReverseCodepointSupplier~item( type = defaultItemType )</code></pre>
 <p>Returns the current codepoint in the string.<br />
 If no codepoint is available, that is, if <code>available</code> would
 return <code>.false</code>, the supplier raises an error.</p>
@@ -3576,7 +3576,7 @@ Returns <code>.false</code> if the supplier has already enumerated all
 graphemes.</p>
 <p><a id="RexxUnicodeReverseGraphemeSupplier_graphemeAtIndexG"></a></p>
 <h4 id="graphemeatindexg-1">6.2.2.   graphemeAtIndexG</h4>
-<pre><code>aRexxUnicodeReverseGraphemeSupplier~graphemeAtIndexG(indexG)</code></pre>
+<pre><code>aRexxUnicodeReverseGraphemeSupplier~graphemeAtIndexG( indexG )</code></pre>
 <p>Convenience method.<br />
 Advances the supplier to grapheme index <code>indexG</code> and returns
 the corresponding grapheme as a string.<br />
@@ -3590,7 +3590,7 @@ beginning of the string).</p>
 href="#RexxUnicodeStringIndexer_graphemeAtIndexG"><code>aRexxUnicodeStringIndexer~graphemeAtIndexG</code></a>.</p>
 <p><a id="RexxUnicodeReverseGraphemeSupplier_index"></a></p>
 <h4 id="index-3">6.2.3.   index</h4>
-<pre><code>aRexxUnicodeReverseGraphemeSupplier~index(type=defaultIndexType)</code></pre>
+<pre><code>aRexxUnicodeReverseGraphemeSupplier~index( type = defaultIndexType )</code></pre>
 <p>Returns the index of the current grapheme in the string.<br />
 If no grapheme is available, that is, if <code>available</code> would
 return <code>.false</code>, the supplier raises an error.</p>
@@ -3606,7 +3606,7 @@ returned.</li>
 Grapheme indexes are counted from the end of the string.</p>
 <p><a id="RexxUnicodeReverseGraphemeSupplier_init"></a></p>
 <h4 id="init-3">6.2.4.   init</h4>
-<pre><code>aRexxUnicodeReverseGraphemeSupplier~init(string, defaultIndexType=&quot;&quot;, defaultItemType=&quot;&quot;)</code></pre>
+<pre><code>aRexxUnicodeReverseGraphemeSupplier~init( string, defaultIndexType = &quot;&quot;, defaultItemType = &quot;&quot; )</code></pre>
 <p>Initializes a <code>RexxUnicodeReverseGraphemeSupplier</code>
 instance with the UTF-8 string <code>string</code>.</p>
 <p>If specified, <code>defaultIndexType</code> defines the default index
@@ -3622,8 +3622,8 @@ See the <a
 href="#RexxUnicodeReverseGraphemeSupplier_item"><code>item</code></a>
 method for the list of possible values.</p>
 <p><a id="RexxUnicodeReverseGraphemeSupplier_item"></a></p>
-<h4 id="item-3">6.2.5.   item</h4>
-<pre><code>aRexxUnicodeReverseGraphemeSupplier~item(type=defaultItemType)</code></pre>
+<p>6.2.5.   item</p>
+<pre><code>aRexxUnicodeReverseGraphemeSupplier~item( type = defaultItemType )</code></pre>
 <p>Returns the current grapheme in the string.<br />
 If no grapheme is available, that is, if <code>available</code> would
 return <code>.false</code>, the supplier raises an error.</p>
@@ -3727,9 +3727,8 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 <h3 id="routines">7.1.   Routines</h3>
 <p><a id="requestRexxUnicodeStringIndexer"></a></p>
 <h4
-id="requestrexxunicodestringindexer-routine">7.1.1.   requestRexxUnicodeStringIndexer
-routine</h4>
-<pre><code>requestRexxUnicodeStringIndexer(object)</code></pre>
+id="requestrexxunicodestringindexer">7.1.1.   requestRexxUnicodeStringIndexer</h4>
+<pre><code>requestRexxUnicodeStringIndexer( object )</code></pre>
 <p>Returns a <code>RexxUnicodeStringIndexer</code> instance created from
 <code>object</code>. If <code>object</code> is already a
 <code>RexxUnicodeStringIndexer</code> instance, returns it
@@ -3740,7 +3739,7 @@ methods of its own.</p>
 <h3 id="instance-methods-6">7.3.   Instance methods</h3>
 <p><a id="RexxUnicodeStringIndexer_codepointAtIndexC"></a></p>
 <h4 id="codepointatindexc-2">7.3.1.   codepointAtIndexC</h4>
-<pre><code>aRexxUnicodeStringIndexer~codepointAtIndexC(indexC)</code></pre>
+<pre><code>aRexxUnicodeStringIndexer~codepointAtIndexC( indexC )</code></pre>
 <p>Returns the codepoint at codepoint index <code>indexC</code> as a
 whole number.</p>
 <p><code>indexC</code> must be a positive or negative whole
@@ -3763,7 +3762,7 @@ when the indexer was initialized.<br />
 This result is not impacted by <code>codepointStorageLimit</code>.</p>
 <p><a id="RexxUnicodeStringIndexer_codepointIndexB"></a></p>
 <h4 id="codepointindexb">7.3.3.   codepointIndexB</h4>
-<pre><code>aRexxUnicodeStringIndexer~codepointIndexB(indexC)</code></pre>
+<pre><code>aRexxUnicodeStringIndexer~codepointIndexB( indexC )</code></pre>
 <p>Returns the byte index (1-based) corresponding to codepoint index
 (1-based) <code>indexC</code>.<br />
 It is negative if the codepoint's byte sequence is invalid.</p>
@@ -3781,7 +3780,7 @@ non-incremental.</li>
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_codepointIndexC"></a></p>
 <h4 id="codepointindexc">7.3.4.   codepointIndexC</h4>
-<pre><code>aRexxUnicodeStringIndexer~codepointIndexC(indexB)</code></pre>
+<pre><code>aRexxUnicodeStringIndexer~codepointIndexC( indexB )</code></pre>
 <p>Returns the codepoint index (1-based) corresponding to byte index
 (1-based) <code>indexB</code>.<br />
 It is zero if the codepoint index cannot be found with a binary
@@ -3997,7 +3996,7 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_graphemeAtIndexG"></a></p>
 <h4 id="graphemeatindexg-2">7.3.16.   graphemeAtIndexG</h4>
-<pre><code>aRexxUnicodeStringIndexer~graphemeAtIndexG(indexG)</code></pre>
+<pre><code>aRexxUnicodeStringIndexer~graphemeAtIndexG( indexG )</code></pre>
 <p>Returns the grapheme at grapheme index <code>indexG</code> as a
 string.</p>
 <p><code>indexG</code> must be a positive or negative whole
@@ -4021,7 +4020,7 @@ when the indexer was initialized.</p>
 <p>This result is not affected by <code>graphemeStorageLimit</code>.</p>
 <p><a id="RexxUnicodeStringIndexer_graphemeIndexB"></a></p>
 <h4 id="graphemeindexb">7.3.18.   graphemeIndexB</h4>
-<pre><code>aRexxUnicodeStringIndexer~graphemeIndexB(indexG)</code></pre>
+<pre><code>aRexxUnicodeStringIndexer~graphemeIndexB( indexG )</code></pre>
 <p>Returns the byte index corresponding to grapheme index
 <code>indexG</code>.<br />
 It is negative if the grapheme's byte sequence is invalid.</p>
@@ -4039,7 +4038,7 @@ non-incremental.</li>
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_graphemeIndexG"></a></p>
 <h4 id="graphemeindexg">7.3.19.   graphemeIndexG</h4>
-<pre><code>aRexxUnicodeStringIndexer~graphemeIndexG(indexB)</code></pre>
+<pre><code>aRexxUnicodeStringIndexer~graphemeIndexG( indexB )</code></pre>
 <p>Returns the grapheme index corresponding to byte index
 <code>indexB</code>.<br />
 It is zero if the grapheme index cannot be found with a binary search.
@@ -4582,7 +4581,7 @@ for the list of enumeration values.</p>
 </div>
 <p><a id="RexxUnicodeCharacter_compareTo"></a></p>
 <h4 id="compareto">8.2.13.   compareTo</h4>
-<pre><code>aRexxUnicodeCharacter~compareTo(otherUnicodeCharacter)</code></pre>
+<pre><code>aRexxUnicodeCharacter~compareTo( otherUnicodeCharacter )</code></pre>
 <p>Compares the target Unicode character with
 <code>otherUnicodeCharacter</code>.<br />
 Instances are compared by codepoint value.</p>
@@ -4790,7 +4789,7 @@ bytes.</li>
 </div>
 <p><a id="RexxUnicodeCharacter_init"></a></p>
 <h4 id="init-5">8.2.23.   init</h4>
-<pre><code>aRexxUnicodeCharacter~init(codepoint)</code></pre>
+<pre><code>aRexxUnicodeCharacter~init( codepoint )</code></pre>
 <p>Initializes a <code>RexxUnicodeCharacter</code> instance with the
 specified <code>codepoint</code>.</p>
 <p><a id="RexxUnicodeCharacter_isLower"></a></p>
@@ -4974,7 +4973,7 @@ by <code>RexxUnicode</code>. Its public methods are exposed through
 <p><a id="ICU4ooRexxInterface_assertICU4ooRexxIsRegistered"></a></p>
 <h4
 id="asserticu4oorexxisregistered">9.1.1.   assertICU4ooRexxIsRegistered</h4>
-<pre><code>.ICU4ooRexxInterface~assertICU4ooRexxIsRegistered(raiseError=.true)</code></pre>
+<pre><code>.ICU4ooRexxInterface~assertICU4ooRexxIsRegistered( raiseError = .true )</code></pre>
 <p>Raises an error if <code>ICU4ooRexx</code> is not registered.<br />
 If <code>raiseError</code> is <code>.false</code>, returns
 <code>.true</code> if <code>ICU4ooRexx</code> is registered, or
@@ -4991,7 +4990,7 @@ or <code>.false</code> otherwise.</p>
 registered, or <code>.nil</code> otherwise.</p>
 <p><a id="ICU4ooRexxInterface_registerICU4ooRexx"></a></p>
 <h4 id="registericu4oorexx">9.1.4.   registerICU4ooRexx</h4>
-<pre><code>.ICU4ooRexxInterface~registerICU4ooRexx(package)</code></pre>
+<pre><code>.ICU4ooRexxInterface~registerICU4ooRexx( package )</code></pre>
 <p>Registers the specified <code>ICU4ooRexx</code> package.</p>
 <p>Possible error messages:</p>
 <ul>

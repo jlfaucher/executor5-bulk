@@ -219,7 +219,7 @@ Method-to-Unicode property mapping (PropertyAliases.txt):
 
 #### 1.1.1.   codepointBidiClass
 
-    .RexxUnicodeServices~codepointBidiClass(codepoint [, [>refCode] [, [>refLabel]]])
+    .RexxUnicodeServices~codepointBidiClass( codepoint, [>refCode], [>refLabel] )
 
 Returns the bidirectional character type of `codepoint` as an enumeration value.
 
@@ -275,7 +275,7 @@ For portability, use refCode instead.
 
 #### 1.1.2.   codepointBidiMirrored
 
-    .RexxUnicodeServices~codepointBidiMirrored(codepoint)
+    .RexxUnicodeServices~codepointBidiMirrored( codepoint )
 
 Returns `.true` if the `Bidi_Mirrored` property value of `codepoint` is `Yes`.
 
@@ -286,7 +286,7 @@ Returns `.true` if the `Bidi_Mirrored` property value of `codepoint` is `Yes`.
 
 #### 1.1.3.   codepointBoundClass
 
-    .RexxUnicodeServices~codepointBoundClass(codepoint [, [>refCode] [, [>refLabel]]])
+    .RexxUnicodeServices~codepointBoundClass( codepoint, [>refCode], [>refLabel] )
 
 Returns the `Grapheme_Cluster_Break` property value of `codepoint` as an enumeration value.
 
@@ -347,7 +347,7 @@ For portability, use refCode instead.
 
 #### 1.1.4.   codepointCategory
 
-    .RexxUnicodeServices~codepointCategory(codepoint [, [>refCode] [, [>refLabel]]])
+    .RexxUnicodeServices~codepointCategory( codepoint, [>refCode], [>refLabel] )
 
 Returns the `General_Category` property value of `codepoint` as an enumeration value.
 
@@ -411,7 +411,7 @@ For portability, use refCode instead.
 
 #### 1.1.5.   codepointCharWidth
 
-    .RexxUnicodeServices~codepointCharWidth(codepoint)
+    .RexxUnicodeServices~codepointCharWidth( codepoint )
 
 Given a codepoint, returns a character width analogous to `wcwidth(codepoint)`,
 except that a width of 0 is returned for non-printable codepoints
@@ -427,7 +427,7 @@ See [`.RexxUnicodeServices~utf8StringWidth`](#utf8StringWidth).
 
 #### 1.1.6.   codepointCombiningClass
 
-    .RexxUnicodeServices~codepointCombiningClass(codepoint [, [>refCode] [, [>refLabel]]])
+    .RexxUnicodeServices~codepointCombiningClass( codepoint, [>refCode], [>refLabel] )
 
 Returns the `Canonical_Combining_Class` property value of `codepoint`.
 
@@ -537,7 +537,7 @@ Some values have neither a `refCode` nor a `refLabel`.
 
 #### 1.1.7.   codepointControlBoundary
 
-    .RexxUnicodeServices~codepointControlBoundary(codepoint)
+    .RexxUnicodeServices~codepointControlBoundary( codepoint )
 
 Returns `.true` if `codepoint` belongs to the `Zl`, `Zp`, `Cc`, or `Cf` category, except for:
 
@@ -554,7 +554,7 @@ Returns `.true` if `codepoint` belongs to the `Zl`, `Zp`, `Cc`, or `Cf` category
 
 #### 1.1.8.   codepointDecompositionType
 
-    .RexxUnicodeServices~codepointDecompositionType(codepoint [, [>refCode] [, [>refLabel]]])
+    .RexxUnicodeServices~codepointDecompositionType( codepoint, [>refCode], [>refLabel] )
 
 Returns the `Decomposition_Type` property value of `codepoint` as an enumeration value.
 
@@ -606,7 +606,7 @@ For portability, use refCode instead.
 
 #### 1.1.9.   codepointEastAsianWidthIsAmbiguous
 
-    .RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous(codepoint)
+    .RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous( codepoint )
 
 Returns `.true` if the `East_Asian_Width` property value of `codepoint` is `"A"` (`"Ambiguous"`).
 
@@ -617,7 +617,7 @@ Returns `.true` if the `East_Asian_Width` property value of `codepoint` is `"A"`
 
 #### 1.1.10.   codepointIgnorable
 
-    .RexxUnicodeServices~codepointIgnorable(codepoint)
+    .RexxUnicodeServices~codepointIgnorable( codepoint )
 
 Returns the `Default_Ignorable_Code_Point` property value of `codepoint` (boolean value).
 
@@ -628,7 +628,7 @@ Returns the `Default_Ignorable_Code_Point` property value of `codepoint` (boolea
 
 #### 1.1.11.   codepointIndicConjunctBreak
 
-    .RexxUnicodeServices~codepointIndicConjunctBreak(codepoint [, [>refCode] [, [>refLabel]]])
+    .RexxUnicodeServices~codepointIndicConjunctBreak( codepoint, [>refCode], [>refLabel] )
 
 Returns the `Indic_Conjunct_Break (InCB)` property value of `codepoint` as an enumeration value.
 
@@ -669,7 +669,7 @@ For portability, use refCode instead.
 
 #### 1.1.12.   codepointIsLower
 
-    .RexxUnicodeServices~codepointIsLower(codepoint)
+    .RexxUnicodeServices~codepointIsLower( codepoint )
 
 Returns `.true` if the codepoint corresponds to a lowercase character
 and `.false` otherwise.
@@ -680,7 +680,7 @@ and `.false` otherwise.
 
 #### 1.1.13.   codepointIsUpper
 
-    .RexxUnicodeServices~codepointIsUpper(codepoint)
+    .RexxUnicodeServices~codepointIsUpper( codepoint )
 
 Returns `.true` if the codepoint corresponds to an uppercase character
 and `.false` otherwise.
@@ -690,7 +690,7 @@ and `.false` otherwise.
 
 #### 1.1.14.   codepointToLower
 
-    .RexxUnicodeServices~codepointToLower(codepoint)
+    .RexxUnicodeServices~codepointToLower( codepoint )
 
 Returns the codepoint of the corresponding lowercase character.  
 If `codepoint` has no lowercase mapping, returns `codepoint`.
@@ -703,7 +703,7 @@ and always returns a single codepoint.
 
 #### 1.1.15.   codepointToTitle
 
-    .RexxUnicodeServices~codepointToTitle(codepoint)
+    .RexxUnicodeServices~codepointToTitle( codepoint )
 
 Returns the codepoint of the corresponding titlecase character.  
 If `codepoint` has no titlecase mapping, returns `codepoint`.
@@ -716,7 +716,7 @@ and always returns a single codepoint.
 
 #### 1.1.16.   codepointToUpper
 
-    .RexxUnicodeServices~codepointToUpper(codepoint)
+    .RexxUnicodeServices~codepointToUpper( codepoint )
 
 Returns the codepoint of the corresponding uppercase character.  
 If `codepoint` has no uppercase mapping, returns `codepoint`.
@@ -729,7 +729,7 @@ and always returns a single codepoint.
 
 #### 1.1.17.   graphemeBreak
 
-    .RexxUnicodeServices~graphemeBreak(array)
+    .RexxUnicodeServices~graphemeBreak( array )
 
 Returns `.true` if there is a grapheme break between the two consecutive codepoints passed in `array`.
 
@@ -760,7 +760,7 @@ break = .RexxUnicodeServices~graphemeBreak(array) -- true or false
 
 #### 1.1.18.   graphemeBreak3
 
-    .RexxUnicodeServices~graphemeBreak3(codepoint1, codepoint2, >refState)
+    .RexxUnicodeServices~graphemeBreak3( codepoint1, codepoint2, >refState )
 
     .RexxUnicodeServices~graphemeBreak3(
         codepoint1,     -- (in)     The first codepoint.
@@ -790,7 +790,7 @@ state=                                                  -- 1
 
 #### 1.1.19.   graphemeBreakBackward
 
-    .RexxUnicodeServices~graphemeBreakBackward(string, indexB, codepoint1, codepoint2)
+    .RexxUnicodeServices~graphemeBreakBackward( string, indexB, codepoint1, codepoint2 )
 
     .RexxUnicodeServices~graphemeBreakBackward(
         string,     -- (in)     A UTF-8 string.
@@ -1055,7 +1055,7 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 #### 1.1.23.   utf8DecodeCodepoint
 
 ```
-.RexxUnicodeServices~utf8DecodeCodepoint(string, indexB [, [>refSizeB] [, [>refErrorCode] [, [>refErrorMsg]]]])
+.RexxUnicodeServices~utf8DecodeCodepoint( string, indexB = 1, [>refSizeB], [>refErrorCode], [>refErrorMsg] )
 
 .RexxUnicodeServices~utf8DecodeCodepoint(
     string,         -- (in)             A UTF-8 string.
@@ -1127,7 +1127,7 @@ to follow the `U+FFFD` Substitution of Maximal Subparts.
 #### 1.1.24.   utf8DecodePreviousCodepoint
 
 ```
-.RexxUnicodeServices~utf8DecodePreviousCodepoint(string [, indexB [, [>refSizeB] [, [>refErrorCode] [, [>refErrorMsg]]]]])
+.RexxUnicodeServices~utf8DecodePreviousCodepoint( string, indexB = string~length + 1, [>refSizeB], [>refErrorCode], [>refErrorMsg] )
 
 
 .RexxUnicodeServices~utf8DecodePreviousCodepoint(
@@ -1246,7 +1246,7 @@ indexB -= abs(size); indexB=                                                    
 #### 1.1.25.   utf8EncodeCodepoint
 
 ```
-.RexxUnicodeServices~utf8EncodeCodepoint(codepoint, destination [, >refSizeB])
+.RexxUnicodeServices~utf8EncodeCodepoint( codepoint, destination, [>refSizeB] )
 
 .RexxUnicodeServices~utf8EncodeCodepoint(
     codepoint,      -- (in)             The codepoint to encode (a non-negative whole number).
@@ -1306,7 +1306,7 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 #### 1.1.27.   utf8StringInfo
 
 ```
-.RexxUnicodeServices~utf8StringInfo(string [, [>refGraphemeCount] [, [>refCodepointCount] [, [>refErrorCount [, stopAtFirstError]]]]])
+.RexxUnicodeServices~utf8StringInfo( string, [>refGraphemeCount], [>refCodepointCount], [>refErrorCount], stopAtFirstError = .false )
 
 .RexxUnicodeServices~utf8StringInfo(
     string,             -- (in)             A UTF-8 string.
@@ -1380,7 +1380,7 @@ g=; c=; e=                                                                  --  
 #### 1.1.28.   utf8StringWidth
 
 ```
-.RexxUnicodeServices~utf8StringWidth(string [, [indexB=string~length] [, [eastAsianContext]]])
+.RexxUnicodeServices~utf8StringWidth( string, indexB = string~length + 1, eastAsianContext = .false )
 
 .RexxUnicodeServices~utf8StringWidth(
     string          (in)            A UTF-8 string.
@@ -1427,7 +1427,7 @@ say .RexxUnicode~stringEscape(string, "g"); say " "~copies(width) || "^"
 #### 1.1.29.   utf8Transform
 
 ```
-.RexxUnicodeServices~utf8Transform(string [, casefold = .false [, lump= .false [, nlf = 0 [, normalization = 0 [, stripCC = .false [, stripIgnorable= .false [, stripMark = .false [, stripNA = .false]]]]]]]])
+.RexxUnicodeServices~utf8Transform( string, casefold = .false, lump= .false, nlf = 0, normalization = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false )
 
 .RexxUnicodeServices~utf8Transform(
     string,                 -- The UTF-8 string to transform
@@ -1807,7 +1807,7 @@ Inherited methods:
 #### 2.3.1.   maxCodepoint
 
 ```rexx
-::constant maxCodepoint 1114111
+::constant maxCodepoint 1114111 -- ("10ffff"~x2d)
 ```
 
 
@@ -1845,7 +1845,7 @@ See the documentation of [utf8Transform](#utf8Transform) for a description of th
 
 #### 2.4.1.   C2U
 
-    .RexxUnicode~C2U(string, buffer=.nil)
+    .RexxUnicode~C2U( string, buffer = .nil )
 
 Returns an ASCII string containing a sequence of `U+XXXX` (4 to 6 hex digits).
 
@@ -1876,7 +1876,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 
 #### 2.4.2.   C2X
 
-    .RexxUnicode~C2X(string, buffer=.nil)
+    .RexxUnicode~C2X( string, buffer = .nil )
 
 Returns a string representing the encoded codepoints of `string` in hexadecimal.  
 The codepoints are separated by a single space.
@@ -1896,7 +1896,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 
 #### 2.4.3.   character
 
-    .RexxUnicode~character(identifier)
+    .RexxUnicode~character( identifier )
 
 Gets a RexxUnicodeCharacter from a codepoint identifier.  
 See the [`codepoint`](#codepoint) method for a definition of "codepoint identifier".
@@ -1949,7 +1949,7 @@ See the [`codepoint`](#codepoint) method for a definition of "codepoint identifi
 
 #### 2.4.4.   checkCodepoint
 
-    .RexxUnicode~checkCodepoint(codepoint, minusOneAllowed=.false)
+    .RexxUnicode~checkCodepoint( codepoint, minusOneAllowed =.false )
 
 Returns `.true` if `codepoint` is in the range 0...RexxUnicode~maxCodepoint.  
 The range `U+D800-U+DFFF` is allowed (surrogates).  
@@ -1960,7 +1960,7 @@ If `minusOneAllowed` is true then -1 is allowed (special value used in case of e
 
 #### 2.4.5.   codepoint
 
-    .RexxUnicode~codepoint(identifier)
+    .RexxUnicode~codepoint( identifier )
 
 Gets a codepoint from a codepoint identifier.
 
@@ -2019,7 +2019,7 @@ A codepoint identifier may be:
 
 #### 2.4.6.   codepointCharName
 
-    .RexxUnicode~codepointCharName(codepoint, raiseError=.false)
+    .RexxUnicode~codepointCharName( codepoint, raiseError = .false )
 
 Returns the Unicode standard name for the given codepoint, or an empty string if the codepoint has no Unicode standard name.
 
@@ -2044,7 +2044,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
 
 #### 2.4.7.   codepointCharNameAlias
 
-    .RexxUnicode~codepointCharNameAlias(codepoint, raiseError=.false)
+    .RexxUnicode~codepointCharNameAlias( codepoint, raiseError = .false )
 
 Returns the Unicode name alias for the given codepoint, or an empty string if the codepoint has no Unicode name alias.
 
@@ -2069,7 +2069,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
 
 #### 2.4.8.   codepointExtendedCharName
 
-    .RexxUnicode~codepointExtendedCharName(codepoint, raiseError=.false)
+    .RexxUnicode~codepointExtendedCharName( codepoint, raiseError = .false )
 
 Returns the Unicode extended name for the given codepoint.
 
@@ -2097,7 +2097,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
 
 #### 2.4.9.   codepointIsPrintable
 
-    .RexxUnicode~codepointIsPrintable(codepoint)
+    .RexxUnicode~codepointIsPrintable( codepoint )
 
 Returns `.true` if the codepoint is printable.
 
@@ -2130,7 +2130,7 @@ Rules:
 
 #### 2.4.10.   codepointPrintableString
 
-    .RexxUnicode~codepointPrintableString( codepoint, buffer=.nil)
+    .RexxUnicode~codepointPrintableString( codepoint, buffer = .nil )
 
 Returns a printable string representation for the given codepoint.
 
@@ -2159,7 +2159,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 
 #### 2.4.11.   codepointUnicodeEscapeNotation
 
-    .RexxUnicode~codepointUnicodeEscapeNotation(codepoint, buffer=.nil)
+    .RexxUnicode~codepointUnicodeEscapeNotation( codepoint, buffer = .nil )
 
 Returns the Unicode escape notation `\uXXXX` or `\UXXXXXXXX` for the given codepoint.
 
@@ -2184,7 +2184,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 
 #### 2.4.12.   codepointUTF8Encoding
 
-    .RexxUnicode~codepointUTF8Encoding(codepoint, buffer=.nil)
+    .RexxUnicode~codepointUTF8Encoding( codepoint, buffer = .nil )
 
 Returns the UTF-8 encoding for the given codepoint.
 
@@ -2207,7 +2207,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 
 #### 2.4.13.   D2U
 
-    .RexxUnicode~D2U(codepoint, buffer=.nil)
+    .RexxUnicode~D2U( codepoint, buffer = .nil )
 
 Returns a `U+XXXX` string (4 to 6 hex digits) representing the codepoint passed as a decimal value.
 
@@ -2236,7 +2236,7 @@ The special value -1 is represented using `U+FFFFFF`, even though the resulting 
 
 #### 2.4.14.   h_UAX44_LM2
 
-    .RexxUnicode~h_UAX44_LM2(name)
+    .RexxUnicode~h_UAX44_LM2( name )
 
 `h_UAX44_LM2` delegates either to `ICU4ooRexx`, if registered,
 or to `.RexxUnicode~UAX44_LM2` (slower, but always available).
@@ -2283,7 +2283,7 @@ Returns a `StringTable` containing information about the Unicode environment.
 
 #### 2.4.16.   stringEscape
 
-    .RexxUnicode~stringEscape(string, escapeBy="c", buffer=.nil)
+    .RexxUnicode~stringEscape( string, escapeBy = "c", buffer = .nil )
 
 Possible values for the `escapeBy` parameter are `"codepoint"` (default) and `"grapheme"`.  
 You only need to specify the first letter; any following characters are ignored.
@@ -2342,7 +2342,7 @@ Escaping U+D800 is '\xED\xA0\x80' because \x{EDA080} can't be UTF-8 decoded as U
 
 #### 2.4.17.   stringInfo
 
-    .RexxUnicode~stringInfo(string [, >indexer])
+    .RexxUnicode~stringInfo( string, [>indexer] )
 
 Returns a string providing information about the given UTF-8 string:
 
@@ -2387,7 +2387,7 @@ indexer~errors==
 
 #### 2.4.18.   stringIsASCII
 
-    .RexxUnicode~stringIsASCII(string)
+    .RexxUnicode~stringIsASCII( string )
 
 Returns `.true` if the given string contains only characters <= "7F"x
 
@@ -2408,7 +2408,7 @@ string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")
 
 #### 2.4.19.   stringToNFC
 
-    .RexxUnicode~stringToNFC(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)
+    .RexxUnicode~stringToNFC( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable = .false, stripMark = .false, stripNA = .false )
 
 Returns the input string normalized to NFC, with optional transformations applied.
 
@@ -2427,7 +2427,7 @@ See the [`utf8Transform`](#utf8Transform) method for a description of the option
 
 #### 2.4.20.   stringToNFD
 
-    .RexxUnicode~stringToNFD(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)
+    .RexxUnicode~stringToNFD( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable = .false, stripMark = .false, stripNA = .false )
 
 Returns the input string normalized to NFD, with optional transformations applied.
 
@@ -2446,7 +2446,7 @@ See the [`utf8Transform`](#utf8Transform) method for a description of the option
 
 #### 2.4.21.   stringToNFKC
 
-    .RexxUnicode~stringToNFKC(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)
+    .RexxUnicode~stringToNFKC( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable = .false, stripMark = .false, stripNA = .false )
 
 Returns the input string normalized to NFKC, with optional transformations applied.
 
@@ -2465,7 +2465,7 @@ See the [`utf8Transform`](#utf8Transform) method for a description of the option
 
 #### 2.4.22.   stringToNFKC_CF
 
-    .RexxUnicode~stringToNFKC_CF(string, lump= .false, nlf = 0, stripCC = .false, stripMark = .false, stripNA = .false)
+    .RexxUnicode~stringToNFKC_CF( string, lump= .false, nlf = 0, stripCC = .false, stripMark = .false, stripNA = .false )
 
 Returns the input string normalized to NFKC_CF, with optional transformations applied.
 
@@ -2494,7 +2494,7 @@ See the [`utf8Transform`](#utf8Transform) method for a description of the option
 
 #### 2.4.23.   stringToNFKD
 
-    .RexxUnicode~stringToNFKD(string, casefold = .false, lump= .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false)
+    .RexxUnicode~stringToNFKD( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false )
 
 Returns the input string normalized to NFKD, with optional transformations applied.
 
@@ -2513,7 +2513,7 @@ See the [`utf8Transform`](#utf8Transform) method for a description of the option
 
 #### 2.4.24.   stringUnescape
 
-    .RexxUnicode~stringUnescape(string, buffer=.nil)
+    .RexxUnicode~stringUnescape( string, buffer = .nil )
 
 Returns a string in which escape sequences are replaced with their corresponding values.
 
@@ -2595,7 +2595,7 @@ This method handles them at run time instead.
 
 #### 2.4.25.   U2C
 
-    .RexxUnicode~U2C(UPlusCodepoints, buffer=.nil)
+    .RexxUnicode~U2C( UPlusCodepoints, buffer = .nil )
 
 Encodes an ASCII string of the form `"U+XXXX.. U+XXXX.. ..."` into a UTF-8 string.
 
@@ -2642,7 +2642,7 @@ b=                                                      -- M'🤶 '
 
 #### 2.4.26.   U2D
 
-    .RexxUnicode~U2D(UPlusCodepoint, start=1, raiseError=.false [, >refLength]
+    .RexxUnicode~U2D( UPlusCodepoint, start = 1, raiseError =.false, [>refLength] )
 
 Converts `"U+XXXX.."` to a decimal value.
 
@@ -2672,7 +2672,7 @@ Otherwise, returns -1 or, if requested, raises an error.
 
 #### 2.4.27.   UAX44_LM2
 
-    .RexxUnicode~UAX44_LM2(string)
+    .RexxUnicode~UAX44_LM2( string )
 
 Returns a string ready for comparison using the [loose matching rule UAX44-LM2][uax44_lm2] where
 case, whitespace, underscore ('_'), and all medial hyphens except the hyphen in `U+1180` HANGUL JUNGSEONG O-E
@@ -2696,7 +2696,7 @@ are removed.
 
 #### 2.4.28.   UAX44_LM3
 
-    .RexxUnicode~UAX44_LM3(string)
+    .RexxUnicode~UAX44_LM3( string )
 
 Returns a string ready for comparison using the [loose matching rule UAX44-LM3][uax44_lm3] where
 case, whitespace, underscore ('_'), hyphens, and any initial prefix string "is"
@@ -2924,7 +2924,7 @@ Returns `.false` if the supplier has already enumerated all codepoints.
 
 #### 3.2.2.   codepointAtIndexC
 
-    aRexxUnicodeCodepointSupplier~codepointAtIndexC(indexC)
+    aRexxUnicodeCodepointSupplier~codepointAtIndexC( indexC )
 
 Convenience method.  
 Advances the supplier to codepoint index `indexC` and returns the corresponding codepoint as a whole number.  
@@ -2940,7 +2940,7 @@ See also [`aRexxUnicodeStringIndexer~codepointAtIndexC`](#RexxUnicodeStringIndex
 
 #### 3.2.3.   index
 
-    aRexxUnicodeCodepointSupplier~index(type=defaultIndexType)
+    aRexxUnicodeCodepointSupplier~index( type = defaultIndexType )
 
 Returns the index of the current codepoint in the string.  
 If no codepoint is available, that is, if `available` would return `.false`, the supplier raises an error.
@@ -2960,7 +2960,7 @@ Codepoint indexes are counted from the beginning of the string.
 
 #### 3.2.4.   init
 
-    aRexxUnicodeCodepointSupplier~init(string, defaultIndexType="", defaultItemType="")
+    aRexxUnicodeCodepointSupplier~init( string, defaultIndexType = "", defaultItemType = "" )
 
 Initializes a `RexxUnicodeCodepointSupplier` instance with the UTF-8 string `string`.
 
@@ -2977,7 +2977,7 @@ See the [`item`](#RexxUnicodeCodepointSupplier_item) method for the list of poss
 
 #### 3.2.5.   item
 
-    aRexxUnicodeCodepointSupplier~item(type=defaultItemType)
+    aRexxUnicodeCodepointSupplier~item( type = defaultItemType )
 
 Returns the current codepoint in the string.  
 If no codepoint is available, that is, if `available` would return `.false`, the supplier raises an error.
@@ -3170,7 +3170,7 @@ Returns `.false` if the supplier has already enumerated all graphemes.
 
 #### 4.2.2.   graphemeAtIndexG
 
-    aRexxUnicodeGraphemeSupplier~graphemeAtIndexG(indexG)
+    aRexxUnicodeGraphemeSupplier~graphemeAtIndexG( indexG )
 
 Convenience method.  
 Advances the supplier to grapheme index `indexG` and returns the corresponding grapheme as a string.  
@@ -3184,7 +3184,7 @@ See also [`aRexxUnicodeStringIndexer~graphemeAtIndexG`](#RexxUnicodeStringIndexe
 
 #### 4.2.3.   index
 
-    aRexxUnicodeGraphemeSupplier~index(type=defaultIndexType)
+    aRexxUnicodeGraphemeSupplier~index( type = defaultIndexType )
 
 Returns the index of the current grapheme in the string.  
 If no grapheme is available, that is, if `available` would return `.false`, the supplier raises an error.
@@ -3204,7 +3204,7 @@ Grapheme indexes are counted from the beginning of the string.
 
 #### 4.2.4.   init
 
-    aRexxUnicodeGraphemeSupplier~init(string, defaultIndexType="", defaultItemType="")
+    aRexxUnicodeGraphemeSupplier~init( string, defaultIndexType = "", defaultItemType = "" )
 
 Initializes a `RexxUnicodeGraphemeSupplier` instance with the UTF-8 string `string`.
 
@@ -3221,7 +3221,7 @@ See the [`item`](#RexxUnicodeGraphemeSupplier_item) method for the list of possi
 
 #### 4.2.5.   item
 
-    aRexxUnicodeGraphemeSupplier~item(type=defaultItemType)
+    aRexxUnicodeGraphemeSupplier~item( type = defaultItemType )
 
 Returns the current grapheme in the string.  
 If no grapheme is available, that is, if `available` would return `.false`, the supplier raises an error.
@@ -3454,7 +3454,7 @@ Returns `.false` if the supplier has already enumerated all codepoints.
 
 #### 5.2.2.   codepointAtIndexC
 
-    aRexxUnicodeReverseCodepointSupplier~codepointAtIndexC(indexC)
+    aRexxUnicodeReverseCodepointSupplier~codepointAtIndexC( indexC )
 
 Convenience method.  
 Advances the supplier to codepoint index `indexC` and returns the corresponding codepoint as a whole number.  
@@ -3471,7 +3471,7 @@ See also [`aRexxUnicodeStringIndexer~codepointAtIndexC`](#RexxUnicodeStringIndex
 
 #### 5.2.3.   index
 
-    aRexxUnicodeReverseCodepointSupplier~index(type=defaultIndexType)
+    aRexxUnicodeReverseCodepointSupplier~index( type = defaultIndexType )
 
 Returns the index of the current codepoint in the string.  
 If no codepoint is available, that is, if `available` would return `.false`, the supplier raises an error.
@@ -3491,7 +3491,7 @@ Codepoint indexes are counted from the end of the string.
 
 #### 5.2.4.   init
 
-    aRexxUnicodeReverseCodepointSupplier~init(string, defaultIndexType="", defaultItemType="")
+    aRexxUnicodeReverseCodepointSupplier~init( string, defaultIndexType = "", defaultItemType = "" )
 
 Initializes a `RexxUnicodeReverseCodepointSupplier` instance with the UTF-8 string `string`.
 
@@ -3508,7 +3508,7 @@ See the [`item`](#RexxUnicodeReverseCodepointSupplier_item) method for the list 
 
 #### 5.2.5.   item
 
-    aRexxUnicodeReverseCodepointSupplier~item(type=defaultItemType)
+    aRexxUnicodeReverseCodepointSupplier~item( type = defaultItemType )
 
 Returns the current codepoint in the string.  
 If no codepoint is available, that is, if `available` would return `.false`, the supplier raises an error.
@@ -3707,7 +3707,7 @@ Returns `.false` if the supplier has already enumerated all graphemes.
 
 #### 6.2.2.   graphemeAtIndexG
 
-    aRexxUnicodeReverseGraphemeSupplier~graphemeAtIndexG(indexG)
+    aRexxUnicodeReverseGraphemeSupplier~graphemeAtIndexG( indexG )
 
 Convenience method.  
 Advances the supplier to grapheme index `indexG` and returns the corresponding grapheme as a string.  
@@ -3722,7 +3722,7 @@ See also [`aRexxUnicodeStringIndexer~graphemeAtIndexG`](#RexxUnicodeStringIndexe
 
 #### 6.2.3.   index
 
-    aRexxUnicodeReverseGraphemeSupplier~index(type=defaultIndexType)
+    aRexxUnicodeReverseGraphemeSupplier~index( type = defaultIndexType )
 
 Returns the index of the current grapheme in the string.  
 If no grapheme is available, that is, if `available` would return `.false`, the supplier raises an error.
@@ -3742,7 +3742,7 @@ Grapheme indexes are counted from the end of the string.
 
 #### 6.2.4.   init
 
-    aRexxUnicodeReverseGraphemeSupplier~init(string, defaultIndexType="", defaultItemType="")
+    aRexxUnicodeReverseGraphemeSupplier~init( string, defaultIndexType = "", defaultItemType = "" )
 
 Initializes a `RexxUnicodeReverseGraphemeSupplier` instance with the UTF-8 string `string`.
 
@@ -3757,9 +3757,9 @@ See the [`item`](#RexxUnicodeReverseGraphemeSupplier_item) method for the list o
 
 <a id="RexxUnicodeReverseGraphemeSupplier_item"></a>
 
-#### 6.2.5.   item
+ 6.2.5.   item
 
-    aRexxUnicodeReverseGraphemeSupplier~item(type=defaultItemType)
+    aRexxUnicodeReverseGraphemeSupplier~item( type = defaultItemType )
 
 Returns the current grapheme in the string.  
 If no grapheme is available, that is, if `available` would return `.false`, the supplier raises an error.
@@ -3865,9 +3865,9 @@ indexer~graphemeAtIndexG(3)~c2x=    -- 92 (use ~c2x to not display an invalid by
 
 <a id="requestRexxUnicodeStringIndexer"></a>
 
-#### 7.1.1.   requestRexxUnicodeStringIndexer routine
+#### 7.1.1.   requestRexxUnicodeStringIndexer
 
-    requestRexxUnicodeStringIndexer(object)
+    requestRexxUnicodeStringIndexer( object )
 
 Returns a `RexxUnicodeStringIndexer` instance created from `object`.
 If `object` is already a `RexxUnicodeStringIndexer` instance, returns it unchanged.
@@ -3884,7 +3884,7 @@ The `RexxUnicodeStringIndexer` class defines no class methods of its own.
 
 #### 7.3.1.   codepointAtIndexC
 
-    aRexxUnicodeStringIndexer~codepointAtIndexC(indexC)
+    aRexxUnicodeStringIndexer~codepointAtIndexC( indexC )
 
 Returns the codepoint at codepoint index `indexC` as a whole number.
 
@@ -3913,7 +3913,7 @@ This result is not impacted by `codepointStorageLimit`.
 
 #### 7.3.3.   codepointIndexB
 
-    aRexxUnicodeStringIndexer~codepointIndexB(indexC)
+    aRexxUnicodeStringIndexer~codepointIndexB( indexC )
 
 Returns the byte index (1-based) corresponding to codepoint index (1-based) `indexC`.  
 It is negative if the codepoint's byte sequence is invalid.
@@ -3933,7 +3933,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 #### 7.3.4.   codepointIndexC
 
-    aRexxUnicodeStringIndexer~codepointIndexC(indexB)
+    aRexxUnicodeStringIndexer~codepointIndexC( indexB )
 
 Returns the codepoint index (1-based) corresponding to byte index (1-based) `indexB`.  
 It is zero if the codepoint index cannot be found with a binary search.  
@@ -4196,7 +4196,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 #### 7.3.16.   graphemeAtIndexG
 
-    aRexxUnicodeStringIndexer~graphemeAtIndexG(indexG)
+    aRexxUnicodeStringIndexer~graphemeAtIndexG( indexG )
 
 Returns the grapheme at grapheme index `indexG` as a string.
 
@@ -4226,7 +4226,7 @@ This result is not affected by `graphemeStorageLimit`.
 
 #### 7.3.18.   graphemeIndexB
 
-    aRexxUnicodeStringIndexer~graphemeIndexB(indexG)
+    aRexxUnicodeStringIndexer~graphemeIndexB( indexG )
 
 Returns the byte index corresponding to grapheme index `indexG`.  
 It is negative if the grapheme's byte sequence is invalid.
@@ -4246,7 +4246,7 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
 
 #### 7.3.19.   graphemeIndexG
 
-    aRexxUnicodeStringIndexer~graphemeIndexG(indexB)
+    aRexxUnicodeStringIndexer~graphemeIndexG( indexB )
 
 Returns the grapheme index corresponding to byte index `indexB`.  
 It is zero if the grapheme index cannot be found with a binary search.
@@ -4847,7 +4847,7 @@ See [`.RexxUnicodeServices~codepointCombiningClass`](#codepointCombiningClass) f
 
 #### 8.2.13.   compareTo
 
-    aRexxUnicodeCharacter~compareTo(otherUnicodeCharacter)
+    aRexxUnicodeCharacter~compareTo( otherUnicodeCharacter )
 
 Compares the target Unicode character with `otherUnicodeCharacter`.  
 Instances are compared by codepoint value.
@@ -5090,7 +5090,7 @@ The following properties have a special representation:
 
 #### 8.2.23.   init
 
-    aRexxUnicodeCharacter~init(codepoint)
+    aRexxUnicodeCharacter~init( codepoint )
 
 Initializes a `RexxUnicodeCharacter` instance with the specified `codepoint`.
 
@@ -5339,7 +5339,7 @@ Its public methods are exposed through `RexxUnicode`.
 
 #### 9.1.1.   assertICU4ooRexxIsRegistered
 
-    .ICU4ooRexxInterface~assertICU4ooRexxIsRegistered(raiseError=.true)
+    .ICU4ooRexxInterface~assertICU4ooRexxIsRegistered( raiseError = .true )
 
 Raises an error if `ICU4ooRexx` is not registered.  
 If `raiseError` is `.false`, returns `.true` if `ICU4ooRexx` is registered, or `.false` otherwise.
@@ -5367,7 +5367,7 @@ Returns the package object for `ICU4ooRexx` if it is registered, or `.nil` other
 
 #### 9.1.4.   registerICU4ooRexx
 
-    .ICU4ooRexxInterface~registerICU4ooRexx(package)
+    .ICU4ooRexxInterface~registerICU4ooRexx( package )
 
 Registers the specified `ICU4ooRexx` package.
 
