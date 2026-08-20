@@ -109,6 +109,7 @@ public:
     RexxInteger *codepointToUpper(RexxInteger *rexxCodepoint);
     RexxInteger *codepointToTitle(RexxInteger *rexxCodepoint);
 
+    // Helper for diagnostics
     RexxObject *sizeofUnicodeWidthTables();
 };
 
