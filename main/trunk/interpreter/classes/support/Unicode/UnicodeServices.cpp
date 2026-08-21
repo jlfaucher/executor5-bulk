@@ -1286,39 +1286,6 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
 
 
 /**
- * @deprecated Using an array for the persistent state can lead to subtle bugs
- *             when copying an object that uses such an array internally.
- *             By default, the copy is shallow, so both the original object and
- *             its copies refer to the same internal array. As a result, the
- *             state may be corrupted, depending on the sequence of calls made
- *             on the original object and its copies.
- *
- * Given a pair of consecutive codepoints, return whether a grapheme break is
- * permitted between them.
- *
- * @param array An array of 3 items:
- *     codepoint1 (in)     The first codepoint.
- *     codepoint2 (in)     The second codepoint.
- *     state      (in-out) Initial value must be 0.
- *
- * @return .true if a grapheme break is permitted, .false otherwise.
- */
-RexxInteger *RexxUnicodeServicesClass::graphemeBreak(ArrayClass *array)
-{
-    // No need to use arrayArgument, we really want an array already GC protected by the caller
-    classArgument(array, TheArrayClass, "1"); // ARG_ONE not supported
-    // array = arrayArgument(array, ARG_ONE);
-    // ProtectedObject p(array);
-    utf8proc_int32_t codepoint1 = (utf8proc_int32_t)integerRange((RexxObject *)array->get(1), 0, SSIZE_MAX, Error_Invalid_argument_user_defined, "GraphemeBreak: The first code point must be a non negative integer");
-    utf8proc_int32_t codepoint2 = (utf8proc_int32_t)integerRange((RexxObject *)array->get(2), 0, SSIZE_MAX, Error_Invalid_argument_user_defined, "GraphemeBreak: The second code point must be a non negative integer");
-    utf8proc_int32_t state =      (utf8proc_int32_t)integerRange((RexxObject *)array->get(3), 0, SSIZE_MAX, Error_Invalid_argument_user_defined, "GraphemeBreak:The state must be a non negative integer");
-    utf8proc_bool graphemeBreak = utf8proc_grapheme_break_stateful(codepoint1, codepoint2, &state);
-    array->put(new_integer(state), 3); // Output argument
-    return graphemeBreak ? TheTrueObject : TheFalseObject;
-}
-
-
-/**
  * Given a pair of consecutive codepoints, return whether a grapheme break is
  * permitted between them.
  *
@@ -1328,7 +1295,7 @@ RexxInteger *RexxUnicodeServicesClass::graphemeBreak(ArrayClass *array)
  *
  * @return .true if a grapheme break is permitted, .false otherwise.
  */
-RexxInteger *RexxUnicodeServicesClass::graphemeBreak3(RexxInteger *rexxCodepoint1, RexxInteger *rexxCodepoint2, VariableReference *refState)
+RexxInteger *RexxUnicodeServicesClass::graphemeBreak(RexxInteger *rexxCodepoint1, RexxInteger *rexxCodepoint2, VariableReference *refState)
 {
     requiredArgument(rexxCodepoint1, "codepoint1");
     utf8proc_int32_t codepoint1 = (utf8proc_int32_t)integer(rexxCodepoint1, "codepoint1 must be an integer");
@@ -1348,7 +1315,7 @@ RexxInteger *RexxUnicodeServicesClass::graphemeBreak3(RexxInteger *rexxCodepoint
 
 
 /**
- * graphemeBreakBackward — backward counterpart to graphemeBreak3.
+ * graphemeBreakBackward — backward counterpart to graphemeBreak.
  *
  * Given a pair of consecutive codepoints, return whether a grapheme break
  * is permitted between them when processing the pair backward.

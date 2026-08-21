@@ -136,17 +136,17 @@ ooRexx> .RexxUnicode~codepointIndicConjunctBreak(-1, >code, >label)=; code=; lab
 
 
 --------------------------------------------------------------------------------
--- .RexxUnicodeServices~graphemeBreak3
+-- .RexxUnicodeServices~graphemeBreak
 --------------------------------------------------------------------------------
 
 -- `state` is persistent state. Its initial value must be 0.
--- `graphemeBreak3` updates `state`.
+-- `graphemeBreak` updates `state`.
 ooRexx> state = 0
-ooRexx> .RexxUnicodeServices~graphemeBreak3(13, 10, >state)=    -- 0    CR + LF is a grapheme, no grapheme break inside
+ooRexx> .RexxUnicodeServices~graphemeBreak(13, 10, >state)=     -- 0    CR + LF is a grapheme, no grapheme break inside
  0
 ooRexx> state=                                                  -- 3
  3
-ooRexx> .RexxUnicodeServices~graphemeBreak3(10, 65, >state)=    -- 1    There is a grapheme break between LF and 'A'
+ooRexx> .RexxUnicodeServices~graphemeBreak(10, 65, >state)=     -- 1    There is a grapheme break between LF and 'A'
  1
 ooRexx> state=                                                  -- 1
  1

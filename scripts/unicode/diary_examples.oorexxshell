@@ -427,6 +427,7 @@ do i=0 to 1000; s1 = "00"x~copies(i); if \s1~isASCII then say "ko:" quoted(s1~c2
 /*
 [Unicode]
 
+2026 Aug 21 renamed graphemeBreak
 Add .RexxUnicodeServices~graphemeBreak3(codepoint1, codepoint2, >refState)
 Deprecate .RexxUnicodeServices~graphemeBreak(array)
     Using an array for the persistent state can lead to subtle bugs
@@ -447,9 +448,9 @@ Examples
 */
 
 refState = 0
-.RexxUnicodeServices~graphemeBreak3(13, 10, >refState)=     -- 0    CR + LF is a grapheme, no grapheme break inside
+.RexxUnicodeServices~graphemeBreak(13, 10, >refState)=      -- 0    CR + LF is a grapheme, no grapheme break inside
 refState=                                                   -- 3
-.RexxUnicodeServices~graphemeBreak3(10, 65, >refState)=     -- 1    There is a grapheme break between LF and 'A'
+.RexxUnicodeServices~graphemeBreak(10, 65, >refState)=      -- 1    There is a grapheme break between LF and 'A'
 refState=                                                   -- 1
 
 string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")

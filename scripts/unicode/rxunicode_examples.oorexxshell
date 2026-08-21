@@ -69,15 +69,15 @@ demo on
 
 
 --------------------------------------------------------------------------------
--- .RexxUnicodeServices~graphemeBreak3
+-- .RexxUnicodeServices~graphemeBreak
 --------------------------------------------------------------------------------
 
 -- `state` is persistent state. Its initial value must be 0.
--- `graphemeBreak3` updates `state`.
+-- `graphemeBreak` updates `state`.
 state = 0
-.RexxUnicodeServices~graphemeBreak3(13, 10, >state)=    -- 0    CR + LF is a grapheme, no grapheme break inside
+.RexxUnicodeServices~graphemeBreak(13, 10, >state)=     -- 0    CR + LF is a grapheme, no grapheme break inside
 state=                                                  -- 3
-.RexxUnicodeServices~graphemeBreak3(10, 65, >state)=    -- 1    There is a grapheme break between LF and 'A'
+.RexxUnicodeServices~graphemeBreak(10, 65, >state)=     -- 1    There is a grapheme break between LF and 'A'
 state=                                                  -- 1
 
 

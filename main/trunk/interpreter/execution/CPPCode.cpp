@@ -1343,7 +1343,7 @@ PCPPM CPPCode::exportedMethods[] =
     CPPM(RexxUnicodeServicesClass::utf8StringWidth),
     CPPM(RexxUnicodeServicesClass::utf8Transform),
     CPPM(RexxUnicodeServicesClass::graphemeBreak),
-    CPPM(RexxUnicodeServicesClass::graphemeBreak3),
+    CPPM(RexxUnicodeServicesClass::graphemeBreak),
     CPPM(RexxUnicodeServicesClass::graphemeBreakBackward),
     CPPM(RexxUnicodeServicesClass::codepointCategory),
     CPPM(RexxUnicodeServicesClass::codepointCombiningClass),

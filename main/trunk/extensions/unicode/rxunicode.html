@@ -875,35 +875,9 @@ If <code>codepoint</code> has no uppercase mapping, returns
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
 <p><a id="graphemeBreak"></a></p>
 <h4 id="graphemebreak">1.1.17.   graphemeBreak</h4>
-<pre><code>.RexxUnicodeServices~graphemeBreak( array )</code></pre>
-<p>Returns <code>.true</code> if there is a grapheme break between the
-two consecutive codepoints passed in <code>array</code>.</p>
-<p><a
-href="https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries"
-title="Standard Annex #29 Unicode Text Segmentation - Grapheme Cluster Boundaries">https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries</a></p>
-<blockquote>
-<p>[!WARNING] This method is deprecated. Use <a
-href="#graphemeBreak3"><code>graphemeBreak3</code></a> instead.</p>
-<p>Using an array for the persistent state can lead to subtle bugs when
-copying an object that uses such an array internally. By default, the
-copy is shallow, so both the original object and its copies refer to the
-same internal array. As a result, the state may be corrupted, depending
-on the sequence of calls made on the original object and its copies.</p>
-</blockquote>
-<p><strong>Example:</strong></p>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-lncm">-- `state` is persistent state. Its initial value must be 0.</span></code>
-<code lineno="2"><span class="rx-lncm">-- `graphemeBreak` updates `state`.</span></code>
-<code lineno="3"><span class="rx-var">array</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-spe">(</span><span class="rx-var">previousCodepoint</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">currentCodepoint</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">state</span><span class="rx-spe">)</span></code>
-<code lineno="4"><span class="rx-var">break</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeBreak</span><span class="rx-spe">(</span><span class="rx-var">array</span><span class="rx-spe">)</span><span class="rx-ws"> </span><span class="rx-lncm">-- true or false</span></code>
-<code lineno="5">
-</code></pre>
-</div>
-<p><a id="graphemeBreak3"></a></p>
-<h4 id="graphemebreak3">1.1.18.   graphemeBreak3</h4>
-<pre><code>.RexxUnicodeServices~graphemeBreak3( codepoint1, codepoint2, &gt;refState )
+<pre><code>.RexxUnicodeServices~graphemeBreak( codepoint1, codepoint2, &gt;refState )
 
-.RexxUnicodeServices~graphemeBreak3(
+.RexxUnicodeServices~graphemeBreak(
     codepoint1,     -- (in)     The first codepoint.
     codepoint2,     -- (in)     The second codepoint.
     &gt;refState       -- (in-out) Initial value must be 0.
@@ -916,17 +890,17 @@ title="Standard Annex #29 Unicode Text Segmentation - Grapheme Cluster Boundarie
 <p><strong>Example:</strong></p>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- `state` is persistent state. Its initial value must be 0.</span></code>
-<code lineno="2"><span class="rx-lncm">-- `graphemeBreak3` updates `state`.</span></code>
+<code lineno="2"><span class="rx-lncm">-- `graphemeBreak` updates `state`.</span></code>
 <code lineno="3"><span class="rx-var">state</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span></code>
-<code lineno="4"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeBreak3</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">13</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">10</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">state</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 0    CR + LF is a grapheme, no grapheme break inside</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeBreak</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">13</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">10</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">state</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 0    CR + LF is a grapheme, no grapheme break inside</span></code>
 <code lineno="5"><span class="rx-var">state</span><span class="rx-spe">=</span><span class="rx-ws">                                                  </span><span class="rx-lncm">-- 3</span></code>
-<code lineno="6"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeBreak3</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">10</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">65</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">state</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 1    There is a grapheme break between LF and 'A'</span></code>
+<code lineno="6"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeBreak</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">10</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">65</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">state</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 1    There is a grapheme break between LF and 'A'</span></code>
 <code lineno="7"><span class="rx-var">state</span><span class="rx-spe">=</span><span class="rx-ws">                                                  </span><span class="rx-lncm">-- 1</span></code>
 <code lineno="8">
 </code></pre>
 </div>
 <p><a id="graphemeBreakBackward"></a></p>
-<h4 id="graphemebreakbackward">1.1.19.   graphemeBreakBackward</h4>
+<h4 id="graphemebreakbackward">1.1.18.   graphemeBreakBackward</h4>
 <pre><code>.RexxUnicodeServices~graphemeBreakBackward( string, indexB, codepoint1, codepoint2 )
 
 .RexxUnicodeServices~graphemeBreakBackward(
@@ -1153,15 +1127,15 @@ stops at the previous block's terminator, so <code>M</code> blocks of
 length <code>k</code> cost <code>O(M·k)</code> = <code>O(n)</code>, not
 <code>O(n²)</code>.</p>
 <p><a id="RexxUnicodeServices_new"></a></p>
-<h4 id="new">1.1.20.   new</h4>
+<h4 id="new">1.1.19.   new</h4>
 <p>This method raises an error because <code>RexxUnicodeServices</code>
 has no instance.</p>
 <p><a id="systemIsLittleEndian"></a></p>
-<h4 id="systemislittleendian">1.1.21.   systemIsLittleEndian</h4>
+<h4 id="systemislittleendian">1.1.20.   systemIsLittleEndian</h4>
 <pre><code>.RexxUnicodeServices~systemIsLittleEndian</code></pre>
 <p>Returns <code>.true</code> if the system is little-endian.</p>
 <p><a id="unicodeVersion"></a></p>
-<h4 id="unicodeversion">1.1.22.   unicodeVersion</h4>
+<h4 id="unicodeversion">1.1.21.   unicodeVersion</h4>
 <pre><code>.RexxUnicodeServices~unicodeVersion</code></pre>
 <p>Returns the Unicode version supported by the <code>utf8proc</code>
 library.</p>
@@ -1172,7 +1146,7 @@ library.</p>
 </code></pre>
 </div>
 <p><a id="utf8DecodeCodepoint"></a></p>
-<h4 id="utf8decodecodepoint">1.1.23.   utf8DecodeCodepoint</h4>
+<h4 id="utf8decodecodepoint">1.1.22.   utf8DecodeCodepoint</h4>
 <pre><code>.RexxUnicodeServices~utf8DecodeCodepoint( string, indexB = 1, [&gt;refSizeB], [&gt;refErrorCode], [&gt;refErrorMsg] )
 
 .RexxUnicodeServices~utf8DecodeCodepoint(
@@ -1242,7 +1216,7 @@ detailed description of the error.</p>
 </div>
 <p><a id="utf8DecodePreviousCodepoint"></a></p>
 <h4
-id="utf8decodepreviouscodepoint">1.1.24.   utf8DecodePreviousCodepoint</h4>
+id="utf8decodepreviouscodepoint">1.1.23.   utf8DecodePreviousCodepoint</h4>
 <pre><code>.RexxUnicodeServices~utf8DecodePreviousCodepoint( string, indexB = string~length + 1, [&gt;refSizeB], [&gt;refErrorCode], [&gt;refErrorMsg] )
 
 
@@ -1363,7 +1337,7 @@ detailed description of the error.</p>
 </code></pre>
 </div>
 <p><a id="utf8EncodeCodepoint"></a></p>
-<h4 id="utf8encodecodepoint">1.1.25.   utf8EncodeCodepoint</h4>
+<h4 id="utf8encodecodepoint">1.1.24.   utf8EncodeCodepoint</h4>
 <pre><code>.RexxUnicodeServices~utf8EncodeCodepoint( codepoint, destination, [&gt;refSizeB] )
 
 .RexxUnicodeServices~utf8EncodeCodepoint(
@@ -1399,7 +1373,7 @@ byte sequence (0..4).</p>
 </code></pre>
 </div>
 <p><a id="utf8procVersion"></a></p>
-<h4 id="utf8procversion">1.1.26.   utf8procVersion</h4>
+<h4 id="utf8procversion">1.1.25.   utf8procVersion</h4>
 <pre><code>.RexxUnicodeServices~utf8procVersion</code></pre>
 <p>Returns the version of the <code>utf8proc</code> library.</p>
 <p><strong>Example:</strong></p>
@@ -1409,7 +1383,7 @@ byte sequence (0..4).</p>
 </code></pre>
 </div>
 <p><a id="utf8StringInfo"></a></p>
-<h4 id="utf8stringinfo">1.1.27.   utf8StringInfo</h4>
+<h4 id="utf8stringinfo">1.1.26.   utf8StringInfo</h4>
 <pre><code>.RexxUnicodeServices~utf8StringInfo( string, [&gt;refGraphemeCount], [&gt;refCodepointCount], [&gt;refErrorCount], stopAtFirstError = .false )
 
 .RexxUnicodeServices~utf8StringInfo(
@@ -1481,7 +1455,7 @@ error).</p>
 </code></pre>
 </div>
 <p><a id="utf8StringWidth"></a></p>
-<h4 id="utf8stringwidth">1.1.28.   utf8StringWidth</h4>
+<h4 id="utf8stringwidth">1.1.27.   utf8StringWidth</h4>
 <pre><code>.RexxUnicodeServices~utf8StringWidth( string, indexB = string~length + 1, eastAsianContext = .false )
 
 .RexxUnicodeServices~utf8StringWidth(
@@ -1521,7 +1495,7 @@ title="Rust Crate unicode_width"><code>unicode_width</code></a>.</p>
 </code></pre>
 </div>
 <p><a id="utf8Transform"></a></p>
-<h4 id="utf8transform">1.1.29.   utf8Transform</h4>
+<h4 id="utf8transform">1.1.28.   utf8Transform</h4>
 <pre><code>.RexxUnicodeServices~utf8Transform( string, casefold = .false, lump= .false, nlf = 0, normalization = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false )
 
 .RexxUnicodeServices~utf8Transform(
@@ -1536,10 +1510,10 @@ title="Rust Crate unicode_width"><code>unicode_width</code></a>.</p>
     stripNA = .false        -- Strips unassigned codepoints
     )</code></pre>
 <p>Returns the transformed string.</p>
-<h5 id="casefold-argument">1.1.29.1.   'caseFold' argument</h5>
+<h5 id="casefold-argument">1.1.28.1.   'caseFold' argument</h5>
 <p>Performs unicode case folding, to be able to do a case-insensitive
 string comparison.</p>
-<h5 id="lump-argument">1.1.29.2.   'lump' argument</h5>
+<h5 id="lump-argument">1.1.28.2.   'lump' argument</h5>
 <p>Maps certain characters to a common representative (i.e., several
 distinct characters produce the same output character).<br />
 All the concerned characters become the same character, but still remain
@@ -1579,7 +1553,7 @@ U+005F  _   &lt;-- all connector characters (general category Pc),
 U+0060  `   &lt;-- modifier letter grave accent U+02CB
 U+007C  |   &lt;-- divides U+2223
 U+007E  ~   &lt;-- tilde operator U+223C</code></pre>
-<h5 id="nlf-argument">1.1.29.3.   'nlf' argument</h5>
+<h5 id="nlf-argument">1.1.28.3.   'nlf' argument</h5>
 <p><a
 href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213"
 title="Newline Guidelines">https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213</a></p>
@@ -1602,7 +1576,7 @@ converted to the Unicode Line Separator (LS) codepoint.</p>
 Converts LF, CRLF, CR and NEL into PS.<br />
 NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are
 converted to the Unicode Paragraph Separator (PS) codepoint.</p>
-<h5 id="normalization-argument">1.1.29.4.   'normalization'
+<h5 id="normalization-argument">1.1.28.4.   'normalization'
 argument</h5>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).</span></code>
@@ -1616,18 +1590,18 @@ argument</h5>
 </div>
 <p>If <code>normalization</code> is not <code>0</code>, apply the
 requested normalization.</p>
-<h5 id="stripcc-argument">1.1.29.5.   'stripCC' argument</h5>
+<h5 id="stripcc-argument">1.1.28.5.   'stripCC' argument</h5>
 <p>Strips and/or converts control characters.</p>
 <p>NLF-sequences are transformed into space, except if one of the
 NLF2LS/PS/LF options is given. HorizontalTab (HT) and FormFeed (FF) are
 treated as a NLF-sequence in this case.</p>
 <p>All other control characters are simply removed.</p>
-<h5 id="stripignorable-argument">1.1.29.6.   'stripIgnorable'
+<h5 id="stripignorable-argument">1.1.28.6.   'stripIgnorable'
 argument</h5>
 <p>Strips the characters whose property
 <code>Default_Ignorable_Code_Point</code> is true, such as
 <code>SOFT-HYPHEN</code> or <code>ZERO-WIDTH-SPACE</code>.</p>
-<h5 id="stripmark-argument">1.1.29.7.   'stripMark' argument</h5>
+<h5 id="stripmark-argument">1.1.28.7.   'stripMark' argument</h5>
 <p>Strips all character markings.</p>
 <p>This includes non-spacing, spacing and enclosing (i.e. accents)
 categories:</p>
@@ -1637,10 +1611,10 @@ categories:</p>
 <li><code>Mn</code> Nonspacing Mark</li>
 </ul>
 <p>This option works only with a normalization applied.</p>
-<h5 id="stripna-argument">1.1.29.8.   'stripNA' argument</h5>
+<h5 id="stripna-argument">1.1.28.8.   'stripNA' argument</h5>
 <p>Strips the characters whose category is <code>Cn</code>
 Unassigned.</p>
-<h5 id="examples-of-transformations">1.1.29.9.   Examples of
+<h5 id="examples-of-transformations">1.1.28.9.   Examples of
 transformations</h5>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;control-0007&gt;}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n</span><span class="rx-str rx-cquo">"</span></code>
@@ -1862,7 +1836,6 @@ href="#codepointIndicConjunctBreak"><code>codepointIndicConjunctBreak</code></a>
 <li><a href="#codepointToTitle"><code>codepointToTitle</code></a></li>
 <li><a href="#codepointToUpper"><code>codepointToUpper</code></a></li>
 <li><a href="#graphemeBreak"><code>graphemeBreak</code></a></li>
-<li><a href="#graphemeBreak3"><code>graphemeBreak3</code></a></li>
 <li><a
 href="#graphemeBreakBackward"><code>graphemeBreakBackward</code></a></li>
 <li><a
@@ -3646,7 +3619,7 @@ returned, initialized with the result of <code>item("")</code>.</li>
 </ul>
 <p>The default item type is specified when the supplier is created.</p>
 <p><a id="RexxUnicodeReverseGraphemeSupplier_next"></a></p>
-<h4 id="next-3">6.2.6.   next</h4>
+<h4 id="next-3">6.2.5.   next</h4>
 <pre><code>aRexxUnicodeReverseGraphemeSupplier~next</code></pre>
 <p>Moves to the next grapheme in the string, in reverse order.<br />
 By repeatedly sending <code>next</code> to the supplier (as long as

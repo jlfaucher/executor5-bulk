@@ -729,40 +729,9 @@ and always returns a single codepoint.
 
 #### 1.1.17.   graphemeBreak
 
-    .RexxUnicodeServices~graphemeBreak( array )
+    .RexxUnicodeServices~graphemeBreak( codepoint1, codepoint2, >refState )
 
-Returns `.true` if there is a grapheme break between the two consecutive codepoints passed in `array`.
-
-[https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries][unicode_standard_annex_29_grapheme_cluster_boundaries]
-
-> [!WARNING]
-> This method is deprecated. Use [`graphemeBreak3`](#graphemeBreak3) instead.
->
-> Using an array for the persistent state can lead to subtle bugs
-> when copying an object that uses such an array internally.
-> By default, the copy is shallow, so both the original object and
-> its copies refer to the same internal array. As a result, the
-> state may be corrupted, depending on the sequence of calls made
-> on the original object and its copies.
-
-**Example:**
-
-```rexx
--- `state` is persistent state. Its initial value must be 0.
--- `graphemeBreak` updates `state`.
-array = (previousCodepoint, currentCodepoint, state)
-break = .RexxUnicodeServices~graphemeBreak(array) -- true or false
-
-```
-
-
-<a id="graphemeBreak3"></a>
-
-#### 1.1.18.   graphemeBreak3
-
-    .RexxUnicodeServices~graphemeBreak3( codepoint1, codepoint2, >refState )
-
-    .RexxUnicodeServices~graphemeBreak3(
+    .RexxUnicodeServices~graphemeBreak(
         codepoint1,     -- (in)     The first codepoint.
         codepoint2,     -- (in)     The second codepoint.
         >refState       -- (in-out) Initial value must be 0.
@@ -776,11 +745,11 @@ Returns `.true` if there is a grapheme break between the two consecutive codepoi
 
 ```rexx
 -- `state` is persistent state. Its initial value must be 0.
--- `graphemeBreak3` updates `state`.
+-- `graphemeBreak` updates `state`.
 state = 0
-.RexxUnicodeServices~graphemeBreak3(13, 10, >state)=    -- 0    CR + LF is a grapheme, no grapheme break inside
+.RexxUnicodeServices~graphemeBreak(13, 10, >state)=    -- 0    CR + LF is a grapheme, no grapheme break inside
 state=                                                  -- 3
-.RexxUnicodeServices~graphemeBreak3(10, 65, >state)=    -- 1    There is a grapheme break between LF and 'A'
+.RexxUnicodeServices~graphemeBreak(10, 65, >state)=    -- 1    There is a grapheme break between LF and 'A'
 state=                                                  -- 1
 
 ```
@@ -788,7 +757,7 @@ state=                                                  -- 1
 
 <a id="graphemeBreakBackward"></a>
 
-#### 1.1.19.   graphemeBreakBackward
+#### 1.1.18.   graphemeBreakBackward
 
     .RexxUnicodeServices~graphemeBreakBackward( string, indexB, codepoint1, codepoint2 )
 
@@ -1020,14 +989,14 @@ block's terminator, so `M` blocks of length `k` cost `O(M·k)` = `O(n)`, not `O(
 
 <a id="RexxUnicodeServices_new"></a>
 
-#### 1.1.20.   new
+#### 1.1.19.   new
 
 This method raises an error because `RexxUnicodeServices` has no instance.
 
 
 <a id="systemIsLittleEndian"></a>
 
-#### 1.1.21.   systemIsLittleEndian
+#### 1.1.20.   systemIsLittleEndian
 
     .RexxUnicodeServices~systemIsLittleEndian
 
@@ -1036,7 +1005,7 @@ Returns `.true` if the system is little-endian.
 
 <a id="unicodeVersion"></a>
 
-#### 1.1.22.   unicodeVersion
+#### 1.1.21.   unicodeVersion
 
     .RexxUnicodeServices~unicodeVersion
 
@@ -1052,7 +1021,7 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 
 <a id="utf8DecodeCodepoint"></a>
 
-#### 1.1.23.   utf8DecodeCodepoint
+#### 1.1.22.   utf8DecodeCodepoint
 
 ```
 .RexxUnicodeServices~utf8DecodeCodepoint( string, indexB = 1, [>refSizeB], [>refErrorCode], [>refErrorMsg] )
@@ -1124,7 +1093,7 @@ to follow the `U+FFFD` Substitution of Maximal Subparts.
 
 <a id="utf8DecodePreviousCodepoint"></a>
 
-#### 1.1.24.   utf8DecodePreviousCodepoint
+#### 1.1.23.   utf8DecodePreviousCodepoint
 
 ```
 .RexxUnicodeServices~utf8DecodePreviousCodepoint( string, indexB = string~length + 1, [>refSizeB], [>refErrorCode], [>refErrorMsg] )
@@ -1243,7 +1212,7 @@ indexB -= abs(size); indexB=                                                    
 
 <a id="utf8EncodeCodepoint"></a>
 
-#### 1.1.25.   utf8EncodeCodepoint
+#### 1.1.24.   utf8EncodeCodepoint
 
 ```
 .RexxUnicodeServices~utf8EncodeCodepoint( codepoint, destination, [>refSizeB] )
@@ -1287,7 +1256,7 @@ Append the UTF-8 encoding of 1114112 to mb: size = 0 mb = oë€🎅
 
 <a id="utf8procVersion"></a>
 
-#### 1.1.26.   utf8procVersion
+#### 1.1.25.   utf8procVersion
 
     .RexxUnicodeServices~utf8procVersion
 
@@ -1303,7 +1272,7 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 
 <a id="utf8StringInfo"></a>
 
-#### 1.1.27.   utf8StringInfo
+#### 1.1.26.   utf8StringInfo
 
 ```
 .RexxUnicodeServices~utf8StringInfo( string, [>refGraphemeCount], [>refCodepointCount], [>refErrorCount], stopAtFirstError = .false )
@@ -1377,7 +1346,7 @@ g=; c=; e=                                                                  --  
 
 <a id="utf8StringWidth"></a>
 
-#### 1.1.28.   utf8StringWidth
+#### 1.1.27.   utf8StringWidth
 
 ```
 .RexxUnicodeServices~utf8StringWidth( string, indexB = string~length + 1, eastAsianContext = .false )
@@ -1424,7 +1393,7 @@ say .RexxUnicode~stringEscape(string, "g"); say " "~copies(width) || "^"
 
 <a id="utf8Transform"></a>
 
-#### 1.1.29.   utf8Transform
+#### 1.1.28.   utf8Transform
 
 ```
 .RexxUnicodeServices~utf8Transform( string, casefold = .false, lump= .false, nlf = 0, normalization = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false )
@@ -1444,13 +1413,13 @@ say .RexxUnicode~stringEscape(string, "g"); say " "~copies(width) || "^"
 
 Returns the transformed string.
 
-##### 1.1.29.1.   'caseFold' argument
+##### 1.1.28.1.   'caseFold' argument
 
 Performs unicode case folding, to be able to do a case-insensitive
 string comparison.
 
 
-##### 1.1.29.2.   'lump' argument
+##### 1.1.28.2.   'lump' argument
 
 Maps certain characters to a common representative (i.e., several distinct characters produce the same output character).  
 All the concerned characters become the same character, but still remain distinct characters.
@@ -1492,7 +1461,7 @@ Mapping rules:
     U+007E  ~   <-- tilde operator U+223C
 
 
-##### 1.1.29.3.   'nlf' argument
+##### 1.1.28.3.   'nlf' argument
 
 [https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213][newline_guidelines]
 
@@ -1519,7 +1488,7 @@ NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are converted
 to the Unicode Paragraph Separator (PS) codepoint.
 
 
-##### 1.1.29.4.   'normalization' argument
+##### 1.1.28.4.   'normalization' argument
 
 ```rexx
 -- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).
@@ -1534,7 +1503,7 @@ to the Unicode Paragraph Separator (PS) codepoint.
 If `normalization` is not `0`, apply the requested normalization.
 
 
-##### 1.1.29.5.   'stripCC' argument
+##### 1.1.28.5.   'stripCC' argument
 
 Strips and/or converts control characters.
 
@@ -1545,13 +1514,13 @@ are treated as a NLF-sequence in this case.
 All other control characters are simply removed.
 
 
-##### 1.1.29.6.   'stripIgnorable' argument
+##### 1.1.28.6.   'stripIgnorable' argument
 
 Strips the characters whose property `Default_Ignorable_Code_Point` is true,
 such as `SOFT-HYPHEN` or `ZERO-WIDTH-SPACE`.
 
 
-##### 1.1.29.7.   'stripMark' argument
+##### 1.1.28.7.   'stripMark' argument
 
 Strips all character markings.
 
@@ -1564,12 +1533,12 @@ This includes non-spacing, spacing and enclosing (i.e. accents) categories:
 This option works only with a normalization applied.
 
 
-##### 1.1.29.8.   'stripNA' argument
+##### 1.1.28.8.   'stripNA' argument
 
 Strips the characters whose category is `Cn` Unassigned.
 
 
-##### 1.1.29.9.   Examples of transformations
+##### 1.1.28.9.   Examples of transformations
 
 ```rexx
 string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n"
@@ -1788,7 +1757,6 @@ Inherited methods:
 - [`codepointToTitle`](#codepointToTitle)
 - [`codepointToUpper`](#codepointToUpper)
 - [`graphemeBreak`](#graphemeBreak)
-- [`graphemeBreak3`](#graphemeBreak3)
 - [`graphemeBreakBackward`](#graphemeBreakBackward)
 - [`systemIsLittleEndian`](#systemIsLittleEndian)
 - [`unicodeVersion`](#unicodeVersion)
@@ -3779,7 +3747,7 @@ The default item type is specified when the supplier is created.
 
 <a id="RexxUnicodeReverseGraphemeSupplier_next"></a>
 
-#### 6.2.6.   next
+#### 6.2.5.   next
 
     aRexxUnicodeReverseGraphemeSupplier~next
 

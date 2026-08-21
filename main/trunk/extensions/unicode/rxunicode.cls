@@ -64,8 +64,7 @@ Native methods of RexxUnicodeServices
     RexxString *utf8Transform(RexxObject **arguments, size_t argCount);
     // use strict arg string, casefold = .false, lump= .false, nlf = 0, normalization = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false
 
-    RexxInteger *graphemeBreak(ArrayClass *array); // deprecated
-    RexxInteger *graphemeBreak3(RexxInteger *rexxCodepoint1, RexxInteger *rexxCodepoint2, VariableReference *refState);
+    RexxInteger *graphemeBreak(RexxInteger *rexxCodepoint1, RexxInteger *rexxCodepoint2, VariableReference *refState);
     RexxInteger *graphemeBreakBackward(RexxString *string, RexxInteger *indexB, RexxInteger *rexxCodepoint1, RexxInteger *rexxCodepoint2);
 
     RexxInteger *codepointBidiClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel); // enum
@@ -86,6 +85,9 @@ Native methods of RexxUnicodeServices
     RexxInteger *codepointToLower(RexxInteger *rexxCodepoint);
     RexxInteger *codepointToUpper(RexxInteger *rexxCodepoint);
     RexxInteger *codepointToTitle(RexxInteger *rexxCodepoint);
+
+    // Helper for diagnostics
+    RexxObject *sizeofUnicodeWidthTables();
 */
 
 /*******************************************************************************
@@ -1339,9 +1341,9 @@ are the same operation - scanBoundary is used for both.
             return
         end
 
-        -- graphemeBreak3 must NOT be called when previousCodepoint < 0 (nothing to compare against yet)
+        -- graphemeBreak must NOT be called when previousCodepoint < 0 (nothing to compare against yet)
         if previousCodepoint < 0 then isBoundary = 1
-        else isBoundary = .RexxUnicode~graphemeBreak3(previousCodepoint, codepoint, >graphemeBreakState)
+        else isBoundary = .RexxUnicode~graphemeBreak(previousCodepoint, codepoint, >graphemeBreakState)
 
         boundaryHere = indexB
         previousCodepoint = codepoint
@@ -1593,7 +1595,7 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
             if endGraphemeStorageSize > 0 then endGraphemeIndexes~append(indexB)
         end
         else do
-            if .RexxUnicode~graphemeBreak3(previousCodepoint, codepoint, >graphemeBreakState) then do
+            if .RexxUnicode~graphemeBreak(previousCodepoint, codepoint, >graphemeBreakState) then do
                 graphemeCount += 1
                 if graphemeCount <= graphemeStorageLimit then graphemeIndexes~append(indexB)
                 if graphemeCount == (graphemeStorageLimit + 1) then lastGraphemeSuccessorIndex = indexB

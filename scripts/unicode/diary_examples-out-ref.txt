@@ -558,6 +558,7 @@ ooRexx> do i=0 to 1000; s1 = "00"x~copies(i); if \s1~isASCII then say "ko:" quot
 /*
 [Unicode]
 
+2026 Aug 21 renamed graphemeBreak
 Add .RexxUnicodeServices~graphemeBreak3(codepoint1, codepoint2, >refState)
 Deprecate .RexxUnicodeServices~graphemeBreak(array)
     Using an array for the persistent state can lead to subtle bugs
@@ -578,11 +579,11 @@ Examples
 */
 
 ooRexx> refState = 0
-ooRexx> .RexxUnicodeServices~graphemeBreak3(13, 10, >refState)=     -- 0    CR + LF is a grapheme, no grapheme break inside
+ooRexx> .RexxUnicodeServices~graphemeBreak(13, 10, >refState)=      -- 0    CR + LF is a grapheme, no grapheme break inside
  0
 ooRexx> refState=                                                   -- 3
  3
-ooRexx> .RexxUnicodeServices~graphemeBreak3(10, 65, >refState)=     -- 1    There is a grapheme break between LF and 'A'
+ooRexx> .RexxUnicodeServices~graphemeBreak(10, 65, >refState)=      -- 1    There is a grapheme break between LF and 'A'
  1
 ooRexx> refState=                                                   -- 1
  1

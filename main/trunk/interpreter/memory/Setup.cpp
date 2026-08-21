@@ -1743,8 +1743,7 @@ StartClassDefinition(RexxUnicodeServices)
         AddClassUnguardedMethod("UTF8StringInfo", RexxUnicodeServicesClass::utf8StringInfo, 5);
         AddClassUnguardedMethod("UTF8StringWidth", RexxUnicodeServicesClass::utf8StringWidth, 3);
         AddClassUnguardedMethod("UTF8Transform", RexxUnicodeServicesClass::utf8Transform, A_COUNT);
-        AddClassUnguardedMethod("GraphemeBreak", RexxUnicodeServicesClass::graphemeBreak, 1);
-        AddClassUnguardedMethod("GraphemeBreak3", RexxUnicodeServicesClass::graphemeBreak3, 3);
+        AddClassUnguardedMethod("GraphemeBreak", RexxUnicodeServicesClass::graphemeBreak, 3);
         AddClassUnguardedMethod("GraphemeBreakBackward", RexxUnicodeServicesClass::graphemeBreakBackward, 4);
         AddClassUnguardedMethod("CodepointCategory", RexxUnicodeServicesClass::codepointCategory, 3);
         AddClassUnguardedMethod("CodepointCombiningClass", RexxUnicodeServicesClass::codepointCombiningClass, 3);
