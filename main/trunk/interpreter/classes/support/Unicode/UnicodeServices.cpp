@@ -45,6 +45,7 @@
 #include "MethodArguments.hpp"
 #include "VariableReference.hpp"
 #include "MutableBufferClass.hpp"
+#include "NumberStringClass.hpp" // for NumberString::classInstanc needed by the macro TheNumberStringClass
 
 
 #include "Unicode/utf8proc/utf8proc.h"
@@ -196,6 +197,29 @@ ssize_t integer(RexxObject *obj, const char *errorMessage)
     }
     reportException(Error_Invalid_argument_user_defined, errorMessage);
     return 0; // To avoid warning, must return something (should never reach this line)
+}
+
+
+/*
+Testing that stringClass is TheStringClass is too restrictive.
+It must also accept TheIntegerClass and TheNumberStringClass because these two
+classes lie about their identity! They claim to be a String, which results in
+this stupid error message: "Argument string class: expected String, found String."
+*/
+void requiredBaseString(RexxString *string, const char *argumentName)
+{
+    if (string == OREF_NULL) return;
+
+    RexxClass *stringClass = string->classObject();
+    if (stringClass == TheStringClass) return;
+    if (stringClass == TheIntegerClass) return;
+    if (stringClass == TheNumberStringClass) return;
+
+    Protected<RexxString> errmsg = new_string("Argument ");
+    errmsg = errmsg->concatWithCstring(argumentName);
+    errmsg = errmsg->concatWithCstring(" class: expected String, found ");
+    errmsg = errmsg->concat(stringClass->getId());
+    reportException(Error_Invalid_argument_user_defined, errmsg);
 }
 
 
@@ -948,17 +972,9 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodeCodepoint(RexxString *string, R
 {
     // Check arguments
 
-    // Yes! Accept only a real string because the size returned with refSizeB must be applied on a real string, not on a Text instance (for example).
-        // RexxString *pstring = stringArgument(string, "string"); // Protected<RexxString> not needed
-        // classArgument(string, TheStringClass, "string"); // not enough restrictive because an instance of a subclass is accepted
     requiredArgument(string, "string");
-    if (string->classObject() != TheStringClass)
-    {
-        Protected<RexxString> errmsg = new_string("Argument string class: expected String, found ");
-        errmsg = errmsg->concat(string->classObject()->getId());
-        reportException(Error_Invalid_argument_user_defined, errmsg);
-    }
-    // if (string->classObject() != TheStringClass) reportException(Error_Invalid_argument_noclass, "string", TheStringClass->getId());
+    // Yes! Accept only a real string because the size returned with refSizeB must be applied on a real string, not on a Text instance (for example).
+    requiredBaseString(string, "string");
 
     size_t index = 1;
     if (indexB != OREF_NULL) index = positionArgument(indexB, "indexB"); // 1-based, range 1..length+1
@@ -1038,12 +1054,7 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodePreviousCodepoint(RexxString *s
     // Check arguments
 
     requiredArgument(string, "string");
-    if (string->classObject() != TheStringClass)
-    {
-        Protected<RexxString> errmsg = new_string("Argument string class: expected String, found ");
-        errmsg = errmsg->concat(string->classObject()->getId());
-        reportException(Error_Invalid_argument_user_defined, errmsg);
-    }
+    requiredBaseString(string, "string");
 
     size_t index = string->getLength() + 1;
     if (indexB != OREF_NULL) index = positionArgument(indexB, "indexB"); // 1-based; boundary, not a byte offset
@@ -1149,12 +1160,7 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
     // Check arguments
 
     requiredArgument(string, "string");
-    if (string->classObject() != TheStringClass)
-    {
-        Protected<RexxString> errmsg = new_string("Argument string class: expected String, found ");
-        errmsg = errmsg->concat(string->classObject()->getId());
-        reportException(Error_Invalid_argument_user_defined, errmsg);
-    }
+    requiredBaseString(string, "string");
 
     if (refGraphemeCount != OREF_NULL) classArgument(refGraphemeCount, TheVariableReferenceClass, "refGraphemeCount");
     if (refCodepointCount != OREF_NULL) classArgument(refCodepointCount, TheVariableReferenceClass, "refCodepointCount");
@@ -1332,12 +1338,7 @@ RexxInteger *RexxUnicodeServicesClass::graphemeBreakBackward(RexxString *string,
     // Check arguments
 
     requiredArgument(string, "string");
-    if (string->classObject() != TheStringClass)
-    {
-        Protected<RexxString> errmsg = new_string("Argument string class: expected String, found ");
-        errmsg = errmsg->concat(string->classObject()->getId());
-        reportException(Error_Invalid_argument_user_defined, errmsg);
-    }
+    requiredBaseString(string, "string");
 
     size_t index = positionArgument(indexB, "indexB"); // 1-based; boundary, not a byte offset
     // Since we have already decoded 2 codepoints, index cannot be length+1 or length or length-1
@@ -2284,12 +2285,7 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringWidth(RexxString *string, RexxI
     // Check arguments
 
     requiredArgument(string, "string");
-    if (string->classObject() != TheStringClass)
-    {
-        Protected<RexxString> errmsg = new_string("Argument string class: expected String, found ");
-        errmsg = errmsg->concat(string->classObject()->getId());
-        reportException(Error_Invalid_argument_user_defined, errmsg);
-    }
+    requiredBaseString(string, "string");
 
     size_t index = string->getLength() + 1;
     if (indexB != OREF_NULL) index = positionArgument(indexB, "indexB"); // 1-based; boundary, not a byte offset
