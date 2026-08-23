@@ -405,7 +405,7 @@ Helpers for direct access to codepoints and graphemes
     indexB = 1
     previousCodepoint = -1
     previousCodepointIndexB = -1
-    graphemeBreakArgs = (-1, -1, 0) -- codepoint1, codepoint2, state. Will use the same array at each iteration.
+    graphemeBreakState = 0
 
     forever:
         codepoint = .RexxUnicodeServices~utf8DecodeCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
@@ -415,9 +415,7 @@ Helpers for direct access to codepoints and graphemes
         codepointIndexes~append(indexB)
         if previousCodepoint < 0 then graphemeIndexes~append(indexB) -- First codepoint or Error recovery
         else do
-            graphemeBreakArgs[1] = previousCodepoint
-            graphemeBreakArgs[2] = codepoint
-            if .RexxUnicodeServices~graphemeBreak(graphemeBreakArgs) then graphemeIndexes~append(indexB)
+            if .RexxUnicodeServices~graphemeBreak(previousCodepoint, codepoint, >graphemeBreakState) then graphemeIndexes~append(indexB)
         end
         previousCodepoint = codepoint
         previousCodepointIndexB = indexB
@@ -428,7 +426,7 @@ Helpers for direct access to codepoints and graphemes
         errors~append("start byte position" indexB ":" errorMsg)
         codepointIndexes~append(-indexB) -- a negative index means "error"
         graphemeIndexes~append(-indexB) -- idem
-        graphemeBreakArgs[3] = 0 -- reset the extended grapheme state
+        graphemeBreakState = 0 -- reset the extended grapheme state
         previousCodepoint = codepoint
         previousCodepointIndexB = indexB
         indexB += abs(sizeB) -- skip the invalid bytes
