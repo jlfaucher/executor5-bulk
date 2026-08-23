@@ -2493,6 +2493,9 @@ This method handles them at run time instead.
 **Supported escape sequences**
 
     \\                  "\"
+    \'                  single quote
+    \"                  double quote
+    \0                  "00"x   NUL
     \a                  "07"x   audible bell (BEL)
     \b                  "08"x   backspace (BS)
     \f                  "0C"x   form feed (FF)

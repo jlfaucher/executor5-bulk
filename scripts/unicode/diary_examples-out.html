@@ -38,15 +38,34 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for oorexxshell_queries_std.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for pipeline/pipe_std.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for Rexx.Parser.cls
+</span><span style="font-weight:bold;color:green;">loadPackage OK for Unicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 12 Aug 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: Sa84Qbc482a640
+</span><span style="font-weight:bold;color:green;">Input queue name: S27c3Qbc482a880
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
+
+
+<span style="font-weight:bold;color:blue;">-- ===============================================================================
+</span><span style="font-weight:bold;color:blue;">-- 2026 Aug 23
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">[Unicode]
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Add support for Rust escape characters:
+</span><span style="font-weight:bold;color:blue;">    \'                  single quote
+</span><span style="font-weight:bold;color:blue;">    \&quot;                  double quote
+</span><span style="font-weight:bold;color:blue;">    \0                  &quot;00&quot;x   NUL
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Examples
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\'\&quot;&quot;\0&quot;)~c2x=     </span><span style="font-weight:bold;color:blue;">--  272200</span>
+ 272200
 
 
 <span style="font-weight:bold;color:blue;">-- ===============================================================================

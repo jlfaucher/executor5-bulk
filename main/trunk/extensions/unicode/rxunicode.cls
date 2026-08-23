@@ -751,6 +751,11 @@ How other languages are supporting escape characters for Unicode:
             when character == "r" then buffer~append("0D"x) -- carriage return (CR)
             when character == "t" then buffer~append("09"x) -- horizontal tab (HT)
             when character == "v" then buffer~append("0B"x) -- vertical tab (VT)
+            -- Rust
+            when character == "'" then buffer~append("27"x) -- single quote
+            when character == '"' then buffer~append("22"x) -- double quote
+            when character == "0" then buffer~append("00"x) -- NUL
+
 
             when character == "N" then do
                 -- \N{Unicode name}    Character name in the Unicode database
