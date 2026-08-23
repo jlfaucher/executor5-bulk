@@ -1,3 +1,6 @@
+Ported from Rust to C++ by `Claude Sonnet 5`.  
+Project summary by `Claude Sonnet 5`.
+
 # Porting unicode-rs/unicode-width to C++ for ooRexx — project summary
 
 ## Goal
