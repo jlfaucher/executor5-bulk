@@ -162,14 +162,34 @@ code above targets C++11:
 2. Decide whether/when to replace the GCC/Clang `case LO ... HI:` extension
    in generated `lookup_width`/`lookup_width_cjk` with portable
    `if`/`else if` chains, ahead of the Windows ARM/x64 MSVC build.
-   --> done by the user, build ok on Windows.
 3. Run the black-box conformance comparison against the real Rust crate
    before trusting this on adversarial emoji/ligature input.
 4. Revisit whether to restore `constexpr`/C++14-ish niceties once/if
    `CMAKE_CXX_STANDARD` is bumped past 11 — not necessary for correctness,
    but was the original (reverted) design intent.
 
-## Changes applied by the user
+## Actions taken by the user
 
 - Keep the original copyright and license notices in all files ported from the
   Rust crate `unicode-width`.
+- Re-add `gen/tables_test.cpp` to `CMakeLists.txt`. The build is ok.
+  This file is not currently part of the regression tests.
+- Replace GCC/Clang range-case extension with portable `if`/`else if` chains.
+  The build is ok on Windows.
+- Port manually `tests/tests.rs` to ooRexx. These tests are incorporated in the
+  Executor5-bulk Unicode tests. All tests are ok.
+- Compare `utf8proc` widths (equivalent of `wcwidth`) with `unicode-width` results.
+  There are MANY differences!
+  Still to clarify by the user: why `unicode-width` differs from `utf8proc`.
+
+        Control characters:
+            utf8proc returns 0.
+            unicode-width return None for char, 1 for string.
+        Surrogate characters:
+            utf8proc returns 0.
+            unicode-width return 1.
+            utf8StringWidth returns 3 because a surrogate character alone is invalid, replaced by 3 replacement characters.
+        Unassigned characters:
+            utf8proc returns 1 (default value).
+            unicode-width returns 0, 1 or 2.
+        and 2008 other differences...

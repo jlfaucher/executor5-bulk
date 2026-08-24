@@ -36,6 +36,68 @@ Examples
     .RexxUnicode~stringUnescape("\'\""\0")~c2x=     --  272200
 
 
+Hand-written port of the Rust crate unicode-width tests to ooRexx.
+These tests are incorporated in the Executor5-bulk Unicode tests.
+
+New `charWidth_stringWidth_test`regression test to compare utf8proc widths with
+unicode-width results.
+
+macOS and Linux:
+    cdroot (or manually cd to the Git repository root if you're not using `builder`)
+    cd scripts/unicode
+        make (display help)
+        make all
+        make html
+        ---------- ooRexxShellFiles
+        make diary_examples
+        make rxunicode_examples
+        ---------- scriptsFiles
+        make charWidth_stringWidth_test
+        make controlBoundary_test
+        make eastAsianWidthIsAmbiguous_test
+        make enums_test
+        make incorrect_character
+        make RexxUnicode_test
+        make RexxUnicodeServices_test
+        make width_printable_test
+        make ../../main/trunk/interpreter/classes/support/Unicode/unicode-width/tests/tests
+        ---------- html (needs asciinema and aha)
+        make diary_examples-out.html
+        make rxunicode_examples-out.html
+        ----------
+        make clean
+
+Windows:
+    cdroot (or manually cd to the Git repository root if you're not using `builder`)
+    cd scripts/unicode
+        nmake (display help)
+        nmake all
+        ---------- ooRexxShellFiles
+        nmake diary_examples
+        nmake rxunicode_examples
+        ---------- scriptsFiles
+        nmake charWidth_stringWidth_test
+        nmake controlBoundary_test
+        nmake eastAsianWidthIsAmbiguous_test
+        nmake enums_test
+        nmake incorrect_character
+        nmake RexxUnicode_test
+        nmake RexxUnicodeServices_test
+        nmake width_printable_test
+        nmake ..\..\main\trunk\interpreter\classes\support\Unicode\unicode-width\tests\tests
+        ----------
+        nmake clean
+
+Duration on MacBookPro M1 32GB:
+time make ../../main/trunk/interpreter/classes/support/Unicode/unicode-width/tests/tests
+    real	0m29.993s
+    user	0m29.835s
+    sys	0m0.140s
+This long duration is probably due to .RexxUnicode~stringUnescape, which is
+not implemented natively.
+
+
+===============================================================================
 2026 Aug 21
 
 [Unicode]

@@ -1,0 +1,87 @@
+--------------------------------------------------------------------------------
+Entry points
+--------------------------------------------------------------------------------
+
+char.width --> lookup::single_char_width
+char.width_cjk --> lookup::single_char_width_cjk
+
+str.width --> lookup::str_width
+str.width_cjk --> lookup::str_width_cjk
+
+
+lib.rs
+impl UnicodeWidthChar for char {
+    #[inline]
+    fn width(self) -> Option<usize> {
+        lookup::single_char_width(self)
+    }
+
+    #[cfg(feature = "cjk")]
+    #[inline]
+    fn width_cjk(self) -> Option<usize> {
+        lookup::single_char_width_cjk(self)
+    }
+}
+
+
+lib.rs
+impl UnicodeWidthStr for str {
+    #[inline]
+    fn width(&self) -> usize {
+        lookup::str_width(self.chars())
+    }
+
+    #[cfg(feature = "cjk")]
+    #[inline]
+    fn width_cjk(&self) -> usize {
+        lookup::str_width_cjk(self.chars())
+    }
+}
+
+
+--------------------------------------------------------------------------------
+Why '\x00'.width = None?
+--------------------------------------------------------------------------------
+
+It's not clear why they decided to return
+'\x00'.width = None
+"\0".width = 1
+See the laconic answer "this is intentional, and according to the spec".
+in https://github.com/unicode-rs/unicode-width/issues/87
+This answer does not explain why returning None for control characters.
+
+ooRexx has only a String type, so
+.RexxUnicodeServices~utf8StringWidth('00'x) = 1
+
+This logic could be implemented in ooRexx by supporting
+.RexxUnicodeServices~codepointCharWidth2( codepoint, eastAsianContext = .false )
+fn single_char_width_generic<const IS_CJK: bool>(c: char) -> Option<usize> {
+    if c < '\u{7F}' {
+        if c >= '\u{20}' {
+            // U+0020 to U+007F (exclusive) are single-width ASCII codepoints
+            Some(1)
+        } else {
+            // U+0000 to U+0020 (exclusive) are control codes
+            None
+        }
+    } else if c >= '\u{A0}' {
+        // No characters >= U+00A0 are control codes, so we can consult the lookup tables
+        Some(lookup_width_generic::<IS_CJK>(c).0.into())
+    } else {
+        // U+007F to U+00A0 (exclusive) are control codes
+        None
+    }
+}
+
+lookup.rs
+single_char_width_generic<const IS_CJK: bool>
+called by
+    lookup.rs
+    single_char_width
+        lib.rs
+        char.width
+    lookup.rs
+    single_char_width_cjk
+        lib.rs
+        char.width_cjk
+

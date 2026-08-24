@@ -11,13 +11,15 @@ ooRexxShellFiles = diary_examples \
                    rxunicode_examples
 
 # ooRexx scripts in the current directory
-scriptsFiles = controlBoundary_test \
+scriptsFiles = charWidth_stringWidth_test \
+               controlBoundary_test \
                eastAsianWidthIsAmbiguous_test \
                enums_test \
                incorrect_character \
                RexxUnicode_test \
                RexxUnicodeServices_test \
-               width_printable_test
+               width_printable_test \
+               ../../main/trunk/interpreter/classes/support/Unicode/unicode-width/tests/tests
 
 help:
 	@echo "make all"
