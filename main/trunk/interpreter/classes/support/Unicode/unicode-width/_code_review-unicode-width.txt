@@ -85,3 +85,67 @@ called by
         lib.rs
         char.width_cjk
 
+
+--------------------------------------------------------------------------------
+Tables of Rust's byte-packed [u8; 3]
+--------------------------------------------------------------------------------
+
+The C++ representation is less compact than Rust's
+
+> Rust's byte-packed [u8; 3] codepoint-range pairs became a plain struct CodepointRange { uint32_t lo, hi; } —
+  same data, simpler representation.
+
+but is still quite acceptable:
+
+    // A closed codepoint range [lo, hi].
+    struct CodepointRange {
+        std::uint32_t lo;
+        std::uint32_t hi;
+    };
+
+    | Representation       | Per range |
+    | -------------------- | --------: |
+    | Rust `[u8; 3]` pairs |   6 bytes |
+    | C++ `uint32_t` pairs |   8 bytes |
+    | Difference           |  +2 bytes |
+
+    sizeof CodepointRange NON_TRANSPARENT_ZERO_WIDTHS[71] = 568 (+142 bytes)
+    sizeof CodepointRange SOLIDUS_TRANSPARENT[208] = 1664       (+416 bytes)
+
+
+--------------------------------------------------------------------------------
+Other tables - same size with Rust and C++
+--------------------------------------------------------------------------------
+
+    sizeof std::uint8_t WIDTH_ROOT[256] = 256
+    sizeof std::uint8_t WIDTH_ROOT_CJK[256] = 256
+    sizeof std::uint8_t WIDTH_MIDDLE[20][64] = 1280
+    sizeof std::uint8_t WIDTH_LEAVES[186][32] = 5952
+    sizeof std::uint8_t EMOJI_PRESENTATION_LEAVES[7][128] = 896
+
+    // A closed [lo, hi] byte range, used by the generated two-level leaf tables
+    // (TEXT_PRESENTATION_LEAF_*, EMOJI_MODIFIER_LEAF_*). Mirrors Rust's `(u8, u8)`.
+    struct RangePair {
+        std::uint8_t lo;
+        std::uint8_t hi;
+    };
+
+    sizeof RangePair TEXT_PRESENTATION_LEAF_0[4] = 8
+    sizeof RangePair TEXT_PRESENTATION_LEAF_1[41 = 2
+    sizeof RangePair TEXT_PRESENTATION_LEAF_2[15] = 30
+    sizeof RangePair TEXT_PRESENTATION_LEAF_3[10] = 20
+    sizeof RangePair TEXT_PRESENTATION_LEAF_4[3] = 6
+    sizeof RangePair TEXT_PRESENTATION_LEAF_5[1] = 2
+    sizeof RangePair TEXT_PRESENTATION_LEAF_6[13] = 26
+    sizeof RangePair TEXT_PRESENTATION_LEAF_7[22] = 44
+    sizeof RangePair TEXT_PRESENTATION_LEAF_8[4] = 8
+    sizeof RangePair TEXT_PRESENTATION_LEAF_9[10] = 20
+    sizeof RangePair EMOJI_MODIFIER_LEAF_0[2] = 4
+    sizeof RangePair EMOJI_MODIFIER_LEAF_1[1] = 2
+    sizeof RangePair EMOJI_MODIFIER_LEAF_2[4] = 8
+    sizeof RangePair EMOJI_MODIFIER_LEAF_3[9] = 18
+    sizeof RangePair EMOJI_MODIFIER_LEAF_4[4] = 8
+    sizeof RangePair EMOJI_MODIFIER_LEAF_5[6] = 12
+    sizeof RangePair EMOJI_MODIFIER_LEAF_6[12] = 24
+    sizeof RangePair EMOJI_MODIFIER_LEAF_7[2] = 4
+```
