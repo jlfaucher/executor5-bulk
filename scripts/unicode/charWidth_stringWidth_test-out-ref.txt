@@ -27,6 +27,15 @@ Unassigned characters:
     utf8proc returns 1 (default value).
     unicode-width returns 0, 1 or 2.
 
+    Widths returned by unicode-width:
+    - Each character is always listed twice
+      (one line for width and one line for width_cjk).
+    - Intervals are indicated with "...".
+    - Each line displays the escaped notation twice because unassigned characters
+      are not printable. When the character is printable, the second  escaped
+      notation is replaced by the printed character.
+
+
     width     \u{2065} '\u{2065}' Some(0) 0
     width_cjk \u{2065} '\u{2065}' Some(0) 0
 

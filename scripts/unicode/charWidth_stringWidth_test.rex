@@ -28,6 +28,15 @@ Unassigned characters:
     utf8proc returns 1 (default value).
     unicode-width returns 0, 1 or 2.
 
+    Widths returned by unicode-width:
+    - Each character is always listed twice
+      (one line for width and one line for width_cjk).
+    - Intervals are indicated with "...".
+    - Each line displays the escaped notation twice because unassigned characters
+      are not printable. When the character is printable, the second  escaped
+      notation is replaced by the printed character.
+
+
     width     \u{2065} '\u{2065}' Some(0) 0
     width_cjk \u{2065} '\u{2065}' Some(0) 0
 
@@ -110,6 +119,29 @@ Rust script
 
 BBEdit regular expression to search the next line not containing "Some(1)":
     ^((?!Some\(1\)).)*$
+
+
+Analysis with Xcode:
+    -e '.context~package~loadPackage( "rxunicode.cls" ); say .RexxUnicodeServices~utf8StringWidth(.RexxUnicode~stringUnescape( "\u{2065}" ))'
+
+    Remember:
+    Surrounding the -e expression with single quotes instead of double quotes is mandatory!
+    Otherwise, you would need to escape the backslash ("\\u{2065}") to protect it from the shell.
+
+    These widths are always retrieved from
+        std::pair<std::uint8_t, WidthInfo> ret = lookup_width_generic<IS_CJK>(c);
+        return std::make_pair((std::int8_t)ret.first, ret.second);
+            return lookup_width(c);
+                std::uint8_t t1_offset = WIDTH_ROOT[cp >> 13];
+                std::uint8_t t2_offset = WIDTH_MIDDLE[t1_offset][cp >> 7 & 0x3F];
+                std::uint8_t packed_widths = WIDTH_LEAVES[t2_offset][cp >> 2 & 0x1F];
+                std::uint8_t width = (packed_widths >> (2 * (cp & 0b11))) & 0b11;
+                if (width < 3) {
+                    return {width, WidthInfo::DEFAULT};
+                }
+                // width == 3: Specific rules (never activated for the unassigned characters)
+    Conclusion:
+    The widths of unassigned characters are always directly retrieved from tables.
 */
 
 
