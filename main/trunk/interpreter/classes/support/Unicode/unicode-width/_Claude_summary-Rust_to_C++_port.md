@@ -179,17 +179,4 @@ code above targets C++11:
 - Port manually `tests/tests.rs` to ooRexx. These tests are incorporated in the
   Executor5-bulk Unicode tests. All tests are ok.
 - Compare `utf8proc` widths (equivalent of `wcwidth`) with `unicode-width` results.
-  There are MANY differences!
-  Still to clarify by the user: why `unicode-width` differs from `utf8proc`.
-
-        Control characters:
-            utf8proc returns 0.
-            unicode-width return None for char, 1 for string.
-        Surrogate characters:
-            utf8proc returns 0.
-            unicode-width return 1.
-            utf8StringWidth returns 3 because a surrogate character alone is invalid, replaced by 3 replacement characters.
-        Unassigned characters:
-            utf8proc returns 1 (default value).
-            unicode-width returns 0, 1 or 2.
-        and 2008 other differences...
+  There are MANY differences due to design decisions made by `unicode-width`.

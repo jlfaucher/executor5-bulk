@@ -31,20 +31,25 @@ Unicode support
 <h1 id="unicode-support">Unicode support</h1>
 <h2 id="rexxunicodeservices-class">RexxUnicodeServices class</h2>
 <p>The <code>RexxUnicodeServices</code> class is a native class that
-acts as a facade for the <a
-href="https://juliastrings.github.io/utf8proc/"
-title="utf8proc"><code>utf8proc</code></a> library embedded in
-ooRexx.</p>
+acts as a facade for</p>
+<ul>
+<li>the <a href="https://juliastrings.github.io/utf8proc/"
+title="utf8proc"><code>utf8proc</code></a> C library</li>
+<li>the <a href="https://github.com/unicode-rs/unicode-width"
+title="unicode-width"><code>unicode-width</code></a> Rust crate ported
+to C++</li>
+</ul>
+<p>Both are embedded in ooRexx.</p>
 <p>Demo / Validation:</p>
 <ul>
 <li><a
 href="https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/unicode/RexxUnicodeServices_test.rex"
 title="RexxUnicodeServices_test.rex"><code>RexxUnicodeServices_test.rex</code></a>:
-no dependencies; the foundations are provided by ooRexx only.</li>
+no dependencies; the foundations are provided by ooRexx only</li>
 <li><a
 href="https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/unicode/RexxUnicodeServices_test-out-ref.txt"
 title="RexxUnicodeServices_test-out-ref.txt"><code>RexxUnicodeServices_test-out-ref.txt</code></a>:
-script's output.</li>
+script's output</li>
 </ul>
 <h2 id="rxunicode-library">rxunicode library</h2>
 <p>The <code>rxunicode</code> library implements the
@@ -55,11 +60,11 @@ script's output.</li>
 <li><a
 href="https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/unicode/RexxUnicode_test.rex"
 title="RexxUnicode_test.rex"><code>RexxUnicode_test.rex</code></a>:
-depends on <code>RexxUnicode</code> (optionally using ICU4ooRexx).</li>
+depends on <code>RexxUnicode</code> (optionally using ICU4ooRexx)</li>
 <li><a
 href="https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/unicode/RexxUnicode_test-out-ref.txt"
 title="RexxUnicode_test-out-ref.txt"><code>RexxUnicode_test-out-ref.txt</code></a>:
-script's output.</li>
+script's output</li>
 </ul>
 <p>The <code>rxunicode</code> library provides additional classes built
 on the <code>RexxUnicodeServices</code> and <code>RexxUnicode</code>
@@ -68,21 +73,44 @@ classes.</p>
 <ul>
 <li><a
 href="https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/rxunicode.md"
-title="rxunicode markdown documentation">Markdown
-documentation</a>.</li>
+title="rxunicode markdown documentation">Markdown documentation</a></li>
 <li><a
 href="https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/rxunicode.html"
-title="rxunicode HTML documentation">HTML documentation</a>.</li>
+title="rxunicode HTML documentation">HTML documentation</a></li>
 </ul>
 <h3 id="examples">Examples</h3>
 <ul>
 <li><a
 href="https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/unicode/rxunicode_examples-out.html"
 title="rxunicode documentation examples">rxunicode documentation
-examples</a>.</li>
+examples</a></li>
 <li><a
 href="https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/unicode/diary_examples-out.html"
-title="Unicode diary examples">Unicode diary examples</a>.</li>
+title="Unicode diary examples">Unicode diary examples</a></li>
+</ul>
+<h3 id="technical-documentation">Technical documentation</h3>
+<ul>
+<li><p><code>utf8proc</code></p>
+<ul>
+<li><a
+href="https://github.com/jlfaucher/executor5-bulk/tree/main/main/trunk/interpreter/classes/support/Unicode/utf8proc/_code_review-utf8proc.txt"
+title="_code_review-utf8proc.txt">Code review</a><br />
+<!-- The NBSP after this comment is intentional; it adds spacing between bullets in the generated HTML --> </li>
+</ul></li>
+<li><p><code>unicode-width</code></p>
+<ul>
+<li><a
+href="https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/interpreter/classes/support/Unicode/unicode-width/_Claude_summary-Rust_to_C++_port.md"
+title="_Claude_summary-Rust_to_C++_port.md">Rust-to-C++ by Claude Sonnet
+5</a></li>
+<li><a
+href="https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/interpreter/classes/support/Unicode/unicode-width/_ChatGPT_summary-Unicode_Width_Rules.html"
+title="_ChatGPT_summary-Unicode_Width_Rules.html">Rules applied to
+determine character width</a></li>
+<li><a
+href="https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/interpreter/classes/support/Unicode/unicode-width/_code_review-unicode-width.txt"
+title="_code_review-unicode-width.txt">Code review</a></li>
+</ul></li>
 </ul>
 <h2 id="icu4oorexx-library">ICU4ooRexx library</h2>
 <p>The <a href="https://github.com/jlfaucher/icu4oorexx"
@@ -91,8 +119,8 @@ C/C++ API.</p>
 <p>At present, it provides only a minimal wrapper around the ICU4C C/C++
 API:</p>
 <ul>
-<li>Get a character name from a codepoint.</li>
-<li>Get a codepoint from a character name.</li>
+<li>Get a character name from a codepoint</li>
+<li>Get a codepoint from a character name</li>
 </ul>
 <p>This library is optional.</p>
 <p>The <code>RexxUnicode</code> class has no strong dependency on

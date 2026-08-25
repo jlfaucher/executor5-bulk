@@ -1,0 +1,1059 @@
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+Summarize Unicode Width Rules
+    </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <link rel='stylesheet' href='https://jlfaucher.github.io/css/markdown.css'>
+    <link rel='stylesheet' href='https://jlfaucher.github.io/css/markdown4xtr.css'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class='container bg-white' lang='en'>
+      <div class='row layout-main'>
+        <div class='col-md-9 content-pane'>
+          <div class='content' id="content">
+<p align="right" style="font-size:10px;">
+<a style="font-size:10px;" href="https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/interpreter/classes/support/Unicode/unicode-width/_ChatGPT_summary-Unicode_Width_Rules.md">Markdown</a><br/>
+<a style="font-size:10px;" href="https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/interpreter/classes/support/Unicode/unicode-width/_ChatGPT_summary-Unicode_Width_Rules.html">HTML</a>
+</p>
+<h1 id="summarize-unicode-width-rules">Summarize Unicode Width
+Rules</h1>
+<p><strong>User:</strong> Anonymous<br />
+<strong>Created:</strong> 8/25/2026 13:27:01<br />
+<strong>Updated:</strong> 8/25/2026 13:46:19<br />
+<strong>Exported:</strong> 8/25/2026 13:59:54<br />
+<strong>Link:</strong> <a
+href="https://chatgpt.com/c/6a8d7c03-0244-83eb-abe4-b727ea4378cd">https://chatgpt.com/c/6a8d7c03-0244-83eb-abe4-b727ea4378cd</a></p>
+<h1 id="prompt">Prompt:</h1>
+<p>25/08/2026, 13:26:58</p>
+<p>Please makes a summary of the rules applied by the attached python
+script <code>unicode.py</code> to fill the WIDTH_LEAVES tables. This
+script is part of the Rust crate <code>unicode-width</code>.</p>
+<p>I don't need a technical description of the storage in WIDTH_ROOT (or
+WIDTH_ROOT_CJK), WIDTH_MIDDLE and WIDTH_LEAVES. I want the rules based
+on the Unicode tables which give a character's width. I don't need the
+rules (based on a state machine) used to calculate a string's witdh.</p>
+<p>To give you the context: I compared the character widths returned by
+utf8proc (derived from wcwidth) with the character widths returned by
+the Rust crate unicode-width. There are many differences.</p>
+<pre><code>    Control characters:
+        utf8proc returns 0.
+        unicode-width return None for chars, 1 for strings. This my comment &quot;jlf&quot; below.
+    Surrogate characters:
+        utf8proc returns 0.
+        unicode-width return 1.
+    Unassigned characters:
+        utf8proc returns 1 (default value).
+        unicode-width returns 0, 1 or 2.
+    and 2008 other differences that I don&#39;t list (for the moment)...</code></pre>
+<p>"jlf" comment:</p>
+<p>It's not clear why they decided to return</p>
+<pre><code>&#39;\x00&#39;.width = None
+&quot;\0&quot;.width = 1</code></pre>
+<p>See the laconic answer "this is intentional, and according to the
+spec". in https://github.com/unicode-rs/unicode-width/issues/87 This
+answer does not explain why returning None for control characters.</p>
+<p>This logic is implemented outside <code>unicode.py</code>, in this
+hand-written function:</p>
+<pre><code>fn single_char_width_generic&lt;const IS_CJK: bool&gt;(c: char) -&gt; Option&lt;usize&gt; {
+    if c &lt; &#39;\u{7F}&#39; {
+        if c &gt;= &#39;\u{20}&#39; {
+            // U+0020 to U+007F (exclusive) are single-width ASCII codepoints
+            Some(1)
+        } else {
+            // U+0000 to U+0020 (exclusive) are control codes
+            None
+        }
+    } else if c &gt;= &#39;\u{A0}&#39; {
+        // No characters &gt;= U+00A0 are control codes, so we can consult the lookup tables
+        Some(lookup_width_generic::&lt;IS_CJK&gt;(c).0.into())
+    } else {
+        // U+007F to U+00A0 (exclusive) are control codes
+        None
+    }
+}</code></pre>
+<p>[Attachment: unicode.py]</p>
+<h2 id="response">Response:</h2>
+<p>25/08/2026, 13:26:59</p>
+<blockquote>
+<p><strong>Summarized Unicode width rules, leaf mappings, and UAX16
+overrides</strong></p>
+<p>Worked for 18s</p>
+</blockquote>
+<p>Yes. Looking specifically at how <code>unicode.py</code> constructs
+the per-codepoint width maps that ultimately become
+<code>WIDTH_LEAVES</code>, the rules can be summarized much more simply
+than the table-generation machinery suggests.</p>
+<p>The important point is that <strong><code>WIDTH_LEAVES</code> is
+essentially a compressed representation of two per-codepoint width
+maps</strong>:</p>
+<ul>
+<li>the normal/non-CJK map</li>
+<li>the CJK map</li>
+</ul>
+<p>The stored values are <code>0</code>, <code>1</code>, <code>2</code>,
+or <code>3</code> (<code>SPECIAL</code>). <code>unicode.py</code></p>
+<h2 id="start-with-unicode-eastasianwidth">1. Start with Unicode
+EastAsianWidth</h2>
+<p>The fundamental width classification comes from
+<strong><code>EastAsianWidth.txt</code> (UAX #11)</strong>.</p>
+<p>The script reduces the six East Asian Width classes as follows:</p>
+<table>
+<thead>
+<tr>
+<th>EastAsianWidth</th>
+<th style="text-align: right;">Normal context</th>
+<th style="text-align: right;">CJK context</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>N</code> Neutral</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td><code>Na</code> Narrow</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td><code>H</code> Halfwidth</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td><code>W</code> Wide</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td><code>F</code> Fullwidth</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td><code>A</code> Ambiguous</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+<p>In other words:</p>
+<ul>
+<li><code>N</code>, <code>Na</code>, <code>H</code> → narrow</li>
+<li><code>W</code>, <code>F</code> → wide</li>
+<li><code>A</code> → narrow normally, wide in CJK</li>
+</ul>
+<p>This is explicitly how the script maps the EAW classes.
+<code>unicode.py</code> <code>unicode.py</code></p>
+<p>There is also an important default:</p>
+<blockquote>
+<p>A codepoint not explicitly covered by <code>EastAsianWidth.txt</code>
+is treated as <code>Neutral</code>, therefore width 1.</p>
+</blockquote>
+<p>So <strong>unassigned codepoints are not inherently given width 0 or
+2 by their absence from the Unicode table</strong>. The initial default
+is width 1. <code>unicode.py</code></p>
+<p>This is already an important difference from your utf8proc
+observation about unassigned characters.</p>
+<hr />
+<h2 id="some-ambiguous-characters-are-forced-back-to-narrow">2. Some
+<code>Ambiguous</code> characters are forced back to narrow</h2>
+<p>After loading <code>EastAsianWidth.txt</code>, the script modifies
+the <code>A</code> classification.</p>
+<h3 id="linebreakai"><code>LineBreak=AI</code></h3>
+<p>Characters with:</p>
+<pre class="text"><code>LineBreak=AI</code></pre>
+<p>are made <code>Ambiguous</code>. <code>unicode.py</code></p>
+<p>Then, however:</p>
+<h3
+id="ambiguous-letters-and-modifier-symbols-are-made-narrow">Ambiguous
+letters and modifier symbols are made narrow</h3>
+<p>If an ambiguous character has general category:</p>
+<pre class="text"><code>Lu Ll Lt Lm Lo Sk</code></pre>
+<p>it is changed from ambiguous to narrow.</p>
+<p>So an <code>A</code> character that is a letter or modifier symbol
+does <strong>not</strong> become width 2 in CJK.
+<code>unicode.py</code></p>
+<p>There are also two explicit EAW adjustments:</p>
+<ul>
+<li>U+0387 GREEK ANO TELEIA → ambiguous</li>
+<li>characters canonically equivalent to an ambiguous character
+decomposing with U+0338 inherit the ambiguous classification.
+<code>unicode.py</code></li>
+</ul>
+<p>So the EAW rule is not simply "read
+<code>EastAsianWidth.txt</code>."</p>
+<hr />
+<h2 id="zero-width-characters-override-eaw-completely">3. Zero-width
+characters override EAW completely</h2>
+<p>Before applying the normal/CJK distinction, the script builds a
+separate <code>zero-width</code> property.</p>
+<p>If a character is classified zero-width, <strong>both maps receive
+width 0</strong>, regardless of its East Asian Width.
+<code>unicode.py</code></p>
+<p>The principal Unicode-property rules are:</p>
+<h3
+id="default_ignorable_code_point"><code>Default_Ignorable_Code_Point</code></h3>
+<p>A character with:</p>
+<pre class="text"><code>Default_Ignorable_Code_Point</code></pre>
+<p>is zero-width.</p>
+<h3 id="grapheme_extend"><code>Grapheme_Extend</code></h3>
+<p>A character with:</p>
+<pre class="text"><code>Grapheme_Extend</code></pre>
+<p>is zero-width.</p>
+<p>The script notes that this includes the usual <code>Mn</code> and
+<code>Me</code> characters, plus some <code>Mc</code> characters needed
+for canonical-equivalence consistency. <code>unicode.py</code></p>
+<h3 id="hangul_syllable_typev-or-t"><code>Hangul_Syllable_Type=V</code>
+or <code>T</code></h3>
+<p>Hangul vowel and trailing jamo are zero-width.</p>
+<p>The rationale is that decomposed Hangul is composed of:</p>
+<pre class="text"><code>Leading_Jamo + Vowel_Jamo + optional Trailing_Jamo</code></pre>
+<p>and only the leading jamo contributes the width of the resulting wide
+grapheme. <code>unicode.py</code></p>
+<hr />
+<h2 id="there-are-explicit-exceptions-to-those-zero-width-properties">4.
+There are explicit exceptions to those zero-width properties</h2>
+<p>The script deliberately overrides the Unicode-derived zero-width
+classification for some characters.</p>
+<h3 id="uff9e-and-uff9f">U+FF9E and U+FF9F</h3>
+<p>These are <code>Grapheme_Extend</code>, but they are
+<strong>not</strong> treated as zero-width because they are halfwidth
+Katakana sound marks occupying their own terminal cell.
+<code>unicode.py</code></p>
+<h3 id="u115f-hangul-choseong-filler">U+115F HANGUL CHOSEONG FILLER</h3>
+<p>It is <code>Default_Ignorable_Code_Point</code>, so would normally be
+zero-width, but is changed to <strong>width 2</strong> because of its
+role in decomposed Hangul. <code>unicode.py</code></p>
+<h3 id="u2d7f-tifinagh-consonant-joiner">U+2D7F TIFINAGH CONSONANT
+JOINER</h3>
+<p>It is explicitly made <strong>non-zero-width</strong>, because it is
+only invisible in a particular joining context.
+<code>unicode.py</code></p>
+<p>There are also explicit zero-width characters such as:</p>
+<ul>
+<li>U+070F SYRIAC ABBREVIATION MARK</li>
+<li>U+0605</li>
+<li>U+0890</li>
+<li>U+0891</li>
+<li>U+08E2</li>
+<li>characters selected by the
+<code>Grapheme_Cluster_Break=Prepend</code> minus
+<code>Prepended_Concatenation_Mark</code> rule</li>
+<li>U+A8FA DEVANAGARI CARET. <code>unicode.py</code></li>
+</ul>
+<p>So the zero-width rule is essentially:</p>
+<blockquote>
+<p><strong>EAW determines the basic width, except that a separate set of
+Unicode-defined or explicitly identified zero-width characters overrides
+it.</strong></p>
+</blockquote>
+<hr />
+<h2 id="normal-vs-cjk-width">5. Normal vs CJK width</h2>
+<p>Once those two classifications have been established, the basic map
+is constructed:</p>
+<pre class="text"><code>if zero-width:
+    width = 0
+else:
+    normal:
+        EAW Wide → 2
+        everything else → 1
+
+    CJK:
+        EAW Narrow → 1
+        everything else → 2</code></pre>
+<p>That second part is another way of expressing:</p>
+<pre class="text"><code>normal:  W/F = 2, everything else = 1
+CJK:     N/Na/H = 1, everything else = 2</code></pre>
+<p>Thus <strong>Ambiguous is 1 outside CJK and 2 in CJK</strong>, as
+expected. <code>unicode.py</code></p>
+<hr />
+<h2 id="then-a-relatively-small-set-of-characters-gets-special">6. Then
+a relatively small set of characters gets <code>SPECIAL</code></h2>
+<p>This is important for understanding <code>WIDTH_LEAVES</code>.</p>
+<p>The leaf value <code>3</code> does <strong>not</strong> mean "width
+3". It means:</p>
+<blockquote>
+<p><strong>this codepoint requires special handling
+elsewhere.</strong></p>
+</blockquote>
+<p>The script defines:</p>
+<pre class="text"><code>ZERO   → table value 0
+NARROW → table value 1
+WIDE   → table value 2
+everything else → SPECIAL (table value 3)</code></pre>
+<p><code>unicode.py</code></p>
+<p>The special classifications include codepoints selected from Unicode
+properties such as:</p>
+<ul>
+<li><code>Joining_Group=Alef</code></li>
+<li><code>Regional_Indicator</code></li>
+<li><code>Emoji_Modifier</code></li>
+<li><code>Emoji_Presentation</code></li>
+</ul>
+<p>and specific Unicode/script cases. <code>unicode.py</code></p>
+<p>Examples include:</p>
+<ul>
+<li>LF U+000A</li>
+<li>Hebrew Lamed U+05DC</li>
+<li><code>Joining_Group=Alef</code></li>
+<li>certain Khmer letters</li>
+<li>U+17A4</li>
+<li>U+17D8</li>
+<li>U+1A10</li>
+<li>Tifinagh consonants</li>
+<li>U+A4FC/U+A4FD</li>
+<li>U+FE0F</li>
+<li>U+10C03</li>
+<li>U+16D67/U+16D68</li>
+<li>all <code>Emoji_Presentation</code> characters</li>
+<li>all <code>Emoji_Modifier</code> characters</li>
+<li>all <code>Regional_Indicator</code> characters.
+<code>unicode.py</code></li>
+</ul>
+<p>Some of these have a normal standalone width of 1 or 2, but their
+<strong>table entry is <code>SPECIAL</code></strong> because their width
+can participate in special sequence handling. The script explicitly
+defines, for example, emoji modifiers and emoji presentation characters
+as width 2 when alone. <code>unicode.py</code></p>
+<p>So if you are comparing <strong>single-character widths</strong>, it
+is important not to interpret the <code>3</code> in
+<code>WIDTH_LEAVES</code> as a width of 3.</p>
+<hr />
+<h2 id="explicit-cjk-only-non-cjk-only-exceptions">7. Explicit CJK-only
+/ non-CJK-only exceptions</h2>
+<p>There are four particularly relevant
+variation-selector/combining-mark overrides:</p>
+<h3 id="cjk-only">CJK only</h3>
+<ul>
+<li>U+0338 COMBINING LONG SOLIDUS OVERLAY</li>
+<li>U+FE00 VARIATION SELECTOR-1</li>
+<li>U+FE02 VARIATION SELECTOR-3</li>
+</ul>
+<p>These are assigned special states only in the CJK map.
+<code>unicode.py</code></p>
+<h3 id="non-cjk-only">Non-CJK only</h3>
+<ul>
+<li>U+FE01 VARIATION SELECTOR-2</li>
+<li>U+FE0E VARIATION SELECTOR-15</li>
+</ul>
+<p>These are assigned special states only in the non-CJK map.
+<code>unicode.py</code></p>
+<p>The standalone width of the variation selectors is 0. U+0338 is also
+width 0 when considered alone. <code>unicode.py</code></p>
+<hr />
+<h2 id="the-resulting-rules-condensed">8. The resulting rules,
+condensed</h2>
+<p>If I reduce <code>unicode.py</code> to rules relevant to <strong>the
+width assigned to an individual codepoint</strong>, I would describe it
+this way:</p>
+<h3 id="base-width">Base width</h3>
+<ol type="1">
+<li>Read <strong>EastAsianWidth.txt</strong>.</li>
+<li><code>N</code>, <code>Na</code>, <code>H</code> → width 1.</li>
+<li><code>W</code>, <code>F</code> → width 2.</li>
+<li><code>A</code> → width 1 normally, width 2 in CJK.</li>
+<li>Codepoints not explicitly present in EAW → <code>N</code> → width 1.
+<code>unicode.py</code></li>
+</ol>
+<h3 id="eaw-corrections">EAW corrections</h3>
+<ol start="6" type="1">
+<li><code>LineBreak=AI</code> → ambiguous.</li>
+<li>Ambiguous characters whose general category is <code>Lu</code>,
+<code>Ll</code>, <code>Lt</code>, <code>Lm</code>, <code>Lo</code>, or
+<code>Sk</code> → narrow.</li>
+<li>U+0387 → ambiguous.</li>
+<li>Certain canonically equivalent characters involving U+0338 inherit
+ambiguity. <code>unicode.py</code></li>
+</ol>
+<h3 id="zero-width-override">Zero-width override</h3>
+<ol start="10" type="1">
+<li><code>Default_Ignorable_Code_Point</code> → width 0.</li>
+<li><code>Grapheme_Extend</code> → width 0.</li>
+<li><code>Hangul_Syllable_Type=V</code> or <code>T</code> → width
+0.</li>
+<li>Additional explicitly identified Unicode cases → width 0.</li>
+<li>Some exceptions are explicitly removed from zero-width, notably
+U+FF9E, U+FF9F, U+115F and U+2D7F. <code>unicode.py</code>
+<code>unicode.py</code></li>
+</ol>
+<h3 id="special-cases">Special cases</h3>
+<ol start="15" type="1">
+<li>A set of codepoints identified through Unicode properties such as
+<code>Emoji_Presentation</code>, <code>Emoji_Modifier</code>,
+<code>Regional_Indicator</code>, and <code>Joining_Group=Alef</code>,
+plus various explicitly listed script-specific characters, are stored as
+<strong>SPECIAL</strong> rather than 0/1/2. <code>unicode.py</code></li>
+<li>SPECIAL does <strong>not</strong> mean width 3; it means the
+codepoint needs the hand-written special handling.</li>
+</ol>
+<hr />
+<h2 id="in-terms-of-your-utf8proc-comparison">In terms of your utf8proc
+comparison</h2>
+<p>This gives a useful way to categorize the differences you are
+seeing.</p>
+<p>Your observation:</p>
+<blockquote>
+<p><strong>utf8proc: unassigned → 1</strong><br />
+<strong>unicode-width: unassigned → 0, 1 or 2</strong></p>
+</blockquote>
+<p>is not explained by an "unassigned-character rule" in
+<code>unicode.py</code>. In fact, <strong>the direct default for
+codepoints absent from <code>EastAsianWidth.txt</code> is width
+1</strong>. <code>unicode.py</code></p>
+<p>Therefore, when an unassigned codepoint gets 0 or 2 in
+<code>unicode-width</code>, the likely explanation is that <strong>some
+other Unicode property/rule applies to that codepoint</strong>-for
+example <code>Default_Ignorable_Code_Point</code>,
+<code>Grapheme_Extend</code>, or an EAW assignment/range that covers
+it-not simply that it is unassigned.</p>
+<p>And your observation about controls is <strong>outside these
+generated width tables</strong>: the generated table can contain special
+handling for LF, but the <code>None</code> result for an individual
+control character comes from the hand-written
+<code>single_char_width_generic()</code> function you quoted. That
+function deliberately intercepts U+0000-U+001F and U+007F-U+009F before
+consulting the generated lookup table.</p>
+<p>So I would keep these two layers separate in your comparison:</p>
+<p><strong><code>unicode.py</code> / <code>WIDTH_LEAVES</code>:</strong>
+&gt; Unicode-property-based character width classification: EAW +
+zero-width properties + explicit Unicode/script/emoji exceptions.</p>
+<p><strong>hand-written
+<code>single_char_width_generic()</code>:</strong> &gt; Special API
+behavior for C0/C1 controls (<code>None</code> for a single
+<code>char</code>).</p>
+<p>That distinction is important if your goal is eventually to explain
+your <strong>2008 other differences</strong> systematically.
+<code>unicode.py</code></p>
+<h1 id="prompt-1">Prompt:</h1>
+<p>25/08/2026, 13:45:44</p>
+<p>Please find attached all my notes regarding the differences between
+<code>utf8proc</code> and <code>unicode-width</code>. The 2008 other
+differences are at the end of the file. Format of a line: character
+description --&gt; type of width: width or eastAsianWidth utf8proc width
+&lt;&gt; unicode-width width</p>
+<p>[Attachment: charWidth_stringWidth_test-out.txt]</p>
+<h2 id="response-1">Response:</h2>
+<p>25/08/2026, 13:45:45</p>
+<blockquote>
+<p><strong>Analyzed and classified full 2008 file records</strong></p>
+<p>Worked for 13s</p>
+</blockquote>
+<p>Yes. I went through the attached comparison file, including the
+complete final section containing the <strong>2008 differences</strong>.
+The structure you described is clear: each difference is either a
+<code>width</code> difference or an <code>eastAsianWidth</code>
+difference, and the two values are
+<code>utf8proc &lt;&gt; unicode-width</code>.
+<code>charWidth_stringWidth_test-out.txt</code></p>
+<p>There is a very strong pattern in the 2008 differences.</p>
+<h2 id="main-conclusion">Main conclusion</h2>
+<p>The 2008 differences are <strong>not 2008 independent special
+cases</strong>. They fall into a relatively small number of systematic
+categories.</p>
+<h2 id="combining-marks-mc-vs-mn">1. Combining marks: <code>Mc</code> vs
+<code>Mn</code></h2>
+<p>This is by far one of the largest groups.</p>
+<p><code>unicode-width</code> returns <strong>0</strong> for many
+characters with General Category:</p>
+<pre class="text"><code>Mc  Spacing_Mark</code></pre>
+<p>while utf8proc returns <strong>1</strong>.</p>
+<p>Examples include:</p>
+<ul>
+<li>Devanagari vowel signs</li>
+<li>Bengali vowel signs</li>
+<li>Gurmukhi vowel signs</li>
+<li>Gujarati vowel signs</li>
+<li>Oriya vowel signs</li>
+<li>Tamil vowel signs</li>
+<li>Telugu vowel signs</li>
+<li>Kannada vowel signs</li>
+<li>Malayalam vowel signs</li>
+<li>Sinhala vowel signs</li>
+<li>Myanmar vowel signs</li>
+<li>Limbu vowel signs</li>
+<li>Tai Tham vowel signs</li>
+<li>Balinese vowel signs</li>
+<li>Sundanese vowel signs</li>
+<li>Batak vowel signs</li>
+<li>Lepcha vowel signs</li>
+<li>and many more.</li>
+</ul>
+<p>For example, the file shows U+0903, U+093E, U+093F, U+0940, etc.
+as:</p>
+<pre class="text"><code>width          0 &lt;&gt; 1
+eastAsianWidth 0 &lt;&gt; 1</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<p>and the same pattern continues through many scripts.
+<code>charWidth_stringWidth_test-out.txt</code></p>
+<h3 id="why">Why?</h3>
+<p>This corresponds directly to one of the important rules in
+<code>unicode.py</code> that we discussed earlier:</p>
+<blockquote>
+<p><code>unicode-width</code> treats <code>Grapheme_Extend</code>
+characters as zero-width, and its implementation deliberately includes
+certain <code>Mc</code> characters in this treatment.</p>
+</blockquote>
+<p>So this is <strong>not an East Asian Width difference</strong> in the
+usual sense. It is a consequence of <code>unicode-width</code> adding a
+zero-width rule on top of EAW.</p>
+<p>This category alone accounts for a substantial fraction of your 2008
+differences.</p>
+<hr />
+<h2 id="variation-selectors">2. Variation Selectors</h2>
+<p>Another very large and particularly clear group is the variation
+selectors.</p>
+<p>The file contains:</p>
+<pre class="text"><code>U+FE00 ... U+FE0F</code></pre>
+<p>and, at the end, the supplementary variation selectors:</p>
+<pre class="text"><code>U+E0100 ... U+E01EF</code></pre>
+<p>All of these show:</p>
+<pre class="text"><code>eastAsianWidth 1 &lt;&gt; 0</code></pre>
+<p>for the comparison in the file.
+<code>charWidth_stringWidth_test-out.txt</code></p>
+<p>The supplementary selectors produce the same pattern, through VS-256.
+<code>charWidth_stringWidth_test-out.txt</code></p>
+<p>This is therefore another <strong>large block of differences that has
+a single explanation</strong>:</p>
+<blockquote>
+<p><code>unicode-width</code> treats Variation Selectors as zero-width,
+whereas utf8proc's character-width calculation leaves them at width
+1.</p>
+</blockquote>
+<p>This is especially interesting because it is <strong>not merely an
+EAW disagreement</strong>. The variation selectors are being overridden
+by the zero-width machinery.</p>
+<hr />
+<h2 id="characters-with-default_ignorable_code_point">3. Characters with
+<code>Default_Ignorable_Code_Point</code></h2>
+<p>There is another broad class of differences where
+<code>unicode-width</code> returns 0 and utf8proc returns 1.</p>
+<p>For example:</p>
+<pre class="text"><code>U+0600 ARABIC NUMBER SIGN
+U+0601 ARABIC SIGN SANAH
+U+0602 ARABIC FOOTNOTE MARKER
+U+0603 ARABIC SIGN SAFHA
+U+0604 ARABIC SIGN SAMVAT
+U+06DD ARABIC END OF AYAH</code></pre>
+<p>all appear as:</p>
+<pre class="text"><code>width          0 &lt;&gt; 1
+eastAsianWidth 0 &lt;&gt; 1</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<p>Likewise:</p>
+<pre class="text"><code>U+2028 LINE SEPARATOR
+U+2029 PARAGRAPH SEPARATOR</code></pre>
+<p>are treated as width 0 by <code>unicode-width</code>.
+<code>charWidth_stringWidth_test-out.txt</code></p>
+<p>So another useful category is:</p>
+<blockquote>
+<p><strong>Unicode-width applies a Unicode-property-based zero-width
+rule to characters that utf8proc/wcwidth considers width 1.</strong></p>
+</blockquote>
+<hr />
+<h2 id="hangul-compatibility-archaic-hangul">4. Hangul compatibility /
+archaic Hangul</h2>
+<p>There is a particularly interesting opposite case.</p>
+<p>For the unassigned/archaic Hangul Jamo in:</p>
+<pre class="text"><code>U+D7B0 ... U+D7FB</code></pre>
+<p>the file shows:</p>
+<pre class="text"><code>width          1 &lt;&gt; 0
+eastAsianWidth 1 &lt;&gt; 0</code></pre>
+<p>for many characters.
+<code>charWidth_stringWidth_test-out.txt</code></p>
+<p>These are:</p>
+<pre class="text"><code>HANGUL JUNGSEONG ...
+HANGUL JONGSEONG ...</code></pre>
+<p>and are therefore another systematic group rather than isolated
+exceptions.</p>
+<p>This is associated with <code>unicode-width</code>'s treatment of
+Hangul Jamo and its zero-width rules for the decomposed-Hangul
+model.</p>
+<hr />
+<h2 id="explicit-zero-width-exceptions">5. Explicit zero-width
+exceptions</h2>
+<p>There are several isolated or small groups where the same fundamental
+difference appears, but the character is handled explicitly rather than
+through a broad property.</p>
+<p>Examples:</p>
+<h3 id="u00ad-soft-hyphen">U+00AD SOFT HYPHEN</h3>
+<pre class="text"><code>width          1 &lt;&gt; 0
+eastAsianWidth 2 &lt;&gt; 0</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<h3 id="u2d7f-tifinagh-consonant-joiner-1">U+2D7F TIFINAGH CONSONANT
+JOINER</h3>
+<pre class="text"><code>width          0 &lt;&gt; 1
+eastAsianWidth 0 &lt;&gt; 1</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<h3 id="ua8fa-devanagari-caret">U+A8FA DEVANAGARI CARET</h3>
+<pre class="text"><code>width          1 &lt;&gt; 0
+eastAsianWidth 1 &lt;&gt; 0</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<h3 id="u111c2-u111c3">U+111C2 / U+111C3</h3>
+<p>These are also:</p>
+<pre class="text"><code>width          1 &lt;&gt; 0
+eastAsianWidth 1 &lt;&gt; 0</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<p>These are best regarded as <strong>explicit
+<code>unicode-width</code> zero-width decisions</strong>, rather than
+trying to group them with the large <code>Mc</code> category.</p>
+<hr />
+<h2 id="east-asian-width-a-differences">6. East Asian Width
+<code>A</code> differences</h2>
+<p>This is the other major class, and it is quite different from the
+zero-width cases.</p>
+<p>For example:</p>
+<pre class="text"><code>U+00A8 DIAERESIS
+U+00AA FEMININE ORDINAL INDICATOR
+U+00B4 ACUTE ACCENT
+U+00B8 CEDILLA
+U+00BA MASCULINE ORDINAL INDICATOR</code></pre>
+<p>and a very large collection of Latin, Greek, Cyrillic, modifier,
+mathematical and other characters show:</p>
+<pre class="text"><code>eastAsianWidth 2 &lt;&gt; 1</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<p>The Greek block is especially obvious:</p>
+<pre class="text"><code>U+0391 ... U+03C9</code></pre>
+<p>has <code>unicode-width</code> CJK width 1 while utf8proc reports 2.
+<code>charWidth_stringWidth_test-out.txt</code></p>
+<p>Cyrillic produces the same pattern.
+<code>charWidth_stringWidth_test-out.txt</code></p>
+<p>This is directly explained by the <code>unicode.py</code> rule we
+discussed:</p>
+<blockquote>
+<p>Characters with EAW <code>A</code> are normally width 1, but width 2
+in CJK.</p>
+</blockquote>
+<p>But <code>unicode-width</code> additionally changes many ambiguous
+<strong>letters and modifier symbols</strong> to narrow.</p>
+<p>Consequently, this category can be summarized as:</p>
+<blockquote>
+<p><strong>unicode-width's interpretation of EAW=Ambiguous differs from
+utf8proc's EAW handling, especially because Unicode-width forces many
+ambiguous letters/modifier characters to narrow.</strong></p>
+</blockquote>
+<p>This is a substantial source of your <code>eastAsianWidth</code>
+differences.</p>
+<hr />
+<h2 id="eaw-differences-in-the-opposite-direction">7. EAW differences in
+the opposite direction</h2>
+<p>There is also the reverse pattern:</p>
+<pre class="text"><code>eastAsianWidth 1 &lt;&gt; 2</code></pre>
+<p>For example:</p>
+<pre class="text"><code>U+2150 ... U+215A</code></pre>
+<p>(vulgar fractions), several mathematical symbols, circled/dingbat
+characters, etc. <code>charWidth_stringWidth_test-out.txt</code></p>
+<p>These are cases where:</p>
+<pre class="text"><code>utf8proc      = 1
+unicode-width = 2</code></pre>
+<p>for the CJK calculation.</p>
+<p>This is again fundamentally an <strong>EAW=Ambiguous
+interpretation</strong> difference.</p>
+<hr />
+<h2 id="hangul-characters-going-in-the-opposite-direction">8. Hangul
+characters going in the opposite direction</h2>
+<p>There are also:</p>
+<pre class="text"><code>U+302E HANGUL SINGLE DOT TONE MARK
+U+302F HANGUL DOUBLE DOT TONE MARK
+U+3164 HANGUL FILLER</code></pre>
+<p>with:</p>
+<pre class="text"><code>utf8proc      = 2
+unicode-width = 0</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<p>This is especially useful because it demonstrates that the
+differences aren't simply:</p>
+<blockquote>
+<p>"utf8proc uses wcwidth, unicode-width uses EAW."</p>
+</blockquote>
+<p><code>unicode-width</code> has additional semantic rules which can
+<strong>override a character's EAW-derived width
+completely</strong>.</p>
+<hr />
+<h2 id="what-the-2008-differences-really-reduce-to">9. What the 2008
+differences really reduce to</h2>
+<p>I would therefore reorganize your observations into these
+categories:</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 40%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th>Category</th>
+<th style="text-align: right;">Typical difference</th>
+<th>Main reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Mc</code> spacing marks</td>
+<td style="text-align: right;"><code>0 &lt;&gt; 1</code></td>
+<td><code>unicode-width</code> treats many <code>Mc</code> as
+zero-width</td>
+</tr>
+<tr>
+<td><code>Mn</code> / combining marks</td>
+<td style="text-align: right;"><code>0 &lt;&gt; 1</code></td>
+<td>zero-width / grapheme-extension treatment</td>
+</tr>
+<tr>
+<td>Variation Selectors</td>
+<td style="text-align: right;"><code>0 &lt;&gt; 1</code></td>
+<td>zero-width</td>
+</tr>
+<tr>
+<td>Default-Ignorable characters</td>
+<td style="text-align: right;"><code>0 &lt;&gt; 1</code></td>
+<td><code>Default_Ignorable_Code_Point</code></td>
+</tr>
+<tr>
+<td>Other explicit zero-width characters</td>
+<td style="text-align: right;"><code>0 &lt;&gt; 1</code></td>
+<td><code>unicode-width</code> exceptions</td>
+</tr>
+<tr>
+<td>Hangul Jamo</td>
+<td style="text-align: right;"><code>0 &lt;&gt; 1</code></td>
+<td>Hangul-specific handling</td>
+</tr>
+<tr>
+<td>EAW Ambiguous → narrow</td>
+<td style="text-align: right;"><code>2 &lt;&gt; 1</code></td>
+<td><code>unicode-width</code> changes many <code>A</code> characters to
+narrow</td>
+</tr>
+<tr>
+<td>EAW Ambiguous → wide</td>
+<td style="text-align: right;"><code>1 &lt;&gt; 2</code></td>
+<td>CJK interpretation of <code>A</code></td>
+</tr>
+<tr>
+<td>EAW overridden to zero</td>
+<td style="text-align: right;"><code>2 &lt;&gt; 0</code>,
+<code>1 &lt;&gt; 0</code></td>
+<td>zero-width rule overrides EAW</td>
+</tr>
+<tr>
+<td>Explicit Hangul/special cases</td>
+<td style="text-align: right;"><code>2 &lt;&gt; 0</code>, etc.</td>
+<td>hand-coded Unicode-width exceptions</td>
+</tr>
+</tbody>
+</table>
+<p>So the <strong>2008 differences are largely explained by perhaps 5-8
+rules</strong>, not thousands of arbitrary exceptions.</p>
+<hr />
+<h2 id="one-particularly-important-observation">One particularly
+important observation</h2>
+<p>Your file also reveals something that is easy to miss if we only look
+at <code>unicode.py</code> in isolation:</p>
+<h3
+id="unicode-width-considers-many-mc-characters-zero-width."><code>unicode-width</code>
+considers many <code>Mc</code> characters zero-width.</h3>
+<p>That is a major semantic difference from traditional
+<code>wcwidth</code> behavior.</p>
+<p>For example, your file has:</p>
+<pre class="text"><code>U+0C01 TELUGU SIGN CANDRABINDU       width 0 &lt;&gt; 1
+U+0C02 TELUGU SIGN ANUSVARA          width 0 &lt;&gt; 1
+U+0C03 TELUGU SIGN VISARGA           width 0 &lt;&gt; 1
+U+0C41 TELUGU VOWEL SIGN U            width 0 &lt;&gt; 1
+U+0C42 TELUGU VOWEL SIGN UU           width 0 &lt;&gt; 1</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<p>and the same thing occurs across many Indic and Southeast Asian
+scripts.</p>
+<p>That is probably the <strong>single most important explanation for
+the unexpectedly large number of differences</strong> you are
+seeing.</p>
+<hr />
+<h2 id="and-there-is-a-useful-distinction-for-your-future-analysis">And
+there is a useful distinction for your future analysis</h2>
+<p>I would separate the differences into <strong>three
+layers</strong>:</p>
+<h3 id="layer-1---unicode.py-generated-character-classification">Layer 1
+- <code>unicode.py</code> / generated character classification</h3>
+<p>These include:</p>
+<ul>
+<li>EAW</li>
+<li><code>Default_Ignorable_Code_Point</code></li>
+<li><code>Grapheme_Extend</code></li>
+<li>Hangul syllable type</li>
+<li>explicit zero-width exceptions</li>
+<li>EAW <code>A</code> corrections</li>
+<li>special Unicode properties.</li>
+</ul>
+<h3 id="layer-2---hand-written-single-character-handling">Layer 2 -
+hand-written single-character handling</h3>
+<p>This is where your:</p>
+<pre class="text"><code>&#39;\x00&#39;.width == None</code></pre>
+<p>comes from. It is <strong>not part of the generated
+<code>WIDTH_LEAVES</code> classification</strong>.</p>
+<h3 id="layer-3---string-width-state-machine">Layer 3 - string-width
+state machine</h3>
+<p>This accounts for things such as emoji sequences, RI pairs, combining
+sequences, etc., and should indeed be kept separate from the present
+comparison.</p>
+<p>Your file itself confirms that distinction: it starts by documenting
+the control-character and surrogate behavior separately, then the
+generated per-character differences, and finally the 2008-character
+comparison list. <code>charWidth_stringWidth_test-out.txt</code></p>
+<p>If your objective is ultimately to determine <strong>which of the
+utf8proc/wcwidth rules could be changed to make ooRexx's
+<code>codepointCharWidth()</code> agree more closely with
+<code>unicode-width</code></strong>, I think the next useful step is to
+turn these 2008 entries into a <strong>categorized count</strong>,
+e.g.:</p>
+<pre class="text"><code>Mc / zero-width                 N
+Mn / Grapheme_Extend             N
+Default_Ignorable                N
+Variation Selectors              N
+Hangul                           N
+EAW Ambiguous → 1               N
+EAW Ambiguous → 2               N
+explicit exceptions              N
+other                             N
+-----------------------------------
+total                           2008</code></pre>
+<p>That would tell us quantitatively which rules account for the
+differences, rather than just identifying the patterns
+qualitatively.</p>
+<hr />
+<p>Powered by <a href="https://www.chatgptexporter.com">ChatGPT
+Exporter</a></p>
+          </div>
+        </div>
+        <div class="resize-handle"></div>
+        <div class="col-md-3 toc-pane">
+
+    <aside class="outline">
+      <nav id="toc">
+        <strong>Outline</strong>
+        <ul></ul>
+      </nav>
+    </aside>
+
+    <script>
+        // TOC with collapse / expand
+        (function () {
+          const content = document.getElementById("content");
+          const tocRoot = document.querySelector("#toc ul");
+          const headings = content.querySelectorAll("h1, h2, h3, h4");
+
+          // Stack to build hierarchy
+          const stack = [{ level: 0, ul: tocRoot }];
+
+          headings.forEach((heading, index) => {
+            const level = parseInt(heading.tagName.substring(1), 10);
+
+            if (!heading.id) {
+              heading.id = `section-${index}`;
+            }
+
+            // ---- TOC item ----
+            const li = document.createElement("li");
+            li.className = `level-${heading.tagName.toLowerCase()}`;
+
+            const a = document.createElement("a");
+            a.setAttribute("href", "#" + heading.id);
+
+            // Caret (always present, may be empty)
+            const caret = document.createElement("span");
+            caret.className = "toc-caret";
+
+            // Text
+            const text = document.createElement("span");
+            text.className = "toc-text";
+            text.textContent = heading.textContent;
+
+            a.appendChild(caret);
+            a.appendChild(text);
+            li.appendChild(a);
+
+            // ---- Find correct parent ----
+            while (stack[stack.length - 1].level >= level) {
+              stack.pop();
+            }
+
+            stack[stack.length - 1].ul.appendChild(li);
+
+            // ---- Child container (always created) ----
+            const childUl = document.createElement("ul");
+            childUl.className = "toc-children";
+            li.appendChild(childUl);
+
+            stack.push({ level, ul: childUl });
+          });
+
+          // ---- Enable caret-only toggling ----
+          document.querySelectorAll("#toc li").forEach(li => {
+            const childUl = li.querySelector(":scope > ul");
+            const caret = li.querySelector(":scope > a > .toc-caret");
+
+            if (childUl && childUl.children.length > 0) {
+              li.classList.add("has-children", "expanded"); // expanded by default
+
+              caret.addEventListener("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                li.classList.toggle("collapsed");
+                li.classList.toggle("expanded");
+              });
+            }
+          });
+        })();
+    </script>
+
+    <script>
+        // Highlight Active Section While Scrolling
+        (function () {
+          const toc = document.getElementById("toc");
+          const tocLinks = toc.querySelectorAll("a");
+          const tocItems = toc.querySelectorAll("li");
+          const headings = Array.from(
+            document.querySelectorAll("#content h1, #content h2, #content h3, #content h4")
+          );
+
+          function updateActiveToc() {
+            let current = null;
+
+            for (const h of headings) {
+              if (h.getBoundingClientRect().top <= 80) {
+                current = h;
+              } else {
+                break;
+              }
+            }
+
+            /* RESET STATE */
+            tocLinks.forEach(a => a.classList.remove("active"));
+            tocItems.forEach(li => li.classList.remove("active-parent"));
+
+            if (current) {
+              const link = toc.querySelector(`a[href="#${current.id}"]`);
+              if (link) {
+                link.classList.add("active");
+                markParentsActive(link);
+                ensureTocItemVisible(link);
+              }
+            }
+          }
+
+          function markParentsActive(link) {
+            let li = link.closest("li");
+
+            while (li) {
+              li.classList.add("active-parent");
+              li = li.parentElement.closest("li");
+            }
+          }
+
+          function ensureTocItemVisible(link) {
+            const toc = document.getElementById("toc");
+            const rect = link.getBoundingClientRect();
+            const tocRect = toc.getBoundingClientRect();
+
+            if (rect.top < tocRect.top || rect.bottom > tocRect.bottom) {
+              link.scrollIntoView({
+                block: "nearest",
+                inline: "nearest"
+              });
+            }
+          }
+
+          window.addEventListener("scroll", updateActiveToc, { passive: true });
+          updateActiveToc();
+        })();
+    </script>
+
+    <script>
+        /* Drag-to-Resize */
+        (function () {
+          const handle = document.querySelector(".resize-handle");
+          const toc = document.querySelector(".toc-pane");
+
+          let startX, startWidth;
+
+          handle.addEventListener("mousedown", function (e) {
+            startX = e.clientX;
+            startWidth = toc.offsetWidth;
+
+            document.addEventListener("mousemove", onMouseMove);
+            document.addEventListener("mouseup", onMouseUp);
+            e.preventDefault();
+          });
+
+          function onMouseMove(e) {
+            const delta = startX - e.clientX;
+            const newWidth = Math.min(
+              420,
+              Math.max(180, startWidth + delta)
+            );
+
+            toc.style.flexBasis = newWidth + "px";
+          }
+
+          function onMouseUp() {
+            document.removeEventListener("mousemove", onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+          }
+        })();
+    </script>
+
+    <script>
+        // Workaround to have the TOC working with https://htmlpreview.github.io/?...
+        // Watch the DOM and remove <base> whenever it appears.
+        (function () {
+          function removeBase() {
+            const base = document.querySelector("base");
+            if (base) {
+              base.remove();
+            }
+          }
+
+          // Run immediately
+          removeBase();
+
+          // Watch for late injection
+          const observer = new MutationObserver(removeBase);
+          observer.observe(document.head || document.documentElement, {
+            childList: true,
+            subtree: true
+          });
+        })();
+    </script>
+
+        </div>
+      </div>
+      <style>
+        small a { font-size: 100%; }
+      </style>
+      <hr class="before-footer">
+      <div class="panel panel-default footer">
+        <div class="panel-heading text-center">
+          <small>
+             This page was generated by
+             <a href="https://rexx.epbcn.com/rexx-parser/doc/utilities/md2html/">md2html</a>
+             using
+             <a href="https://github.com/jlfaucher/executor/tree/master/incubator/scripts/md2html4xtr">custom files</a>.
+          </small>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </body>
+</html>
