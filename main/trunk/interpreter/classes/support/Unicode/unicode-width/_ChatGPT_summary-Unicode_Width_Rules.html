@@ -32,8 +32,8 @@ Summarize Unicode Width Rules
 Rules</h1>
 <p><strong>User:</strong> Anonymous<br />
 <strong>Created:</strong> 8/25/2026 13:27:01<br />
-<strong>Updated:</strong> 8/25/2026 13:46:19<br />
-<strong>Exported:</strong> 8/25/2026 13:59:54<br />
+<strong>Updated:</strong> 8/26/2026 17:38:17<br />
+<strong>Exported:</strong> 8/26/2026 17:40:59<br />
 <strong>Link:</strong> <a
 href="https://chatgpt.com/c/6a8d7c03-0244-83eb-abe4-b727ea4378cd">https://chatgpt.com/c/6a8d7c03-0244-83eb-abe4-b727ea4378cd</a></p>
 <h1 id="prompt">Prompt:</h1>
@@ -831,6 +831,610 @@ total                           2008</code></pre>
 <p>That would tell us quantitatively which rules account for the
 differences, rather than just identifying the patterns
 qualitatively.</p>
+<h1 id="prompt-2">Prompt:</h1>
+<p>26/08/2026, 14:03:07</p>
+<p>Please classify those <strong>2008 records according to the actual
+rules in</strong> <strong><code>unicode.py</code></strong>, rather than
+by General Category alone. Please also explain which actual rules in
+<code>unicode.py</code> gives width=0 or 1 or 2 for the unassigned
+characters (you have the list of unassigned characters with their
+corresponding width in the attached file
+<code>charWidth_stringWidth_test-out.txt</code>.</p>
+<h2 id="response-2">Response:</h2>
+<p>26/08/2026, 14:03:08</p>
+<p>I’ll redo the classification from the 2008 records only, preserving
+the <code>utf8proc &lt;&gt; unicode-width</code> direction, then trace
+the unassigned-character widths back to specific <code>unicode.py</code>
+rules.</p>
+<p>I’ve confirmed the 2008-record boundary and the direction of both
+operands. I’m now using the actual
+<code>load_east_asian_widths()</code>, <code>load_zero_widths()</code>,
+and <code>load_width_maps()</code> logic from the attached script—not
+the earlier General Category shortcut.</p>
+<p>Yes. With your corrected interpretation of the line format, the
+classification becomes quite clean.</p>
+<p>I have now treated the <strong>2,008 comparison records
+only</strong>: the two surrogate records are excluded, leaving
+<strong>1,312 distinct codepoints</strong>. The records break down into
+a small number of actual <code>unicode.py</code> rules.</p>
+<h2 id="the-2008-records-classified-by-the-actual-unicode.py-rules">1.
+The 2,008 records classified by the actual <code>unicode.py</code>
+rules</h2>
+<p>The key part of <code>unicode.py</code> is:</p>
+<ol type="1">
+<li><code>EastAsianWidth.txt</code> is reduced to <code>NARROW</code>,
+<code>WIDE</code>, or <code>AMBIGUOUS</code>.</li>
+<li><code>LineBreak=AI</code> is changed to <code>AMBIGUOUS</code>.</li>
+<li>Ambiguous letters/modifier symbols (<code>Lu</code>,
+<code>Ll</code>, <code>Lt</code>, <code>Lm</code>, <code>Lo</code>,
+<code>Sk</code>) are forced back to <code>NARROW</code>.</li>
+<li>A separate <code>zero_width</code> map overrides EAW
+completely.</li>
+<li>Normal width is <code>WIDE</code> only for EAW <code>W</code>;
+otherwise it is <code>NARROW</code>.</li>
+<li>CJK width is <code>NARROW</code> only for EAW <code>N</code>;
+otherwise it is <code>WIDE</code>. <code>unicode.py</code>
+<code>unicode.py</code></li>
+</ol>
+<p>Applied to the <strong>1,312 distinct codepoints</strong> in your
+comparison:</p>
+<table>
+<thead>
+<tr>
+<th>Actual <code>unicode.py</code> rule</th>
+<th style="text-align: right;">Distinct codepoints</th>
+<th style="text-align: right;">Comparison records</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>zero_width</code> override</td>
+<td style="text-align: right;"><strong>622</strong></td>
+<td style="text-align: right;"><strong>876</strong></td>
+</tr>
+<tr>
+<td>EAW <code>N</code> → narrow</td>
+<td style="text-align: right;"><strong>440</strong></td>
+<td style="text-align: right;"><strong>880</strong></td>
+</tr>
+<tr>
+<td>EAW <code>A</code> + letter/modifier → narrow</td>
+<td style="text-align: right;"><strong>193</strong></td>
+<td style="text-align: right;"><strong>193</strong></td>
+</tr>
+<tr>
+<td><code>LineBreak=AI</code> → ambiguous, plus U+0387</td>
+<td style="text-align: right;"><strong>55</strong></td>
+<td style="text-align: right;"><strong>55</strong></td>
+</tr>
+<tr>
+<td>Explicit U+17A4 → wide</td>
+<td style="text-align: right;"><strong>1</strong></td>
+<td style="text-align: right;"><strong>2</strong></td>
+</tr>
+<tr>
+<td>Explicit U+17D8 → width 3</td>
+<td style="text-align: right;"><strong>1</strong></td>
+<td style="text-align: right;"><strong>2</strong></td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td style="text-align: right;"><strong>1,312</strong></td>
+<td style="text-align: right;"><strong>2,008</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The record counts add up exactly:</p>
+<pre class="text"><code>876 + 880 + 193 + 55 + 2 + 2 = 2008</code></pre>
+<p>This is much more meaningful than categorizing by General
+Category.</p>
+<hr />
+<h2 id="the-622-zero-width-codepoints">2. The 622 zero-width
+codepoints</h2>
+<p>These are the codepoints for which <code>load_zero_widths()</code>
+wins over the EAW-derived width.</p>
+<p>The function explicitly says that zero width comes from
+<code>Default_Ignorable_Code_Point</code>, <code>Grapheme_Extend</code>,
+Hangul <code>V</code>/<code>T</code>, plus specific extra cases.
+<code>unicode.py</code></p>
+<p>For the <strong>622 codepoints occurring in your
+differences</strong>, the disjoint breakdown is:</p>
+<table>
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr>
+<th>Zero-width rule</th>
+<th style="text-align: right;">Codepoints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Grapheme_Extend</code></td>
+<td style="text-align: right;"><strong>372</strong></td>
+</tr>
+<tr>
+<td><code>Hangul_Syllable_Type=V or T</code></td>
+<td style="text-align: right;"><strong>232</strong></td>
+</tr>
+<tr>
+<td><code>Grapheme_Cluster_Break=Prepend</code> minus
+<code>Prepended_Concatenation_Mark</code></td>
+<td style="text-align: right;"><strong>14</strong></td>
+</tr>
+<tr>
+<td>residual <code>Default_Ignorable_Code_Point</code></td>
+<td style="text-align: right;"><strong>3</strong></td>
+</tr>
+<tr>
+<td>explicit U+A8FA DEVANAGARI CARET</td>
+<td style="text-align: right;"><strong>1</strong></td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td style="text-align: right;"><strong>622</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="grapheme_extend-372">2.1 <code>Grapheme_Extend</code>: 372</h3>
+<p>This consists of:</p>
+<ul>
+<li><strong>368 <code>Mn</code></strong> characters</li>
+<li><strong>4 <code>Mc</code></strong> characters:
+<ul>
+<li>U+302E</li>
+<li>U+302F</li>
+<li>U+16FF0</li>
+<li>U+16FF1</li>
+</ul></li>
+</ul>
+<p>The script explicitly says that <code>Grapheme_Extend</code> contains
+the usual <code>Mn</code>/<code>Me</code> characters <strong>plus some
+<code>Mc</code> characters</strong> needed for canonical-equivalence
+consistency. <code>unicode.py</code></p>
+<p>The Unicode data confirms, for example, that U+16FF0..U+16FF1 are
+<code>Grapheme_Extend</code>. (<a
+href="https://gcc.gnu.org/pipermail/libstdc%2B%2B-cvs/2024q4/042118.html?utm_source=chatgpt.com">gcc.gnu.org</a>)</p>
+<h3 id="hangul-vt-232">2.2 Hangul V/T: 232</h3>
+<p>The script explicitly loads <code>HangulSyllableType.txt</code> and
+sets all <code>Vowel_Jamo</code> and <code>Trailing_Jamo</code> to zero
+width. <code>unicode.py</code></p>
+<p>This explains the large:</p>
+<pre class="text"><code>U+D7B0...
+U+D7CB...
+U+1160..U+11FF</code></pre>
+<p>groups in your output.</p>
+<h3 id="prepend-minus-prepended_concatenation_mark-14">2.3
+<code>Prepend</code> minus <code>Prepended_Concatenation_Mark</code>:
+14</h3>
+<p>The script takes <code>Grapheme_Cluster_Break=Prepend</code>, removes
+characters that already have <code>Prepended_Concatenation_Mark</code>,
+and makes what remains zero-width. <code>unicode.py</code></p>
+<p>The 14 codepoints in your differences are:</p>
+<pre class="text"><code>U+0D4E
+U+111C2..U+111C3
+U+113D1
+U+1193F
+U+11941
+U+11A84..U+11A89
+U+11D46
+U+11F02</code></pre>
+<p>Unicode 17's GraphemeBreakProperty data indeed includes these as
+<code>Prepend</code>. (<a
+href="https://github.com/latex3/unicode-data/blob/main/GraphemeBreakProperty.txt?utm_source=chatgpt.com">GitHub</a>)</p>
+<h3 id="residual-default-ignorable-3">2.4 Residual Default-Ignorable:
+3</h3>
+<p>Among your differences, these are:</p>
+<pre class="text"><code>U+00AD  SOFT HYPHEN
+U+3164  HANGUL FILLER
+U+FFA0  HALFWIDTH HANGUL FILLER</code></pre>
+<p>They get zero width from the initial
+<code>Default_Ignorable_Code_Point</code> loading. The script
+specifically mentions Hangul fillers in this context.
+<code>unicode.py</code></p>
+<h3 id="explicit-ua8fa">2.5 Explicit U+A8FA</h3>
+<p><code>unicode.py</code> explicitly says:</p>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>zw_map[<span class="bn">0xA8FA</span>] <span class="op">=</span> <span class="va">True</span></span></code></pre></div>
+<p>for DEVANAGARI CARET. <code>unicode.py</code></p>
+<p>So this one is not derived from EAW.</p>
+<hr />
+<h2 id="the-440-codepoints-that-become-width-1">3. The 440 codepoints
+that become width 1</h2>
+<p>These are particularly interesting because they explain a huge
+fraction of your differences.</p>
+<p>All 440 have <strong>EAW=N</strong> in the data used by this logic,
+and none is in the zero-width map.</p>
+<p><code>load_east_asian_widths()</code> treats:</p>
+<pre class="text"><code>N
+Na
+H</code></pre>
+<p>as <code>NARROW</code>. <code>unicode.py</code></p>
+<p>Then <code>load_width_maps()</code> does:</p>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> zw:</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    ...</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> eaw <span class="op">==</span> WIDE:</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>        not_ea <span class="op">=</span> WIDE</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>        not_ea <span class="op">=</span> NARROW</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> eaw <span class="op">==</span> NARROW:</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>        ea <span class="op">=</span> NARROW</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>        ea <span class="op">=</span> WIDE</span></code></pre></div>
+<p>So EAW=N gives:</p>
+<pre class="text"><code>normal = 1
+CJK    = 1</code></pre>
+<p>The 440 include:</p>
+<pre class="text"><code>398 Mc
+27 Cf
+11 Cn
+2 Mn
+1 Zl
+1 Zp</code></pre>
+<p>That is exactly why your large <code>Mc</code> group has:</p>
+<pre class="text"><code>utf8proc       0
+unicode-width  1</code></pre>
+<p>for the <code>width</code> records.</p>
+<p>For example:</p>
+<pre class="text"><code>U+0903 DEVANAGARI SIGN VISARGA
+--&gt; width 0 &lt;&gt; 1</code></pre>
+<p>means precisely:</p>
+<pre class="text"><code>utf8proc      = 0
+unicode-width = 1</code></pre>
+<p>and <code>unicode.py</code> gets its <code>1</code> from
+<strong>EAW=N plus <code>zero_width=False</code></strong>.
+<code>charWidth_stringWidth_test-out.txt</code></p>
+<p>This is the major difference we were getting backwards earlier.</p>
+<hr />
+<h2 id="the-193-eaw-a-characters-forced-to-narrow">4. The 193 EAW-A
+characters forced to narrow</h2>
+<p>This group is especially clean.</p>
+<p>All <strong>193</strong> have EAW <code>A</code>, and their General
+Categories are:</p>
+<pre class="text"><code>Ll  104
+Lu   70
+Sk   10
+Lm    7
+Lo    2</code></pre>
+<p>The script explicitly applies:</p>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> width_map[cp] <span class="op">==</span> AMBIGUOUS:</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>    width_map[cp] <span class="op">=</span> NARROW</span></code></pre></div>
+<p>for:</p>
+<pre class="text"><code>Lu Ll Lt Lm Lo Sk</code></pre>
+<p><code>unicode.py</code></p>
+<p>This is the reason Greek, Cyrillic, many Latin letters, modifier
+letters, etc. produce:</p>
+<pre class="text"><code>utf8proc       2
+unicode-width  1</code></pre>
+<p>in your <code>eastAsianWidth</code> comparisons.</p>
+<p>For example, the Greek alphabet in your file is full of:</p>
+<pre class="text"><code>eastAsianWidth 2 &lt;&gt; 1</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<p>This is <strong>not</strong> a generic "EAW=A → width 1" rule. It is
+specifically:</p>
+<blockquote>
+<p>EAW=A, followed by the script's special rule that ambiguous letters
+and modifier symbols are forced to NARROW.</p>
+</blockquote>
+<hr />
+<h2 id="the-55-characters-that-remain-ambiguous">5. The 55 characters
+that remain ambiguous</h2>
+<p>There are 56 records with:</p>
+<pre class="text"><code>eastAsianWidth 1 &lt;&gt; 2</code></pre>
+<p>but one of them is U+17A4, which is explicitly overridden to
+<code>WIDE</code>.</p>
+<p>So <strong>55 codepoints</strong> are actually in this category.</p>
+<p>They are:</p>
+<ul>
+<li><strong>54</strong> characters made ambiguous by
+<code>LineBreak=AI</code></li>
+<li><strong>U+0387 GREEK ANO TELEIA</strong>, explicitly made
+ambiguous.</li>
+</ul>
+<p>The script says:</p>
+<div class="sourceCode" id="cb56"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Characters with ambiguous line breaking are ambiguous</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>LineBreak <span class="op">=</span> AI</span></code></pre></div>
+<p>and then separately:</p>
+<div class="sourceCode" id="cb57"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>width_map[<span class="bn">0x0387</span>] <span class="op">=</span> EastAsianWidth.AMBIGUOUS</span></code></pre></div>
+<p><code>unicode.py</code></p>
+<p>These are the cases where the resulting widths are:</p>
+<pre class="text"><code>normal = 1
+CJK    = 2</code></pre>
+<p>because <code>AMBIGUOUS</code> is defined exactly that way.
+<code>unicode.py</code></p>
+<p>The list includes, for example:</p>
+<pre class="text"><code>U+2150..U+215A
+U+219A
+U+219B
+U+21AE
+U+21CE
+U+21CF
+U+2204
+...
+U+2780..U+2793
+U+1F10B
+U+1F10C</code></pre>
+<p>The current Unicode 17 EAW file still lists many of these as
+<code>N</code>, which is precisely why the <code>LineBreak=AI</code>
+override matters. For example, U+2150..U+2152 and U+2155..U+215A are
+EAW=N in <code>EastAsianWidth.txt</code>. (<a
+href="https://www.unicode.org/Public/17.0.0/ucd/EastAsianWidth.txt">Unicode</a>)</p>
+<hr />
+<h2 id="u17a4---explicit-wide">6. U+17A4 - explicit WIDE</h2>
+<p>This one does not come from EAW processing.</p>
+<p><code>unicode.py</code> explicitly contains:</p>
+<div class="sourceCode" id="cb60"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>([<span class="bn">0x17A4</span>], WidthState.WIDE)</span></code></pre></div>
+<p><code>unicode.py</code></p>
+<p>Therefore:</p>
+<pre class="text"><code>normal = 2
+CJK    = 2</code></pre>
+<p>while your comparison shows:</p>
+<pre class="text"><code>utf8proc       1
+unicode-width  2</code></pre>
+<p>for both width types.</p>
+<p>So this is one of the truly explicit exceptions.</p>
+<hr />
+<h2 id="u17d8---explicit-width-3">7. U+17D8 - explicit width 3</h2>
+<p>This is the only width-3 case in your 2008 records.</p>
+<p>The script explicitly contains:</p>
+<div class="sourceCode" id="cb63"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>([<span class="bn">0x17D8</span>], WidthState.THREE)</span></code></pre></div>
+<p>and <code>WidthState.THREE.width_alone()</code> returns 3.
+<code>unicode.py</code></p>
+<p>Thus:</p>
+<pre class="text"><code>utf8proc       1
+unicode-width  3</code></pre>
+<p>for both normal and CJK comparisons.</p>
+<p>And, importantly, <strong>3 in the generated table is not a
+width</strong>; it is the <code>SPECIAL</code> table encoding. The
+actual width is obtained from the <code>WidthState.THREE</code> special
+case. <code>unicode.py</code></p>
+<hr />
+<h2 id="the-resulting-picture">8. The resulting picture</h2>
+<p>So the 1,312 distinct codepoints in your 2,008 records are
+essentially:</p>
+<pre class="text"><code>622  zero-width override
+440  EAW=N → width 1
+193  EAW=A + letter/modifier → width 1
+ 55  LineBreak=AI / U+0387 → EAW=A → 1/2
+  1  U+17A4 → explicit width 2
+  1  U+17D8 → explicit width 3
+----
+1312</code></pre>
+<p>That is a much more faithful description of what
+<code>unicode.py</code> is doing.</p>
+<hr />
+<h2 id="your-unassigned-character-question">9. Your unassigned-character
+question</h2>
+<p>This part is particularly interesting.</p>
+<p>The "Unassigned characters" section in your file gives these
+examples/ranges and the widths returned by <code>unicode-width</code>.
+<code>charWidth_stringWidth_test-out.txt</code></p>
+<p>The widths are <strong>not coming from a special "unassigned
+character" rule</strong>.</p>
+<p>They fall naturally out of the two rules above:</p>
+<blockquote>
+<p><strong>EAW classification + zero-width override.</strong></p>
+</blockquote>
+<p>Unicode 17's EAW data explicitly says that codepoints not otherwise
+listed are <code>N</code>, but there are special default-W ranges for
+CJK ideographs and unassigned codepoints in Planes 2 and 3. (<a
+href="https://www.unicode.org/Public/17.0.0/ucd/EastAsianWidth.txt">Unicode</a>)</p>
+<h3 id="u2065-width-0">U+2065 → width 0</h3>
+<p>Your file:</p>
+<pre class="text"><code>U+2065  Some(0)
+width_cjk ... Some(0)</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<p>U+2065 is unassigned, but it has:</p>
+<pre class="text"><code>Default_Ignorable_Code_Point</code></pre>
+<p>So <code>load_zero_widths()</code> sets it to ZERO, overriding EAW.
+Unicode explicitly documents U+2065 and the 2060..206F range as Default
+Ignorable, including unassigned codepoints. (<a
+href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/?utm_source=chatgpt.com">Unicode</a>)</p>
+<p>Therefore:</p>
+<pre class="text"><code>unassigned + Default_Ignorable
+→ width 0</code></pre>
+<h3 id="ufff0..ufff8-width-0">U+FFF0..U+FFF8 → width 0</h3>
+<p>Your file shows:</p>
+<pre class="text"><code>U+FFF0..U+FFF8 → 0</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<p>Those unassigned codepoints are also
+<code>Default_Ignorable_Code_Point</code>. Unicode 17 explicitly
+identifies <code>FFF0..FFF8</code> as a Default Ignorable range,
+including unassigned codepoints. (<a
+href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/?utm_source=chatgpt.com">Unicode</a>)</p>
+<p>So again:</p>
+<pre class="text"><code>Default_Ignorable
+→ zero-width</code></pre>
+<h3 id="ue0000..ue0fff-width-0">U+E0000..U+E0FFF → width 0</h3>
+<p>Your file:</p>
+<pre class="text"><code>U+E0000..U+E0FFF → 0</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<p>Unicode specifically says the entire <code>E0000..E0FFF</code> range
+is Default Ignorable, including currently unassigned codepoints. (<a
+href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/?utm_source=chatgpt.com">Unicode</a>)</p>
+<p>Therefore:</p>
+<pre class="text"><code>Default_Ignorable
+→ 0</code></pre>
+<hr />
+<h3 id="ufa6e..ufaff-width-2">U+FA6E..U+FAFF → width 2</h3>
+<p>Your file gives:</p>
+<pre class="text"><code>U+FA6E..U+FAFF → 2</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<p>These are unassigned codepoints inside the <strong>CJK Compatibility
+Ideographs</strong> range.</p>
+<p>Unicode's East Asian Width rules explicitly classify unassigned
+codepoints in <code>F900..FAFF</code> as Wide. (<a
+href="https://www.unicode.org/reports/tr11/?utm_source=chatgpt.com">Unicode</a>)</p>
+<p>Therefore:</p>
+<pre class="text"><code>unassigned
++ CJK Compatibility Ideographs range
++ EAW = W
+→ unicode.py WIDE
+→ width 2</code></pre>
+<p>There is <strong>no special unassigned rule</strong> here.</p>
+<hr />
+<h3 id="u2a6e0..u2fffd-width-2">U+2A6E0..U+2FFFD → width 2</h3>
+<p>Your file:</p>
+<pre class="text"><code>U+2A6E0..U+2FFFD → 2</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<p>These are in Plane 2.</p>
+<p>Unicode 17 specifies that <strong>all undesignated codepoints in
+Plane 2 from U+20000 through U+2FFFD default to Wide</strong>. (<a
+href="https://www.unicode.org/Public/17.0.0/ucd/EastAsianWidth.txt">Unicode</a>)</p>
+<p>So:</p>
+<pre class="text"><code>unassigned
++ Plane 2 CJK range
++ EAW = W
+→ width 2</code></pre>
+<hr />
+<h3 id="u323b0..u3fffd-width-2">U+323B0..U+3FFFD → width 2</h3>
+<p>Same principle:</p>
+<pre class="text"><code>U+30000..U+3FFFD</code></pre>
+<p>is the corresponding Plane 3 range.</p>
+<p>Unicode says undesignated codepoints there default to Wide. (<a
+href="https://www.unicode.org/Public/17.0.0/ucd/EastAsianWidth.txt">Unicode</a>)</p>
+<p>Thus:</p>
+<pre class="text"><code>→ width 2</code></pre>
+<hr />
+<h3 id="u2fffe..u2ffff-width-1">U+2FFFE..U+2FFFF → width 1</h3>
+<p>Your file shows:</p>
+<pre class="text"><code>U+2FFFE → 1
+U+2FFFF → 1</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<p>These are immediately outside the <code>20000..2FFFD</code> Wide
+range.</p>
+<p>They therefore fall back to:</p>
+<pre class="text"><code>EAW = N
+→ NARROW
+→ width 1</code></pre>
+<p>This is an excellent example of why <strong>the exact range endpoint
+matters</strong>.</p>
+<p>The same happens with:</p>
+<pre class="text"><code>U+3FFFE
+U+3FFFF</code></pre>
+<p>which are outside the Plane 3 <code>...3FFFD</code> Wide range.
+<code>charWidth_stringWidth_test-out.txt</code></p>
+<hr />
+<h3 id="udffff-width-1">U+DFFFF → width 1</h3>
+<p>Same mechanism.</p>
+<p>It isn't in one of the special CJK-wide ranges and isn't zero-width,
+so it gets the default:</p>
+<pre class="text"><code>EAW = N
+→ width 1</code></pre>
+<hr />
+<h3 id="ue1000..ueffff-width-1">U+E1000..U+EFFFF → width 1</h3>
+<p>Your file has:</p>
+<pre class="text"><code>U+E0000..U+E0FFF → 0
+U+E1000..U+EFFFF → 1</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<p>This is another very instructive boundary.</p>
+<p>Only:</p>
+<pre class="text"><code>E0000..E0FFF</code></pre>
+<p>is the Default-Ignorable reserved range. Once you pass
+<code>E0FFF</code>, the remaining unassigned codepoints revert to the
+normal default:</p>
+<pre class="text"><code>EAW=N
+→ width 1</code></pre>
+<hr />
+<h3 id="uf0000..u10fffd-width-1-normally-2-in-cjk">U+F0000..U+10FFFD →
+width 1 normally, 2 in CJK</h3>
+<p>Your file shows:</p>
+<pre class="text"><code>width       U+F0000..U+10FFFD → 1
+width_cjk   U+F0000..U+10FFFD → 2</code></pre>
+<p><code>charWidth_stringWidth_test-out.txt</code></p>
+<p>These are <strong>Private Use</strong> codepoints, rather than
+ordinary unassigned codepoints.</p>
+<p>Unicode's UAX #11 says private-use characters default to
+<strong>Ambiguous</strong>. (<a
+href="https://www.unicode.org/reports/tr11/?utm_source=chatgpt.com">Unicode</a>)</p>
+<p>And <code>unicode.py</code> defines:</p>
+<pre class="text"><code>AMBIGUOUS = 1 normally, 2 in CJK</code></pre>
+<p><code>unicode.py</code></p>
+<p>So:</p>
+<pre class="text"><code>Private Use
+→ EAW=A
+→ normal width 1
+→ CJK width 2</code></pre>
+<p>This is probably the most important explanation for the apparent
+"unassigned characters have width 2" observation.</p>
+<p>They aren't getting width 2 because they're unassigned.
+<strong>They're getting width 2 because they are Private Use / EAW
+Ambiguous in CJK context.</strong></p>
+<p>Finally:</p>
+<pre class="text"><code>U+10FFFE
+U+10FFFF</code></pre>
+<p>are outside the private-use range and fall back to EAW=N, hence width
+1. <code>charWidth_stringWidth_test-out.txt</code></p>
+<hr />
+<h2 id="so-the-unassigned-character-rule-can-be-stated-very-simply">10.
+So the unassigned-character rule can be stated very simply</h2>
+<p>For the unassigned examples in your file, <code>unicode.py</code>
+effectively does this:</p>
+<pre class="text"><code>if Default_Ignorable_Code_Point:
+    width = 0
+
+else if EAW = W:
+    width = 2
+
+else if EAW = A:
+    width = 1 normally
+    width = 2 in CJK
+
+else:
+    width = 1</code></pre>
+<p>And <strong>EAW itself has special defaults for unassigned
+codepoints</strong>:</p>
+<pre class="text"><code>CJK Compatibility Ideographs     → W
+CJK Unified Ideographs ranges    → W
+Plane 2, through U+2FFFD         → W
+Plane 3, through U+3FFFD         → W
+Private Use                      → A
+everything else                  → N</code></pre>
+<p>Unicode 17 explicitly documents those unassigned/Private-Use EAW
+rules. (<a
+href="https://www.unicode.org/reports/tr11/?utm_source=chatgpt.com">Unicode</a>)</p>
+<p>There is therefore <strong>no mysterious "unicode-width assigns
+arbitrary widths to unassigned characters" rule</strong>. The widths 0,
+1 and 2 all have a direct explanation from the normal
+property-processing pipeline.</p>
+<p>One caveat: your comparison output itself appears to have been
+generated with <strong>older Unicode data than the attached
+<code>unicode.py</code></strong>. For example, the output calls U+113D1
+unassigned, while Unicode 16/17 data treats it as Tulu-Tigalari REPHA.
+The current <code>GraphemeBreakProperty</code> data lists it as
+<code>Prepend</code>. (<a
+href="https://gnu.googlesource.com/gcc/%2B/refs/heads/releases/gcc-15/contrib/unicode/GraphemeBreakProperty.txt?utm_source=chatgpt.com">gnu.googlesource.com</a>)
+That version mismatch matters for a few individual codepoints, but it
+does <strong>not</strong> change the overall rule classification
+above.</p>
+<p>Note JLF: I made mistakes when I collected manually the intervals.
+The <code>charWidth_stringWidth_test.rex</code> script has been updated
+to show clearly the intervals.</p>
+<hr />
+<p><strong>Sources:</strong></p>
+<ul>
+<li><a
+href="https://gcc.gnu.org/pipermail/libstdc%2B%2B-cvs/2024q4/042118.html?utm_source=chatgpt.com">[gcc
+r15-4134] contrib, libcpp, libstdc++: Update to Unicode 16.0</a></li>
+<li><a
+href="https://github.com/latex3/unicode-data/blob/main/GraphemeBreakProperty.txt?utm_source=chatgpt.com">unicode-data/GraphemeBreakProperty.txt
+at main · latex3/unicode-data · GitHub</a></li>
+<li><a
+href="https://www.unicode.org/Public/17.0.0/ucd/EastAsianWidth.txt"></a></li>
+<li><a
+href="https://gnu.googlesource.com/gcc/%2B/refs/heads/releases/gcc-15/contrib/unicode/GraphemeBreakProperty.txt?utm_source=chatgpt.com">contrib/unicode/GraphemeBreakProperty.txt
+- gcc - Git at Google</a></li>
+</ul>
 <hr />
 <p>Powered by <a href="https://www.chatgptexporter.com">ChatGPT
 Exporter</a></p>

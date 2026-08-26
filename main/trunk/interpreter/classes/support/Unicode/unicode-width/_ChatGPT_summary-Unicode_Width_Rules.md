@@ -7,8 +7,8 @@
 
 **User:** Anonymous  
 **Created:** 8/25/2026 13:27:01  
-**Updated:** 8/25/2026 13:46:19  
-**Exported:** 8/25/2026 13:59:54  
+**Updated:** 8/26/2026 17:38:17  
+**Exported:** 8/26/2026 17:40:59  
 **Link:** [https://chatgpt.com/c/6a8d7c03-0244-83eb-abe4-b727ea4378cd](https://chatgpt.com/c/6a8d7c03-0244-83eb-abe4-b727ea4378cd)  
 
 # Prompt:
@@ -838,6 +838,748 @@ total                           2008
 ```
 
 That would tell us quantitatively which rules account for the differences, rather than just identifying the patterns qualitatively.
+
+
+
+
+
+
+
+
+
+
+
+# Prompt:
+26/08/2026, 14:03:07
+
+Please classify those **2008 records according to the actual rules in** **`unicode.py`**, rather than by General Category alone.
+Please also explain which actual rules in `unicode.py` gives width=0 or 1 or 2 for the unassigned characters (you have the list of unassigned characters with their corresponding width in the attached file `charWidth_stringWidth_test-out.txt`.
+
+## Response:
+26/08/2026, 14:03:08
+
+I’ll redo the classification from the 2008 records only, preserving the `utf8proc <> unicode-width` direction, then trace the unassigned-character widths back to specific `unicode.py` rules.
+
+I’ve confirmed the 2008-record boundary and the direction of both operands. I’m now using the actual `load_east_asian_widths()`, `load_zero_widths()`, and `load_width_maps()` logic from the attached script—not the earlier General Category shortcut.
+
+Yes. With your corrected interpretation of the line format, the classification becomes quite clean.
+
+I have now treated the **2,008 comparison records only**: the two surrogate records are excluded, leaving **1,312 distinct codepoints**. The records break down into a small number of actual `unicode.py` rules.
+
+## 1. The 2,008 records classified by the actual `unicode.py` rules
+
+The key part of `unicode.py` is:
+
+1. `EastAsianWidth.txt` is reduced to `NARROW`, `WIDE`, or `AMBIGUOUS`.
+2. `LineBreak=AI` is changed to `AMBIGUOUS`.
+3. Ambiguous letters/modifier symbols (`Lu`, `Ll`, `Lt`, `Lm`, `Lo`, `Sk`) are forced back to `NARROW`.
+4. A separate `zero_width` map overrides EAW completely.
+5. Normal width is `WIDE` only for EAW `W`; otherwise it is `NARROW`.
+6. CJK width is `NARROW` only for EAW `N`; otherwise it is `WIDE`. `unicode.py` `unicode.py`
+
+Applied to the **1,312 distinct codepoints** in your comparison:
+
+| Actual `unicode.py` rule | Distinct codepoints | Comparison records |
+|---|---:|---:|
+| `zero_width` override | **622** | **876** |
+| EAW `N` → narrow | **440** | **880** |
+| EAW `A` + letter/modifier → narrow | **193** | **193** |
+| `LineBreak=AI` → ambiguous, plus U+0387 | **55** | **55** |
+| Explicit U+17A4 → wide | **1** | **2** |
+| Explicit U+17D8 → width 3 | **1** | **2** |
+| **Total** | **1,312** | **2,008** |
+
+The record counts add up exactly:
+
+```text
+876 + 880 + 193 + 55 + 2 + 2 = 2008
+```
+
+This is much more meaningful than categorizing by General Category.
+
+---
+
+## 2. The 622 zero-width codepoints
+
+These are the codepoints for which `load_zero_widths()` wins over the EAW-derived width.
+
+The function explicitly says that zero width comes from `Default_Ignorable_Code_Point`, `Grapheme_Extend`, Hangul `V`/`T`, plus specific extra cases. `unicode.py`
+
+For the **622 codepoints occurring in your differences**, the disjoint breakdown is:
+
+| Zero-width rule | Codepoints |
+|---|---:|
+| `Grapheme_Extend` | **372** |
+| `Hangul_Syllable_Type=V or T` | **232** |
+| `Grapheme_Cluster_Break=Prepend` minus `Prepended_Concatenation_Mark` | **14** |
+| residual `Default_Ignorable_Code_Point` | **3** |
+| explicit U+A8FA DEVANAGARI CARET | **1** |
+| **Total** | **622** |
+
+### 2.1 `Grapheme_Extend`: 372
+
+This consists of:
+
+- **368 `Mn`** characters
+- **4 `Mc`** characters:
+  - U+302E
+  - U+302F
+  - U+16FF0
+  - U+16FF1
+
+The script explicitly says that `Grapheme_Extend` contains the usual `Mn`/`Me` characters **plus some `Mc` characters** needed for canonical-equivalence consistency. `unicode.py`
+
+The Unicode data confirms, for example, that U+16FF0..U+16FF1 are `Grapheme_Extend`. ([gcc.gnu.org](https://gcc.gnu.org/pipermail/libstdc%2B%2B-cvs/2024q4/042118.html?utm_source=chatgpt.com))
+
+### 2.2 Hangul V/T: 232
+
+The script explicitly loads `HangulSyllableType.txt` and sets all `Vowel_Jamo` and `Trailing_Jamo` to zero width. `unicode.py`
+
+This explains the large:
+
+```text
+U+D7B0...
+U+D7CB...
+U+1160..U+11FF
+```
+
+groups in your output.
+
+### 2.3 `Prepend` minus `Prepended_Concatenation_Mark`: 14
+
+The script takes `Grapheme_Cluster_Break=Prepend`, removes characters that already have `Prepended_Concatenation_Mark`, and makes what remains zero-width. `unicode.py`
+
+The 14 codepoints in your differences are:
+
+```text
+U+0D4E
+U+111C2..U+111C3
+U+113D1
+U+1193F
+U+11941
+U+11A84..U+11A89
+U+11D46
+U+11F02
+```
+
+Unicode 17's GraphemeBreakProperty data indeed includes these as `Prepend`. ([GitHub](https://github.com/latex3/unicode-data/blob/main/GraphemeBreakProperty.txt?utm_source=chatgpt.com))
+
+### 2.4 Residual Default-Ignorable: 3
+
+Among your differences, these are:
+
+```text
+U+00AD  SOFT HYPHEN
+U+3164  HANGUL FILLER
+U+FFA0  HALFWIDTH HANGUL FILLER
+```
+
+They get zero width from the initial `Default_Ignorable_Code_Point` loading. The script specifically mentions Hangul fillers in this context. `unicode.py`
+
+### 2.5 Explicit U+A8FA
+
+`unicode.py` explicitly says:
+
+```python
+zw_map[0xA8FA] = True
+```
+
+for DEVANAGARI CARET. `unicode.py`
+
+So this one is not derived from EAW.
+
+---
+
+## 3. The 440 codepoints that become width 1
+
+These are particularly interesting because they explain a huge fraction of your differences.
+
+All 440 have **EAW=N** in the data used by this logic, and none is in the zero-width map.
+
+`load_east_asian_widths()` treats:
+
+```text
+N
+Na
+H
+```
+
+as `NARROW`. `unicode.py`
+
+Then `load_width_maps()` does:
+
+```python
+if zw:
+    ...
+else:
+    if eaw == WIDE:
+        not_ea = WIDE
+    else:
+        not_ea = NARROW
+
+    if eaw == NARROW:
+        ea = NARROW
+    else:
+        ea = WIDE
+```
+
+So EAW=N gives:
+
+```text
+normal = 1
+CJK    = 1
+```
+
+The 440 include:
+
+```text
+398 Mc
+27 Cf
+11 Cn
+2 Mn
+1 Zl
+1 Zp
+```
+
+That is exactly why your large `Mc` group has:
+
+```text
+utf8proc       0
+unicode-width  1
+```
+
+for the `width` records.
+
+For example:
+
+```text
+U+0903 DEVANAGARI SIGN VISARGA
+--> width 0 <> 1
+```
+
+means precisely:
+
+```text
+utf8proc      = 0
+unicode-width = 1
+```
+
+and `unicode.py` gets its `1` from **EAW=N plus `zero_width=False`**. `charWidth_stringWidth_test-out.txt`
+
+This is the major difference we were getting backwards earlier.
+
+---
+
+## 4. The 193 EAW-A characters forced to narrow
+
+This group is especially clean.
+
+All **193** have EAW `A`, and their General Categories are:
+
+```text
+Ll  104
+Lu   70
+Sk   10
+Lm    7
+Lo    2
+```
+
+The script explicitly applies:
+
+```python
+if width_map[cp] == AMBIGUOUS:
+    width_map[cp] = NARROW
+```
+
+for:
+
+```text
+Lu Ll Lt Lm Lo Sk
+```
+
+`unicode.py`
+
+This is the reason Greek, Cyrillic, many Latin letters, modifier letters, etc. produce:
+
+```text
+utf8proc       2
+unicode-width  1
+```
+
+in your `eastAsianWidth` comparisons.
+
+For example, the Greek alphabet in your file is full of:
+
+```text
+eastAsianWidth 2 <> 1
+```
+
+`charWidth_stringWidth_test-out.txt`
+
+This is **not** a generic "EAW=A → width 1" rule. It is specifically:
+
+> EAW=A, followed by the script's special rule that ambiguous letters and modifier symbols are forced to NARROW.
+
+---
+
+## 5. The 55 characters that remain ambiguous
+
+There are 56 records with:
+
+```text
+eastAsianWidth 1 <> 2
+```
+
+but one of them is U+17A4, which is explicitly overridden to `WIDE`.
+
+So **55 codepoints** are actually in this category.
+
+They are:
+
+- **54** characters made ambiguous by `LineBreak=AI`
+- **U+0387 GREEK ANO TELEIA**, explicitly made ambiguous.
+
+The script says:
+
+```python
+# Characters with ambiguous line breaking are ambiguous
+LineBreak = AI
+```
+
+and then separately:
+
+```python
+width_map[0x0387] = EastAsianWidth.AMBIGUOUS
+```
+
+`unicode.py`
+
+These are the cases where the resulting widths are:
+
+```text
+normal = 1
+CJK    = 2
+```
+
+because `AMBIGUOUS` is defined exactly that way. `unicode.py`
+
+The list includes, for example:
+
+```text
+U+2150..U+215A
+U+219A
+U+219B
+U+21AE
+U+21CE
+U+21CF
+U+2204
+...
+U+2780..U+2793
+U+1F10B
+U+1F10C
+```
+
+The current Unicode 17 EAW file still lists many of these as `N`, which is precisely why the `LineBreak=AI` override matters. For example, U+2150..U+2152 and U+2155..U+215A are EAW=N in `EastAsianWidth.txt`. ([Unicode](https://www.unicode.org/Public/17.0.0/ucd/EastAsianWidth.txt))
+
+---
+
+## 6. U+17A4 - explicit WIDE
+
+This one does not come from EAW processing.
+
+`unicode.py` explicitly contains:
+
+```python
+([0x17A4], WidthState.WIDE)
+```
+
+`unicode.py`
+
+Therefore:
+
+```text
+normal = 2
+CJK    = 2
+```
+
+while your comparison shows:
+
+```text
+utf8proc       1
+unicode-width  2
+```
+
+for both width types.
+
+So this is one of the truly explicit exceptions.
+
+---
+
+## 7. U+17D8 - explicit width 3
+
+This is the only width-3 case in your 2008 records.
+
+The script explicitly contains:
+
+```python
+([0x17D8], WidthState.THREE)
+```
+
+and `WidthState.THREE.width_alone()` returns 3. `unicode.py`
+
+Thus:
+
+```text
+utf8proc       1
+unicode-width  3
+```
+
+for both normal and CJK comparisons.
+
+And, importantly, **3 in the generated table is not a width**; it is the `SPECIAL` table encoding. The actual width is obtained from the `WidthState.THREE` special case. `unicode.py`
+
+---
+
+## 8. The resulting picture
+
+So the 1,312 distinct codepoints in your 2,008 records are essentially:
+
+```text
+622  zero-width override
+440  EAW=N → width 1
+193  EAW=A + letter/modifier → width 1
+ 55  LineBreak=AI / U+0387 → EAW=A → 1/2
+  1  U+17A4 → explicit width 2
+  1  U+17D8 → explicit width 3
+----
+1312
+```
+
+That is a much more faithful description of what `unicode.py` is doing.
+
+---
+
+## 9. Your unassigned-character question
+
+This part is particularly interesting.
+
+The "Unassigned characters" section in your file gives these examples/ranges and the widths returned by `unicode-width`. `charWidth_stringWidth_test-out.txt`
+
+The widths are **not coming from a special "unassigned character" rule**.
+
+They fall naturally out of the two rules above:
+
+> **EAW classification + zero-width override.**
+
+Unicode 17's EAW data explicitly says that codepoints not otherwise listed are `N`, but there are special default-W ranges for CJK ideographs and unassigned codepoints in Planes 2 and 3. ([Unicode](https://www.unicode.org/Public/17.0.0/ucd/EastAsianWidth.txt))
+
+### U+2065 → width 0
+
+Your file:
+
+```text
+U+2065  Some(0)
+width_cjk ... Some(0)
+```
+
+`charWidth_stringWidth_test-out.txt`
+
+U+2065 is unassigned, but it has:
+
+```text
+Default_Ignorable_Code_Point
+```
+
+So `load_zero_widths()` sets it to ZERO, overriding EAW. Unicode explicitly documents U+2065 and the 2060..206F range as Default Ignorable, including unassigned codepoints. ([Unicode](https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/?utm_source=chatgpt.com))
+
+Therefore:
+
+```text
+unassigned + Default_Ignorable
+→ width 0
+```
+
+### U+FFF0..U+FFF8 → width 0
+
+Your file shows:
+
+```text
+U+FFF0..U+FFF8 → 0
+```
+
+`charWidth_stringWidth_test-out.txt`
+
+Those unassigned codepoints are also `Default_Ignorable_Code_Point`. Unicode 17 explicitly identifies `FFF0..FFF8` as a Default Ignorable range, including unassigned codepoints. ([Unicode](https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/?utm_source=chatgpt.com))
+
+So again:
+
+```text
+Default_Ignorable
+→ zero-width
+```
+
+### U+E0000..U+E0FFF → width 0
+
+Your file:
+
+```text
+U+E0000..U+E0FFF → 0
+```
+
+`charWidth_stringWidth_test-out.txt`
+
+Unicode specifically says the entire `E0000..E0FFF` range is Default Ignorable, including currently unassigned codepoints. ([Unicode](https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/?utm_source=chatgpt.com))
+
+Therefore:
+
+```text
+Default_Ignorable
+→ 0
+```
+
+---
+
+### U+FA6E..U+FAFF → width 2
+
+Your file gives:
+
+```text
+U+FA6E..U+FAFF → 2
+```
+
+`charWidth_stringWidth_test-out.txt`
+
+These are unassigned codepoints inside the **CJK Compatibility Ideographs** range.
+
+Unicode's East Asian Width rules explicitly classify unassigned codepoints in `F900..FAFF` as Wide. ([Unicode](https://www.unicode.org/reports/tr11/?utm_source=chatgpt.com))
+
+Therefore:
+
+```text
+unassigned
++ CJK Compatibility Ideographs range
++ EAW = W
+→ unicode.py WIDE
+→ width 2
+```
+
+There is **no special unassigned rule** here.
+
+---
+
+### U+2A6E0..U+2FFFD → width 2
+
+Your file:
+
+```text
+U+2A6E0..U+2FFFD → 2
+```
+
+`charWidth_stringWidth_test-out.txt`
+
+These are in Plane 2.
+
+Unicode 17 specifies that **all undesignated codepoints in Plane 2 from U+20000 through U+2FFFD default to Wide**. ([Unicode](https://www.unicode.org/Public/17.0.0/ucd/EastAsianWidth.txt))
+
+So:
+
+```text
+unassigned
++ Plane 2 CJK range
++ EAW = W
+→ width 2
+```
+
+---
+
+### U+323B0..U+3FFFD → width 2
+
+Same principle:
+
+```text
+U+30000..U+3FFFD
+```
+
+is the corresponding Plane 3 range.
+
+Unicode says undesignated codepoints there default to Wide. ([Unicode](https://www.unicode.org/Public/17.0.0/ucd/EastAsianWidth.txt))
+
+Thus:
+
+```text
+→ width 2
+```
+
+---
+
+### U+2FFFE..U+2FFFF → width 1
+
+Your file shows:
+
+```text
+U+2FFFE → 1
+U+2FFFF → 1
+```
+
+`charWidth_stringWidth_test-out.txt`
+
+These are immediately outside the `20000..2FFFD` Wide range.
+
+They therefore fall back to:
+
+```text
+EAW = N
+→ NARROW
+→ width 1
+```
+
+This is an excellent example of why **the exact range endpoint matters**.
+
+The same happens with:
+
+```text
+U+3FFFE
+U+3FFFF
+```
+
+which are outside the Plane 3 `...3FFFD` Wide range. `charWidth_stringWidth_test-out.txt`
+
+---
+
+### U+DFFFF → width 1
+
+Same mechanism.
+
+It isn't in one of the special CJK-wide ranges and isn't zero-width, so it gets the default:
+
+```text
+EAW = N
+→ width 1
+```
+
+---
+
+### U+E1000..U+EFFFF → width 1
+
+Your file has:
+
+```text
+U+E0000..U+E0FFF → 0
+U+E1000..U+EFFFF → 1
+```
+
+`charWidth_stringWidth_test-out.txt`
+
+This is another very instructive boundary.
+
+Only:
+
+```text
+E0000..E0FFF
+```
+
+is the Default-Ignorable reserved range. Once you pass `E0FFF`, the remaining unassigned codepoints revert to the normal default:
+
+```text
+EAW=N
+→ width 1
+```
+
+---
+
+### U+F0000..U+10FFFD → width 1 normally, 2 in CJK
+
+Your file shows:
+
+```text
+width       U+F0000..U+10FFFD → 1
+width_cjk   U+F0000..U+10FFFD → 2
+```
+
+`charWidth_stringWidth_test-out.txt`
+
+These are **Private Use** codepoints, rather than ordinary unassigned codepoints.
+
+Unicode's UAX #11 says private-use characters default to **Ambiguous**. ([Unicode](https://www.unicode.org/reports/tr11/?utm_source=chatgpt.com))
+
+And `unicode.py` defines:
+
+```text
+AMBIGUOUS = 1 normally, 2 in CJK
+```
+
+`unicode.py`
+
+So:
+
+```text
+Private Use
+→ EAW=A
+→ normal width 1
+→ CJK width 2
+```
+
+This is probably the most important explanation for the apparent "unassigned characters have width 2" observation.
+
+They aren't getting width 2 because they're unassigned. **They're getting width 2 because they are Private Use / EAW Ambiguous in CJK context.**
+
+Finally:
+
+```text
+U+10FFFE
+U+10FFFF
+```
+
+are outside the private-use range and fall back to EAW=N, hence width 1. `charWidth_stringWidth_test-out.txt`
+
+---
+
+## 10. So the unassigned-character rule can be stated very simply
+
+For the unassigned examples in your file, `unicode.py` effectively does this:
+
+```text
+if Default_Ignorable_Code_Point:
+    width = 0
+
+else if EAW = W:
+    width = 2
+
+else if EAW = A:
+    width = 1 normally
+    width = 2 in CJK
+
+else:
+    width = 1
+```
+
+And **EAW itself has special defaults for unassigned codepoints**:
+
+```text
+CJK Compatibility Ideographs     → W
+CJK Unified Ideographs ranges    → W
+Plane 2, through U+2FFFD         → W
+Plane 3, through U+3FFFD         → W
+Private Use                      → A
+everything else                  → N
+```
+
+Unicode 17 explicitly documents those unassigned/Private-Use EAW rules. ([Unicode](https://www.unicode.org/reports/tr11/?utm_source=chatgpt.com))
+
+There is therefore **no mysterious "unicode-width assigns arbitrary widths to unassigned characters" rule**. The widths 0, 1 and 2 all have a direct explanation from the normal property-processing pipeline.
+
+One caveat: your comparison output itself appears to have been generated with **older Unicode data than the attached `unicode.py`**. For example, the output calls U+113D1 unassigned, while Unicode 16/17 data treats it as Tulu-Tigalari REPHA. The current `GraphemeBreakProperty` data lists it as `Prepend`. ([gnu.googlesource.com](https://gnu.googlesource.com/gcc/%2B/refs/heads/releases/gcc-15/contrib/unicode/GraphemeBreakProperty.txt?utm_source=chatgpt.com)) That version mismatch matters for a few individual codepoints, but it does **not** change the overall rule classification above.
+
+Note JLF: I made mistakes when I collected manually the intervals. The `charWidth_stringWidth_test.rex` script has been updated to show clearly the intervals.
+
+---
+
+**Sources:**
+
+- [[gcc r15-4134] contrib, libcpp, libstdc++: Update to Unicode 16.0](https://gcc.gnu.org/pipermail/libstdc%2B%2B-cvs/2024q4/042118.html?utm_source=chatgpt.com)
+- [unicode-data/GraphemeBreakProperty.txt at main · latex3/unicode-data · GitHub](https://github.com/latex3/unicode-data/blob/main/GraphemeBreakProperty.txt?utm_source=chatgpt.com)
+- [](https://www.unicode.org/Public/17.0.0/ucd/EastAsianWidth.txt)
+- [contrib/unicode/GraphemeBreakProperty.txt - gcc - Git at Google](https://gnu.googlesource.com/gcc/%2B/refs/heads/releases/gcc-15/contrib/unicode/GraphemeBreakProperty.txt?utm_source=chatgpt.com)
 
 
 
