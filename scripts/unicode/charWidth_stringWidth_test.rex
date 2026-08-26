@@ -40,11 +40,19 @@ Unassigned characters:
     width     \u{2065} '\u{2065}' Some(0) 0
     width_cjk \u{2065} '\u{2065}' Some(0) 0
 
+
     width     \u{fa6e} '\u{fa6e}' Some(2) 2
     width_cjk \u{fa6e} '\u{fa6e}' Some(2) 2
+    width     \u{fa6f} '\u{fa6f}' Some(2) 2
+    width_cjk \u{fa6f} '\u{fa6f}' Some(2) 2
+
+
+    width     \u{fada} '\u{fada}' Some(2) 2
+    width_cjk \u{fada} '\u{fada}' Some(2) 2
     ...
     width     \u{faff} '\u{faff}' Some(2) 2
     width_cjk \u{faff} '\u{faff}' Some(2) 2
+
 
     width     \u{fff0} '\u{fff0}' Some(0) 0
     width_cjk \u{fff0} '\u{fff0}' Some(0) 0
@@ -52,51 +60,85 @@ Unassigned characters:
     width     \u{fff8} '\u{fff8}' Some(0) 0
     width_cjk \u{fff8} '\u{fff8}' Some(0) 0
 
+
     width     \u{2a6e0} '\u{2a6e0}' Some(2) 2
     width_cjk \u{2a6e0} '\u{2a6e0}' Some(2) 2
+    ...
+    width     \u{2a6ff} '\u{2a6ff}' Some(2) 2
+    width_cjk \u{2a6ff} '\u{2a6ff}' Some(2) 2
+
+
+    width     \u{2b81e} '\u{2b81e}' Some(2) 2
+    width_cjk \u{2b81e} '\u{2b81e}' Some(2) 2
+    width     \u{2b81f} '\u{2b81f}' Some(2) 2
+    width_cjk \u{2b81f} '\u{2b81f}' Some(2) 2
+
+
+    width     \u{2ceae} '\u{2ceae}' Some(2) 2
+    width_cjk \u{2ceae} '\u{2ceae}' Some(2) 2
+    width     \u{2ceaf} '\u{2ceaf}' Some(2) 2
+    width_cjk \u{2ceaf} '\u{2ceaf}' Some(2) 2
+
+
+    width     \u{2ebe1} '\u{2ebe1}' Some(2) 2
+    width_cjk \u{2ebe1} '\u{2ebe1}' Some(2) 2
+    ...
+    width     \u{2ebef} '\u{2ebef}' Some(2) 2
+    width_cjk \u{2ebef} '\u{2ebef}' Some(2) 2
+
+
+    width     \u{2ee5e} '\u{2ee5e}' Some(2) 2
+    width_cjk \u{2ee5e} '\u{2ee5e}' Some(2) 2
+    ...
+    width     \u{2f7ff} '\u{2f7ff}' Some(2) 2
+    width_cjk \u{2f7ff} '\u{2f7ff}' Some(2) 2
+
+
+    width     \u{2fa1e} '\u{2fa1e}' Some(2) 2
+    width_cjk \u{2fa1e} '\u{2fa1e}' Some(2) 2
     ...
     width     \u{2fffd} '\u{2fffd}' Some(2) 2
     width_cjk \u{2fffd} '\u{2fffd}' Some(2) 2
 
-    width     \u{2fffe} '\u{2fffe}' Some(1) 1
-    width_cjk \u{2fffe} '\u{2fffe}' Some(1) 1
-    width     \u{2ffff} '\u{2ffff}' Some(1) 1
-    width_cjk \u{2ffff} '\u{2ffff}' Some(1) 1
 
-    width     \u{323b0} '\u{323b0}' Some(2) 2
-    width_cjk \u{323b0} '\u{323b0}' Some(2) 2
+    width     \u{3134b} '\u{3134b}' Some(2) 2
+    width_cjk \u{3134b} '\u{3134b}' Some(2) 2
+    ...
+    width     \u{3134f} '\u{3134f}' Some(2) 2
+    width_cjk \u{3134f} '\u{3134f}' Some(2) 2
+
+
+    width     \u{3347a} '\u{3347a}' Some(2) 2
+    width_cjk \u{3347a} '\u{3347a}' Some(2) 2
     ...
     width     \u{3fffd} '\u{3fffd}' Some(2) 2
     width_cjk \u{3fffd} '\u{3fffd}' Some(2) 2
 
-    width     \u{3fffe} '\u{3fffe}' Some(1) 1
-    width_cjk \u{3fffe} '\u{3fffe}' Some(1) 1
-    ...
-    width     \u{dffff} '\u{dffff}' Some(1) 1
-    width_cjk \u{dffff} '\u{dffff}' Some(1) 1
 
     width     \u{e0000} '\u{e0000}' Some(0) 0
     width_cjk \u{e0000} '\u{e0000}' Some(0) 0
+
+
+    width     \u{e0002} '\u{e0002}' Some(0) 0
+    width_cjk \u{e0002} '\u{e0002}' Some(0) 0
+    ...
+    width     \u{e001f} '\u{e001f}' Some(0) 0
+    width_cjk \u{e001f} '\u{e001f}' Some(0) 0
+
+
+    width     \u{e0080} '\u{e0080}' Some(0) 0
+    width_cjk \u{e0080} '\u{e0080}' Some(0) 0
+    ...
+    width     \u{e00ff} '\u{e00ff}' Some(0) 0
+    width_cjk \u{e00ff} '\u{e00ff}' Some(0) 0
+
+
+    width     \u{e01f0} '\u{e01f0}' Some(0) 0
+    width_cjk \u{e01f0} '\u{e01f0}' Some(0) 0
     ...
     width     \u{e0fff} '\u{e0fff}' Some(0) 0
     width_cjk \u{e0fff} '\u{e0fff}' Some(0) 0
 
-    width     \u{e1000} '\u{e1000}' Some(1) 1
-    width_cjk \u{e1000} '\u{e1000}' Some(1) 1
-    ...
-    width     \u{effff} '\u{effff}' Some(1) 1
-    width_cjk \u{effff} '\u{effff}' Some(1) 1
-
-    width     \u{f0000} '\u{f0000}' Some(1) 1
-    width_cjk \u{f0000} '\u{f0000}' Some(2) 2
-    ...
-    width     \u{10fffd} '\u{10fffd}' Some(1) 1
-    width_cjk \u{10fffd} '\u{10fffd}' Some(2) 2
-
-    width     \u{10fffe} '\u{10fffe}' Some(1) 1
-    width_cjk \u{10fffe} '\u{10fffe}' Some(1) 1
-    width     \u{10ffff} '\u{10ffff}' Some(1) 1
-    width_cjk \u{10ffff} '\u{10ffff}' Some(1) 1
 
 --------------------------------------------------------------------------------
 
@@ -146,12 +188,34 @@ Analysis with Xcode:
 
 
 call source_doc
+
 count = 0
+
+previousCodepoint = -1
+previousWidth2 = -1
+previousEastAsianWidth2 = -1
+
+show = "limited"
+-- show = "unassigned"
+
+showEqual = .false -- think twice before assigning .true! The output for unassigned is 207 MB
+
+intervalIsOpened = .false
 loop codepoint = 0 to .RexxUnicode~maxCodepoint
     .RexxUnicodeServices~codepointCategory( codepoint, >refCode)
-    if refCode == "Cc" then iterate -- Control
-    if refCode == "Cn" then iterate -- Unassigned
-    if refCode == "Cs" then iterate -- Surrogate
+
+    if show == "unassigned" then do
+        if refCode \== "Cn" then iterate -- Unassigned
+    end
+    else if show == "limited" then do
+        if refCode == "Cc" then iterate -- Control
+        if refCode == "Cn" then iterate -- Unassigned
+        if refCode == "Cs" then iterate -- Surrogate
+    end
+    else do
+        say "Abort"
+        exit 1
+    end
 
     -- utf8proc
     width1 = .RexxUnicodeServices~codepointCharWidth(codepoint)
@@ -164,14 +228,52 @@ loop codepoint = 0 to .RexxUnicode~maxCodepoint
     width2 = .RexxUnicodeServices~utf8StringWidth(string)
     eastAsianWidth2 = .RexxUnicodeServices~utf8StringWidth(string, , /*eastAsianContext:*/ .true)
 
-    if width1 \== width2 then do
-        count += 1
-        say .RexxUnicodeCharacter~new(codepoint)~string~left(100) "--> width         " width1 "<>" width2
-    end
-    if eastAsianWidth1 \== eastAsianWidth2 then do
-        count += 1
-        say .RexxUnicodeCharacter~new(codepoint)~string~left(100) "--> eastAsianWidth" eastAsianWidth1 "<>" eastAsianWidth2
-    end
+    showSomething = showEqual | width1 \== width2 | eastAsianWidth1 \== eastAsianWidth2
+    -- if showSomething then do
+
+        separator = .false
+        if previousCodepoint \== -1, codepoint \== previousCodepoint + 1 then separator = .true
+        if previousWidth2 \== -1, width2 \== previousWidth2 then separator = .true
+        if previousEastAsianWidth2 \== -1, eastAsianWidth2 \== previousEastAsianWidth2 then separator = .true
+
+        if separator then do
+            if \ intervalIsOpened then do
+                if showSomething then do
+                    say "---["
+                    intervalIsOpened = .true
+                end
+            end
+            else do
+                say "---]"
+                intervalIsOpened = .false
+                if showSomething then do
+                    say "---["
+                    intervalIsOpened = .true
+                end
+            end
+        end
+
+        if width1 \== width2 then do
+            count += 1
+            say .RexxUnicodeCharacter~new(codepoint)~string~left(100) "--> width         " width1 "<>" width2
+        end
+        else if showEqual then do
+            say .RexxUnicodeCharacter~new(codepoint)~string~left(100) "--> width         " width1 "==" width2
+        end
+
+        if eastAsianWidth1 \== eastAsianWidth2 then do
+            count += 1
+            say .RexxUnicodeCharacter~new(codepoint)~string~left(100) "--> eastAsianWidth" eastAsianWidth1 "<>" eastAsianWidth2
+        end
+        else if showEqual then do
+            say .RexxUnicodeCharacter~new(codepoint)~string~left(100) "--> eastAsianWidth" eastAsianWidth1 "==" eastAsianWidth2
+        end
+
+    -- end
+
+    previousCodepoint = codepoint
+    previousWidth2 = width2
+    previousEastAsianWidth2 = eastAsianWidth2
 end
 s = (count > 1)~?("s", "")
 say count "difference"s
