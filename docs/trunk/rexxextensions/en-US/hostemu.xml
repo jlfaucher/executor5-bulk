@@ -82,13 +82,13 @@ The EXECIO subcommand is a simplified version of the mainframe command with only
 a small subset of the original EXECIO functionality supported.</para>
 <para>To include and use the HostEmu subcommand environment you must place a ooRexx directive
 in your script. The following shows how to accomplish this.</para>
-<programlisting>
+<programlisting language="rexx">
 ::requires "hostemu" LIBRARY
 </programlisting>
 <para>This will activate the environment. The subcommand name is "HostEmu" (the case of this
 string is not important). You can send commands to this environment via the ooRexx
 address statement. Here is an example.</para>
-<programlisting>
+<programlisting language="rexx">
 address hostemu 'execio * diskr "./inputfile.txt" (finis stem in.'
 </programlisting>
 <para>Note that the file name MUST be placed within a set of quotation marks.</para>
