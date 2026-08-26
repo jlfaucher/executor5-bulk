@@ -98,14 +98,12 @@ and must pass four arguments.</para>
 <para>Zero.</para>
 <example>
 <title>Creating new windows</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* create the standard screen */
 scr = .Window~new()
 
 /* create a new window */
 win = .Window~new(10, 20, 5, 10)  
-]]>
 </programlisting>
 </example>
 </section>
@@ -151,8 +149,7 @@ win = .Window~new(10, 20, 5, 10)
 <para>The current or new base.</para>
 <example>
 <title>Set base (one or zero based)</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 .window~setbase(0)
 scr = .window~new()
 
@@ -160,7 +157,6 @@ scr~move(0, 0)
 scr~addch('*')
 scr~refresh()
 scr~napms(500)
-]]>
 </programlisting>
 </example>
 </section>
@@ -189,8 +185,7 @@ creating the standard screen.</para>
 <para>Zero.</para>
 <example>
 <title>Set a soft label</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 left = 0
 center = 1
 right = 2
@@ -207,7 +202,6 @@ scr~slk_set(6, 'Quick', right)
 scr~slk_set(7, 'Conf', right)
 scr~slk_set(8, 'Change', right)
 scr~slk_refresh()
-]]>
 </programlisting>
 </example>
 </section>
@@ -264,8 +258,7 @@ scr~slk_refresh()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Add a character to the screen</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 p = .pad~new(200, wide)
@@ -281,7 +274,6 @@ do while \eof
    ch = strm~charin()
    end
 strm~close()
-]]>
 </programlisting>
 </example>
 </section>
@@ -388,11 +380,9 @@ strm~close()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Add a string to the screen</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 scr~addstr('Goodbye, cruel C Programming!')
-]]>
 </programlisting>
 </example>
 </section>
@@ -447,13 +437,11 @@ scr~addstr('Goodbye, cruel C Programming!')
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Turn off one or more attributes</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 scr~attron(scr~A_BOLD)
 
 scr~attroff(scr~A_BOLD)
-]]>
 </programlisting>
 </example>
 </section>
@@ -481,11 +469,9 @@ scr~attroff(scr~A_BOLD)
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Turn on one or more attributes</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 scr~attron(scr~A_BOLD)
-]]>
 </programlisting>
 </example>
 </section>
@@ -513,8 +499,7 @@ scr~attron(scr~A_BOLD)
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Set one or more attributes</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 lf = .window~ASCII_LF~d2c()
 bs = .window~ASCII_BS~d2c()
 
@@ -530,7 +515,6 @@ do a = 1 to text~items()
       end
    scr~addstr(bs || lf)
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -571,13 +555,11 @@ do a = 1 to text~items()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Beep the terminal</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~addstr('Attention!' || lf)
 scr~beep()
-]]>
 </programlisting>
 </example>
 </section>
@@ -605,14 +587,12 @@ scr~beep()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Set the background attribute for the whole screen</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 scr~start_color()
 scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
 
 scr~bkgd(scr~COLOR_PAIR(1))
-]]>
 </programlisting>
 </example>
 </section>
@@ -691,13 +671,11 @@ scr~bkgd(scr~COLOR_PAIR(1))
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Set a window border</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~border('ba'~x2d(), 'ba'~x2d(), 'cd'~x2d(), 'cd'~x2d(),,
            'c9'~x2d(), 'bb'~x2d(), 'c8'~x2d(), 'bc'~x2d())
-]]>
 </programlisting>
 </example>
 </section>
@@ -729,12 +707,10 @@ scr~border('ba'~x2d(), 'ba'~x2d(), 'cd'~x2d(), 'cd'~x2d(),,
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Draw a box arounf a window</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~box('*'~c2d(), '*'~c2d())
-]]>
 </programlisting>
 </example>
 </section>
@@ -757,14 +733,12 @@ scr~box('*'~c2d(), '*'~c2d())
 <para>One or zero.</para>
 <example>
 <title>Determine if terminal hardware can change its color set</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 scr~start_color
 if \scr~can_change_color() then do
    scr~addstr('This probably won''t work, but anyway:' || lf)
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -836,12 +810,10 @@ if \scr~can_change_color() then do
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Clear the screen</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~clear()
-]]>
 </programlisting>
 </example>
 </section>
@@ -887,13 +859,11 @@ scr~clear()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Clear the window from the current cursor position</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~move(6, 21)
 scr~clrtobot()
-]]>
 </programlisting>
 </example>
 </section>
@@ -916,8 +886,7 @@ scr~clrtobot()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Clear the line from the current cursor position</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 scr~noecho()
 scr~keypad(.true)
@@ -935,7 +904,6 @@ do forever
       end
    if ch = lf then leave
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -958,14 +926,12 @@ do forever
 <para>Possible color pairs attributes.</para>
 <example>
 <title>Get the number of possible COLOR_PAIR attributes</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~start_color
 scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
 scr~bkgd(scr~color_pair(1))
-]]>
 </programlisting>
 </example>
 </section>
@@ -1098,8 +1064,7 @@ scr~bkgd(scr~color_pair(1))
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Copy a window to self</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 maxyx = scr~getmaxyx()
@@ -1118,7 +1083,6 @@ bottom~refresh()
 bottom~getch()
 
 retc = bottom~copywin(top, 1, 1, 1, 1, 5, 13, .false)
-]]>
 </programlisting>
 </example>
 </section>
@@ -1146,8 +1110,7 @@ retc = bottom~copywin(top, 1, 1, 1, 1, 5, 13, .false)
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Set cursor visibility</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 -- turn off cursor
@@ -1156,7 +1119,6 @@ scr~curs_set(0)
 scr~curs_set(1)
 -- turn the cursor very on
 scr~curs_set(2)
-]]>
 </programlisting>
 </example>
 </section>
@@ -1198,15 +1160,13 @@ on the line one position to the left.</para>
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Delete the character under the cursor</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~move(3, 26)
 do c = 1 to 11
    scr~delch()
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -1230,13 +1190,11 @@ cursor up one line.</para>
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Delete the line under the cursor</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~move(2, 1)
 scr~deleteln()
-]]>
 </programlisting>
 </example>
 </section>
@@ -1259,8 +1217,7 @@ scr~deleteln()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Delete a window</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 lf = .window~ASCII_LF~d2c()
 
 scr = .window~new()
@@ -1278,7 +1235,6 @@ else do
    scr~addstr("...and now it's still there!" "" lf)
    end
 scr~refresh()
-]]>
 </programlisting>
 </example>
 </section>
@@ -1336,8 +1292,7 @@ scr~refresh()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Update the terminal</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 filename = 'Readme.txt'
 tall = 24
 wide = 19
@@ -1365,7 +1320,6 @@ s1~pnoutrefresh(1, 1, 1, 1, tall, wide + 1)
 s2~pnoutrefresh(1, 1, 1, wide + spacer + 1, tall, (wide * 2) + spacer)
 s3~pnoutrefresh(1, 1, 1, (wide * 2) + (spacer * 2), tall, (wide *3) + (spacer * 2))
 scr~doupdate()
-]]>
 </programlisting>
 </example>
 </section>
@@ -1388,14 +1342,13 @@ scr~doupdate()
 <para>A Window instance.</para>
 <example>
 <title>Duplicate a window</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 numeric digits 12
 lf = .window~ASCII_LF~d2c()
 
 scr = .window~new()
 
-/* Build window & wait */
+/* Build window &amp; wait */
 fred = .window~new(0,0,1,1)
 fred~addstr("This is the original window, Fred." || lf)
 fred~refresh()
@@ -1403,7 +1356,6 @@ fred~getch()
 
 /* Create and show barney */
 barney = fred~dupwin()
-]]>
 </programlisting>
 </example>
 </section>
@@ -1462,12 +1414,10 @@ barney = fred~dupwin()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>End nCurses formating</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~endwin()
-]]>
 </programlisting>
 </example>
 </section>
@@ -1544,13 +1494,11 @@ scr~endwin()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Flash the screen</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~addstr('I said ATTENTION!')
 scr~flash()
-]]>
 </programlisting>
 </example>
 </section>
@@ -1573,12 +1521,10 @@ scr~flash()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Flash the input queue</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~flushinp()
-]]>
 </programlisting>
 </example>
 </section>
@@ -1638,12 +1584,10 @@ relative to the stdscr.</para>
 <para>A one character string.</para>
 <example>
 <title>Get a character from the keyboard</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 char = scr~getch()
-]]>
 </programlisting>
 </example>
 </section>
@@ -1666,13 +1610,11 @@ char = scr~getch()
 <para>A string in the form "maxy maxx".</para>
 <example>
 <title>Get the width and height of the screen</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 maxyx = scr~getmaxyx()
 parse var maxyx maxy maxx .
-]]>
 </programlisting>
 </example>
 </section>
@@ -1695,8 +1637,7 @@ parse var maxyx maxy maxx .
 <para>An instance of the Mevent class.</para>
 <example>
 <title>Get a mouse event</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 scr~noecho()
 scr~keypad(.true)
@@ -1714,7 +1655,6 @@ do forever
       end
    if ch = lf then leave
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -1742,8 +1682,7 @@ do forever
 <para>A string.</para>
 <example>
 <title>Get a string from the terminal</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~mvaddstr(4, 11, 'Enter your name: ')
@@ -1753,7 +1692,6 @@ scr~mvaddstr(6, 7, 'Enter your password: ')
 scr~refresh()
 scr~noecho()
 password = scr~getnstr(8)
-]]>
 </programlisting>
 </example>
 </section>
@@ -1817,13 +1755,11 @@ password = scr~getnstr(8)
 <para>A Window instance.</para>
 <example>
 <title>Create a new window from a file</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 win = scr~getwin('window.dat')
 win~refresh()
-]]>
 </programlisting>
 </example>
 </section>
@@ -1887,15 +1823,13 @@ win~refresh()
 <para>One or zero.</para>
 <example>
 <title>Determine if the terminal has color support</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 if \scr~has_colors() then do
    scr~endwin()
    say 'Terminal cannot do colors.'
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -1963,8 +1897,7 @@ if \scr~has_colors() then do
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Draw a horizontal line</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 maxyx = scr~getmaxyx()
@@ -1976,7 +1909,6 @@ do y = 1 to maxy
    scr~vline(0, maxy - y + 1)
    x += 2
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -2175,12 +2107,10 @@ do y = 1 to maxy
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Assign foreground and background colors</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 scr~start_color()
 scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
-]]>
 </programlisting>
 </example>
 </section>
@@ -2231,8 +2161,7 @@ scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Insert attr/character under the cursor</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 do i = len to 1 by -1
@@ -2241,7 +2170,6 @@ do i = len to 1 by -1
    scr~refresh()
    scr~napms(100)
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -2287,13 +2215,11 @@ do i = len to 1 by -1
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Insert one line</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~move(2, 1)
 scr~insertln()
-]]>
 </programlisting>
 </example>
 </section>
@@ -2521,12 +2447,10 @@ scr~insertln()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Turn on/off reading keypad (function, etc) keys</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 scr~noecho()
 scr~keypad(.true)
-]]>
 </programlisting>
 </example>
 </section>
@@ -2685,11 +2609,10 @@ scr~keypad(.true)
 <para>Event mask (numeric).</para>
 <example>
 <title>Set/return the mouse event mask</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
-if scr~ncurses_mouse_version() > 0 then do
+if scr~ncurses_mouse_version() &gt; 0 then do
    scr~addstr('This version of NCurses supports the mouse.' || lf)
    end
 else do
@@ -2703,7 +2626,6 @@ if mmask = scr~BUTTON3_CLICKED then do
 else do
    scr~addstr('I am not able to read a button 3 click.' || lf)
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -2735,8 +2657,7 @@ else do
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Move the cursor</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 scr~noecho()
 scr~keypad(.true)
@@ -2754,7 +2675,6 @@ do forever
       end
    if ch = lf then leave
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -2925,8 +2845,7 @@ do forever
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Add a string after moving the cursor</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 maxyx = scr~getmaxyx()
@@ -2936,7 +2855,6 @@ scr~scrollok(.true)
 do y = 1 to maxy
    scr~mvaddstr(y, 1, "This is boring text written to line" y)
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -3127,8 +3045,7 @@ do y = 1 to maxy
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Draw a horizontal after moving the cursor</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 y = .array~of( 1,  1,  6,  1,  6,  6, 11, 11, 11, 11, 16,  6)
 x = .array~of(11, 11,  2, 21, 21, 31,  2, 11, 21, 21, 11,  1)
 
@@ -3138,7 +3055,6 @@ do c = 1 to 12 by 2
    scr~mvhline(y[c], x[c], 0, 10)
    scr~mvvline(y[c + 1], x[c + 1], 0, 5)
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -3383,8 +3299,7 @@ do c = 1 to 12 by 2
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Draw a vertical after moving the cursor</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 y = .array~of( 1,  1,  6,  1,  6,  6, 11, 11, 11, 11, 16,  6)
 x = .array~of(11, 11,  2, 21, 21, 31,  2, 11, 21, 21, 11,  1)
 
@@ -3394,7 +3309,6 @@ do c = 1 to 12 by 2
    scr~mvhline(y[c], x[c], 0, 10)
    scr~mvvline(y[c + 1], x[c + 1], 0, 5)
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -3426,8 +3340,7 @@ do c = 1 to 12 by 2
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Move a window</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 tsize = 18
 scr = .window~new()
 
@@ -3444,7 +3357,6 @@ do y = 2 to maxy
    scr~refresh()
    b~getch()
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -3472,15 +3384,13 @@ do y = 2 to maxy
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Pause a program</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~move(1, 1)
 scr~addch('*')
 scr~refresh()
 scr~napms(500)
-]]>
 </programlisting>
 </example>
 </section>
@@ -3503,19 +3413,17 @@ scr~napms(500)
 <para>String.</para>
 <example>
 <title>Return the nCurses mouse version string</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 lf = .window~ASCII_LF~d2c()
 
 scr = .window~new()
 
-if scr~ncurses_mouse_version() > 0 then do
+if scr~ncurses_mouse_version() &gt; 0 then do
    scr~addstr('This version of NCurses supports the mouse.' || lf)
    end
 else do
    scr~addstr('This version of NCurses does not support the mouse.' || lf)
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -3538,19 +3446,17 @@ else do
 <para>String.</para>
 <example>
 <title>Return the nCurses version string</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 lf = .window~ASCII_LF~d2c()
 
 scr = .window~new()
 
-if scr~ncurses_mouse_version() > 0 then do
+if scr~ncurses_mouse_version() &gt; 0 then do
    scr~addstr('This version of NCurses supports the mouse.' || lf)
    end
 else do
    scr~addstr('This version of NCurses does not support the mouse.' || lf)
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -3614,12 +3520,10 @@ else do
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Change the setch() function to non-blocking</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~nodelay(.TRUE);		/* turn off getch() wait */
-]]>
 </programlisting>
 </example>
 </section>
@@ -3642,11 +3546,9 @@ scr~nodelay(.TRUE);		/* turn off getch() wait */
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Turn off echo</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 scr~noecho()
-]]>
 </programlisting>
 </example>
 </section>
@@ -3751,8 +3653,7 @@ scr~noecho()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Overlay the destination window</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 alpha = .window~new(0,0,1,1)		/* Remember to check for errors! */
 
 scr~addstr(text1)					/* Add text to stdscr and wait */
@@ -3765,7 +3666,6 @@ alpha~getch()
 
 /* Copy text from one window to the other, non-destructively */
 scr~overlay(alpha)
-]]>
 </programlisting>
 </example>
 </section>
@@ -3793,8 +3693,7 @@ scr~overlay(alpha)
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Overwrite the destination window</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 alpha = .window~new(0,0,1,1)		/* Remember to check for errors! */
 
 scr~addstr(text1)					/* Add text to stdscr and wait */
@@ -3807,7 +3706,6 @@ alpha~getch()
 
 /* Copy text from one window to the other, destructively */
 scr~overwrite(alpha)   -- see book text
-]]>
 </programlisting>
 </example>
 </section>
@@ -3935,8 +3833,7 @@ scr~overwrite(alpha)   -- see book text
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Save a window to a file</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 retc = win~putwin('window.dat')
@@ -3946,7 +3843,6 @@ if retc = scr~ERR then do
 else do
    scr~addstr('Window put to disk' || lf)
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -4024,12 +3920,10 @@ else do
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Refresh the screen and turn nCurses formatting on</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 scr~addstr('Goodbye, cruel C Programming!')
 scr~refresh()
-]]>
 </programlisting>
 </example>
 </section>
@@ -4057,8 +3951,7 @@ scr~refresh()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Dump the terminal screen to a file</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 retc = scr~scr_dump('windump')
@@ -4068,7 +3961,6 @@ if retc = scr~ERR then do
 else do
    scr~addstr('File written: press Enter to quit' || lf)
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -4096,15 +3988,13 @@ else do
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Restore the screen from a file</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 retc = scr~scr_restore('windump')
 if retc = scr~ERR then do
    scr~addstr('Error reading window file: press Enter' || lf)
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -4173,12 +4063,10 @@ if retc = scr~ERR then do
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Allow a window to scroll</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 scr~scrollok(.true)
-]]>
 </programlisting>
 </example>
 </section>
@@ -4315,8 +4203,7 @@ scr~scrollok(.true)
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Hide the soft labels</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 center = 1
 label_text = .array~of('S', 'O', 'F', 'T', 'K', 'E', 'Y', 'S')
 
@@ -4332,7 +4219,6 @@ ch = scr~getch()
 
 scr~slk_clear()
 ch = scr~getch()
-]]>
 </programlisting>
 </example>
 </section>
@@ -4419,8 +4305,7 @@ ch = scr~getch()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Refresh the soft labels</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 left = 0
 center = 1
 right = 2
@@ -4437,7 +4322,6 @@ scr~slk_set(6, 'Quick', right)
 scr~slk_set(7, 'Conf', right)
 scr~slk_set(8, 'Change', right)
 scr~slk_refresh()
-]]>
 </programlisting>
 </example>
 </section>
@@ -4460,13 +4344,11 @@ scr~slk_refresh()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Restore the soft labels</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 .window~slk_init(3)
 scr = .window~new()
 
 scr~slk_restore()
-]]>
 </programlisting>
 </example>
 </section>
@@ -4498,8 +4380,7 @@ scr~slk_restore()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Set the soft labels</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 left = 0
 center = 1
 right = 2
@@ -4516,7 +4397,6 @@ scr~slk_set(6, 'Quick', right)
 scr~slk_set(7, 'Conf', right)
 scr~slk_set(8, 'Change', right)
 scr~slk_refresh()
-]]>
 </programlisting>
 </example>
 </section>
@@ -4593,11 +4473,9 @@ scr~slk_refresh()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Turn on using color</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 scr~start_color()
-]]>
 </programlisting>
 </example>
 </section>
@@ -4655,12 +4533,10 @@ scr~start_color()
 <para>A Window instance.</para>
 <example>
 <title>Create a subwindow</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 sonny = scr~subwin(5, 20, 11, 31)
-]]>
 </programlisting>
 </example>
 </section>
@@ -4793,8 +4669,7 @@ sonny = scr~subwin(5, 20, 11, 31)
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Mark one or more lines as changed</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 tsize = 18
 scr = .window~new()
 
@@ -4811,7 +4686,6 @@ do y = 2 to maxy
    scr~refresh()
    b~getch()
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -4984,8 +4858,7 @@ do y = 2 to maxy
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Draw a vertical line</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 maxyx = scr~getmaxyx()
@@ -4997,7 +4870,6 @@ do y = 1 to maxy
    scr~vline(0, maxy - y + 1)
    x += 2
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -5176,11 +5048,9 @@ do y = 1 to maxy
 <para>A new pad instance.</para>
 <example>
 <title>Create a new pad</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* create a new pad */
 win = .Window~new(5, 10)  
-]]>
 </programlisting>
 </example>
 </section>
@@ -5292,8 +5162,7 @@ win = .Window~new(5, 10)
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Refresh a pad</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 filename = 'Readme.txt'
 tall = 24
 wide = 19
@@ -5321,7 +5190,6 @@ s1~pnoutrefresh(1, 1, 1, 1, tall, wide + 1)
 s2~pnoutrefresh(1, 1, 1, wide + spacer + 1, tall, (wide * 2) + spacer)
 s3~pnoutrefresh(1, 1, 1, (wide * 2) + (spacer * 2), tall, (wide *3) + (spacer * 2))
 scr~doupdate()
-]]>
 </programlisting>
 </example>
 </section>
@@ -5369,8 +5237,7 @@ scr~doupdate()
 <para>Either ERR (-1) or OK (0).</para>
 <example>
 <title>Refresh the pad to a stdscr</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 scr = .window~new()
 
 p = .pad~new(50, 100)
@@ -5386,7 +5253,6 @@ scr~addstr("New pad created")
 scr~refresh()
 p~addstr("New pad created")
 p~prefresh(1, 1, 1, 1, 2, 16)
-]]>
 </programlisting>
 </example>
 </section>
@@ -5516,8 +5382,7 @@ p~prefresh(1, 1, 1, 1, 2, 16)
 <para>A Pad instance.</para>
 <example>
 <title>Create a subpad</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 lf = .window~ASCII_LF~d2c()
 
 scr = .window~new()
@@ -5528,7 +5393,6 @@ scr~addstr("New pad created" || lf)
 scr~refresh()
 
 pea = pod~subpad(20, 20, 30, 30)
-]]>
 </programlisting>
 </example>
 </section>
