@@ -76,12 +76,10 @@ like MD5, Blowfish, SHA-256, or SHA-512.
 <para>Returns the encrypted string or a zero-length string on an error.</para>
 <example id="sysCrypt">
 <title>SysCrypt</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* encrypt a password */
 
 encstr = SysCrypt("password", "3A")
-]]>
 </programlisting>
 </example>
 </section>
@@ -122,10 +120,10 @@ Otherwise returns the session ID of the process with process ID
 </para>
 <example id="sysGetSID">
 <title>SysGetSID</title>
-<programlisting><![CDATA[/* get the session id of the calling process */
+<programlisting language="rexx">/* get the session id of the calling process */
 
 mysid = SysGetSID(0)
-]]></programlisting>
+</programlisting>
 </example>
 </section>
 
@@ -146,12 +144,10 @@ mysid = SysGetSID(0)
 <para>Returns the numeric errno value.</para>
 <example id="sysGeterrno">
 <title>SysGeterrno</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* get the errno */
 
 errno = SysGeterrno()
-]]>
 </programlisting>
 </example>
 </section>
@@ -178,12 +174,10 @@ errno = SysGeterrno()
 If the message is not available it returns the string "Unknown".</para>
 <example id="sysGeterrnomsg">
 <title>SysGeterrnomsg</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* get the errno message */
 
 say SysGeterrnomsg(26)
-]]>
 </programlisting>
 </example>
 </section>
@@ -207,12 +201,10 @@ C macro to perform the action.</para>
 <para>Returns 32 or 64 in most cases.</para>
 <example id="sysGetsizeofptr">
 <title>SysGetsizeofptr</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* get the pointer size */
 
 addrmode = SysGetsizeofptr()
-]]>
 </programlisting>
 </example>
 </section>
@@ -236,12 +228,10 @@ C API to perform the action.</para>
 <para>Returns the new sid or -1 on an error.</para>
 <example id="sysSetsid">
 <title>SysSetsid</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* set the session id to zero */
 
 call SysSetsid 0
-]]>
 </programlisting>
 </example>
 </section>
@@ -319,8 +309,7 @@ Allowed values are:
 <para>Returns previous signal value. This is meaningless to the Rexx programmer.</para>
 <example id="sysSignal">
 <title>SysSignal</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* Cause alarm signals to be ignored */
 call SysSignal 14, "ignore"
 
@@ -329,7 +318,6 @@ call SysSignal 2, "default"
 
 /* Cause HUPs to be ignored */
 call SysSignal 1, "I"
-]]>
 </programlisting>
 </example>
 </section>

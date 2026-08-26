@@ -65,12 +65,10 @@ C API to perform the action.</para>
 <para>Returns the current numerical effective group id.</para>
 <example id ="ex.sysGetegid">
 <title>SysGetegid</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* get the current effective group id */
 
 myegid = SysGetegid()
-]]>
 </programlisting>
 </example>
 </section>
@@ -94,12 +92,10 @@ C API to perform the action.</para>
 <para>Returns the current numerical effective user id.</para>
 <example id ="ex.sysGeteuid">
 <title>SysGeteuid</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* get the current effective user id */
 
 myeuid = SysGeteuid()
-]]>
 </programlisting>
 </example>
 </section>
@@ -123,12 +119,10 @@ C API to perform the action.</para>
 <para>Returns the current numerical group id.</para>
 <example id ="ex.sysGetgid">
 <title>SysGetgid</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* get the current group id */
 
 mygid = SysGetgid()
-]]>
 </programlisting>
 </example>
 </section>
@@ -175,15 +169,13 @@ Allowed values are:
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
 <example id ="ex.sysGetgrgid">
 <title>SysGetgrgid</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* the following examples came from a Linux laptop running Fedora */
 
-SysGetgrgid(100, "n")      -->  users
-SysGetgrgid(100, "g")      -->  100
-SysGetgrgid(100, "m")      -->  an ooRexx array with the member user names
-SysGetgrgid(100, "p")      -->  ""
-]]>
+SysGetgrgid(100, "n")      --&gt;  users
+SysGetgrgid(100, "g")      --&gt;  100
+SysGetgrgid(100, "m")      --&gt;  an ooRexx array with the member user names
+SysGetgrgid(100, "p")      --&gt;  ""
 </programlisting>
 </example>
 </section>
@@ -230,15 +222,13 @@ Allowed values are:
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
 <example id ="ex.sysGetgrnam">
 <title>SysGetgrnam</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* the following examples came from a Linux laptop running Fedora */
 
-SysGetgrnam("users", "n")      -->  users
-SysGetgrnam("users", "g")      -->  100
-SysGetgrnam("users", "m")      -->  an ooRexx array with the member user names
-SysGetgrnam("users", "p")      -->  ""
-]]>
+SysGetgrnam("users", "n")      --&gt;  users
+SysGetgrnam("users", "g")      --&gt;  100
+SysGetgrnam("users", "m")      --&gt;  an ooRexx array with the member user names
+SysGetgrnam("users", "p")      --&gt;  ""
 </programlisting>
 </example>
 </section>
@@ -262,12 +252,10 @@ C API to perform the action.</para>
 <para>Returns the current numerical process group id.</para>
 <example id ="ex.sysGetpgrp">
 <title>SysGetpgrp</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* get the current process group id */
 
 mypgrp = SysGetpgrp()
-]]>
 </programlisting>
 </example>
 </section>
@@ -323,18 +311,16 @@ Allowed values are:
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
 <example id ="ex.sysGetpwnam">
 <title>SysGetpwnam</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* the following examples came from a Linux laptop running Fedora */
 
-SysGetpwnam("dashley", "n")      -->  dashley
-SysGetpwnam("dashley", "u")      -->  500
-SysGetpwnam("dashley", "g")      -->  500
-SysGetpwnam("dashley", "r")      -->  David Ashley
-SysGetpwnam("dashley", "d")      -->  /home/dashley
-SysGetpwnam("dashley", "s")      -->  bash
-SysGetpwnam("dashley", "p")      -->  ""
-]]>
+SysGetpwnam("dashley", "n")      --&gt;  dashley
+SysGetpwnam("dashley", "u")      --&gt;  500
+SysGetpwnam("dashley", "g")      --&gt;  500
+SysGetpwnam("dashley", "r")      --&gt;  David Ashley
+SysGetpwnam("dashley", "d")      --&gt;  /home/dashley
+SysGetpwnam("dashley", "s")      --&gt;  bash
+SysGetpwnam("dashley", "p")      --&gt;  ""
 </programlisting>
 </example>
 </section>
@@ -390,18 +376,16 @@ Allowed values are:
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
 <example id ="ex.sysGetpwuid">
 <title>SysGetpwuid</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* the following examples came from a Linux laptop running Fedora */
 
-SysGetpwuid(500, "n")      -->  dashley
-SysGetpwuid(500, "u")      -->  500
-SysGetpwuid(500, "g")      -->  500
-SysGetpwuid(500, "r")      -->  David Ashley
-SysGetpwuid(500, "d")      -->  /home/dashley
-SysGetpwuid(500, "s")      -->  bash
-SysGetpwuid(500, "p")      -->  ""
-]]>
+SysGetpwuid(500, "n")      --&gt;  dashley
+SysGetpwuid(500, "u")      --&gt;  500
+SysGetpwuid(500, "g")      --&gt;  500
+SysGetpwuid(500, "r")      --&gt;  David Ashley
+SysGetpwuid(500, "d")      --&gt;  /home/dashley
+SysGetpwuid(500, "s")      --&gt;  bash
+SysGetpwuid(500, "p")      --&gt;  ""
 </programlisting>
 </example>
 </section>
@@ -425,12 +409,10 @@ C API to perform the action.</para>
 <para>Returns the current numerical user id.</para>
 <example id ="ex.sysGetuid">
 <title>SysGetuid</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* get the current user id */
 
 myuid = SysGetuid()
-]]>
 </programlisting>
 </example>
 </section>
@@ -458,12 +440,10 @@ C API to perform the action.</para>
 <para>Returns zero on success or -1 on an error.</para>
 <example id ="ex.sysSetegid">
 <title>SysSetegid</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* set the effective group id to 520 */
 
 call SysSetegid 520
-]]>
 </programlisting>
 </example>
 </section>
@@ -491,12 +471,10 @@ C API to perform the action.</para>
 <para>Returns zero on success or -1 on an error.</para>
 <example id ="ex.sysSeteuid">
 <title>SysSeteuid</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* set the effective user id to 520 */
 
 call SysSeteuid 520
-]]>
 </programlisting>
 </example>
 </section>
@@ -524,12 +502,10 @@ C API to perform the action.</para>
 <para>Returns zero on success or -1 on an error.</para>
 <example id ="ex.sysSetgid">
 <title>SysSetgid</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* set the group id to 520 */
 
 call SysSetgid 520
-]]>
 </programlisting>
 </example>
 </section>
@@ -560,12 +536,10 @@ C API to perform the action.</para>
 <para>Returns zero on success and -1 on an error.</para>
 <example id ="ex.sysSetpgid">
 <title>SysSetpgid</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* set process group id */
 
 call SysSetpgid 9321, 520
-]]>
 </programlisting>
 </example>
 </section>
@@ -589,12 +563,10 @@ C API to perform the action.</para>
 <para>Returns zero on success and -1 on an error.</para>
 <example id ="ex.sysSetpgrp">
 <title>SysSetpgrp</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* set the current process group id */
 
 call SysSetpgrp
-]]>
 </programlisting>
 </example>
 </section>
@@ -622,12 +594,10 @@ C API to perform the action.</para>
 <para>Returns zero on success or -1 on an error.</para>
 <example id ="ex.sysSetuid">
 <title>SysSetuid</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* set the user id to 520 */
 
 call SysSetuid 520
-]]>
 </programlisting>
 </example>
 </section>
