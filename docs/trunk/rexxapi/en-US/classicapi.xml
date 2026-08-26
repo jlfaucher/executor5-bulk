@@ -896,13 +896,11 @@ registered the new subcommand handler.</para>
 subcommand handlers with the RXSUBCOM command. For example: </para>
 <example>
 <title>RXSUBCOM</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
                                /* register Dialog Manager       */
                                /* subcommand handler            */
 "RXSUBCOM REGISTER ISPCIR ISPCIR ISPCIR"
 Address ispcir                 /* send commands to dialog mgr   */
-]]>
 </programlisting>
 </example>
 <para>The RXSUBCOM command registers the Dialog Manager subcommand handler ISPCIR
@@ -1322,13 +1320,11 @@ the EXPORT section.
 functions with the RXFUNCADD built-in function. For example: </para>
 <example>
 <title>RXFUNCADD</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
                                /* register function SysLoadFuncs  */
                                /* in dynamic link library RexxUTIL*/
 Call RxFuncAdd "SysLoadFuncs", "RexxUTIL", "SysLoadFuncs"
 Call SysLoadFuncs              /* call to load other functions    */
-]]>
 </programlisting>
 </example>
 <para>RXFUNCADD registers the external function SysLoadFuncs as routine
