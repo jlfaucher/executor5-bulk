@@ -175,8 +175,7 @@
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   dbName = 'ooFoods.rdbx'
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
@@ -190,7 +189,6 @@
 
     return .ooSQLExtensions~lastErrCode
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -758,8 +756,7 @@
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 do extension over .ooSQLExtensions~listBuiltins
   say extension~name~left(11) extension~description
 end
@@ -776,7 +773,6 @@ spellFix    Implements the spellfix1 virtual table that can search a vocabulary 
 toType      Implements tointeger() and toreal() SQL functions.
 wholeNumber Implements the wholenumber virtual table that returns whole numbers ..
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1025,8 +1021,7 @@ wholeNumber Implements the wholenumber virtual table that returns whole numbers 
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 mem = .ooSQLiteConnection~new(":memory:")
 .ooSQLExtensions~registerBuiltin(mem, "base64")
 do row over mem~exec("SELECT base64('SGVsbG8gd29ybGQh');", .true)
@@ -1036,7 +1031,6 @@ end
 /* Output
 Hello world!
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

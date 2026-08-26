@@ -214,15 +214,13 @@
     If the programmer is not completely adverse to using object methods, the <computeroutput>isNull()</computeroutput>
     method can be invoked on a handle to test for null, rather than use the <emphasis
     role="italic">oosqlIsHandleNull()</emphasis> function. E.g
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   -- The following code snippet:
   if handle~isNull then ...
 
   -- is equivalent to this snippet using the oosqlIsHandleNull() function:
   if oosqlIsHandleNull(handle) then ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -236,15 +234,13 @@
   <listitem>
   <para>
     This example opens a database connection and checks to be sure the returned handle is not null:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dbConn = oosqlOpen('contacts.rdbx')
   if oosqlIsHandleNull(dbConn) then do
     -- handle the error ...
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1150,8 +1146,7 @@
   <listitem>
   <para>
     This example opens the <computeroutput>ooFoods.rdbx</computeroutput> database and checks for any errors:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ret = oosqlOpen('ooFoods.rdbx', 'db')
   if ret == .ooSQLite~NOMEM then do
@@ -1159,7 +1154,7 @@
     return 99
   end
 
-  if oosqlErrCode(db) <> .ooSQLite~OK then do
+  if oosqlErrCode(db) &lt;&gt; .ooSQLite~OK then do
     -- handle the error ..
     oosqlClose(db)
     ...
@@ -1168,7 +1163,6 @@
   -- We have a good connection, use the database.
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1280,13 +1274,12 @@
   <para>
     This example creates a handle to a prepared statement and, if there is no error, executes it using the <link
     linkend="rtn-oosqlStep">oosqlStep</link> function:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ...
 
   ret = oosqlPrepare(dbConn, "SELECT * FROM foods", 'stmt')
-  if ret == .ooSQLite~OK & \ oosqlIsHandleNull(stmt) then do
+  if ret == .ooSQLite~OK &amp; \ oosqlIsHandleNull(stmt) then do
       index = oosqlColumnIndex(stmt, 'name')
 
       do while oosqlStep(stmt) == .ooSQLite~ROW
@@ -1294,7 +1287,6 @@
       end
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

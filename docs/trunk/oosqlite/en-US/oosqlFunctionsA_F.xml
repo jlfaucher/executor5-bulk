@@ -167,8 +167,7 @@
     This example shows part of the code that performs an online backup of a very large database which is concurrently in
     heavy use. If the backup does not finish in four hours, the application abandons the backup and reschedules it to a
     different time:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 -- This function will return DONE if completed and BUSY if abandoned.  Any other
 -- return would be a fatal error.
@@ -184,13 +183,13 @@
       leave
     end
 
-    if ret <> .ooSQLite~OK, ret <> .ooSQLite~BUSY, ret <> .ooSQLite~LOCKED then do
+    if ret &lt;&gt; .ooSQLite~OK, ret &lt;&gt; .ooSQLite~BUSY, ret &lt;&gt; .ooSQLite~LOCKED then do
       say 'Fatal error during back up.'
       outcome = ret
       leave
     end
 
-    if count * 2 > limit then do
+    if count * 2 &gt; limit then do
       say
       say "Backup has not completed within the time limit, going to abandon the operation."
       say
@@ -207,7 +206,6 @@
 
   return outcome
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -300,8 +298,7 @@
   <listitem>
   <para>
     This example initializes a backup and checks for error:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
     buHandle = oosqlBackupInit(destDB, srcDB)
     if oosqlIsHandleNull(buHandle) then do
@@ -311,7 +308,6 @@
       return 99.
     end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -413,8 +409,7 @@
   <para>
     This example shows how to calculate the percentage complete of a backup. The code snippet would be executed after a
     call to oosqlBackupStep().  Maybe every call, or every 5th call, ...
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   remain = oosqlBackupRemaining(buHandle)
   pages  = oosqlBackupPageCount(buHandle)
@@ -434,7 +429,6 @@
 
   */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -512,8 +506,7 @@
   <listitem>
   <para>
     This example initializes a backup, copies everything in one step, checks for error, and cleans up:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ...
 
@@ -540,7 +533,6 @@
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2003,8 +1995,7 @@
   <para>
     This example uses the <emphasis role="italic">oosqlColumnIndex</emphasis> function to get the index of the <emphasis
     role="italic">name</emphasis> column in the <emphasis role="italic">foods</emphasis> table:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dbConn = ''
   ret = oosqlOpen('ooFoods.rdbx', 'dbConn')
@@ -2019,7 +2010,6 @@
 
   dbConn~close
   stmt~finalize
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3603,8 +3593,7 @@
     This example is a small snippet of code to print out the description of the first 27 result codes. Inspection of the
     <computeroutput>ooSQLite.cls</computeroutput> file shows us that the first 27 result code constants are in numerically
     consecutive order:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   first = .ooSQLite~OK
   last  = .ooSQLite~NOTADB
@@ -3646,7 +3635,6 @@ file is encrypted or is not a database
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

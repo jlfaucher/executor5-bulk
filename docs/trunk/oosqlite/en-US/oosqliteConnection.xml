@@ -368,17 +368,15 @@
   <para>
     This example opens up a connection to the <computeroutput>phoneBook</computeroutput> database, located in the
     current directory of the application, and checks for error:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   db = .ooSQLiteConnection~new('phoneBook.rdbx')
 
-  if db~initCode <> 0 then do
+  if db~initCode &lt;&gt; 0 then do
     -- handle error in some fashion
     ...
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -567,13 +565,12 @@
   <para>
     This example attempts to open up a connection to the <computeroutput>ooFoods.rdbx</computeroutput> database and checks
     that the connection was opened successfully, aborting if it was not:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dbName =  'ooFotods.rdbx'
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
-  if dbConn~initCode <> 0 then do
+  if dbConn~initCode &lt;&gt; 0 then do
     errRC  = dbConn~lastErrCode
     errMsg = dbConn~lastErrMsg
 
@@ -585,7 +582,6 @@
   end
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -649,14 +645,13 @@
   <para>
     This example uses the <emphasis role="italic">lastErrCode</emphasis> attribute to produce a meaningful error message when
     a database connection fails to open:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 
   dbName =  'ooFotods.rdbx'
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
-  if dbConn~initCode <> 0 then do
+  if dbConn~initCode &lt;&gt; 0 then do
     errRC  = dbConn~lastErrCode
     errMsg = dbConn~lastErrMsg
 
@@ -668,7 +663,6 @@
   end
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -730,14 +724,13 @@
   <para>
     This example uses the <emphasis role="italic">lastErrMsg</emphasis> attribute to produce a meaningful error message when
     a database connection fails to open:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 
   dbName =  'ooFotods.rdbx'
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
-  if dbConn~initCode <> 0 then do
+  if dbConn~initCode &lt;&gt; 0 then do
     errRC  = dbConn~lastErrCode
     errMsg = dbConn~lastErrMsg
 
@@ -749,7 +742,6 @@
   end
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -826,23 +818,23 @@
     method on the returned value without having to check that the return is the <computeroutput>.nil</computeroutput> object.
     Note that invoking the <emphasis role="italic">left</emphasis> method on the <computeroutput>.nil</computeroutput> object
     will raise a syntax condition:
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
   dbConn~null = 'NULL'
 
   sql = 'SELECT * FROM foods ORDER BY name;'
   stmt = .ooSQLiteStmt~new(dbConn, sql)
 
-  say stmt~columnName(1)~left(25) || stmt~columnName(2)~left(25) || stmt~columnName(3)~left(25)
+  say stmt~columnName(1)~left(25) || -
+      stmt~columnName(2)~left(25) || -
+      stmt~columnName(3)~left(25)
   say '='~copies(80)
 
   do while stmt~step == stmt~ROW
-    say stmt~columnText(1)~left(25) || stmt~columnText(2)~left(25) || stmt~columnText(3)~left(25)
+    say stmt~columnText(1)~left(25) || -
+        stmt~columnText(2)~left(25) || -
+        stmt~columnText(3)~left(25)
   end
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -973,12 +965,10 @@
     passes the busy handler object itself as the <emphasis role="italic">userData</emphasis> argument:
 
 <programlisting>
-<![CDATA[
-
   helper = .MyHelperClass~new
 
   db = .ooSQLiteConnection~new('phoneBook.rdbx')
-  if db~initCode <> 0 then return db~lastErrCode
+  if db~initCode &lt;&gt; 0 then return db~lastErrCode
 
   db~busyHandler(helper, onTimeOut, helper)
   ...
@@ -994,10 +984,8 @@
 ::method query private unguarded
   use strict arg count
 
-  { code that determines what to return }
+  -- (code that determines what to return)
   ...
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1124,15 +1112,13 @@
   <listitem>
   <para>
     This example sets a busy timeout value of 3 seconds:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   db = .ooSQLiteConnection~new('phoneBook.rdbx')
-  if db~initCode <> 0 then return db~lastErrCode
+  if db~initCode &lt;&gt; 0 then return db~lastErrCode
 
   db~busyTimeout(3000)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1236,13 +1222,12 @@
   <para>
     This example opens a database to do some work with it, then closes it. Note that if an error ocurrs trying to open the
     database, the connection object is still closed:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dbFile = 'ooFoods.rdbx'
 
   db = .ooSQLiteConnection~new(dbFile, .ooSQLite~OPEN_READWRITE)
-  if db~initCode <> 0 then do
+  if db~initCode &lt;&gt; 0 then do
     -- do error stuff
     ...
     db~close
@@ -1254,7 +1239,6 @@
 
   db~close
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1674,14 +1658,13 @@
   <listitem>
   <para>
     This example illustrates the <emphasis role="italic">dbReadOnly</emphasis> method:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dbName = 'ooFoods.rdbx'
 
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READONLY)
 
-  if dbConn~initCode <> 0 then do
+  if dbConn~initCode &lt;&gt; 0 then do
     -- Do error stuff and return
   end
 
@@ -1704,7 +1687,6 @@
   Read only? temp:  -1
 
   */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1842,14 +1824,13 @@
   <para>
     This example checks the values of the page memory useed by the caches for the database connection and does not reset the
     high water mark:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dbName = 'ooFoods.rdbx'
 
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
-  if dbConn~initCode <> 0 then do
+  if dbConn~initCode &lt;&gt; 0 then do
       -- do error handling and return
   end
 
@@ -1873,7 +1854,6 @@ Bytes of page memory used by all caches on this database connection:
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2111,8 +2091,7 @@ Bytes of page memory used by all caches on this database connection:
   <para>
     This example shows the <emphasis role="italic">exec</emphasis> method invoction to use the internal callback of the
     ooSQLite framework. The format of the returned result set is specified to be an array of arrays:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 	dbName = 'ooFoods.rdbx'
 
@@ -2123,7 +2102,6 @@ Bytes of page memory used by all caches on this database connection:
 
   z = printResultSet(resultSet)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2231,8 +2209,7 @@ Bytes of page memory used by all caches on this database connection:
     each record is added to the user data object, which in this case is an array. On return from the <emphasis
     role="italic">exec</emphasis> method, if there were no errors, the <emphasis role="italic">resultObj</emphasis> array
     will contain all the result rows produced by executing the SQL statement:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
@@ -2255,7 +2232,6 @@ Bytes of page memory used by all caches on this database connection:
   return self~OK
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3896,8 +3872,7 @@ Bytes of page memory used by all caches on this database connection:
   <listitem>
   <para>
     This example uses the table_info pragma to get information on the food_types table and then print it to the screen:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 	dbName    = 'ooFoods.rdbx'
   tablename = 'food_types'
@@ -3915,7 +3890,6 @@ cid     name      type           notnull     dflt_value   pk
 0       id        integer        0           NULL         1
 1       name      text           0           NULL         0
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

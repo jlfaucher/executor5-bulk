@@ -186,14 +186,13 @@
   <para>
     This example uses the <emphasis role="italic">lastErrCode</emphasis> attribute to produce a meaningful error message when
     a database connection fails to open:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 
   dbName =  'ooFotods.rdbx'
   dbConn = .ooSQLLibrary~new(dbName, .ooSQLite~OPEN_READWRITE)
 
-  if dbConn~initCode <> 0 then do
+  if dbConn~initCode &lt;&gt; 0 then do
     errRC  = dbConn~lastErrCode
     errMsg = dbConn~lastErrMsg
 
@@ -205,7 +204,6 @@
   end
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

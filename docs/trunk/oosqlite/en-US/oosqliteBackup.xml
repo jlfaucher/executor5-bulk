@@ -340,21 +340,19 @@
   <listitem>
   <para>
     This example loads a database from disk into an in-memory database and exits if there is an error in initialization:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   srcConn = .ooSQLiteConnection~new("contacts.rdbx")
 
   srcConn~busyTimeout(3000)  -- 3 seconds.
 
   bu = .ooSQLiteBackup~new(srcConn, ":memory:", .true)
-  if bu~initCode <> bu~OK then do
+  if bu~initCode &lt;&gt; bu~OK then do
     say 'Error opening backup object:' bu~lastErrCode bu~lastErrMsg
     srcConn~close
     return 99
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -801,11 +799,10 @@ Completion = 100% * (buObj~pagecount - buObj~remaining) / buObj~pagecount
     This example loads a database from disk into an in-memory database. It uses the <emphasis
     role="italic">saveDestConn</emphasis> attribute to prevent ooSQLite from closing the in-memory connection and uses
     the <link linkend="mthGetDestConn">getDestConn</link> method to retrieve the database connection:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   bu = .ooSQLiteBackup~new(srcConn, ":memory:")
-  if bu~initCode <> bu~OK then do
+  if bu~initCode &lt;&gt; bu~OK then do
     -- handle error ...
   end
 
@@ -815,7 +812,6 @@ Completion = 100% * (buObj~pagecount - buObj~remaining) / buObj~pagecount
   memConn = bu~getDestConn
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -876,15 +872,14 @@ Completion = 100% * (buObj~pagecount - buObj~remaining) / buObj~pagecount
     This example shows a online backup in progress. The source database is in use in a busy application. The backup
     operation is expected to complete in less than 4 hours. If it does not, the operation is abandoned and the
     application reschedules the backup for another time:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   count = 0
   do while .true
     ret = bu~step(2)
     if ret == bu~DONE then leave
 
-    if ret <> bu~OK, ret <> bu~BUSY, ret <> bu~LOCKED then do
+    if ret &lt;&gt; bu~OK, ret &lt;&gt; bu~BUSY, ret &lt;&gt; bu~LOCKED then do
       say 'Fatal error during back up:'  bu~lastErrCode bu~lastErrMsg
       leave
     end
@@ -892,13 +887,12 @@ Completion = 100% * (buObj~pagecount - buObj~remaining) / buObj~pagecount
     j = SysSleep(.5)
     count += 1
 
-    if count > (count * 2 * 60 * 60 * 4) then do
+    if count &gt; (count * 2 * 60 * 60 * 4) then do
       say "Backup has not completed in 4 hours, going to abandon the operation."
       bu~finish
       leave
     end
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -965,11 +959,10 @@ Completion = 100% * (buObj~pagecount - buObj~remaining) / buObj~pagecount
     linkend="atrSaveDestConn">saveDestConn</link> attribute to true to prevent ooSQLite from closing the in-memory
     connection. It then uses the <link linkend="mthGetDestConn">getDestConn</link> method to retrieve the database
     connection:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   bu = .ooSQLiteBackup~new(srcConn, ":memory:")
-  if bu~initCode <> bu~OK then do
+  if bu~initCode &lt;&gt; bu~OK then do
     -- handle error ...
   end
 
@@ -979,7 +972,6 @@ Completion = 100% * (buObj~pagecount - buObj~remaining) / buObj~pagecount
   memConn = bu~getDestConn
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1055,8 +1047,7 @@ Completion = 100% * (buObj~pagecount - buObj~remaining) / buObj~pagecount
   <listitem>
   <para>
     This example backs up a small database. Since the database is small, it simple copies all the pages at one time:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ...
 
@@ -1065,14 +1056,13 @@ Completion = 100% * (buObj~pagecount - buObj~remaining) / buObj~pagecount
   if buObj~initCode == buObj~OK then ret = buObj~step(-1)
   else ret = buObj~lastErrCode
 
-  if ret <> buObj~DONE then do
+  if ret &lt;&gt; buObj~DONE then do
     -- back up failed, handle error
     ...
   end
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

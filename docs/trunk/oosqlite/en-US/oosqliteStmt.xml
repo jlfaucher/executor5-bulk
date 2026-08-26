@@ -457,14 +457,12 @@
   <para>
     This example initializes a new ooSQLiteStmt object. When the <link linkend="atrInitCodeClsStmt">initCode</link>
     attribute is checked, it is seen that an error ocurred, and the last error message is printed to the screen:
-<programlisting>
-<![CDATA[
-
-
+<programlisting language="rexx">
   stmt = .ooSQLiteStmt~new(dbConn, 'SELECT * FROM fooods ORDER BY name;')
   if stmt~initCode <> 0 then do
     say 'ooSQLiteStmt initialization error:' stmt~initCode
     say '  Error code:' stmt~initCode '('stmt~lastErrMsg')'
+  end
 
   /*  output would be similar to:
 
@@ -472,7 +470,6 @@
     Error code: 1 (no such table: fooods)
 
   */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -549,8 +546,7 @@
     returned value without having to check that the return is the <computeroutput>.nil</computeroutput> object. Note that
     invoking the <emphasis role="italic">left</emphasis> method on the <computeroutput>.nil</computeroutput> object will
     raise a syntax condition:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
@@ -565,7 +561,6 @@
     say stmt~columnText(1)~left(25) || stmt~columnText(2)~left(25) || stmt~columnText(3)~left(25)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
