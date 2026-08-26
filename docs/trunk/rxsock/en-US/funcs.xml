@@ -109,7 +109,7 @@ All parameters that you supply are only used to bypass copyright information.
 <para>The SockDropFuncs call drops all RxSock functions.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
+<programlisting language="rexx">
 SockDropFuncs()
 </programlisting>
 <para>To unload the dynamic load library (DLL), first call SockDropFuncs() and then exit
@@ -139,7 +139,7 @@ system and can be deleted or replaced.
 <para>Prior to Version 1.2, this function did not exist. To check if a former version of
 Rxsock is installed, use the following code after loading the function package with
 SockLoadFuncs():
-<programlisting>
+<programlisting language="rexx">
 /* oldVersion is 1 if a version of RxSock &lt; 1.2 is loaded */
 oldVersion = (1 = RxFuncQuery("SockVersion"))
 </programlisting>
@@ -1451,7 +1451,7 @@ Possible values are:</para>
 </variablelist>
 <example id="ex.sockselect-function:">
 <title>SockSelect</title>
-<programlisting>
+<programlisting language="rexx">
 r.0 = 2                     /* specify 2 sockets for read in stem r. */
 r.1 = 101
 r.2 = 102
@@ -1467,11 +1467,11 @@ end
 </programlisting>
 </example>
 <para>That SockSelect() call can be invoked as:</para>
-<programlisting>
+<programlisting language="rexx">
 rc = SockSelect("r.","w.","")
 </programlisting>
 <para>or</para>
-<programlisting>
+<programlisting language="rexx">
 rc = SockSelect("r.","w.",)
 </programlisting>
 <para>The function call SockSelect(, , , x) results in the program pausing for x seconds.
