@@ -427,11 +427,9 @@ been added, or 0 or a value less than 0 to indicate an error.
   <para>
     The following example puts the names of all read/write files with extension .REX in the given directory of the list
     box:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~addDirectory(203, drive":\"path"\*.rex", "READWRITE")
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -599,12 +597,10 @@ list box is no multiselection list box.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example deselects the items 1 through 5:</para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 lb = self~newListBox("Offers")
 if lb == .Nil then return
 lb~deSelectRange(,6)
-]]>
 </programlisting>
 </listitem></varlistentry>
 </variablelist>
@@ -804,8 +800,7 @@ Generic Form:
   <para>
     This example returns the text of the list box item under the specified point, or .nil if the point is not over the list
     box:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method textAtPoint
   use strict arg point
@@ -821,7 +816,6 @@ Generic Form:
 
   return .nil
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1161,12 +1155,11 @@ separated by blanks.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example lists all items selected in the associated multiselection
 list box:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 lb = self~newListBox("Offers")
 if lb == .Nil then return
 sit = lb~selectedItems
-if sit > 0 then do
+if sit &gt; 0 then do
    say "You ordered:"
    sndx = lb~selectedIndexes
    do i = 1 to sit
@@ -1174,7 +1167,6 @@ if sit > 0 then do
       say "1 x" lb~getText(order)
    end
 end
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1272,12 +1264,10 @@ list box is not a multiselection list box.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example selects the items 5 through 9:</para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 lb = self~newListBox("Offers")
 if lb == .Nil then return
 lb~selectRange(5,9)
-]]>
 </programlisting>
 </listitem></varlistentry>
 </variablelist>
@@ -1316,14 +1306,12 @@ list box, in dialog units.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example creates a list that can handle up to three tabulators
 in a list entry. The tabulator positions are 10, 20, and 30.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 lb = MyDialog~newListBox(102)
 if lb == .Nil then return
 lb~setTabulators(10, 20, 30)
 lb~add(textcol1 || "09"x || textcol2 || "09"x || textcol3 || "09"x ||,
    textcol4)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1356,12 +1344,10 @@ provides a horizontal scroll bar.</para>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example sets the internal width twice the width of the
 list box control:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 lb = MyDialog~newListBox(102)
 if lb == .Nil then return
 lb~setWidth(lb~SizeX*2)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>

@@ -482,8 +482,7 @@
   <para>
     This example determines if the icon image for the static control has been set. If not, the image is loaded and set.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 staticControl = self~newStatic(IDC_ST_ICON)
 
 icon = staticControl~getIcon
@@ -493,7 +492,6 @@ if icon == .nil then do
   staticControl~setIcon(icon)
 end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -564,14 +562,12 @@ end
   <listitem>
   <para>
     This example gets the image from a static control and releases the image.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onExit
   expose staticPicture
 
   image = staticPicture~getImage(.Image~toID(IMAGE_CURSOR))
   if \ image~isNull then image~release
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -628,8 +624,7 @@ end
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 icon = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_ICON))
 if \ icon~isNull then do
   oldIcon = iconControl~setIcon(icon)
@@ -639,7 +634,6 @@ else do
   -- handle error
   ...
 end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -694,8 +688,7 @@ end
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 image = .Image~getImage("Camera.bmp", .Image~toID(IMAGE_BITMAP))
 if \ image~isNull then do
   oldImage = staticControl~setImage(image)
@@ -706,7 +699,6 @@ else do
   -- handle error
   ...
 end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

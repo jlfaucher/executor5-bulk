@@ -252,8 +252,7 @@
       This example sets the background color to a custom color. This will only have effect in Windows
       Classic theme. It is not neccessary to set numeric digits to 11 to use this method. In the example
       this is only done to allow the return to be displayed in hexadecimal.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   numeric digits 11
 
   progressBar = self~newProgressBar("IDC_PB_CONNECTING")
@@ -268,7 +267,6 @@ Going to set the background color for the progress bar
 Old background color was: 4278190080 (0xFF000000)
 
 */
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -327,8 +325,7 @@ Old background color was: 4278190080 (0xFF000000)
       This example sets the bar color to a custom color. This will only have effect in Windows Classic
       theme. It is not neccessary to set numeric digits to 11 to use this method. In the example this is
       only done to allow the return to be displayed in hexadecimal.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   numeric digits 11
 
   progressBar = self~newProgressBar("IDC_PB_CONNECTING")
@@ -343,7 +340,6 @@ Going to set the bar color for the progress bar
 Old bar color was:        4278190080 (0xFF000000)
 
 */
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -396,8 +392,7 @@ Old bar color was:        4278190080 (0xFF000000)
     <para>
       This example demonstrates how the range is returned. In the resetRange() method a directory object
       is passed in. For this example, assume range~min is -200 and range~max is 200.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method resetRange
   use strict arg range
   pb = self~newProgressBar("IDC_PB_COUNTDOWN")
@@ -423,7 +418,6 @@ Current minimum: -200 current maximum: 200
 Current minimum: -200 current maximum: 200
 
 */
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -468,8 +462,7 @@ Current minimum: -200 current maximum: 200
       In this example, the range for the progress bar is set to -200 to 200. At another point in the
       program, the current position is printed to the screen. This is not real-world use case, just an
       example:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   pb = self~newProgressBar("IDC_PB_COUNTDOWN")
   if pb \= .nil then do
      pb~setFullRange(-200,200)
@@ -493,7 +486,6 @@ Now at position -160
 ...
 
 */
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -651,11 +643,9 @@ Form 2:
   <listitem>
     <para>
       This example turns marquee mode on and sets the time between updates at one half of a second:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   pb = self~newProgressBar("IDC_PB_SEARCHING")
   if pb \== .nil then pb~setMarquee(.true, 500)
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
