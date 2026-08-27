@@ -979,8 +979,15 @@ target_include_directories(rexx PUBLIC
 
 # Extra link library definitions
 target_link_libraries(rexx rexxapi ${platform_interpreter_libs} ${CMAKE_REQUIRED_LIBRARIES})
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  target_link_options (rexx PRIVATE -Wno-stringop-overflow)
+if (CMAKE_INTERPROCEDURAL_OPTIMIZATION)
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        if (CMAKE_VERSION VERSION_LESS "3.13")
+            message(STATUS "CMake 3.13 or later is required for target_link_options")
+            message(STATUS "Not disabling lto-wrapper warning: writing 1 byte into a region of size 0")
+        else ()
+            target_link_options (rexx PRIVATE -Wno-stringop-overflow)
+        endif ()
+    endif ()
 endif ()
 install(TARGETS rexx RUNTIME DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core
                      LIBRARY DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core
