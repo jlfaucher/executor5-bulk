@@ -279,9 +279,9 @@
         the various working parts of the application). </para>
 <para>Now look at <computeroutput>CustomerView.rex</computeroutput> in an editor. Look for the
           <computeroutput>CLASS</computeroutput> statement:
-<programlisting><![CDATA[
+<programlisting language="rexx">
     ::CLASS "CustomerView" SUBCLASS RcDialog PUBLIC
-]]></programlisting>
+</programlisting>
   <computeroutput>CustomerView</computeroutput> is a subclass of the
         ooDialog-provided class <computeroutput>RcDialog</computeroutput>, which gets its dialog
         layout from a resource script file that is human-readable (using a text editor). RcDialog is
@@ -297,7 +297,7 @@
 <section id="chap04-rcdialogcode-setup"><title>Setting Up the Dialog Window</title><!-- section 4.3.1 -->
 <para>When you ran <computeroutput>StartUp.rex</computeroutput>, there were an initial set of
           comments displayed in the command prompt window, as follows:
-<programlisting><![CDATA[
+<programlisting>
     StartCustomerView Routine-01: Start.
     CustomerView-init-01.
     CustomerView-createMenuBar-01.
@@ -308,7 +308,7 @@
     CustomerModel-query-01.
     CustomerData-getData-01.
     CustomerView-showData-01.
-]]></programlisting>
+</programlisting>
   These comments trace the process of establishing the dialog to the point
           of making the dialog visible and getting the application data to display - in other words,
           setting up the dialog. One routine and seven methods of
@@ -383,7 +383,7 @@
           including the <computeroutput>::Method</computeroutput> statements but excluding the
           <computeroutput>say</computeroutput> instructions. And if we didn't care too much for
           effective program structure or error checking, it could be squished down to just ten
-          instructions as follows:<programlisting><![CDATA[
+          instructions as follows:<programlisting language="rexx">
     ::ROUTINE startCustomerView PUBLIC
       .Application~setDefaults("O", "CustomerView.h", .false)
       dlg = .CustomerView~new("customerView.rc", IDD_CUST_DIALOG)
@@ -394,7 +394,7 @@
         self~execute("SHOWTOP")
       ::METHOD initDialog
         menuBar = .scriptMenuBar~new("CustomerView.rc", "IDR_CUST_MENU", , , .true)
-        menuBar~attachTo(self)]]></programlisting>
+        menuBar~attachTo(self)</programlisting>
      And if the <computeroutput>::class</computeroutput>,
      <computeroutput>::method</computeroutput>, and
      <computeroutput>::routine</computeroutput> directives are excluded, only six statements
@@ -458,9 +458,9 @@
   behavior) an ooRexx proxy is created in the <computeroutput>initDialog</computeroutput>
   method as follows (where <computeroutput>custControls</computeroutput> is a directory
   object that makes the <computeroutput>expose</computeroutput> statements shorter):
-<programlisting><![CDATA[
+<programlisting language="rexx">
     custControls[ecCustNo] = self~newEdit("IDC_CUST_EDT_CUSTNO")
-]]></programlisting> The item associated with the index <computeroutput>ecCustNo</computeroutput>
+</programlisting> The item associated with the index <computeroutput>ecCustNo</computeroutput>
     is the proxy ooRexx object for the Windows edit
     control that will contain the customer number; <computeroutput>self</computeroutput> is
   the dialog instance; <computeroutput>newEdit</computeroutput> is the method of the
@@ -481,9 +481,9 @@
     pushbutton proxy is created so that the button can be enabled (outbound active behavior) when a user
     chooses the menu option <emphasis role="bold">Update...</emphasis> (inbound active behavior).</para>
 <para>After this, the following statement appears:
-<programlisting><![CDATA[
+<programlisting language="rexx">
   self~connectButtonEvent("IDC_CUST_BTN_RECORDCHANGES","CLICKED",recordChanges)
-]]></programlisting>
+</programlisting>
   This is an example of specifying an "event handler" (inbound active behavior).
      <indexterm><primary>Event handler</primary></indexterm>
   Suppose the user presses the <emphasis role="bold">Record Changes</emphasis> button.
@@ -518,9 +518,9 @@
   in the last parameter of the following <computeroutput>.ScriptMenuBar~new</computeroutput>
   statement in the <computeroutput>createMenuBar</computeroutput> method:
   <indexterm><primary>Autoconnection</primary></indexterm>
-<programlisting><![CDATA[
+<programlisting language="rexx">
   menuBar = .ScriptMenuBar~new("CustomerView.rc", "IDR_CUST_MENU", , , .true)
-]]></programlisting>
+</programlisting>
           <indexterm>
             <primary>menuBar</primary>
             <secondary>RcDialog</secondary>
@@ -549,17 +549,15 @@
 <para>But before the menu actions will work, the <computeroutput>menuBar</computeroutput> object
     must be associated with the dialog object. This is done by this statement (at the beginning
     of the <computeroutput>initDialog</computeroutput> method):
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
       menuBar~attachTo(self)
-]]>
 </programlisting>
   By the way, an alternative approach is to create the menubar in the
   <computeroutput>initDialog</computeroutput> method, and attach the menu at
   the same time using the previously omitted 6th parameter, <computeroutput>self</computeroutput>:
-<programlisting><![CDATA[
+<programlisting language="rexx">
   menuBar = .ScriptMenuBar~new("CustomerView.rc", "IDR_CUST_MENU", , , .true, self)
-]]></programlisting>
+</programlisting>
     In this case, the statement <computeroutput>menuBar~attachTo(self)</computeroutput>
     should be omitted. The point here is that while the menubar can be created any time,
     it cannot be attached until the underlying dialog has been created; that is in the
@@ -651,9 +649,9 @@
     text for any control. For example, the text on a pushbutton can be changed using this method.
     To check this out, try inserting this statement at the end of the
     <computeroutput>update</computeroutput> method:
-    <programlisting><![CDATA[
+    <programlisting language="rexx">
       custControls[btnRecordChanges]~setText("Press me")
-    ]]></programlisting>
+    </programlisting>
     When "Update" is menu-selected, the text on the button changes.
   </para></listitem>
   <listitem><para>Second, the Customer Address data is an array, which for display
@@ -674,8 +672,8 @@
     permanent (i.e. "record" them). Enabling edit controls is done by sending them the
     message <computeroutput>setReadOnly</computeroutput> with the parameter
     <computeroutput>.false</computeroutput>. For example:
-<programlisting><![CDATA[
-    custControls[ecCustName]~setReadOnly(.false)]]></programlisting>
+<programlisting language="rexx">
+    custControls[ecCustName]~setReadOnly(.false)</programlisting>
   </para>
   <para>Pushbuttons are enabled by invoking <computeroutput>enableControl</computeroutput>
     on the dialog with the control's symbolic ID as the single parameter, as shown
@@ -683,11 +681,13 @@
     push-button - in this case by invoking the button's <computeroutput>state</computeroutput>
     method. Finally, the cursor is placed in the Customer Name edit
     control by invoking the dialog's <computeroutput>focusControl</computeroutput> method.
-<programlisting><![CDATA[
+<programlisting language="rexx">
     self~enableControl("IDC_CUST_BTN_RECORDCHANGES")
-    custControls[btnRecordChanges]~state = "FOCUS"     -- Put focus on the button
-    self~focusControl("IDC_CUST_EDT_CUSTNAME")         -- place cursor in the CustName edit control.
-]]></programlisting>
+    -- Put focus on the button
+    custControls[btnRecordChanges]~state = "FOCUS"
+    -- place cursor in the CustName edit control
+    self~focusControl("IDC_CUST_EDT_CUSTNAME")
+</programlisting>
     The dialog is now in a state whereby the user can make changes to the
     data. When the user presses the <emphasis role="bold">Record Changes</emphasis> button, the
     <computeroutput>recordChanges</computeroutput> method is invoked.

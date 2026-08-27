@@ -133,10 +133,10 @@ extension to ooRexx.
     </figure>
 <para>
   First, there's code that kicks things off:
-<programlisting><![CDATA[
+<programlisting language="rexx">
       dlg = .HelloWorld~new
       dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
-]]></programlisting>
+</programlisting>
     The first statement creates an instance of the class <computeroutput>HelloWorld</computeroutput>,
     and assigns the instance to the variable <computeroutput>dlg</computeroutput>
     (the <computeroutput>HelloWorld</computeroutput> class is defined in the third part of the code).
@@ -155,9 +155,9 @@ extension to ooRexx.
 </para>
 <para>
   Second, there's a directive to ooRexx to use ooDialog:
-<programlisting><![CDATA[
+<programlisting language="rexx">
       ::REQUIRES "ooDialog.cls"
-]]></programlisting>
+</programlisting>
     This directive allows all the classes defined by ooDialog to be accessible to our program.
     If this statement is absent, then the following error appears on the initiating command prompt:
 <programlisting><![CDATA[
@@ -173,12 +173,12 @@ extension to ooRexx.
 </para>
 <para>
   Finally, there's the definition of the class <computeroutput>HelloWorld</computeroutput>:
-<programlisting><![CDATA[
+<programlisting language="rexx">
   ::CLASS HelloWorld SUBCLASS UserDialog
     ::METHOD init
       forward class (super) continue
       self~create(30, 30, 257, 123, "Hello World", "CENTER")
-]]></programlisting>
+</programlisting>
   The first line defines a class called <computeroutput>HelloWorld</computeroutput> as a subclass of
   the ooDialog-provided class <computeroutput>UserDialog</computeroutput>
   (and yet again, but finally, see the ooDialog Reference for full details).
@@ -230,9 +230,9 @@ extension to ooRexx.
   been set up properly, the dialog is actually surfaced (made visible) by the
   <computeroutput>execute</computeroutput> message (handled by HelloWorld's superclass)
   sent by the second statement in the program which was:
-<programlisting><![CDATA[
+<programlisting language="rexx">
       dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
-]]></programlisting>
+</programlisting>
 </para>
 <para>
 Now let's add some behavior to the dialog. We're going to build a "Words of Wisdom"
@@ -260,7 +260,7 @@ we both add to the way dialogs are populated with controls, and also show how us
   Now let's look at the code.
   The first seven lines (excluding comments and blank lines)
   are essentially the same as the first seven in <computeroutput>HelloWorld.rex</computeroutput>:
-<programlisting><![CDATA[
+<programlisting language="rexx">
     dlg = .WordsOfWisdom~new
     dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
     ::REQUIRES "ooDialog.cls"
@@ -268,15 +268,15 @@ we both add to the way dialogs are populated with controls, and also show how us
     ::METHOD init
       forward class (super) continue
       self~create(30, 30, 257, 123, "Words of Wisdom", "CENTER")
-]]></programlisting>
+</programlisting>
   However, a <emphasis role="italic">defineDialog</emphasis> method has been added:
-<programlisting><![CDATA[
+<programlisting language="rexx">
   ::METHOD defineDialog
     self~createPushButton(901, 142, 99, 50, 14, "DEFAULT", "More wisdom")
     self~createPushButton(IDCANCEL, 197, 99, 50, 14, ,"Cancel")
     self~createStaticText(-1, 40, 40, 200, 20, , -
      "Complex problems have simple solutions"||.endofline||"- which are wrong.")
-]]></programlisting>
+</programlisting>
   This method is invoked automatically by the superclass, and consists of three
   statements each of which creates a control. The first two each create a pushbutton:
   <itemizedlist>
@@ -358,12 +358,12 @@ we both add to the way dialogs are populated with controls, and also show how us
   <computeroutput>defineDialog</computeroutput> method - are almost identical to those of
   <computeroutput>wow.rex</computeroutput>, with two significant changes.
   The method is as follows:
-<programlisting><![CDATA[
+<programlisting language="rexx">
   ::method defineDialog
     self~createPushButton(901, 142, 99, 50, 14, "DEFAULT", "More wisdom", OkClicked)
     self~createPushButton(IDCANCEL, 197, 99, 50, 14, ,"Cancel")
     self~createStaticText(101, 40, 40, 200, 40, , "Click 'More wisdom'")
-]]></programlisting>
+</programlisting>
 </para>
 <para>
   The two significant changes are as follows. Firstly, the statement
@@ -379,7 +379,7 @@ we both add to the way dialogs are populated with controls, and also show how us
 <para>
   However, the major change to the program is the new <computeroutput>okClicked</computeroutput> method that
   picks a "words of wisdom" text and displays it. Pseudocode for this method is as follows:
-<programlisting><![CDATA[
+<programlisting>
   Method okClicked
     Create array 'arrWow' and add a 'words of wisdom' text strings to each of seven
     array elements.
@@ -387,7 +387,7 @@ we both add to the way dialogs are populated with controls, and also show how us
     Pick a "words of wisdom" text randomly from 'arrWow'
     Show that text in the static text field.
     return
-]]></programlisting>
+</programlisting>
   Have a look at it the code that implements this method in <computeroutput>Wow2.rex</computeroutput>.
   Note that the penultimate pseudocode statement above - "show that text in
   the static text field" - is implemented in two steps. First the statement

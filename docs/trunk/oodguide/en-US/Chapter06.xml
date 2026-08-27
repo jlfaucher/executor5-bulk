@@ -255,9 +255,9 @@
         The <computeroutput>initDialog</computeroutput> method is a good place to do this. Try inserting the following
         in <computeroutput>CustomerView.rex</computeroutput>, say just before
         the statement <computeroutput>self~getData</computeroutput> in the <computeroutput>initDialog</computeroutput> method:
-<programlisting><![CDATA[
+<programlisting language="rexx">
     custNameLabel = self~newStatic("IDC_CUST_LBL_CUSTNAME")
-    custNameLabel~setText("Namen:")]]></programlisting>
+    custNameLabel~setText("Namen:")</programlisting>
         The Customer View will be displayed with "Namen" (German) instead of "Name" (English).
       </para>
       <para>Of course, this text should
@@ -321,12 +321,12 @@
     <computeroutput>startup</computeroutput>. Yes, this is the wrong way round,
     but its purpose is to illustrate the code required for a password prompt.
     It is very simple, and uses one of the many and useful ooDialog built-in dialogs -
-    <computeroutput>PasswordBox(...)</computeroutput> - as follows:<programlisting><![CDATA[
+    <computeroutput>PasswordBox(...)</computeroutput> - as follows:<programlisting language="rexx">
       parse arg pwOption
       if pwOption = "enterPW" then do
         pwd = PasswordBox("Please enter your password","Sign In")
         if pwd \= "Password" then exit
-      end    ]]></programlisting>
+      end    </programlisting>
   </para>
 
   </section>  <!-- End of Section 6.1.3 -->
@@ -387,7 +387,7 @@
      The solution adopted in this exercise is illustrated
      by the following code fragment, taken from <computeroutput>CustomerListView</computeroutput>'s
     <computeroutput>activate</computeroutput> method (which is called from its
-    <computeroutput>newInstance</computeroutput> class method):<programlisting><![CDATA[
+    <computeroutput>newInstance</computeroutput> class method):<programlisting language="rexx">
       ::METHOD activate UNGUARDED
         expose rootDlg
         use arg rootDlg
@@ -396,7 +396,7 @@
           self~execute("SHOWTOP","IDI_CUSTLIST_DLGICON")
         end
         else self~popupAsChild(rootDlg, "SHOWTOP", ,"IDI_CUSTLIST_DLGICON")
-        return]]></programlisting>
+        return</programlisting>
     This code illustrates the two ways of starting a dialog. For
           stand-alone testing (see <xref linkend="apx-satesting" />), the dialog is started using
     <computeroutput>self~execute()</computeroutput>. In normal operation, however, it is
@@ -410,7 +410,7 @@
     <computeroutput>CustomerView</computeroutput>. Later in
     <computeroutput>CustomerListView</computeroutput>, a Customer is displayed by the user
     double-clicking on an item in the List View. The event handler method (<computeroutput>showCustomer</computeroutput>)
-    that surfaces the Customer is as follows:<programlisting><![CDATA[
+    that surfaces the Customer is as follows:<programlisting language="rexx">
       ::METHOD showCustomer UNGUARDED
         expose lvCustomers rootDlg
         item = lvCustomers~selected
@@ -429,7 +429,7 @@
         end
         else do
           say "CustomerListView-showCustomer-04: ~getItemInfo returned .false."
-        end]]></programlisting>
+        end</programlisting>
     The list of customers is shown in a ListView control (see <xref linkend="chap06-lviews" /> below).
     The <computeroutput>showCustomer</computeroutput>
     method is invoked when the user double-clicks on an item in the list. This item is
@@ -473,7 +473,7 @@
       useful result. This simpler code is discussed in
       <xref linkend="apx-satesting-offsets" /> in
       <xref linkend="apx-satesting" />. The following code illustrates the key functions:
-      <programlisting><![CDATA[        -- In 'parent' dialog:
+      <programlisting language="rexx">        -- In 'parent' dialog:
         ::METHOD getPopupPos
           popupPos = self~getRealPos
           popupPos~incr(100,100)
@@ -483,7 +483,7 @@
         ::METHOD offset
           use arg popupPos
           self~moveTo(popupPos, 'SHOWWINDOW')
-          self~ensureVisible()]]></programlisting>
+          self~ensureVisible()</programlisting>
       The "parent" dialog finds its own position on the screen with
       <computeroutput>parentPos=self~getRealPos></computeroutput> (where
       <computeroutput>parentPos</computeroutput> is an instance of the <computeroutput>Point</computeroutput>
@@ -506,10 +506,10 @@
           double-click, works out which icon (or "record" - see <xref linkend="chap06-lviews" />
       below) was double-clicked, and then calls the <computeroutput>showModel</computeroutput>
       method. This method uses an <computeroutput>interpret</computeroutput> instruction to
-          launch a view of the component represented by chosen icon, as follows:<programlisting><![CDATA[        use arg record
+          launch a view of the component represented by chosen icon, as follows:<programlisting language="rexx">        use arg record
         className = record~ID
         viewClassName = className||"View"
-        interpret "."||viewClassName||"~newInstance(self)"]]></programlisting>
+        interpret "."||viewClassName||"~newInstance(self)"</programlisting>
       Thus in principle icons for additional components can be added
       without changing the code. An alternative to using <computeroutput>interpret</computeroutput>
       would be to use the ooRexx <computeroutput>Message</computeroutput> class.
@@ -606,14 +606,15 @@
           instance of the <computeroutput>ImageList</computeroutput> class
           which is then loaded into the ListView. In <computeroutput>OrderMgrView</computeroutput>, this
           is done in the <computeroutput>createIconList</computeroutput> method
-          (invoked from the <computeroutput>init</computeroutput> method) as follows:<programlisting><![CDATA[
+          (invoked from the <computeroutput>init</computeroutput> method) as follows:<programlisting language="rexx">
           ::METHOD createIconList PRIVATE
             expose iconList
             imgCustList  = .Image~getImage("customer\bmp\CustList.bmp")
             imgProdList  = .Image~getImage("product\res\ProdList.bmp")
             imgOrderList = .Image~getImage("order\bmp\OrderList.bmp")
             imgOrderForm = .Image~getImage("order\bmp\OrderForm.bmp")
-            -- Boldly assume no errors in creating the Image List or in the ~getImage statements.
+            -- Boldly assume no errors in creating the Image List 
+            -- or in the ~getImage statements.
             iconList = .ImageList~create(.Size~new(64, 64), .Image~toID(ILC_COLOR4), 4, 0)
             iconList~add(imgCustList)   -- item 0 in the list
             iconList~add(imgProdList)   -- item 1 in the list
@@ -623,7 +624,7 @@
             imgProdList~release
             imgOrderList~release
             imgOrderForm~release
-            return]]></programlisting>
+            return</programlisting>
     For each icon, only two statements are required: create an Image from file, and then copy it to the ImageList
     (and a third, if you're a polite programmer, clean up afterwards by releasing the image).
     </para>
@@ -639,7 +640,7 @@
       The design choice for these records is that each record is a directory, and each directory is
       stored in an array. The array index of a record is equivalent to the position of its icon in the
       ImageList (remembering that arrays are 1-based while ImageLists are 0-based). The code for creating
-      the record array is as follows (showing only the Sales Orders item for brevity):<programlisting><![CDATA[
+      the record array is as follows (showing only the Sales Orders item for brevity):<programlisting language="rexx">
       ::METHOD initRecords PRIVATE
         expose records
         records = .array~new()
@@ -649,21 +650,21 @@
         rec~name = "Sales Orders"       -- Text to display under the icon
         records[3] = rec
         ...
-        return records]]></programlisting>
+        return records</programlisting>
     </para>
   </listitem>
   <listitem> <!-- 5 -->
     <para><emphasis role="bold">Load the ImageList and the Records</emphasis></para>
     <para>Loading icon images and records into the ListView is done in
     <computeroutput>OrderMgrView</computeroutput>'s <computeroutput>initDialog</computeroutput> method:
-    <programlisting><![CDATA[
+    <programlisting language="rexx">
     ::METHOD initDialog
       expose records iconList
       self~initDialog:super
       self~lv~setImageList(iconList, .Image~toID(LVSIL_NORMAL))
       do i=1 to records~items
         self~lv~addRow(, i-1, records[i]~name)
-      end    ]]></programlisting>
+      end    </programlisting>
     The icons in the ImageList are all applied to the ListView control in the
     single statement, <computeroutput>self~lv~setImageList(...)</computeroutput>.
     The second parameter of
@@ -702,7 +703,7 @@
     <para>
       The following code fragment from the <computeroutput>CustomerListView</computeroutput> class
       shows how the List View (without small icons) is defined:
-      <programlisting><![CDATA[      ::METHOD initDialog
+      <programlisting language="rexx">      ::METHOD initDialog
         expose menuBar lvCustomers btnShowCustomer
         ...
         lvCustomers = self~newListView("IDC_CUSTLIST_LIST");
@@ -713,7 +714,7 @@
         self~connectListViewEvent("IDC_CUSTLIST_LIST","CLICK",itemSelected)		-- Single click
         self~connectListViewEvent("IDC_CUSTLIST_LIST","ACTIVATE",openItem)	 	-- Double-click
         self~connectButtonEvent("IDC_CUSTLIST_SHOWCUST","CLICKED",showCustomer)
-        self~loadList      ]]></programlisting>
+        self~loadList      </programlisting>
       First, a proxy for the ListView control, <computeroutput>lvCustomers</computeroutput>, is created. Then,
       in the second statement, the list view
       is formatted using "extended styles" (of which there are around twenty). Extended styles are
@@ -734,16 +735,16 @@
     </para>
     <para>
       The last statement in the above invokes the <computeroutput>loadList</computeroutput> method, which
-      loads the list view with data, as follows:<programlisting><![CDATA[
+      loads the list view with data, as follows:<programlisting language="rexx">
         ::METHOD loadList
           expose lvCustomers
           lvCustomers~addRow( , ,"CU001", "ABC Inc.",   "TX 20152")
           lvCustomers~addRow( , ,"CU002", "Frith Inc.", "CA 30543")
-          lvCustomers~addRow( , ,"CU003", "LMN & Co",   "NY 47290-1201")
+          lvCustomers~addRow( , ,"CU003", "LMN &amp; Co",   "NY 47290-1201")
           lvCustomers~addRow( , ,"CU005", "EJ Smith",   "NJ 12345")
           lvCustomers~addRow( , ,"CU010", "Red-On Inc.","AZ 12345")
-          lvCustomers~addRow( , ,"AB15784", "Joe Bloggs & Co Ltd","LB7 4EJ")
-          lvCustomers~setColumnWidth(1)      ]]></programlisting>
+          lvCustomers~addRow( , ,"AB15784", "Joe Bloggs &amp; Co Ltd","LB7 4EJ")
+          lvCustomers~setColumnWidth(1)      </programlisting>
       The <computeroutput>~addRow</computeroutput> method adds a row of data into the list view.
       As can be seen, the data in the list is hard-coded (but this will be fixed in the next exercise). The first parameter
       is the 0-based index of the item, and defaults to the index of the last item added plus 1 (if no items
@@ -792,7 +793,7 @@
       As can be seen, both approaches invoke the <computeroutput>showCustomer</computeroutput> method, which
       is as follows (where <computeroutput>lvCustomers</computeroutput> is
       the proxy for the List View control):
-<programlisting><![CDATA[
+<programlisting language="rexx">
       ::METHOD showCustomer UNGUARDED
         expose lvCustomers rootDlg
         item = lvCustomers~selected
@@ -803,7 +804,7 @@
         .local~my.idCustomerData~activate
         .local~my.idCustomerModel~activate
         .CustomerView~newInstance(rootDlg,"CU003")
-        self~disableControl("IDC_CUSTLIST_SHOWCUST")      ]]></programlisting>
+        self~disableControl("IDC_CUSTLIST_SHOWCUST")      </programlisting>
       First, the relevant row (<computeroutput>item</computeroutput>)is found using the
       <computeroutput>~selected</computeroutput> method of the List View. Then a directory
       is created, and the data from the selected row is placed into the directory by the List View's
@@ -821,9 +822,9 @@
       the dialog (actually a method in ooDialog's "WindowsExtensions" mixin). For
       example, try inserting the following in <computeroutput>CustomerListView</computeroutput>'s
       <computeroutput>initDialog</computeroutput> method, immediately before the statement
-      <computeroutput>self~loadList</computeroutput>:<programlisting><![CDATA[
+      <computeroutput>self~loadList</computeroutput>:<programlisting language="rexx">
       font = self~createFontEx("Ariel", 10)
-      lvCustomers~setFont(font)      ]]></programlisting>
+      lvCustomers~setFont(font)      </programlisting>
       Save and run. You should see the data in the ListView displayed using the
       Ariel 10-pitch font.
       <indexterm><primary>ListView</primary><secondary>Font</secondary></indexterm>
@@ -906,7 +907,7 @@
   <para>Finally, the "icons" in the "Order Management" dialog are bitmaps of size 64x64. These are not shrunk;
     a smaller icon will look smaller. These bitmaps are loaded into the ListView programmatically.
     The code that loads the bitmaps into the ListView is as follows (with repetitive statements removed):
-<programlisting><![CDATA[
+<programlisting language="rexx">
   ::METHOD createIconList PRIVATE
     expose iconList
     imgCustList  = .Image~getImage("customer\bmp\CustList.bmp")
@@ -936,7 +937,7 @@
     self~lv~setImageList(iconList, .Image~toID(LVSIL_NORMAL))
     do i=1 to records~items
       self~lv~addRow(, i-1, records[i]~name)
-    end    ]]></programlisting>
+    end    </programlisting>
     The icon view requires icons to be loaded from an "image list" - that is, an instance
     of the <computeroutput>ImageList</computeroutput> class. It is the function of the
     <computeroutput>createIconList</computeroutput> method (invoked
@@ -965,7 +966,7 @@
   <para>To complete the behavior of the <computeroutput>OrderMgrView</computeroutput>
     component, there remains the task,
     when the user double-clicks on an icon, of surfacing the required component. This is done by the following
-    code in <computeroutput>OrderMgrView</computeroutput>:<programlisting><![CDATA[
+    code in <computeroutput>OrderMgrView</computeroutput>:<programlisting language="rexx">
     ::METHOD onDoubleClick UNGUARDED
       expose records
       index = self~lv~focused		-- lv is an attribute of the superclass.
@@ -977,7 +978,7 @@
       className = record~ID
       viewClassName = className||"View"
       interpret "."||viewClassName||"~newInstance(self)"
-      say "OrderMgrView-showModel-02:"  ]]></programlisting>
+      say "OrderMgrView-showModel-02:"  </programlisting>
     The <computeroutput>onDoubleClick</computeroutput> method is the event handler method defined for the list view.
     The first statement (after <computeroutput>expose records</computeroutput>) finds which icon has focus - that is,
     which one was double-clicked. The second retrieves the corresponding record, and then
@@ -1004,14 +1005,14 @@
     provides for entry of a password using the (one-line) <computeroutput>PasswordBox</computeroutput> routine.
     Invoking <computeroutput>startup enterPW</computeroutput> produces a password box that will accept the password
     "Password". If you get the password wrong, the startup routine will silently end.
-    The code is as follows:<programlisting><![CDATA[
+    The code is as follows:<programlisting language="rexx">
     parse arg pwOption
     if pwOption = "enterPW" then do
       pwd = PasswordBox("Please enter your password","Sign In")
       if pwd \= "Password" then exit
     end
     .OrderMgmtView~newInstance
-    ::REQUIRES "OrderMgmt\OrderMgmtView.rex"    ]]></programlisting>
+    ::REQUIRES "OrderMgmt\OrderMgmtView.rex"    </programlisting>
     Check out the ooDialog Reference for the whole set of classes and routines.
   </para>
 </section>  <!-- End of section 6.6 -->
