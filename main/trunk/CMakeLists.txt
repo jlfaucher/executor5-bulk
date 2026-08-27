@@ -979,6 +979,9 @@ target_include_directories(rexx PUBLIC
 
 # Extra link library definitions
 target_link_libraries(rexx rexxapi ${platform_interpreter_libs} ${CMAKE_REQUIRED_LIBRARIES})
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  target_link_options (rexx PRIVATE -Wno-stringop-overflow)
+endif ()
 install(TARGETS rexx RUNTIME DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core
                      LIBRARY DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core
                      ARCHIVE DESTINATION ${INSTALL_INCLUDE_DIR} COMPONENT DevLib)
