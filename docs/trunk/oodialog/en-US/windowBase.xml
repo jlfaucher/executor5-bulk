@@ -394,8 +394,7 @@
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method inspectHandles private
   okButton = self~newPushButton(IDOK)
@@ -413,7 +412,6 @@ Window handles:
 
 */
 
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -468,8 +466,7 @@ Window handles:
   <listitem>
   <para>
     This example instantiates a new dialog and checks the init code for error:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   style = "CENTER CONNECTBUTTONS CONNECTRADIOS CONNECTCHECKS"
 
@@ -486,7 +483,6 @@ Window handles:
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -544,8 +540,7 @@ Window handles:
   <para>
     This example displays the pixel size of the ok button and then converts that size back to the dialog unit size of
     the button. Note that the converted size matches the size the button was actually created with.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineDialog
 
@@ -583,7 +578,6 @@ The dialog unit width of the button is:  50
 The dialog unit height of the button is: 14
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -687,8 +681,7 @@ The dialog unit height of the button is: 14
     This example displays the width and height of the ok button using <emphasis role="italic">sizeX</emphasis> and
     <emphasis role="italic">sizeY</emphasis>. Contrast the output with the <link linkend="examplePixelCX">example</link> for
     <emphasis role="italic">pixelCx</emphasis>.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineDialog
 
@@ -723,7 +716,6 @@ Use sizeX and sizeY to display dialog units.
 The dialog unit width of the button is:  37
 The dialog unit height of the button is: 11
   */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -853,8 +845,7 @@ The dialog unit height of the button is: 11
   <listitem>
   <para>
     This example tests if a list view control is under the point 20, 25 of the dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   pt = .Point~new(20, 25)
 
@@ -866,7 +857,6 @@ The dialog unit height of the button is: 11
   say 'The point 20, 25 is not contained by the Addresses list view.'
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1046,8 +1036,7 @@ Generic form:
   <para>
     This example uses <emphasis role="italic">clientRect</emphasis> to get the size and position of the dialog's client
     area and then sets the edit control so that it takes up the entire client area.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method resizeEditControl
   expose editControl isHidden
@@ -1062,7 +1051,6 @@ Generic form:
     isHidden = .false
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1164,11 +1152,9 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem><para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 if self~isVisible then self~disable
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1295,10 +1281,8 @@ if self~isVisible then self~disable
   <para>
     The following statement makes a tree view control in the dialog visible without redrawing it.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~newTreeView(IDC_TREECONTROL_FILES)~display("NORMAL FAST")
-]]>
 </programlisting>
 
     This is usually done when there are a number of controls to make visible at one time.  The programmer would make
@@ -1411,13 +1395,11 @@ self~newTreeView(IDC_TREECONTROL_FILES)~display("NORMAL FAST")
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem><para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 lastName = self~newEdit(IDC_EDIT_LASTNAME)~getText
 
 if self~isValidLastName(lastName) then self~newEdit(IDC_EDIT_FIRSTNAME)~enable
 
-]]>
 </programlisting>
   </para></listitem></varlistentry>
 </variablelist>
@@ -1540,9 +1522,7 @@ separated by blanks.
     <member>WS_EX_NOPARENTNOTIFY  ==  0x00000004</member>
     <member>WS_EX_CLIENTEDGE      ==  0x00000200</member>
   </simplelist>
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method printExStyle private
   expose list
 
@@ -1554,11 +1534,11 @@ separated by blanks.
   say " " val
   say
 
-/* Output could be: */
+/* Output could be:
 
 List control extended style flags:
   0x00000204
-]]>
+*/
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1606,13 +1586,11 @@ List control extended style flags:
     The following example shows the IDs of the Ok button and the dialog itself. In most cases it will display 1 on the
     first line and 0 on the second line:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method exampleInfo private
 
   say 'The resource ID of the Ok push button is:  ' self~newPushButton(IDOK)~getID
   say 'The identification number of this dialog is:' self~getID
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1643,24 +1621,20 @@ List control extended style flags:
 <varlistentry><term><emphasis role="bold">Example dialog control:</emphasis></term>
 <listitem><para>The following example repositions the tree view control FILES to the
 upper left corner of  the window and displays the new position:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 obj = MyDialog~newTreeView("FILES")
 if obj = .Nil then return
 obj~move(1,1)
 parse value obj~getPos with x y
 say "New horizontal position of window is" x "and new vertical position is" y
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example dialog:</emphasis></term>
 <listitem><para>The following example moves the window towards the top left
 of the screen.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 parse value self~getPos with px py
 self~move(px - 10, py - 10)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1710,8 +1684,7 @@ self~move(px - 10, py - 10)
   <listitem>
   <para>
     This example shrinks the dialog by 10 pixels:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method move
   use strict arg newPosition
@@ -1725,7 +1698,6 @@ self~move(px - 10, py - 10)
   pos = self~getRealPos
   say 'getRealPos() says position is ('pos~x','pos~y')'
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1775,8 +1747,7 @@ self~move(px - 10, py - 10)
   <listitem>
   <para>
     This example shrinks the dialog by 10 pixels:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method shrink
 
@@ -1785,7 +1756,6 @@ self~move(px - 10, py - 10)
   size~width -= 10
   size~height -= 10
   self~resizeTo(size)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1817,13 +1787,11 @@ of the bottom right-hand corner.</para>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example calculates the width and height of an entry line:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 parse value MyDialog~newEdit("Name")~getRect with left top,
 right bottom
 width = right - left
 height = bottom - top
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1932,8 +1900,7 @@ height = bottom - top
     value in the example to its hexadecimal string representation before using it as an argument in the <emphasis
     role="italic">and</emphasis> method. That is just done in the example for display purposes.
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ...
 
   numeric digits 11
@@ -1944,10 +1911,10 @@ height = bottom - top
   style = treeView~getStyleRaw
   style = "0x" || style~d2x~right(8, '0')
 
-  if .DlgUtil~and( style, TVS_DISABLEDRAGDROP ) <> 0 then str1 = 'disabled'
+  if .DlgUtil~and( style, TVS_DISABLEDRAGDROP ) &lt;&gt; 0 then str1 = 'disabled'
   else str1 = 'enabled'
 
-  if .DlgUtil~and( style, TVS_EDITLABELS ) <> 0 then str2 = 'enabled'
+  if .DlgUtil~and( style, TVS_EDITLABELS ) &lt;&gt; 0 then str2 = 'enabled'
   else str2 = 'disabled'
 
   say 'Tree-view Control styles'
@@ -1955,14 +1922,13 @@ height = bottom - top
   say '  Drag and drop:' str1
   say '  Edit labels:  ' str2
 
-/* Output could be: */
+/* Output could be:
 
 Tree-view Control styles
   Raw style:     0x5000002F
   Drag and drop: enabled
   Edit labels:   enabled
-
-]]>
+*/
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -2022,8 +1988,7 @@ Tree-view Control styles
   <listitem>
   <para>
     This example gets the text currently entered in an edit control and upper-cases it for uniformity.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ::method upperDataField private
     use strict arg id
 
@@ -2034,7 +1999,6 @@ Tree-view Control styles
 
     edit~setText(text~upper)
     return .true
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2095,8 +2059,7 @@ Tree-view Control styles
     controls.  The calculation is correct no matter what font is in use by the controls, even if the two controls use
     different fonts.  (This is a contrived example, to illustrate the method. Instead of having a space character in
     between the 2 strings, the ending "t" and the beginning "a" are positioned with no space between them.)
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 stFont1 = self~newStaticText(IDC_ST_FONT1)
 stFont2 = self~newStaticText(IDC_ST_FONT2)
 
@@ -2114,7 +2077,6 @@ r~bottom = size~height
 
 stFont2~setText("and ooRexx is the best")
 stFont2~setRect(r)
-]]>
 </programlisting>
   </para>
   </listitem>
@@ -2267,11 +2229,9 @@ stFont2~setRect(r)
   <listitem>
   <para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   self~newEdit(IDC_EDIT_NAME)~hide
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2334,8 +2294,7 @@ stFont2~setRect(r)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method hideChoices private
 
   self~newGroupBox(IDC_GB_CHOICES)~hideFast
@@ -2347,7 +2306,6 @@ stFont2~setRect(r)
   self~newRadioButton(IDC_RB_CHOICE6)~hideFast
   ...
   self~update
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2390,8 +2348,7 @@ stFont2~setRect(r)
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem><para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method toggleState private
 
 listView = self~newListView(IDC_LV_NAMES)
@@ -2399,7 +2356,6 @@ if listView~isEnabled then
    listView~disable
 else
    listView~enable
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2442,11 +2398,9 @@ else
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem><para>
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   if \ self~isVisible then self~show
-  ]]>
-  </programlisting>
+    </programlisting>
   </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -2517,8 +2471,7 @@ else
     This example comes from a drag and drop program, where the user can drag an item from one list-view and drop it into some
     other list-view. The <emphasis role="italic">mapWindowPoints</emphasis> method is used to directly map points from / to
     the different list-view's coordinate space:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   -- Take the West list-view's client area and map it to the
   -- NFL list-view's coordinate space.
@@ -2552,7 +2505,6 @@ else
 
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2621,14 +2573,12 @@ it.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example repositions the tree view control FILES to the
 upper left corner of  the window and displays the new position:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 obj = MyDialog~newTreeView("FILES")
 if obj = .Nil then return
 obj~move(1,1)
 parse value obj~getPos with x y
 say "New horizontal position of window is" x "and new vertical position is" y
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -2746,8 +2696,7 @@ Generic form:
   <para>
     This example calculates a new position for a button control and then moves the button to that position. The button
     is originally created hidden. When it is moved to the correct position, it is then made visible.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -2755,7 +2704,6 @@ Generic form:
   pos = self~calcRevertPosition
   revertButton~moveTo(pos, "SHOWWINDOW")
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3018,8 +2966,7 @@ Generic form:
     first tab is displayed, so the control dialog for that tab is made visible while the other control dialogs remain
     hidden. Since the NOZORDER is not used, all the control dialogs are placed so that they are ahead of the tab control
     window. This ensures that the tab control is displayed properly.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose controlDlgs
@@ -3035,7 +2982,6 @@ Generic form:
   end
 
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3286,14 +3232,12 @@ Generic form:
   <para>
     The following example resizes the tree view control with resource id of IDC_TV_FILES almost to the size of the
     dialog window, and then prints out the new size:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   obj = self~newTreeView("FILES")
   if obj = .nil then return
   obj~resize(self~sizeX - 10, self~sizeY - 20)
   parse value obj~getSize with width height
   say "New width of tree view is" width "and new height is" height
-]]>
 </programlisting>
   </para>
 </listitem></varlistentry>
@@ -3415,8 +3359,7 @@ Generic form:
   <listitem>
   <para>
     This example gets the minimum size needed for a month calendar control and resizes the control to the result.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -3427,7 +3370,6 @@ Generic form:
   s = .Size~new(r~right, r~bottom)
   calendar~resizeTo(s)
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3507,8 +3449,7 @@ Generic form:
   <para>
     This example gets the position of a tab control in screen coordinates and converts the position to its position in
     the client area of the dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   tabControl = self~newTab(IDC_TAB)
   r = tabControl~windowRect
@@ -3517,7 +3458,6 @@ Generic form:
   self~screen2client(p)
 
   say "The tab control is positioned at: ("p~x"," p~y") in the dialog's client area."
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3657,10 +3597,8 @@ Generic form:
     The following example causes the dialog to reposition itself that that it completely fits within the desktop area.
     (The <xref linkend="mthEnsureVisibleClsPlainBaseDialog"/>() method does the same thing.)
 
-<programlisting>
-<![CDATA[
-MovableDialog~sendMessage"0x0402", 0, 0)
-]]>
+<programlisting language="rexx">
+MovableDialog~sendMessage("0x0402", 0, 0)
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3745,8 +3683,7 @@ MovableDialog~sendMessage"0x0402", 0, 0)
     The following example sets a new <xref linkend="defDialogIcon"/>). The old icon handle is saved so it can be restored at
     some later point.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   expose oldIcon
 
@@ -3770,9 +3707,8 @@ MovableDialog~sendMessage"0x0402", 0, 0)
 ::method restoreAppState private
   expose oldIcon
 
-  if oldIcon <> .nil then self~sendMessageHandle("0x0080", 0, oldIcon)
+  if oldIcon &lt;&gt; .nil then self~sendMessageHandle("0x0080", 0, oldIcon)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3945,8 +3881,7 @@ Generic form:
     This example increases the size and width of the dialog by 20 pixels and moves the position of the dialog up and to
     the left by 10 pixels. This has the effect of enlarging the dialog while keeping the center of the dialog at the
     same spot.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method zoomOut private
 
@@ -3959,7 +3894,6 @@ Generic form:
 
  self~setRect(rect)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4034,8 +3968,7 @@ Generic form:
     digits.  Use <computeroutput>numeric digits 11</computeroutput> if the returned value needs to be manipulated, for
     instance to use <computeroutput>d2x</computeroutput> on the value.
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ...
 
   numeric digits 11
@@ -4050,12 +3983,11 @@ Generic form:
   say 'New list-view style:' new
 
 
-/*  Output might be for instance: */
+/*  Output might be for instance:
 
   Old list-view style: 0x50010009
   New list-view style: 0x52010009
-
-]]>
+*/
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -4136,12 +4068,10 @@ Generic form:
   <listitem>
   <para>
     This example sets the text that a static text control displays:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ::method reportError private
     use strict arg errMsg
     self~newStatic(IDC_ST_INFO)~setText(errMsg)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4461,8 +4391,7 @@ Generic form:
     This example increases the size and width of the dialog by 20 pixels and moves the position of the dialog up and to
     the left by 10 pixels. This has the effect of enlarging the dialog while keeping the center of the dialog at the
     same spot.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method zoomOut private
 
@@ -4475,7 +4404,6 @@ Generic form:
 
  self~setWindowPos(TOP, rect)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4522,15 +4450,13 @@ Generic form:
   <para>
     The following example makes the button controls visible:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method showButtons private
 
   self~newPushbutton(IDC_PB_COMMIT)~show
   self~newPushbutton(IDC_PB_SUBMIT)~show
   self~newPushbutton(IDC_PB_REVERT)~show
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4582,8 +4508,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method showChoices private
 
   self~newGroupBox(IDC_GB_CHOICES)~showFast
@@ -4595,7 +4520,6 @@ Generic form:
   self~newRadioButton(IDC_RB_CHOICE6)~showFast
   ...
   self~update
-]]>
   </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4853,8 +4777,7 @@ Generic form:
   <listitem>
   <para>
     This example gets the minimum size needed for a month calendar control and resizes the control to the result.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -4865,7 +4788,6 @@ Generic form:
   s = .Size~new(r~right, r~bottom)
   calendar~sizeWindow(TOP, s)
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5036,14 +4958,12 @@ Generic form:
     In this example, the list view is in report mode. The code snippet causes the list view to invalidate 3 rows in the
     view. Normally the 3 rows would not be redrawn until the list view received the next paint message. Using the <emphasis
     role="italic">updateWindow</emphasis> method causes the 3 rows to be redrawn immediately:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   if keyEvent == 'none' then do
       listView~redrawItems(currentIndex - 1, currentIndex + 1)
       listView~updateWindow
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5112,8 +5032,7 @@ Generic form:
     This example uses <emphasis role="italic">windowRect</emphasis> to get the position of a tab control on the screen
     and then translates those coordinates to its position in the <xref linkend="defClientArea"/> of the
     dialog.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   tabControl = self~newTab(IDC_TAB)
   r = tabControl~windowRect
@@ -5122,7 +5041,6 @@ Generic form:
   self~screen2client(p)
 
   say "The tab control is positioned at: ("p~x"," p~y") in the dialog's client area."
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
