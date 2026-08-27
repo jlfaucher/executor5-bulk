@@ -55,7 +55,7 @@
 <para>
   Access to the WindowObject class requires that the following directive appear in the Rexx program.
 </para>
-<programlisting>
+<programlisting language="rexx">
 ::requires 'winSystm.cls'
 </programlisting>
 <para>
@@ -284,14 +284,13 @@ one or more of the following constants:</para>
 </para>
 <example id="ex.getStyle-function">
 <title>getStyle</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 -- This function will return an array with all matching windows.  An empty array
 -- signals no match.
 windows = fuzzyFindWindows(deskTop, text)
 
-if windows~items > 0 then do wnd over windows
+if windows~items &gt; 0 then do wnd over windows
   say 'Found this window.'
   say '  Title:   ' wnd~title
   say '  Class:   ' wnd~wClass
@@ -315,7 +314,6 @@ Found this window.
   Styles:   0x16cf0000 0xc0000900
 
 */
-]]>
 </programlisting>
 </example>
 </section>
@@ -522,13 +520,13 @@ WindowObject instance <emphasis role="italic">wndObject</emphasis>.</para>
 </para>
 <example id="ex.focusItem-function">
 <title>focusItem</title>
-<programlisting>
- dlg = wndmgr~find("TestDialog")
-    if dlg \= .Nil then do
-        fChild = dlg~firstChild
-        lChild = fChild~last
-        dlg~focusItem(lChild)
-    end
+<programlisting language="rexx">
+  dlg = wndmgr~find("TestDialog")
+  if dlg \= .Nil then do
+    fChild = dlg~firstChild
+    lChild = fChild~last
+    dlg~focusItem(lChild)
+  end
 </programlisting>
 </example>
 </section>
@@ -723,19 +721,19 @@ following entries, where each entry starts with an exclamation mark (!):</para>
 </variablelist>
 <example id="ex.enumerateChildren-function">
 <title>enumerateChildren</title>
-<programlisting>
-      wo = winmgr~find("TestDialog")
-        enum. = wo~enumerateChildren
-        do i = 1 to enum.0   /* number of children */
-           say "---"
-           say "Handle:" enum.i.!Handle
-           say "Title:" enum.i.!Title
-           say "Class:" enum.i.!Class
-           say "Id:" enum.i.!Id
-           say "Children:" enum.i.!Children
-           say "State:" enum.i.!State
-           say "Rect:" enum.i.!Coordinates
-        end
+<programlisting language="rexx">
+wo = winmgr~find("TestDialog")
+enum. = wo~enumerateChildren
+do i = 1 to enum.0   /* number of children */
+   say "---"
+   say "Handle:" enum.i.!Handle
+   say "Title:" enum.i.!Title
+   say "Class:" enum.i.!Class
+   say "Id:" enum.i.!Id
+   say "Children:" enum.i.!Children
+   say "State:" enum.i.!State
+   say "Rect:" enum.i.!Coordinates
+end
 </programlisting>
 </example>
 </section>
