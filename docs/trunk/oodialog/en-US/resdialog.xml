@@ -156,8 +156,7 @@
     the dialog template with resource ID 100 in the <computeroutput>MyDlg.dll</computeroutput> file. The state of the
     dialog's controls are initialized with the values of the ctrlData. stem variable.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ctrlData.101="1"
 ctrlData.102="Please enter your password."
 ctrlData.103=""
@@ -174,9 +173,8 @@ end
 
 ::class "PasswordDialog" subclass ResDialog
 
-...
+/* ... */
 
-]]>
 </programlisting>
   </para>
   <para>
@@ -358,8 +356,7 @@ end
     selected item in the list box.
   </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* Simple ListBox using a .rc file for the dialog template */
 
   dlgData.IDC_LB = "Doctor"
@@ -389,7 +386,6 @@ end
   lb~add("Accountant")
   lb~add("Lawyer")
   lb~add("Doctor")
-]]>
 </programlisting>
   <para>
     To try the example, cut and paste the above code into a file named <computeroutput>listBox.rex</computeroutput> and

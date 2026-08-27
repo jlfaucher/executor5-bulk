@@ -168,13 +168,12 @@
   <para>
     This example comes from an application that has a user interface that does one thing if the user clicks a column header
     of a list-view, and another thing if the column click was done with the control key held down:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onColumnClick unguarded
   use arg id, colIndex, listView
 
-  if colIndex == 2 & .Keyboard~getAsyncKeyState(.VK~CONTROL) then do
+  if colIndex == 2 &amp; .Keyboard~getAsyncKeyState(.VK~CONTROL) then do
     self~commitLastNames
     return 0
   end
@@ -182,7 +181,6 @@
   ...
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
