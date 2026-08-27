@@ -880,8 +880,7 @@
   <para>
     using the <emphasis role="italic">add</emphasis> method you must specify something similar to the following:
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
 
   list = self~newListView(IDC_LIST_REP)
@@ -903,7 +902,6 @@
     list~~add("Sue", 0)~~add(,"Thaxtor")~~add(, ,"29")
   end
 
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -1132,8 +1130,7 @@
     list-view is in the report view and will have check boxes and grid lines.  The user will be able to use drag and drop to
     rearrange the columns. When a row is selected, the full row will be highlighted rather than just the first column.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose listView
@@ -1145,7 +1142,6 @@
   listView~addExtendedStyle("CHECKBOXES GRIDLINES FULLROWSELECT HEADERDRAGDROP")
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1205,8 +1201,7 @@
   <para>
     This example shows part of an initDialog() method.  The private method createRows() returns an array of
     <computeroutput>LvFullRow</computeroutput> objects, which are then used to populate the list-view:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose list
@@ -1221,7 +1216,6 @@
   end
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1295,14 +1289,12 @@
   <listitem>
   <para>
     The following example adds three items to a report list with two columns:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method InitList
   lv = self~newListView(IDC_LV_CONTACTS)
   lv~addRow(, ,"Mike","Miller")
   lv~addRow(, ,"Sue","Muller")
   lv~addRow(, ,"Chris","Watson")
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1374,8 +1366,7 @@
   <listitem>
   <para>
     This example queries an ooSQLite database and then populates the list-view items with the returned result set:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
@@ -1388,7 +1379,6 @@
       list~addRowFromArray(data[i], , 'null')
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1567,13 +1557,11 @@ a list-view control.</para>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example sets the background color of a list control to
 yellow:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method Yellow
   curList = self~newListView(104)
   curList~bkColor = 15
   curList~update
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1628,8 +1616,7 @@ user selects which entries to include in any mailing.  All items in a list-view
 that have their check boxes checked are included in the mailing.  The
 application has a feature that allows the user to automatically select all items
 with a specified zip code.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onUseZip
 
@@ -1642,7 +1629,6 @@ with a specified zip code.
      end
   end
 
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1685,15 +1671,13 @@ style.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example is from a program that has a push button
 that allows the user to check all the check boxes:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onCheckAll
 
   list = self~newListView(IDC_LIST_REPUBLICANS)
   list~checkAll
 
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1772,13 +1756,11 @@ or 0 in all other cases.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example displays the column width in an information box
 when the column is clicked on:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onColumnClick
   use arg id, column
   listView = self~newListView(102)
   call infoDialog listView~columnWidth(column)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1865,16 +1847,14 @@ when the column is clicked on:
   <listitem>
   <para>
     This example deletes the selected item.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method deleteSelectedItem
     list = self~newListView(IDC_LV_RACECARS)
 
     index = list~selected
-    if index <> -1 then
+    if index &lt;&gt; -1 then
         list~delete(index)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1985,13 +1965,11 @@ when the column is clicked on:
   <listitem>
   <para>
     This example deletes the column for the first subitem of the list-view items:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   list = self~newListView(IDC_LV_CONTACTS)
   list~deleteColumn(1)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2066,12 +2044,10 @@ when the column is clicked on:
   <listitem>
   <para>
     This example deselects any selected items in the list-view.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~newListView(IDC_LV_ADDRESSES)~deselectAll
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2420,14 +2396,12 @@ end of the list.
     This example uses the <emphasis role="italic">fixFullRowColumns</emphasis> method to notify the ooDialog framework that
     a column has been deleted in the list-view. The framework then updates all the <computeroutput>LvFullRow</computeroutput>
     objects assigned as the item data of each list-view item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   list = self~newListView(IDC_LV_CONTACTS)
   list~deleteColumn(1)
   list~fixFullRowColumns(1)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2544,8 +2518,7 @@ style.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example could be used as a shortcut method to
 determine if a list-view control currently has the check box extended style.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ...
   list = self~newListView(IDC_LV_DOCTORS)
@@ -2557,7 +2530,6 @@ determine if a list-view control currently has the check box extended style.
   end
 
 
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -2593,10 +2565,8 @@ determine if a list-view control currently has the check box extended style.
   <listitem>
     <para>
       This method is straight forward to use:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 colCount = list~getColumnCount
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -2696,8 +2666,7 @@ colCount = list~getColumnCount
   <listitem>
   <para>
     This example displays information about the column when the user clicks on it:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onColumnClick
   use arg id, column
@@ -2714,10 +2683,11 @@ colCount = list~getColumnCount
     j = MessageDialog(msg, self~hwnd, "List View Column Information")
   end
   else do
-    j = MessageDialog("Failed to get column information.", self~hwnd, "Windows API Error")
+    j = MessageDialog("Failed to get column information.", -
+      self~hwnd, "Windows API Error"                       -
+    )
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2789,8 +2759,7 @@ colCount = list~getColumnCount
     <para>
       This example prints out the column order when the dialog is first initialized, and then prints out
       the order when the dialog closes.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ...
   list = self~newListView(100)
 
@@ -2842,7 +2811,6 @@ Current order:
   Occupation
 
 */
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -2941,7 +2909,7 @@ the hover time.  In this example when the methods to increment or decrement the
 hover time are invoked, the application first checks to see if the list-view
 control has the track select style.  Then the change is only made if the list
 view control does have the style.
-<programlisting> <![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose listView
@@ -2969,7 +2937,7 @@ view control does have the style.
   if styles~wordpos("TRACKSELECT") == 0 then return
 
   time = listView~getHoverTime - 100
-  if time > 0 then listView~setHoverTime(time)
+  if time &gt; 0 then listView~setHoverTime(time)
 
 ::method onIncrement
   expose listView
@@ -2980,7 +2948,6 @@ view control does have the style.
   -- Let the user increase the hover time to any length they want.
   listView~setHoverTime(list~getHoverTime + 100)
 
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -3015,7 +2982,7 @@ flags currently in effect for the list-view control.
 <xref linkend="mthGetExtendedStyleClsListView"/> example.  It simply
 replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 <computeroutput>getExtendedStyleRaw</computeroutput> invocation.
-<programlisting> <![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose listView
@@ -3042,7 +3009,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   if .DlgUtil~and(listView~getExtendedStyleRaw, "0x00000008") == 0 then return
 
   time = listView~getHoverTime - 100
-  if time > 0 then listView~setHoverTime(time)
+  if time &gt; 0 then listView~setHoverTime(time)
 
 ::method onIncrement
   expose listView
@@ -3052,7 +3019,6 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   -- Let the user increase the hover time to any length they want.
   listView~setHoverTime(list~getHoverTime + 100)
 
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -3139,8 +3105,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     item data. Once this is done, the list-view items can be sorted using ooDialog's internal method. <emphasis
     role="bold">Note</emphasis> that the <emphasis role="italic">sortable</emphasis> argument is not used here. Invoking
     <emphasis role="italic">setItemData</emphasis> using the full row object is sufficient:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   list = self~newListView(IDC_LV_CONTACTS)
 
@@ -3150,15 +3115,13 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     list~setItemData(j, row)
   end
 
-]]>
 </programlisting>
   </para>
   <para>
     This example is similar to the first example, however, the full row object is used to insert a new item into the
     list-view. <emphasis role="bold">Note</emphasis> that the <emphasis role="italic">sortable</emphasis> argument is used
     here. Once the loop finishes, the entire list can be sorted using the ooDialog internal sort.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   list = self~newListView(IDC_LV_CONTACTS)
 
@@ -3168,7 +3131,6 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     list~addFullRow(row)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3211,8 +3173,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     <computeroutput>onIncrement</computeroutput> and <computeroutput>onDecrement</computeroutput> methods. When either of
     the methods is invoked, the current hover time is examined and then either incremented or decremented by .1 of a second.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose list
@@ -3227,7 +3188,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   expose list
 
   time = list~getHoverTime - 100
-  if time > 0 then list~setHoverTime(time)
+  if time &gt; 0 then list~setHoverTime(time)
 
 ::method onIncrement
   expose list
@@ -3235,7 +3196,6 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   -- Let the user increase the hover time to any length they want.
   list~setHoverTime(list~getHoverTime + 100)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3305,8 +3265,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     uses many list-view controls. All the list-view controls share the same image lists. When the last
     dialog is closed, the shared image lists are released to free up system resources as the
     application enters its next phase.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method ok
   self~checkImageLists
   return self~ok:super
@@ -3327,7 +3286,6 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     end
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3413,8 +3371,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     <para>
       This example shows a generic method in a dialog to get the group ID of any, arbitrary, item in a list-view:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method getGroupID private
     expose list
@@ -3430,15 +3387,13 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
         -- Handle the error
     end
 
-]]>
 </programlisting>
     </para>
     <para>
       This example shows a generic method for producing a new <computeroutput>LvItem</computeroutput> object for any item in
       a list-view:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method getLvItem
     use strict arg listView, itemIndex
@@ -3453,7 +3408,6 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
         return lvItem
     end
 
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -3517,8 +3471,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     This example uses the data value stored for each item to display extra employee information when the user double
     clicks on an item in a list-view that displays each employee. Note that the Rexx object stored for each list-view
     item is a <computeroutput>Directory</computeroutput> object:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onDoubleClick
   expose list
@@ -3526,7 +3479,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 
   tab = '9'x
 
-  if index <> -1 then do
+  if index &lt;&gt; -1 then do
     data = list~getItemData(index)
 
     msg = 'Extra Information for' data~fName data~lName || .endOfLine~copies(2)
@@ -3558,7 +3511,6 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3677,8 +3629,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   <listitem>
   <para>
     This example displays information on a selected item in the list-view:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method displayItemInfo
 
@@ -3709,7 +3660,6 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 
   return MessageDialog(msg, self~hwnd, title, buttons, icon)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3874,17 +3824,15 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     and its height is very close to the height of the list-view item.  However, its height is restricted to the height of the
     item, the drop-down list will not show when the user clicks on the down arrow icon. Setting its height larger allows the
     drop-down list to open and show 3 items:
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   ...
 
   r = list~getItemRect(itemIndex, 'LABEL')
-  ret = cb~setWindowPos(list~hwnd, r~left, r~top, r~right - r~left, 4 * (r~bottom - r~top), "SHOWWINDOW NOZORDERCHANGE")
+  ret = cb~setWindowPos(list~hwnd, r~left, r~top,                         -
+    r~right - r~left, 4 * (r~bottom - r~top), "SHOWWINDOW NOZORDERCHANGE" -
+  )
   cbVisible = .true
   cb~assignFocus
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3977,15 +3925,13 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     role="italic">imageIndex</emphasis> attribute of the <xref linkend="clsLvSubItem"/> object will reflect the image index
     of the specified subitem.  The value of the <emphasis role="italic">text</emphasis> attribute is undefined:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvSubItem = .LvSubItem~new(8, 2, , , 'IMAGE')
   if list~getSubItem(lvSubItem) then do
       -- Do something with the information.
       ...
   end
-]]>
 </programlisting>
   </para>
 
@@ -3993,15 +3939,13 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   This example queries the same subitem by using the item / subitem indexes. On success a <xref linkend="clsLvSubItem"/>
   object is returned that reflects all the information for the subitem.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvSubItem = list~getSubItem(8, 2)
   if lvSubItem \== .nil then do
       -- Do something with the LvSubItem object.
       ...
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4113,19 +4057,19 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     drop-down list and its height is very close to the height of the list-view subitem.  However, its height is restricted to
     the height of the subitem, the drop-down list will not show when the user clicks on the down arrow icon. Setting its
     height larger than the subitem allows the drop-down list to open and show 3 items:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ...
 
-  if columnIndex > 0 then do
+  if columnIndex &gt; 0 then do
       r = list~getSubitemRect(itemIndex, columnIndex, 'LABEL')
-      ret = cb~setWindowPos(list~hwnd, r~left, r~top, r~right - r~left, 4 * (r~bottom - r~top), "SHOWWINDOW NOZORDERCHANGE")
+      ret = cb~setWindowPos(list~hwnd, r~left, r~top,                         -
+        r~right - r~left, 4 * (r~bottom - r~top), "SHOWWINDOW NOZORDERCHANGE" -
+      )
       cbVisible = .true
       cb~assignFocus
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4538,19 +4482,17 @@ Generic Form:
   <para>
     This example is from a program that allows the user to edit the text of subitems. The code snippet checks if the
     point p is over an item's subitem and if so invokes the editing method:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   listView = self~newListView(IDC_LV_PLAYERS)
 
   d = .Directory~new
   index = listView~hitTestInfo(p, d)
-  if index <> -1 & d~subItem <> 0 then do
+  if index &lt;&gt; -1 &amp; d~subItem &lt;&gt; 0 then do
     self~subItemEdit(index, d~subItem)
     ...
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4638,8 +4580,7 @@ Generic Form:
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example inserts items in a list:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initReport
   curList = self~newListView(102)
   if curList \= .nil then
@@ -4648,7 +4589,6 @@ Generic Form:
     curList~insert(, ,"Second")
     curList~insert(, ,"Third")
   end
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -4895,8 +4835,7 @@ Generic Form:
   <listitem>
   <para>
     This example inserts 3 columns into the list-view control. Each column will be 50 pixels wide and left aligned.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initReportView
   lv = self~newListView(IDC_LV_STATS)
@@ -4905,7 +4844,6 @@ Generic Form:
   lv~insertColumnPX(1, "Last Name", 50)
   lv~insertColumnPX(2, "Age", 50)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4967,17 +4905,15 @@ Generic Form:
   <para>
     This example constructs a full row object and inserts it into the list-view. The row is inserted at index 120 of the
     list-view:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
-  lvItem = .LvItem~new(120, "Business manager", 6)
-  lvSub1 = .LvSubItem~new(120, 1, "Tom", 14)
-  lvSub2  = .LvSubItem~new(120, 2, "Sawyer", 26)
-  lvSub3  = .LvSubItem~new(120, 3, "ts@google.com", 11)
+  lvItem    = .LvItem~new(120, "Business manager", 6)
+  lvSub1    = .LvSubItem~new(120, 1, "Tom", 14)
+  lvSub2    = .LvSubItem~new(120, 2, "Sawyer", 26)
+  lvSub3    = .LvSubItem~new(120, 3, "ts@google.com", 11)
   lvFullRow = .LvFullRow~new(lvItem, lvSub1, lvSub2, lvSub3, .true)
   list~insertFullRow(lvFullRow)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5030,7 +4966,7 @@ patient.  After the office manager has finished working with the accounts a
 mail merge is done to produce statements for all patients that are to receive
 statements for the month.  For every patient item in the list-view, if the item
 has a check mark, then that patient is mailed a statement.
-<programlisting> <![CDATA[
+<programlisting language="rexx">
 
 ::method onCreateMailMerge
   expose patientList
@@ -5041,7 +4977,6 @@ has a check mark, then that patient is mailed a statement.
     end
   end
 
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -5147,10 +5082,8 @@ if you did not specify <emphasis role="italic">item</emphasis>, or 0 in all othe
 <note><title>Note</title><para>
 Use <xref linkend="mthDefListDragHandler"/> to support default dragging:
 </para></note>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~connectListViewEvent(104,"BEGINDRAG","mthDefListDragHandler")
-]]>
 </programlisting>
 </section>
 
@@ -5388,8 +5321,7 @@ item selected last.</para>
     gains the focus. The <computeroutput>onActivate</computeroutput> method is invoked when an item is activated, and the
     example determines which item was activated by seeing which item has the focus:
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
 
   ::method initDialog
     expose list
@@ -5407,8 +5339,7 @@ item selected last.</para>
 
     list~modify(focusedItem, , text, 2)
 
-  ]]>
-  </programlisting>
+    </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -5573,8 +5504,7 @@ column. It can be one of the following values:
   <para>
     This example changes the title, size, and alignment of the first three columns in a list-view control.  The columns
     are only visible when the list-view is in report view.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method changeColumn
   lv = self~newListView(IDC_LV_AVAILABLE_AUTOS)
@@ -5582,7 +5512,6 @@ column. It can be one of the following values:
   lv~modifyColumn(1, "Model", 150, "RIGHT")
   lv~modifyColumn(1, "Color", 80, "CENTER")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5666,8 +5595,7 @@ column. It can be one of the following values:
     information of the item is left alone. The first step of getting the full row object for item 3, ensures that all the
     information in the full row object matches the current state of the item. Then just the label and icon index for the item
     and first subitem is changed, and the full row object is used to modify the list-view item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvfull = list~getFullRow(3)
 
@@ -5678,7 +5606,6 @@ column. It can be one of the following values:
 
   list~modifyFullRow(lvFull)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5743,8 +5670,7 @@ column. It can be one of the following values:
   <para>
     This example shows the process outlined in the remarks section for changing some information for the list-view item at
     index 17:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvItem = .LvItem~new(17)
   lvItem~imageIndex = 8
@@ -5755,13 +5681,11 @@ column. It can be one of the following values:
 
   list~modifyItem(lvItem)
 
-]]>
 </programlisting>
     Note that the <computeroutput>LvItem</computeroutput> class will automatically set the <emphasis
     role="italic">mask</emphasis> attribute correctly as the attribute values are added. So, the above code could have simply
     been:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvItem = .LvItem~new(17)
   lvItem~imageIndex = 8
@@ -5770,7 +5694,6 @@ column. It can be one of the following values:
   list = self~newListView(IDC_LV_CLIENTS)
 
   list~modifyItem(lvItem)
-]]>
 </programlisting>
     The <emphasis role="italic">mask</emphasis> attribute was set explicitly in the first example for clarity, to show that
     only the image index and group ID would be modified.
@@ -5834,28 +5757,24 @@ column. It can be one of the following values:
   <listitem>
   <para>
     This example updates the image index of the second subitem in the list-view item with index 17.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvSubitem = .LvSubItem~new(17, 2, , 16, 'IMAGE')
 
   list = self~newListView(IDC_LV_CLIENTS)
 
   list~modifySubitem(lvSubitem)
-]]>
 </programlisting>
     Note that the <xref linkend="mthNewClsLvSubItem"/> method of the <computeroutput>LvSubItem</computeroutput> will
     automatically set the <emphasis role="italic">mask</emphasis> attribute correctly. So, the above code could have simply
     been:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvSubitem = .LvSubItem~new(17, 2, , 16)
 
   list = self~newListView(IDC_LV_CLIENTS)
 
   list~modifySubitem(lvSubitem)
-]]>
 </programlisting>
     The <emphasis role="italic">mask</emphasis> argument was used in the first example for clarity, to show that only the
     image index would be modified.
@@ -6062,8 +5981,7 @@ control for adding a large number of items.</para>
   <listitem>
   <para>
     This example ...
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvItem = .LvItem~new(0, "Business manager", 6)
   lvSub1 = .LvSubItem~new(0, 1, "Tom", 14)
@@ -6073,7 +5991,6 @@ control for adding a large number of items.</para>
   lvFullRow = .LvFullRow~new(lvItem, lvSub1, lvSub2, lvSub3, .true)
   list~prependFullRow(lvFullRow)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6238,15 +6155,13 @@ keywords.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example removes the check box style from the list
 view.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   listView = self~newListView(IDC_LIST)
   if listView == .nil then return
 
   listView~removeExtendedStyle("CHECKBOXES")
 
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -6316,7 +6231,7 @@ view.
     Since the list-view control associates the data value with the index of an item, when the items are reset to their
     original order, the data value is removed from the index it is currently at. When the items are added back to the
     list-view in their original order the data value is then associated with the new item index.
-<programlisting> <![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose list
@@ -6358,7 +6273,6 @@ view.
   end
 
 return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6492,8 +6406,7 @@ style keywords.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example removes the cold and hot underlining and
 adds check boxes to the list view.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   listView = self~newListView(IDC_LIST)
   if listView == .nil then return
@@ -6503,7 +6416,6 @@ adds check boxes to the list view.
 
   listView~replaceExtendedStyle(removeStyle, addStyle)
 
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -6570,8 +6482,7 @@ of the different styles, refer to <xref linkend="mthCreateListView"/>.
   buttons for the different views are connected to methods.  When the user clicks one of the radio
   buttons, the method for that radio button uses <computeroutput>replaceStyle</computeroutput>() to
   remove all of the other view styles and add the specified style.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose list
@@ -6618,7 +6529,6 @@ of the different styles, refer to <xref linkend="mthCreateListView"/>.
   list~InsertColumnEx(0, "Title", 150)
   ...
 
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -6825,8 +6735,7 @@ of selected items in a list-view control.</para>
       database, the other mode emphasizes the people. The order of the columns is occupation, name, ...
       for the first mode and name, occupation, ... for the second mode. When the mode of the application
       changes, the order of the columns also changes.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ...
   list = self~newListView(100)
 
@@ -6847,7 +6756,6 @@ of selected items in a list-view control.</para>
   order[1] = order[2]
   order[2] = tmp
   list~setColumnOrder(order)
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -6897,13 +6805,11 @@ is sized automatically to the widest item in the list.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example enlarges the selected column by 10:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method OnColumnClick
   use arg id, column
   curList = self~newListView(102)
   curList~setColumnWidth(column,curList~columnWidth(column)+10)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -6976,8 +6882,7 @@ is sized automatically to the widest item in the list.
   <para>
     Provided that the list-view is in report view, this example has the list-view automatically size the first two
     columns, and then size the last column to take up all the rest of the width in the control.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   list = self~newListView(IDC_LV_SALES)
 
@@ -6985,7 +6890,6 @@ is sized automatically to the widest item in the list.
   list~setColumnWidthPX(1, "AUTO")
   list~setColumnWidthPX(2, "AUTOHEADER")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7080,8 +6984,7 @@ is sized automatically to the widest item in the list.
     edit controls is collected and compared to the old values stored in the rec array. If it does not match, the text
     attribute in the full row is set to the value from the edit control. In this way, when !setFullRowText() is invoked, only
     the text of the item or subitems in the list-view that have actually changed are updated:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lNameText   = lNameEdit~getText~strip
   fNameText   = fNameEdit~getText~strip
@@ -7107,7 +7010,6 @@ is sized automatically to the widest item in the list.
   list~setFullRowText(lvFullRow)
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7152,7 +7054,7 @@ select, and the full row select extended list-view styles to a
 <computeroutput>ListView</computeroutput>.  The hover time is set to .4
 seconds. If the user pauses his mouse over a row in the list-view for .4 of a
 second the row is automatically selected.
-<programlisting> <![CDATA[
+<programlisting language="rexx">
 ::method initDialog
 
   ...
@@ -7162,7 +7064,6 @@ second the row is automatically selected.
   oldTime = list~setHoverTime(400)
   ...
 
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -7313,8 +7214,7 @@ second the row is automatically selected.
   <para>
     This is a complete working example. It creates an image list using the application icons that ooDialog makes available
     for general use. The image list is assigned as the normal icon image list.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dlg = .ImageDisplay~new
   if dlg~initCode == 0 then do
@@ -7360,7 +7260,6 @@ second the row is automatically selected.
     list~add(names[i] '('ids[i]')', i - 1)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7435,8 +7334,7 @@ second the row is automatically selected.
     This example stores a <computeroutput>.Directory</computeroutput> object with each list-view item when the item is
     added to the list-view. The <computeroutput>.Directory</computeroutput> object contains the text for the item and
     its subitems and additional information not shown in the code snippet:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose list
@@ -7457,7 +7355,6 @@ second the row is automatically selected.
     list~setItemData(index, item)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7515,10 +7412,8 @@ item, in view coordinates. The default is 0.
 <note><title>Note</title><para>
 Use <xref linkend="mthDefListDragHandler"/> to support default dragging:
 </para></note>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~connectListViewEvent(104,"BEGINDRAG","mthDefListDragHandler")
-]]>
 </programlisting>
 </section>
 
@@ -7786,8 +7681,7 @@ and on the system colors used for a selection.
   <listitem>
   <para>
     This example shows a method that switches the view of the list-view to that specified by the index:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method refreshView unguarded
   expose lv
@@ -7804,7 +7698,6 @@ and on the system colors used for a selection.
 
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7977,11 +7870,9 @@ grid position.</para>
     invoked, the results of the sort are unpredictable. The comparison method should be coded as follows:
   </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method compare
   use arg data1, data2, param
-]]>
 </programlisting>
 
   <variablelist>
@@ -8053,8 +7944,7 @@ grid position.</para>
   <para>
     This example shows one approach to sorting the list items on either a first name or last name, and either ascending
     or descending using the Rexx sort:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   ...
@@ -8094,7 +7984,6 @@ grid position.</para>
   if param == 1 then return data2~fName~compareTo(data1~fName)
   else return data2~lName~compareTo(data1~lName)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8103,8 +7992,7 @@ grid position.</para>
   <para>
     This example shows the basic steps needed to set up an internal sort. In the example, a descending, case-insensitive sort
     is done on the text of subitem 3:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
     expose list
@@ -8139,7 +8027,6 @@ grid position.</para>
 
     list~sortItems('InternalListViewSort', d)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8331,13 +8218,11 @@ list-view control.</para>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example sets the text color of a list control to light
 blue:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method LightBlue
   curList = self~newListView(104)
   curList~bkColor = 9
   curList~update
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -8396,8 +8281,7 @@ believe in sending billing statements to patients that have a very low balance.
 However what a &quot;low&quot; balance is depends on how he is feeling at
 statement time. Therefore the application allows the office manager to
 dynamically remove some patients from the statement list.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onDeferBilling
   expose billingList
@@ -8405,17 +8289,16 @@ dynamically remove some patients from the statement list.
   text = self~newEdit(IDC_EDIT_MINAMOUNT)~getText
   minimum = self~decimalNumber(text)
 
-  if minimum > 0 then do i = 0 to billingList~items
+  if minimum &gt; 0 then do i = 0 to billingList~items
     if billingList~isChecked(i) then do
 
       -- Column 6 in the list is the patient's current balance.
       owes = billingList~itemText(i, 6)
-      if self~decimalNumber(owes) <= minimum then billingList~uncheck(i)
+      if self~decimalNumber(owes) &lt;= minimum then billingList~uncheck(i)
 
     end
   end
 
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -8458,15 +8341,13 @@ style.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example is from a program that has a push button
 that allows the user to remove the check mark from all the check boxes:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onUncheckAll
 
   list = self~newListView(IDC_LIST_REPUBLICANS)
   list~uncheckAll
 
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -8549,13 +8430,11 @@ that allows the user to remove the check mark from all the check boxes:
   have the list-view draw the item as it normally would.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onCustomDraw unguarded
   use arg lvcdSimple
 
   return boolean
-]]>
 </programlisting>
 
 <variablelist>
@@ -8599,8 +8478,7 @@ that allows the user to remove the check mark from all the check boxes:
     draw the item, and the event handler would return true. If the row was odd, the event handler would simply return false
     to indicate that the list-view should draw the item itself. The following code snippet demonstrates this:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method init
     expose rowYellow
@@ -8629,7 +8507,6 @@ that allows the user to remove the check mark from all the check boxes:
         return .false
     end
 
-]]>
 </programlisting>
 
   </para>
@@ -8640,8 +8517,7 @@ that allows the user to remove the check mark from all the check boxes:
     The following example is an expansion of the example in the remarks section. It has a list-view that has check boxes. If
     an item is checked then a new font is set for that row, along with different colors. Othewise, alternating rows are
     shaded with a different color:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onCustomDraw unguarded
     expose list textRed textBlack textBlue rowGreen rowLiteBlue rowYellow checkedFont
@@ -8666,7 +8542,6 @@ that allows the user to remove the check mark from all the check boxes:
     cdInfo~reply = self~CDRF_NEWFONT
     return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8806,13 +8681,11 @@ that allows the user to remove the check mark from all the check boxes:
   <para>
     In this example snippet of code the <emphasis role="italic">clrText</emphasis> attribute is set to a reddish color and
     the background color is set to a yellowish color:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   cdInfo~clrText   = self~RGB(247,   7,  59)
   cdInfo~clrTextBk = self~RGB(245, 245, 127)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8867,13 +8740,11 @@ that allows the user to remove the check mark from all the check boxes:
   <para>
     In this example snippet of code the <emphasis role="italic">clrText</emphasis> attribute is set to a reddish color and
     the background color is set to a yellowish color:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   cdInfo~clrText   = self~RGB(247,   7,  59)
   cdInfo~clrTextBk = self~RGB(245, 245, 127)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8939,8 +8810,7 @@ that allows the user to remove the check mark from all the check boxes:
     <emphasis role="italic">not</emphasis> send any subitem notifications. When the item is not checked, CDRF_NOTIFYSUBITEM
     is set in the response and this causes the list-view to send event notifications for each subitem:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ...
 
@@ -8959,7 +8829,6 @@ that allows the user to remove the check mark from all the check boxes:
 
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9021,8 +8890,7 @@ that allows the user to remove the check mark from all the check boxes:
   <para>
     This example shows the <emphasis role="italic">font</emphasis> attribute being set and the response codes for new font
     and subitem notify being combined:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   checkedFont = self~createFontEx("Courier New", 10)
 
@@ -9039,7 +8907,6 @@ that allows the user to remove the check mark from all the check boxes:
 
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9088,8 +8955,7 @@ that allows the user to remove the check mark from all the check boxes:
     This example uses custom draw with a list-view and a tree-view. It uses the same event handler, <emphasis
     role="italic">onCustomDraw</emphasis> for both controls and then use the <emphasis role="italic">id</emphasis> attribute
     to determine which control has sent the event notification:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~customDraw
   self~customDrawControl(IDC_LV_STATS, 'ListView', onCustomDraw)
@@ -9105,7 +8971,6 @@ that allows the user to remove the check mark from all the check boxes:
     else
         return self~customDrawPlayers(customDrawInfo)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9158,8 +9023,7 @@ that allows the user to remove the check mark from all the check boxes:
   <para>
     This example shades every other row in the list-view. It uses the <emphasis role="italic">item</emphasis> attribute to
     determine if the row is an even or odd row:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onCustomDraw unguarded
     expose rowYellow
@@ -9176,7 +9040,6 @@ that allows the user to remove the check mark from all the check boxes:
     end
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9239,8 +9102,7 @@ that allows the user to remove the check mark from all the check boxes:
   <para>
     In this example the color to draw the text for each item is stored in the item data for the item. This makes for a very
     simple event handler, the text color is just set to whatever value the item data is:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onCustomDraw unguarded
     use arg lvcds
@@ -9251,7 +9113,6 @@ that allows the user to remove the check mark from all the check boxes:
 
     return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9319,12 +9180,10 @@ that allows the user to remove the check mark from all the check boxes:
   <para>
     This example shows setting the <emphasis role="italic">reply</emphasis> attribute using both the new font and notify
     subitem draw values:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   customDraw~reply = .DlgUtil~or(self~CDRF_NEWFONT, self~CDRF_NOTIFYSUBITEMDRAW)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9385,12 +9244,11 @@ that allows the user to remove the check mark from all the check boxes:
   <para>
     This example is a snippet of code from a program where the second subitem in a list-view is a number. If the number is
     negative, it is drawn in red text and if it is not negative, is is drawn in black text:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   if customDrawInfo~subItem == 2 then do
       number = list~itemText(customDrawInfo~item, 2)
-      if number < 0 then
+      if number &lt; 0 then
           customDrawInfo~clrText = textRed
       else
           customDrawInfo~clrText = textBlack
@@ -9398,7 +9256,6 @@ that allows the user to remove the check mark from all the check boxes:
 
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9491,12 +9348,10 @@ that allows the user to remove the check mark from all the check boxes:
     role="italic">fixFullRowColumns</emphasis> twice. The method is invoked with the column index that was removed or added
     and a second argument that signals whether the specified column was inserted. The following code snippet gives an
     example:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
     list~insertColumnPX(2, "Phone Numbers", 155, "RIGHT")
     list~fixFullRowColumns(2, .true)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9507,11 +9362,9 @@ that allows the user to remove the check mark from all the check boxes:
     role="italic">adjustFullRows</emphasis>. If this argument is true, then the ooDialog framework is signaled to fix up the
     full row objects internally when the column is added or deleted. The default for the argument is false. This is perhaps
     the easiest process for the programmer to use. The above example would be altered like this:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
     list~insertColumnPX(2, "Phone Numbers", 155, "RIGHT", .true)
 
-]]>
 </programlisting>
     The reason that the default here is false is that with very large lists, the time to fix up the full row objects can be
     noticeable, .5 to 1.5 seconds for lists with over 10,000 items. Because of this, the programmer may not want the fix up
@@ -9524,8 +9377,7 @@ that allows the user to remove the check mark from all the check boxes:
     With this method, after the column insert or delete, the programmer iterates through all the list-view items, removes the
     old invalid item data, creates a valid full row object, and sets the item data to the new full row object. The following
     code snippet shows the procedure:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
     list~deleteColumn(delCol)
 
@@ -9535,7 +9387,6 @@ that allows the user to remove the check mark from all the check boxes:
       list~setItemData(i, lvFullRow)
     end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9703,8 +9554,7 @@ that allows the user to remove the check mark from all the check boxes:
   <listitem>
   <para>
     This example queries a ooSQLite database and then populates the list-view with the returned result set:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   sql  = 'SELECT * FROM foods ORDER BY name;'
   data = dbConn~exec(sql, .true)
@@ -9716,7 +9566,6 @@ that allows the user to remove the check mark from all the check boxes:
       list~addFullRow(fRow)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9782,21 +9631,17 @@ that allows the user to remove the check mark from all the check boxes:
     condition is raised. That is, if a subitem is specified, its preceding subitem must not have been omitted. These
     statements are acceptable:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
      row = .LvFullRow~new(item)
      row = .LvFullRow~new(item, si1, si2)
      row = .LvFullRow~new(item, si1, si2, si3)
-]]>
 </programlisting>
 
     These statements will raise a syntax condition:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
      row = .LvFullRow~new(item, , si2)
      row = .LvFullRow~new(item, si1, , si3)
-]]>
 </programlisting>
 
   </para>
@@ -9826,8 +9671,7 @@ that allows the user to remove the check mark from all the check boxes:
   <para>
     This example shows a method that creates an array of list-view full rows from NFL football player data. The array is
     later used to insert the rows into a list-view control.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method getPlayers private
 
@@ -9851,7 +9695,6 @@ that allows the user to remove the check mark from all the check boxes:
   return playerRows
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9909,8 +9752,7 @@ that allows the user to remove the check mark from all the check boxes:
     records in a database. In order to keep track of which record in the database corresponds to each list-view item, the
     record ID is stored in the <emphasis role="italic">userData</emphasis> attribute of the full row object. The value at
     index 1 of the rec array is the rowid of the record:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method fullRowFromRecord unguarded
     use strict arg rec, index = 0
@@ -9929,7 +9771,6 @@ that allows the user to remove the check mark from all the check boxes:
 
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -10060,13 +9901,11 @@ that allows the user to remove the check mark from all the check boxes:
     <computeroutput>LvSubItem</computeroutput> object, the code does not bother with setting the <emphasis
     role="italic">item</emphasis> and <emphasis role="italic">subitem</emphasis> correctly. Rather it relies on the <emphasis
     role="italic">insertSubItem</emphasis> method to set them correctly:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
     lvSubItem = .LvSubItem~new(1, 1, 'Apartment #13', 2)
     lvFull~insertSubItem(lvSubItem, 3)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -10111,8 +9950,7 @@ that allows the user to remove the check mark from all the check boxes:
   <para>
     This example gets the <computeroutput>LvFullRow</computeroutput> for the item at index 5 of the list-view. It then gets
     the <computeroutput>LvItem</computeroutput> object and prints its information out to the display
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
     lvfull = list~getFullRow(5)
     lvitem = lvFull~item
@@ -10136,7 +9974,6 @@ Item stateImageIndex:   0
 Item text:              Clerk
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -10239,8 +10076,7 @@ Item text:              Clerk
   <listitem>
   <para>
     This example gets the subitem in column 3 of the item at index 4 in the list-view and prints out its information:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 
   lvfull  = list~getFullRow(4)
@@ -10256,7 +10092,6 @@ Subitem subitem:           3
 Subitem text:              ca@sharp.org
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -10292,8 +10127,7 @@ Subitem text:              ca@sharp.org
   <listitem>
   <para>
     This example ...
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvfull  = list~getFullRow(4)
   if lvfull~subitems == 0 then do
@@ -10327,7 +10161,6 @@ Item subitem:           3
 Item text:              ca@sharp.org
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -10853,22 +10686,19 @@ Item text:              ca@sharp.org
     linkend="clsLvFullRow"/> object to insert an item into a list-view. Only the label of the item and the image index are
     needed for the purposes of the application, so the other attributes of the <computeroutput>LvItem</computeroutput> are
     not assigned values. The ooDialog framework will automatically set the proper mask value:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvItem = .LvItem~new(2, "Mechanical Engineer", 0)
   ...
   lvFullRow = .LvFullRow~new(lvItem, lvSub1, lvSub2, lvSub3, .true)
   list~addFullRow(lvFullRow)
 
-]]>
 </programlisting>
     This example instantiates a <computeroutput>LvItem</computeroutput> object that will be used to query the information
     maintained by the list-view for the item at index 21. All information for the item is desired, so the masks are set
     to receive all information. Note that the value of the list-view <link
     linkend="sctListViewConstantMethods">constants</link> IMAGENONE and GROUPIDNONE are both -2:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvItem = .LvItem~new(21, , , , 'ALL', , 'ALL')
   if list~getItem(lvItem) then do
@@ -10920,7 +10750,6 @@ Item text:              Line 22
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11170,13 +10999,11 @@ Item text:              Line 22
   <para>
     This example will set, or change, the image index of the item at index 13 to 3. None of the other list-view item
     information will be changed.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvItem = .LvItem~new(13, , 3)
   list~modifyItem(lvItem)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11306,8 +11133,7 @@ Item text:              Line 22
   <listitem>
   <para>
     This example retrieves the current item data for list-view item 16:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
     lvItem = .LvItem~new(16, , , , 'PARAM')
     list~getItem(lvItem)
@@ -11318,7 +11144,6 @@ Item text:              Line 22
   The item data for item 16 is: a LvFullRow
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11417,15 +11242,13 @@ Item text:              Line 22
   <listitem>
   <para>
     This example sets the state of the item at index 1 to selected and focused:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvItem = .LvItem~new(1)
   lvItem~itemState = "SELECTED FOCUSED"
   lvItem~itemStateMask = "SELECTED FOCUSED"
   list~modifyItem(lvItem)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11531,14 +11354,12 @@ Item text:              Line 22
   <para>
     This example uses the <emphasis role="italic">itemStateMask</emphasis> to turn off the FOCUSED state of the item without
     changing any of the other states of the item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvItem = .LvItem~new(10)
   lvItem~itemStateMask = "FOCUSED"
   list~modifyItem(lvItem)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11692,24 +11513,22 @@ Item text:              Line 22
     This example sets the text label, the icon index, the item data, and the indent for the item at index 11, without
     changing any other information of the item. In this example, the mask attribute is set explicitly to make a point. But
     it is not actually needed:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
-  lvItem = .LvItem~new(11, 'Acme Clocks', 2, contactInfo, "TEXT IMAGE PARAM INDENT", , , 2)
+  lvItem = .LvItem~new(11, 'Acme Clocks', 2, contactInfo, -
+    "TEXT IMAGE PARAM INDENT", , , 2                      -
+  )
 
   list~modifyItem(lvItem)
 
-]]>
 </programlisting>
     This code snippet will work exactly the same as the example above:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvItem = .LvItem~new(11, 'Acme Clocks', 2, contactInfo, , , , 2)
 
   list~modifyItem(lvItem)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11885,8 +11704,7 @@ Item text:              Line 22
   <para>
     This example gets the current text for an item, appends a string to the text, and sets the text for the item to the new
     value:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method addQualifier private
     expose list
@@ -11903,7 +11721,6 @@ Item text:              Line 22
         return .false
     end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -12166,8 +11983,7 @@ Item text:              Line 22
     linkend="clsLvFullRow"/> object, which in turn is used to add a new item to the list-view. Note that the list-view has the
     extended SUBITEMIMAGES style and the use of the <emphasis role="italic">imageIndex</emphasis> argument in the <emphasis
     role="italic">new</emphasis> method. Each column in the list-view will have its own icon:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method populateList private
     use strict arg list
@@ -12188,7 +12004,6 @@ Item text:              Line 22
 
     ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -12247,13 +12062,11 @@ Item text:              Line 22
   <para>
     This example will set, or change, the image index for the subitem icon of the item at index 13, column 2 to 3. None of
     the other list-view item information will be changed.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lvSubItem = .LvSubItem~new(13, 2, , 3)
   list~modifyItem(lvItem)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -12401,24 +12214,20 @@ Item text:              Line 22
   <para>
     This example sets the icon index to 2, for the subitem in column 3 of the item at index 11. In this example, the mask
     attribute is set explicitly to make a point. But it is not actually needed:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   subitem = .LvSubItem~new(11, 3, , 2, "IMAGE")
 
   list~modifySubItem(subitem)
 
-]]>
 </programlisting>
     This code snippet will work exactly the same as the example above:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   subitem = .LvSubItem~new(11, 3, , 2)
 
   list~modifySubItem(subitem)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -12517,8 +12326,7 @@ Item text:              Line 22
   <para>
     This example gets the current text for a subitem, appends a string to the text, and sets the text for the subitem to the
     new value:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method addQualifier private
     expose list
@@ -12535,7 +12343,6 @@ Item text:              Line 22
         return .false
     end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
