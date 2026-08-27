@@ -1477,8 +1477,7 @@
   either the <computeroutput>PlainBaseDialog</computeroutput> class object, or an instantiated dialog object. An example
   using the class object and the IDOK constant:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dlg = .SimpleDialog~new( , "simple.h")
 
@@ -1490,13 +1489,11 @@
     -- The user closed the dialog with cancel ...
   end
 
-]]>
 </programlisting>
 
   In the above example, the dialog object itself could have been used, and is probably easier to type:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dlg = .SimpleDialog~new( , "simple.h")
 
@@ -1508,13 +1505,11 @@
     -- The user closed the dialog with cancel ...
   end
 
-]]>
 </programlisting>
 
   One last example using the dialog object with the SIZE_MAXIMIZED constant:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onResize unguarded
   expose u sizing minMaximized lastSizeInfo
@@ -1540,7 +1535,6 @@
     sizing = .true
   end
 
-]]>
 </programlisting>
 
    The constants provided by the dialog object are listed in the table below:
@@ -1660,8 +1654,7 @@
       dialog font for any of the dialogs. Before starting the program, the default font is changed to 10
       pt Tahoma. Then, all the dialogs created while the accounting program is executing will be created
       using 10 pt Tahoma.  When the accounting program is done, the old default is restored.
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       oldName = .PlainBaseDialog~getFontName
       oldSize = .PlainBaseDialog~getFontSize
       .PlainBaseDialog~setDefaultFont("Tahoma", 10)
@@ -1669,8 +1662,7 @@
       ret = excuteAccounting("Daily")
 
       .PlainBaseDialog~setDefaultFont(oldName, oldSize)
-      ]]>
-      </programlisting>
+            </programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1822,8 +1814,7 @@
     The <computeroutput>dlgData.</computeroutput> stem will be used to initialize the state of the controls using the
     symbolic IDs defined in the header file.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* BuildDlg.rex */
   DlgData.IDC_EDITFIELD_INCLUDE = "C:\sdk\include"
   DlgData.IDC_COMBOBOX_PROJECT = "Calculator"
@@ -1832,7 +1823,7 @@
   DlgData.IDC_CHECKBOX_CLEAN = 0
 
   dlg = .BuildDialog~new("dlg.dll", IDD_BUILD_DLG, DlgData., "resources.h")
-  if dlg~initCode <> 0 then do
+  if dlg~initCode &lt;&gt; 0 then do
     say "Error starting dialog.  initCode:" dlg~initCode
     return dlg~initCode
   end
@@ -1840,7 +1831,6 @@
   dlg~execute("NORMAL", IDI_DLG_ICON)
   ...
 
-]]>
 </programlisting>
   </para>
   <para>
@@ -1852,8 +1842,7 @@
     The user interacts with the dialog and selects ok to close it.  Now the state of the dialog when it was closed can
     be determined by checking the <computeroutput>dlgData.</computeroutput> stem values.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ...
 
   if DlgData.IDC_CHECKBOX_CLEAN == 1 then doClean()
@@ -1866,7 +1855,6 @@
 
   return success
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1940,8 +1928,7 @@
     This example shows a change to the oostddlg.rex sample program.  The default font is changed to
     Tahoma pt 10.  This causes all the Standard <link linkend="sctStandardDialogs">Dialogs</link> to be created using this
     font.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
@@ -1954,7 +1941,6 @@ say
 say 'Starting standard dialog demonstration...'
 
 ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2073,12 +2059,10 @@ ResourceUtils::<xref linkend="atrConstDir"/>
   <para>
     This example uses the window handle of the dialog to invoke the
  <xref linkend="mthClearWindowRect"/> method:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~clearWindowRect(self~dlgHandle)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2309,8 +2293,7 @@ WindowBase::<xref linkend="atrFactorY"/>
     This example is a portion of the code used to to create a message box dialog using a variable font.
     The calcSizes() method is not shown, but in that method the size and position of the controls, and
     the overall size of the dialog, are calculated in relation to the size needed for the message.
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     fontName = "Tahoma"
     fontSize = 20
     message = "Drive z: is a network drive and is not accessible."
@@ -2343,7 +2326,7 @@ WindowBase::<xref linkend="atrFactorY"/>
     end
 
     forward class (super) arguments (a) continue
-    if self~initCode <> 0 then return
+    if self~initCode &lt;&gt; 0 then return
 
     if arg(5, 'E') then do
       self~fontName = fontName
@@ -2352,8 +2335,7 @@ WindowBase::<xref linkend="atrFactorY"/>
 
     self~calcSizes()
     self~createCenter(cx, cy, title)
-  ]]>
-  </programlisting>
+    </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2518,8 +2500,7 @@ WindowBase::<xref linkend="atrInitCode"/>
     always visible when the owner dialog is visible, and always on top of it. When the owner dialog is closed or hidden
     the operating system closes or hides the tool palette. The code below shows the proper sequence of assigning the
     owner and executing the dialogs:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   .application~useGlobalConstDir("O", "resources\useTools.h")
 
@@ -2538,7 +2519,6 @@ WindowBase::<xref linkend="atrInitCode"/>
 
   dlg~endAsyncExecution
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2680,8 +2660,7 @@ WindowBase::<xref linkend="atrSizeY"/>
   <para>
     This example shows how it is useful to be able to dynamically add an attribute to a dialog object at run time. The
     owner dialog could be any generic dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initUpdateListView private
   use strict arg lvID, pause = .005
@@ -2693,7 +2672,6 @@ WindowBase::<xref linkend="atrSizeY"/>
   owner~addNewAttribute(updateListViewPageDialog, self, .true, .true)
   owner~addNewAttribute(updateListViewLastFocused, 0, .true, .true)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2764,8 +2742,7 @@ WindowBase::<xref linkend="atrSizeY"/>
     This example connects an event handler to a dialog and adds the event handling method to the dialog dynamically.
     Note that only a reference to the dialog object is available, so it is not possible to add the method directly using
     the <computeroutput>Object</computeroutput> class's <emphasis role="italic">setMethod</emphasis> method.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initUpdateListView private
   use strict arg lvID, pause = .005
@@ -2787,7 +2764,6 @@ WindowBase::<xref linkend="atrSizeY"/>
 
   owner~connectActivate('onUpdateListViewActivate')
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3055,8 +3031,7 @@ DialogExtensions::<xref linkend="mthExecuteAsync"/>
   <para>
     This example show how the <emphasis role="italic">initDialog</emphasis> method is used to initialize a
     list <xref linkend="clsListBox"/> by adding items to it.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::class 'MyDialog' subclass RcDialog
 ::method initDialog
@@ -3066,7 +3041,6 @@ DialogExtensions::<xref linkend="mthExecuteAsync"/>
   lb~add("this is the first line")
   lb~add("and this one the second")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3088,10 +3062,8 @@ DialogExtensions::<xref linkend="mthExecuteAsync"/>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example tests whether the dialog is active:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 if MyDialog~isDialogActive then ...
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -3268,11 +3240,9 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
   <emphasis role="bold">All</emphasis> dialog control objects are obtained through one of the methods in this section.
   The methods all have the same format:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 controlObject = dialogObject~new[ControlName](resourceID)
 
-]]>
 </programlisting>
   where <emphasis role="italic">[ControlName]</emphasis> is the name Microsoft uses for the control. <emphasis
   role="italic">resourceID</emphasis> is the <xref linkend="defResourceId"/> assigned to the dialog
@@ -3408,8 +3378,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <para>
     This example creates a ToolTip with the <emphasis role="italic">BALLOON</emphasis> style and a Close button. It then
     gives the ToolTip a title and an icon:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   expose icon
 
@@ -3417,7 +3386,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
   toolTip~setTitle("Important Message", icon)
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3467,8 +3435,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     The following example determines the check state of a <link linkend="termThreeStateStyle">3STATE</link> check box and
     displays a message announcing the state:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'MyDlgClass' subclass ResDialog
 
 ::method currentState
@@ -3479,7 +3446,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
   else say "The check box is not checked!"
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3602,15 +3568,14 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <para>
     The following example checks that user is not trying to schedule an appointment in the past:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'OnlineAppointmentDlg' subclass ResDialog
 
 ::method ok
 
   dtp = self~newDateTimePicker(IDC_DTP_APPOINTMENT)
 
-  if dtp~getDateTime < .DateTime~new then do
+  if dtp~getDateTime &lt; .DateTime~new then do
     msg = "Appointments can not be scheduled in the past!"
     ret = MessageDialog(msg, self~dlgHandle, "Appointment Error", "OK", "ERROR")
     return 0
@@ -3618,7 +3583,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
   return self~ok:super
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3667,8 +3631,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <para>
     The following example validates that the user has filled in the last name field in a dialog form:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'MyDlgClass' subclass RcDialog
 
 ::method validate
@@ -3676,7 +3639,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
   if editCtrl == .nil then return .false
   if editCtrl~getText~space(0) == "" then return .false
   else return .true
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3733,8 +3695,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <para>
     The following example shows how the text (label) of a group box could be changed during program execution:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::class 'MyPhoneBook' subclass ResDialog
 
@@ -3748,7 +3709,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
     gb~setText("Phone Numbers")
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3799,8 +3759,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     first deleting all items in the list box, then adding some new items and preselecting the item with the text of
     &quot;City&quot;:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::class 'MyDlgClass' subclass RCDialog
 
@@ -3814,7 +3773,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
   lb~add("Forest")
   lb~select("City")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3863,8 +3821,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <para>
     The following example :
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'MyDlgClass' subclass RcDialog
 
 ::method initDialog
@@ -3873,7 +3830,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
   lc~~add(101222)~~add(,"Smith")~~add(, ,"John")
   lc~~add(101223)~~add(,"Michael")~~add(, ,"Carl")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3924,8 +3880,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     new drug. When the applicant agrees to the terms for participating, the program checks that the applicant meets the
     necessary qualifications. One of which is that the applicant be at least 50 years of age:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onAgree
 
@@ -3933,7 +3888,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
   calendar = self~newMonthCalendar(IDC_MC_BIRTHDATE)
 
-  if calendar~date > earliestAcceptableYear then do
+  if calendar~date &gt; earliestAcceptableYear then do
     msg = "You must be 50 or over to participate in this clinical trial."
     ret = MessageDialog(msg, self~dlgHandle, "Not Qualified", "OK", "WARNING")
     return .false
@@ -3943,7 +3898,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3994,8 +3948,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     range to 1 through 2,147,483,647. As the program does its work, it updates the progress bar position incrementally
     based on the amount of work it calculates was done since the last update:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'MyDlgClass' subclass ResDialog
 
 ::method initDialog
@@ -4008,7 +3961,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
   use strict arg amount
   self~newProgressBar(IDC_PBAR_PROGRESS)~setPos(amount)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4058,8 +4010,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <para>
     The following example displays the state of the push button in the underlying dialog with the resource ID of 1:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'MyDlgClass' subclass RcDialog
 
 ::method currentState
@@ -4068,7 +4019,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
   say "State is" pushButton~state
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4116,8 +4066,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <para>
     The following example displays a message if the radio button with a symbolic ID of IDC_RB_CHOICE is selected:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'MyDlgClass' subclass ResDialog
 
 ::method currentState
@@ -4126,7 +4075,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
   if rb~checked then say "The radio button is selected!"
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4174,8 +4122,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     The following example gets a new rebar control object that represents the rebar control in the underlying
     dialog with the symbolic ID of IDC_RBAR. The application then begins populating the rebar with bands:
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     rb = self~newReBar(IDC_RBAR)
 
     cb = self~newComboBox(IDC_CB)
@@ -4186,8 +4133,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     band~cyMinChild = r~bottom - r~top
 
     ret = rb~insertBand(band)
-  ]]>
-  </programlisting>
+    </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4234,8 +4180,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <para>
     The following example sets a new range and a new position for the horizontal scroll bar with the resource ID of 317:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'MyDlgClass' subclass RcDialog
 
 ::method focusPage
@@ -4244,7 +4189,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
   hScrollBar~setRange(0, 1000, 0)
   hScrollBar~setPos(500, 1)
   return .true
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4303,8 +4247,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     with the symbolic ID of IDC_ST_NAME. Provided the underlying dialog control exists, it is resized and its text,
     background color, and foreground color is changed:
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   ::class 'MyDlgClass' subclass RcDialog
 
   ::method reArrange
@@ -4315,8 +4258,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     di~setColor(7,4)
     di~show
     ...
-  ]]>
-  </programlisting>
+    </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4363,8 +4305,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     dialog with the symbolic ID of IDC_STATUSBAR. Provided the underlying dialog control exists, it is divided into parts and
     the text for each part is assigned and the text for each part is set:
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     status = self~newStatusBar(IDC_STATUSBAR)
 
     parts = .array~of(50, 100, 200, -1)
@@ -4374,8 +4315,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     status~setText("No Selection", 3)
     status~setText("RW", 4)
 
-  ]]>
-  </programlisting>
+    </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4422,15 +4362,13 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <para>
     The following example initializes the tab control with symbolic ID IDC_TAB to have 5 tabs:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'MyDlgClass' subclass ResDialog
 
 ::method initDialog
   self~newTab(IDC_TAB)~addSequence("Design", "Implementation", -
                                    "Test", "Review", "Release")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4485,8 +4423,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     The following example gets a <emphasis role="italic">ToolBar</emphasis> object that represents the underlying Windows
     toolbar with the symbolic ID of IDC_TOOLBAR and then begins initializing it:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   expose tb
 
@@ -4515,7 +4452,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
   -- And show the tool bar.
   tb~show
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4579,8 +4515,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <listitem>
   <para>
     This example instantiates a new toolbar object and then begins to initialize the underlying Windows toolbar:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   ...
 
@@ -4589,7 +4524,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
   ret = tb~setExtendedStyle('DOUBLEBUFFER MIXEDBUTTONS')
   ret = tb~setBitmapSize(.Size~new(24, 24))
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4647,8 +4581,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     In the following example, the initialization of the dialog controls is broken down into sub-steps to make the
     program more readable and easier to understand. The initialization of the a track bar control is shown:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'MyDlgClass' subclass ResDialog
 
 ::method initDialog
@@ -4668,7 +4601,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
   trackBar~setSelEnd(180, .true)
   trackBar~pos = 167
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4717,8 +4649,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <para>
     The following example :
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'MyDlgClass' subclass ResDialog
 
 ::method initDialog
@@ -4736,7 +4667,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
   tc~add(  ,"Subroot")
   tc~add(  ,    ,"Item 6",3)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4786,15 +4716,13 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <para>
     The following example initializes the up down control with symbolic ID IDC_UPD :
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
 
   upDown = self~newUpDown(IDC_UPD)
   upDown~setRange(1, 20000)
   upDown~setPosition(64)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5360,8 +5288,7 @@ EventNotification::<xref linkend="mthHasKeyPressConnectionDialogObject"/>
 <para>
   The following example shows how to over-ride the <emphasis role="italic">ok</emphasis> method.  It checks that the user
   really wants to quite.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method ok unguarded
 
@@ -5374,7 +5301,7 @@ EventNotification::<xref linkend="mthHasKeyPressConnectionDialogObject"/>
   msg       = "It is now:" currentTime
   title     = "Quitting Now"
 
-  if dateTime~hours < 16 then do
+  if dateTime~hours &lt; 16 then do
     break = .endOfLine~copies(2)
 
     icon = "WARNING"
@@ -5389,13 +5316,11 @@ EventNotification::<xref linkend="mthHasKeyPressConnectionDialogObject"/>
   if ret == 1 then return self~ok:super
   else return 0
 
-]]>
 </programlisting>
   As noted above, rather than over-ride the <emphasis role="italic">ok</emphasis> method the same code could have been
   put into the <emphasis role="italic">validate</emphasis> method.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method validate unguarded
 
@@ -5408,7 +5333,7 @@ EventNotification::<xref linkend="mthHasKeyPressConnectionDialogObject"/>
   msg       = "It is now:" currentTime
   title     = "Quitting Now"
 
-  if dateTime~hours < 16 then do
+  if dateTime~hours &lt; 16 then do
     break = .endOfLine~copies(2)
 
     icon = "WARNING"
@@ -5423,7 +5348,6 @@ EventNotification::<xref linkend="mthHasKeyPressConnectionDialogObject"/>
   if ret == 1 then return .true
   else return .false
 
-]]>
 </programlisting>
 </para>
 </section>
@@ -5474,14 +5398,12 @@ EventNotification::<xref linkend="mthHasKeyPressConnectionDialogObject"/>
     if the edit control with resource ID 203 is empty. If it is empty, validate returns false, which indicates that the
     dialog cannot be closed.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'MyDialog' subclass ResDialog
 
 ::method validate unguarded
    if self~newEdit(203)~getText = "" then return .false
    else return .true
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5566,11 +5488,9 @@ EventNotification::<xref linkend="mthHasKeyPressConnectionDialogObject"/>
   <listitem>
   <para>
     This example sets the background color to a palish blue:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   self~backgroundColor(.Image~colorRef(171, 214, 245), .true)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5636,11 +5556,9 @@ EventNotification::<xref linkend="mthHasKeyPressConnectionDialogObject"/>
   <para>
     This example sets the background color of the dialog to be the same as the color of a multiple document interface (MDI)
     application,
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   self~backgroundSysColor('APPWORKSPACE')
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5879,12 +5797,11 @@ values from the INI file will place the dialog of the screen.  Invoking
 reposition itself so that it is completely on the screen, but only if needed.
 If the dialog is already completely on the screen, then no action is taken.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   if \.useDefault then
       do
-          -- Read oorexxtry.ini position & size the dialog based on its values
+          -- Read oorexxtry.ini position &amp; size the dialog based on its values
           handle = self~getSelf()
           k1 = SysIni('oorexxtry.ini','oorexxtry','k1')
           k2 = SysIni('oorexxtry.ini','oorexxtry','k2')
@@ -5900,7 +5817,6 @@ If the dialog is already completely on the screen, then no action is taken.
               end
       end
 
-]]>
 </programlisting>
 
 </para></listitem></varlistentry>
@@ -6114,8 +6030,7 @@ DialogExtensions::<xref linkend="mthGetControlRect"/>
     This example is from a dialog that displays the full path name of the file being edited in the title bar of the
     dialog. The method checks the current tile of the dialog and if it does not match the file path name passed in to
     it, it resets the title.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method updateCaption private
   use strict arg filePathName
@@ -6123,11 +6038,10 @@ DialogExtensions::<xref linkend="mthGetControlRect"/>
   hwnd = self~hwnd
   titleBarText = self~getWindowText(hwnd)
 
-  if titleBarText~caselessCompare(filePathName) <> 0 then do
+  if titleBarText~caselessCompare(filePathName) &lt;&gt; 0 then do
     self~setWindowText(hwnd, filePathName)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6342,11 +6256,9 @@ method to get a handle.
 (which is not necessarily the executing dialog, see the
 <xref linkend="mthGet"/> method) and hides the whole dialog:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 hwnd = MyDialog~get
 MyDialog~hideWindow(hwnd)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -6410,11 +6322,9 @@ if a dialog is currently maximized.
 maximized and, if it is, restore it to the position and size it was prior to
 being maximized.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   if self~isMaximized then self~restore
 
-]]>
 </programlisting>
 
 </para></listitem></varlistentry>
@@ -6456,15 +6366,13 @@ show the dialog in the size and position it was prior to being minimized.  The
 complete program listing that this code snippet comes from is available (see the
 File Viewer <link linkend="exampleFileViewer">example</link>.)
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method cancel
   expose parent
   parent~enableControl(IDC_PB_VIEW)
   if parent~isMinimized then parent~restore
   return self~cancel:super
 
-]]>
 </programlisting>
 
 </para></listitem></varlistentry>
@@ -6510,8 +6418,7 @@ have the <computeroutput>MAXIMIZEBOX</computeroutput> style when it is created.
 It is used in the FileViewer example.  The complete program listing is available
 (see the File Viewer <link linkend="exampleFileViewer">example</link>.)
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onView
   expose viewDlg editCntrl
@@ -6525,7 +6432,6 @@ It is used in the FileViewer example.  The complete program listing is available
     self~minimize
   end
 
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -6570,8 +6476,7 @@ of a file.  The secondary dialog is show full screen (maximized.)  At the same
 time the parent dialog is minimized to the taskbar.  The complete program
 listing is available (see the File Viewer <link linkend="exampleFileViewer">example</link>.)
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onView
   expose viewDlg editCntrl
@@ -6591,7 +6496,6 @@ listing is available (see the File Viewer <link linkend="exampleFileViewer">exam
     self~minimize
   end
 
-]]>
 </programlisting>
 
 </para></listitem></varlistentry>
@@ -6662,15 +6566,13 @@ show the dialog in the size and position it was prior to being minimized.  The
 complete program listing for this code snippet is available (see the
 File Viewer <link linkend="exampleFileViewer">example</link>.)
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method cancel
   expose parent
   parent~enableControl(IDC_PB_VIEW)
   if parent~isMinimized then parent~restore
   return self~cancel:super
 
-]]>
 </programlisting>
 
 </para></listitem></varlistentry>
@@ -7155,8 +7057,7 @@ Generic form:
     This example is from a dialog that displays the full path name of the file being edited in the title bar of the
     dialog. The method checks the current tile of the dialog and if it does not match the file path name passed in to
     it, it resets the title.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method updateCaption private
   use strict arg filePathName
@@ -7164,11 +7065,10 @@ Generic form:
   hwnd = self~hwnd
   titleBarText = self~getWindowText(hwnd)
 
-  if titleBarText~caselessCompare(filePathName) <> 0 then do
+  if titleBarText~caselessCompare(filePathName) &lt;&gt; 0 then do
     self~setWindowText(hwnd, filePathName)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7280,10 +7180,8 @@ Generic form:
   <para>
     The following statement makes the dialog invisible:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   dlg~show("HIDE")
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8059,10 +7957,8 @@ new item is inserted at the proper position. </para>
 <listitem><para>The following example adds the new line, <computeroutput>Another item</computeroutput>, to
 the list of combo box 103:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 MyDialog~addComboEntry(103, "Another item")
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -8100,8 +7996,7 @@ use the findComboEntry or getCurrentComboIndex method (see page <xref linkend="m
 <listitem><para>In the following example, method <computeroutput>ChangeButtonPressed</computeroutput> changes
 the currently selected line of combo box 230 to the value in entry line 250:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
      .
      .
      .
@@ -8109,7 +8004,6 @@ the currently selected line of combo box 230 to the value in entry line 250:
    idx = self~GetCurrentComboEntry(230)
    str = self~getEditData(250)
    self~changeComboEntry(230, idx, str)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -8166,10 +8060,8 @@ added:
 <listitem><para>The following example fills the combo box list with the names of all
 read/write files with extension .REX in the given directory:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 MyDialog~comboAddDirectory(203, drive":\"path"\*.rex", "READWRITE")
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -8228,8 +8120,7 @@ an item.
 <listitem><para>The following example shows a method that deletes the item that is passed
 to the method in the form of a text string from combo box 203:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
       .
       .
       .
@@ -8237,7 +8128,6 @@ to the method in the form of a text string from combo box 203:
    use arg delStr
    idx = self~findComboEntry(203, delStr)
    self~deleteComboEntry(203, idx)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -8297,11 +8187,9 @@ index of the combo box. </para>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 if dlg~getComboEntry(203,5)="JOHN"
 then ...
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -8410,10 +8298,8 @@ item.
 <listitem><para>This statement inserts <computeroutput>The new third line</computeroutput> after the second
 line into the list of combo box 103:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 MyDialog~insertComboEntry(103, 2, "The new third line")
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -8581,8 +8467,7 @@ is returned. </para>
 line (214) to the list box (215) if no item with the same value is already
 contained in it:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
       .
       .
       .
@@ -8590,7 +8475,6 @@ contained in it:
    str = self~getEditData(214)
    if self~findListEntry(215, str) = 0 then
       self~addListEntry(215, str)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -8648,11 +8532,9 @@ contained in it:
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 if dlg~getListEntry(203,5)="JOHN"
 then ...
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -8925,13 +8807,9 @@ which is useful for formatting the list in more than one column. </para>
 <listitem><para>The following example creates a four-column list and adds a tab-formatted
 row to the list. The tabulator positions are 10, 20, and 30.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 MyDialog~setListTabulators(102, 10, 20, 30)
-MyDialog~addListEntry(102, var1  "09"x
-var2  "09"x  ,
-                           var3  "09"x  var4)
-]]>
+MyDialog~addListEntry(102, var1  "09"x var2  "09"x var3  "09"x var4)
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -8981,8 +8859,7 @@ var2  "09"x  ,
   This snippet of code comes from a program where the user can customize the interface to use a menu or
   to not use a menu.  When writes should be disabled, the method checks for a menu and if present
   disables the appropriate menu items.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onDisableWrites
     if self~hasMenuBar then do
         menu = self~getMenuBar
@@ -8991,7 +8868,6 @@ var2  "09"x  ,
         menu~disable(IDM_WRITE_TO_SOCKET)
     end
     return 0
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -9143,8 +9019,7 @@ var2  "09"x  ,
     another ooDialog object that was just created. The <emphasis role="italic">showHandles</emphasis> method is
     connected to a push button and then displays the handles when the user clicks that button.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method showHandles
   expose staticDlg
 
@@ -9157,7 +9032,6 @@ var2  "09"x  ,
   say "Self (getSelf):  " hwndMySelf
   say "Static dialog:   " hwndStatic
 
-]]>
 </programlisting>
 
   </para>
@@ -9224,8 +9098,7 @@ var2  "09"x  ,
     <xref linkend="clsUserDialog"/> and that <emphasis role="italic">staticDlg</emphasis> is a saved reference
     to another ooDialog object.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method display
   expose staticDlg
 
@@ -9236,7 +9109,6 @@ var2  "09"x  ,
   say "Self:         " hwndSelf
   say "Static dialog:" hwndStatic
 
-]]>
 </programlisting>
 
   </para>
@@ -9316,12 +9188,10 @@ var2  "09"x  ,
   <listitem>
   <para>
     This example get the window handle of the Ok button.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   hwndOkButton = self~getControlHandle(OK)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9399,7 +9269,7 @@ var2  "09"x  ,
     then nothing is done.  In a more complex application, the programmer would probably check that the resource ID
     matches one of the check boxes instead.
 
-<programlisting> <![CDATA[
+<programlisting language="rexx">
 
 /* Simple Grocery List */
 
@@ -9452,7 +9322,6 @@ var2  "09"x  ,
   self~connectKeyPress(check, .VK~F2, "NONE")
   self~connectKeyPress(unCheck, .VK~F3, "NONE")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9483,12 +9352,10 @@ var2  "09"x  ,
   correct, ensure that the dialog font <xref linkend="atrFontName"/> are set to the font that will be
   used by the dialog when it is created. The attributes can be set directly or by using the
  <xref linkend="mthSetDlgFont"/>() method.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dlg~setDlgFont("fontName", fontSize)
   dlg~getTextSizeDu("some text")
-]]>
 </programlisting>
 </para>
 <variablelist>
@@ -9518,8 +9385,7 @@ var2  "09"x  ,
       object with the coordinates of where to place the static control in the dialog. Note that a .Rect object normally
       defines a bounding rectangle. But, in this case the rectangle is used to specify the upper left corner and the
       width and the height of the rectangle.
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
     ::method calcSizes private
       expose msgRect okRect
 
@@ -9554,8 +9420,7 @@ var2  "09"x  ,
       r = okRect
       self~createPushButton(IDOK, r~left, r~top, r~right, r~bottom, "DEFAULT", "Ok")
 
-      ]]>
-      </programlisting>
+            </programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -9597,11 +9462,10 @@ var2  "09"x  ,
   If this method is used to aid in the lay out of the dialog controls, to be sure the calculation is correct, the
   dialog font <xref linkend="atrFontName"/> must be set to the font that will be used by the dialog when it is
   created. The attributes can be set directly or by using the <xref linkend="mthSetDlgFont"/>() method.
-<programlisting> <![CDATA[
+<programlisting language="rexx">
 
   dlg~setDlgFont("fontName", fontSize)
   size = dlg~getTextSizeDlg("some text")
-]]>
 </programlisting>
 </para>
 <para>
@@ -9702,8 +9566,7 @@ var2  "09"x  ,
   <para>
     This example calculates the width, in dialog units, that is required for a dialog such that the title fits without the
     operating system clipping it:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method getMinDlgCX private
     use strict arg title
@@ -9715,7 +9578,6 @@ var2  "09"x  ,
     self~pixel2dlgUnit(s)
 
     return s~width
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9784,8 +9646,7 @@ var2  "09"x  ,
     This example shows how to position controls in a <xref linkend="clsUserDialog"/> relative to a
     static image control. The pixel size of the picture is known.  That size is then converted to dialog units so the
     other controls can be positioned correctly.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineDialog
 
@@ -9816,7 +9677,6 @@ var2  "09"x  ,
   xPos = 10 + size~width - 50
   self~createPushButton(IDOK, xPos, yPos, 50, 14, "DEFAULT", "Ok", ok)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9969,10 +9829,8 @@ DialogExtensions::<xref linkend="mthSetSBRange"/>
   <para>
     The following example checks the radio button with resource ID 9001.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -10058,8 +9916,7 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
     use the <emphasis role="italic">sendMessageToControl</emphasis> or <emphasis
     role="italic">sendMessageToControlH</emphasis> methods.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method changeFont private
   use strict arg newFont
 
@@ -10067,7 +9924,6 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
   self~sendMessageToControl(IDC_LV_ADDRESSES, "0x0030", newFont, 1)
 
   return oldFont
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -10154,8 +10010,7 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
     cases, there is really no need for the Rexx programmer to use the <emphasis
     role="italic">sendMessageToWindow</emphasis> or <emphasis role="italic">sendMessageToWindowH</emphasis> methods.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method changeCalendarFont private
   use strict arg hNewFont
 
@@ -10165,7 +10020,6 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
   self~sendMessageToWindow(hwnd, "0x1009", hNewFont, 1)
 
   return hOldFont
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

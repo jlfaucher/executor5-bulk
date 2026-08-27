@@ -195,14 +195,12 @@
       If the name is omitted, then the name is created by prepending <computeroutput>DATA</computeroutput> with the
       resource ID argument. Recall that the resource ID argument can possibly be a symbolic ID. Example:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   -- The attribute name will be DATA202
   self~connectEdit(202)
 
   -- The attribute name will be DATAIDC_EDIT_FNAME
   self~connectEdit(IDC_EDIT_FNAME)
-]]>
 </programlisting>
     </para>
     <para>
@@ -212,8 +210,7 @@
       <computeroutput>DATA</computeroutput> with the <emphasis role="bold">numeric</emphasis> value of the
       resource ID argument. This is true even when the id argument is specified as a symbolic ID. Example:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   self~constDir[IDC_EDIT_FNAME] = 344
 
   -- The attribute name will be DATA202
@@ -222,7 +219,6 @@
   -- The attribute name will be DATA344
   self~connectEdit(IDC_EDIT_FNAME, 'FNAME+ADDRESSBOOK')
 
-]]>
 </programlisting>
     </para>
     </listitem></varlistentry>
@@ -239,8 +235,7 @@
       button, then the name is created by prepending <computeroutput>DATA</computeroutput> with the numeric value of the
       resource ID argument. Example:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   self~constDir[IDC_EDIT_FNAME] = 344
 
   -- The attribute name will be DATA344
@@ -248,7 +243,6 @@
 
   -- The attribute name will be DATA344
   self~createEdit(IDC_EDIT_FNAME, 10, 10, 100, 12, "AUTOSCROLLH MULTILINE")
-]]>
 </programlisting>
     </para>
     <para>
@@ -257,21 +251,19 @@
       spaces, ampersands, and colons, if any, are removed from the label. The result is used for the attribute name.
       Examples:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   self~constDir[IDC_CHK_LN] = 200
   self~constDir[IDC_CHK_MAIL] = 201
   self~constDir[IDC_CHK_RECEIPT] = 202
 
   -- The attribute name will be USELASTNAME
-  self~createCheckBox(IDC_CHK_LN, 10, 10, 80, 12, "GROUP", "&Use last name")
+  self~createCheckBox(IDC_CHK_LN, 10, 10, 80, 12, "GROUP", "&amp;Use last name")
 
   -- The attribute name will be MAILITEM
   self~createCheckBox(IDC_CHK_MAIL, 10, 27, 80, 12, "RBUTTON RIGHT", "Mail item:")
 
   -- The attribute name will be RECEIPT
   self~createCheckBox(IDC_CHK_RECEIPT, 10, 45, 80, 12, , "Receipt")
-]]>
 </programlisting>
     </para>
     <para>
@@ -281,8 +273,7 @@
       role="bold">numeric</emphasis> value of the resource ID argument. This is true even when the id argument is
       specified as a symbolic ID. Examples:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   self~constDir[IDC_EDIT_CLASS] = 344
   self~constDir[IDC_CHK_DEFAULTNAME] = 201
   self~constDir[IDC_CHK_COPY] = 202
@@ -294,9 +285,8 @@
   self~createCheckBox(IDC_CHK_DEFAULTNAME, 10, 27, 80, 12, , "Default Name")
 
   -- The attribute name will be DATA202
-  self~createCheckBox(IDC_CHK_COPY, 10, 45, 80, 12, , "&Copy")
+  self~createCheckBox(IDC_CHK_COPY, 10, 45, 80, 12, , "&amp;Copy")
 
-]]>
 </programlisting>
     </para>
     </listitem></varlistentry>
@@ -321,14 +311,13 @@
       the pattern(s) already seen. Examples:
 
 <programlisting>
-<![CDATA[
   -- For an edit control with resource ID 344 and no associated text:
   DATA344
 
   -- For a check box with resource ID 400 and a label of "Compile":
   COMPILE
 
-  -- For a radio button with resource ID 200 and a label of "&Copy":
+  -- For a radio button with resource ID 200 and a label of "&amp;Copy":
   DATA200
 
   -- For a tree view with resource 320 and text associated of "C: Drive"
@@ -338,8 +327,6 @@
   DATA320
 
   -- etc..
-
-]]>
 </programlisting>
     </para>
     </listitem></varlistentry>
@@ -883,8 +870,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
     attribute. Then, when the dialog has terminated, the name the user entered is displayed. (Of course the user may not
     have entered her name. What is displayed is whatever the text in the edit control was when the dialog was closed.)
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dlg = .NameDlg~new("nameExample.dll", IDD_DIALOG1, , "nameExample.h" )
 
@@ -912,7 +898,6 @@ return 0
   self~getDataAttribute("NAME")
   self~ok:super
 
-]]>
   </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1016,9 +1001,7 @@ return 0
     role="italic">connectEdit</emphasis> method. The code can be copied and pasted into the appropriate files to create
     a working example.
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 /* singleSelection.rex */
 
   dlg = .SingleSelectionDlg~new("singleSelection.rc", IDD_SINGLE_SELECTION_DLG, , "singleSelection.h" )
@@ -1063,7 +1046,7 @@ return 0
 /* End of singleSelection.rex */
 
 
-/* Place this code in a file named "singleSelection.h" */
+/* Place this code in a file named "singleSelection.h"
 
 #ifndef IDC_STATIC
 #define IDC_STATIC (-1)
@@ -1071,14 +1054,13 @@ return 0
 
 #define IDD_SINGLE_SELECTION_DLG                 100
 #define IDC_LB_STATES                           1003
+*/
 
 /* Place this code in a file called singleSelection.rc. Two lines will wrap below:
  * The line that begins "STYLE DS_3DLOOK" is all one line until the line that
  * begins with "CAPTION" Likewise the "LISTBOX" line is all one line until the
  * "DEFPUSHBUTTON" line. These lines will need to be fixed after the copy and
  * paste.
- */
-
 
 #include <windows.h>
 #include "singleSelection.h"
@@ -1094,8 +1076,9 @@ FONT 8, "Ms Shell Dlg 2"
     DEFPUSHBUTTON   "OK", IDOK, 71, 124, 50, 14
     PUSHBUTTON      "Cancel", IDCANCEL, 126, 124, 50, 14
 }
+*/
 
-/* Use this code to replace the .array~of(...) statement in the Rexx program. */
+/* Use this code to replace the .array~of(...) statement in the Rexx program.
   a = .array~of( -
                 "Alabama", -
                 "Alaska", -
@@ -1153,8 +1136,7 @@ FONT 8, "Ms Shell Dlg 2"
                 "West Virginia", -
                 "Wisconsin", -
                 "Wyoming")
-
-]]>
+*/
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1165,9 +1147,7 @@ FONT 8, "Ms Shell Dlg 2"
     list box. It is also very similar to the <link linkend="exampleConnectEdit">example</link> for the <emphasis
     role="italic">connectEdit</emphasis> method.
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 /* multiSelection.rex */
 
   dlg = .MultiSelectionDlg~new("multiSelection.rc", IDD_MULTI_SELECTION_DLG, , "multiSelection.h" )
@@ -1223,7 +1203,6 @@ return 0
  * begins with "CAPTION" Likewise the "LISTBOX" line is all one line until the
  * "DEFPUSHBUTTON" line. These lines will need to be fixed after the copy and
  * paste.
- */
 
 #include <windows.h>
 #include "multiSelection.h"
@@ -1239,11 +1218,12 @@ FONT 8, "Ms Shell Dlg 2"
     DEFPUSHBUTTON   "OK", IDOK, 71, 124, 50, 14
     PUSHBUTTON      "Cancel", IDCANCEL, 126, 124, 50, 14
 }
+*/
 
 
 /* Place this code in a file called multiSelection.h */
 
-/* Use this code to replace the .array~of(...) statement in the Rexx program. */
+/* Use this code to replace the .array~of(...) statement in the Rexx program.
   a = .array~of( -
                 "Alabama", -
                 "Alaska", -
@@ -1301,8 +1281,7 @@ FONT 8, "Ms Shell Dlg 2"
                 "West Virginia", -
                 "Wisconsin", -
                 "Wyoming")
-
-]]>
+*/
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2185,8 +2164,7 @@ FONT 8, "Ms Shell Dlg 2"
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem><para>The following example continues the <xref linkend="mthSetData"/> example:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
      .
      .
      .
@@ -2204,7 +2182,6 @@ dialog~getData       /* set data attributes to the state of the dialog controls 
 say dialog~EDIT_1
 say dialog~DATA201
 say dialog~LISTBOX_DAYS
-]]>
 </programlisting>
 
   </para>
@@ -2266,11 +2243,9 @@ say dialog~LISTBOX_DAYS
     The following example shows how to get the data of a dialog control and synchronize its connected data
     attribute.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   self~getDataAttribute("FIRSTNAME")
   if self~firstName \= "" then ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2447,14 +2422,12 @@ say dialog~LISTBOX_DAYS
     The following example shows how to handle a multiple-selection list box. It parses the returned string as long as it
     contains an index.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 selLines = MyDialog~getListBoxData(555)
 do until selLines = ""
    parse var selLines aLine selLines
    say aLine
 end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2558,12 +2531,10 @@ end
     The following example overrides <emphasis role="italic">initAutoDetection</emphasis> method to switch off auto
     detection:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'AddressBookDialog' subclass ResDialog
 ::method initAutoDetection
    self~noAutoDetection
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2867,10 +2838,8 @@ end
     meaningful if the control is an edit control, or if it is a list box that contains the line &quot;1 2 3&quot;.
     However, for other controls it is probably meaningless.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 MyDialog~setControlData(123, "1 2 3")
-]]>
 </programlisting>
 
   </para>
@@ -2932,8 +2901,7 @@ MyDialog~setControlData(123, "1 2 3")
     initialized with some values. This does not change the state of the controls in the dialog until the <emphasis
     role="italic">setData</emphasis> method is invoked.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
      . .
      .
 dialog~connectEdit(102, "EDIT_1")
@@ -2947,7 +2915,6 @@ dialog~DATA201 = 1
 dialog~LISTBOX_DAYS = "Monday"
 
 dialog~setData
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -3035,10 +3002,8 @@ dialog~setData
     The following example sets the state the of the connected dialog control to the value of the data attribute DATA101:
     to
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   self~setDataAttribute("DATA101")
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3107,8 +3072,7 @@ dialog~setData
   <para>
     The following example initializes the dialog controls with IDs 21, 22, and 23, provided they have been connected
     previously:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
      .
      .
      .
@@ -3116,7 +3080,6 @@ dlgStem.21="Windows 95"
 dlgStem.22="0"
 dlgStem.23="1 2 3"
 self~setDataStem(dlgStem.)
-]]>
 </programlisting>
    </para>
   </listitem></varlistentry>
@@ -3214,8 +3177,7 @@ self~setDataStem(dlgStem.)
     value. Thus it is possible to undo the changes, (using the <emphasis role="italic">unDoChanges</emphasis> method,)
     or to accept the changes, (using the <emphasis role="italic">acceptValues</emphasis> method.)
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   ::method setToDefault
      self~setEditData(234, "256")
 
@@ -3224,8 +3186,7 @@ self~setDataStem(dlgStem.)
 
   ::method undoChanges
      self~setDataAttribute(DATA234)
-  ]]>
-  </programlisting>
+    </programlisting>
 
   </para>
   </listitem></varlistentry>
@@ -3324,11 +3285,9 @@ self~setDataStem(dlgStem.)
     The following example is for a single-selection list box. It selects the item whose text is &quot;New York&quot;,
     case insensitive, in the list box with a resource ID of 232:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   MyBaseDialog~setListBoxData(232, "New York")
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3337,10 +3296,8 @@ self~setDataStem(dlgStem.)
   <para>
     The following example selects items 2, 5, and 6 of the multi-selection list box with a resource ID of 345:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   MyDialog~setListBoxData(345, "2 5 6")
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
