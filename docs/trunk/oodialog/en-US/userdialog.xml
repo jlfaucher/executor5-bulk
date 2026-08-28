@@ -412,8 +412,7 @@
     <computeroutput>resources.h</computeroutput> to the object's <xref linkend="atrConstDir"/>
     directory:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   dlg =.PhoneBookDlg~new(aStem., "resources.h")
   ...
 
@@ -421,9 +420,7 @@
 
 ::class "PhoneBookDlg" subclass UserDialog
 
-...
-
-]]>
+/* ... */
 </programlisting>
   </para>
   <para>
@@ -520,8 +517,7 @@
     role="italic">addIconResource</emphasis> method is used to load an icon resource using the ID of 105.  That icon is
     then used in the <emphasis role="italic">execute</emphasis> method for the <xref linkend="defDialogIcon"/>.
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   dlg = .SimpleDialog~new
   if dlg~initCode = 0 then do
     dlg~addIconResource(105, "MyAppIcon.ico")
@@ -538,7 +534,6 @@
   self~createStaticText(100, 10, 20, 130, 30, "CENTER BORDER", "Simple message")
   self~createPushButton(IDOK, 105, 70, 35, 15, "DEFAULT", "OK")
 
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -754,11 +749,9 @@
     and the left of the screen. The dialog has no system menu, minimize box, or maximize box. The dialog will use a
     12-point Courier font and is expected to contain fewer than 100 dialog controls.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 success = dlg~create(20, 20, 300, 200, "My first Dialog", "NOMENU", , "Courier", 12, 100)
 if success then dlg~execute
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -960,11 +953,9 @@ Error 98.900:  the storage allocated for the dialog template is too small
     dialog has no system menu, minimize box, or maximize box. The dialog will use a 12-point Courier font and is
     expected to contain fewer than 100 dialog controls.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 success = dlg~create(20, 20, 300, 200, "My first Dialog", "NOMENU", , "Courier", 12, 100)
 if success then dlg~execute
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1585,11 +1576,9 @@ if success then dlg~execute
     shown. The <emphasis role="italic">onBmpPushed</emphasis> method in the Rexx dialog is connected to the CLICKED
     event. When the button is clicked, the <emphasis role="italic">onBmpPushed</emphasis> method is invoked.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
                         "Button1.bmp", , , "Button1D.bmp")
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1902,14 +1891,12 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
     The following example defines an automatic three-state check box. The label for the check box is rather long, so a
     multiline style is used.
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method defineDialog
 
 label = "Use condensed type only"
 style = "3STATE MULTILINE NOTIFY"
 self~createCheckBox(IDC_CB_CONDENSED, 125, 19, 30, 20, style, label)
-]]>
 </programlisting>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Note;</emphasis></term>
@@ -2174,12 +2161,10 @@ self~createCheckBox(IDC_CB_CONDENSED, 125, 19, 30, 20, style, label)
     The following example adds a group of four check boxes to the dialog. Two check boxes are
     <link linkend="fig54">preselected</link>/>:
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~createCheckBoxGroup(401, 23, 18, ,"Smalltalk C++ ObjectRexx OO-COBOL")
 self~smalltalk = 1
 self~objectrexx = 1
-]]>
 </programlisting>
 
     <figure id="fig54"><title>Sample Check Box Group</title>
@@ -2459,8 +2444,7 @@ self~objectrexx = 1
     columns. The group box for the group is give a resource ID of 300. In initDialog(), the group box is then given a
     label and the first and fifth check boxes are checked.
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* Simple test of create ... methods */
 
   dlg = .SimpleCB~new
@@ -2495,7 +2479,6 @@ self~objectrexx = 1
 
 ::method initAutoDetection
   self~noAutoDetection
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -2803,8 +2786,7 @@ self~objectrexx = 1
     Cancel methods.
   </para>
 
-  <programlisting>
-<![CDATA[
+  <programlisting language="rexx">
 ::class MyClass subclass UserDialog
 
 ::method defineDialog
@@ -2820,7 +2802,6 @@ self~objectrexx = 1
 ::method cancel
    ret = MessageBox("Do you really want to quit?", "Please confirm", "OK")
    if ret=1 then self~CANCEL:super
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -3116,11 +3097,9 @@ self~objectrexx = 1
     size width=40, height=15. The button's ID is 555, and if the button is clicked, the <emphasis
     role="italic">getInfo</emphasis> method in the Rexx dialog is invoked. The button is created without the tabstop
     style.  If the user navigates the dialog using the keyboard, the tab key will skip over the button.
-<programlisting>
-<![CDATA[
-MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getInfo")
+<programlisting language="rexx">
+MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&amp;Get new Info", "getInfo")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3381,13 +3360,11 @@ MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getIn
     multi-word text labels for the buttons are enclosed in single quotes within the entire string
   </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~createPushButtonGroup(20, 235, , ,                       -
                           "'Add Record' 301 AddItem "         -
-                          "'&Delete Record' 302 DeleteItem "  -
-                          "'&Update Record' 303 UpdateItem")
-]]>
+                          "'&amp;Delete Record' 302 DeleteItem "  -
+                          "'&amp;Update Record' 303 UpdateItem")
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -3449,8 +3426,7 @@ self~createPushButtonGroup(20, 235, , ,                       -
     <para>
       <emphasis role="bold">Note</emphasis> that there are two possible ways to construct the indexes, the tails, that
       specify the data for each button. One way is to explicity name the tails, like this:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   inp.0 = 4
   inp.1.id     = IDC_PB_PUSHME
   inp.1.text   = "Push"
@@ -3462,17 +3438,14 @@ self~createPushButtonGroup(20, 235, , ,                       -
   inp.3.id     = IDCANCEL
   inp.3.text   = "Cancel"
   inp.3.method = cancel
-]]>
 </programlisting>
       or the data for a single button could be specified as a stem itself, like the following:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   inp.0 = 4
   ...
   btn.id   = IDHELP
   btn.text = 'Help'
   inp.4    = btn.
-]]>
 </programlisting>
 
     </para>
@@ -3737,8 +3710,7 @@ self~createPushButtonGroup(20, 235, , ,                       -
     coordinates of the button group are calculated:
   </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 inp.0 = 3
 inp.1.id     = IDC_PB_ADD
 inp.1.text   = "Add Record"
@@ -3751,7 +3723,6 @@ inp.3.text   = "Update Record"
 inp.3.method = updateItem
 
 self~createPushButtonStem( , , , , inp., .false, "TOP")
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -4046,8 +4017,7 @@ self~createPushButtonStem( , , , , inp., .false, "TOP")
   <para>
     The following example defines seven radio buttons with IDs 501 through 507:
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 RText.1="Monday"
 RText.2="Tuesday"
 RText.3="Wednesday"
@@ -4059,7 +4029,6 @@ RText.7="Sunday"
 do i=1 to 7
  MyDialog~createRadioButton(500+i, 20, i*15+13, 40, 14, , RText.i)
 end
-]]>
 </programlisting>
   <para>
     <emphasis role="bold">Note:</emphasis> that there are also methods that create a whole group of radio buttons
@@ -4300,14 +4269,12 @@ end
     The following example adds a group of three radio buttons with IDs 301, 302, and 303 to the <link
     linkend="fig53">dialog</link>:
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 MyDialog = .UserDialog~new
 MyDialog~create(100, 100, 80, 60, "Radio Button Group")
 MyDialog~createRadioButtonGroup(301, 23, 18, ,"Fast Medium Slow")
 MyDialog~fast = 1
 MyDialog~execute
-]]>
 </programlisting>
 
     <figure id="fig53"><title>Sample Radio Button Group</title>
@@ -4581,8 +4548,7 @@ MyDialog~execute
     is checked.
   </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* Simple test of create ... */
 
   dlg = .SimpleRB~new
@@ -4610,7 +4576,6 @@ MyDialog~execute
 ::method initDialog
   self~newGroupBox(300)~setTitle("Class Warfare")
   self~newRadioButton(304)~check
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -5291,12 +5256,10 @@ MyDialog~execute
     <xref linkend="defClientArea"/>. The control will be 79 <xref linkend="defDialogUnit"/>s wide and 15 dialog units high.
     The date will be in the short date format.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~createDateTimePicker(IDC_DT1, 17, 7, 79, 15, "SHORT")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5594,10 +5557,8 @@ MyDialog~execute
   </listitem></varlistentry>
 </variablelist>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 dlg~createEdit(201, 12, 14, 150, ,"AUTOSCROLLH", "FIRSTNAME")
-]]>
 </programlisting>
 </section>
 
@@ -5897,10 +5858,8 @@ dlg~createEdit(201, 12, 14, 150, ,"AUTOSCROLLH", "FIRSTNAME")
     <link linkend="sctUnderstandingDataAttributes">attribute</link> with the name YOUREMAILADDRESS. The height of the
     individual controls is <link linkend="fig55">calculated</link>.
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~createEditInput(402, 20, 30, , 150, , "Your eMail address")
-]]>
 </programlisting>
 
   <figure id="fig55"><title>Sample Input Field</title>
@@ -6233,10 +6192,8 @@ self~createEditInput(402, 20, 30, , 150, , "Your eMail address")
   </listitem></varlistentry>
 </variablelist>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~createEditInputGroup(301, 20, 20, , 130, "Name FirstName Street City")
-]]>
 </programlisting>
 
 </section>
@@ -6557,15 +6514,13 @@ self~createEditInputGroup(301, 20, 20, , 130, "Name FirstName Street City")
     different from the title because the spaces and ampersands are removed. In this example the NAME, FIRSTNAME,
     STREETNUMBER, and CITYZIP attributes are added to the object.
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 FNames.1="Name"
 FNames.2="First Name"
-FNames.3="Street & Number"
-FNames.4="City & ZIP"
+FNames.3="Street &amp; Number"
+FNames.4="City &amp; ZIP"
 
 self~createEditInputStem(401, 20, 20, , 150, FNames.)
-]]>
   </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -7348,12 +7303,10 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
       of width=40 and height=120. The list-view is a report view with items sorted in ascending order. It supports item
       editing and column headers do not behave like buttons. The data
       <link linkend="sctUnderstandingDataAttributes">attribute</link> for the list-view is EMPLOYEES.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER", "EMPLOYEES")
 
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -7563,12 +7516,10 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
     the <emphasis role="italic">today</emphasis> date. The DAYSTATE style indicates that the programmer wants to
     receive the <xref linkend="evtMonthCalendarGETDAYSTATE"/> event notifications.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~createMonthCalendar(IDC_MC1, 162, 7, 140, 100, "NOTODAY NOCIRCLE DAYSTATE")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7719,12 +7670,10 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
     IDC_PBAR_DONE, close to the bottom of the dialog. The progress bar is 12 dialog units high with a border of 10
     dialog units below it. The progress bar is almost as wide as the dialog. It has a border of 10 dialog units on each
     side.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7947,10 +7896,8 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
   <para>
     The following example creates a rebar control that displays the bands at the minimum required height when possible, has
     narrow lines between adjacent bands, and keeps the bands in the same order:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   self~createReBar(IDC_RBAR, 0, 1, 220, 22, "VARHEIGHT BANDBORDERS FIXEDORDER")
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9451,15 +9398,13 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
   <listitem>
   <para>
     This example adds a static image control and a static text control.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method defineDialog
 
   self~createStatic(IDC_BMP_PICTURE, 10, 10, 20, 17, "BITMAP REALSIZEIMAGE")
   self~createStatic(IDC_ST_DESCRIPTION, 14, 190, 176, 20, "TEXT LEFT", "Description")
   self~createPushButton(IDC_PB_NEXT, 10, 223, 50, 14, , "Next", onNext)
   self~createPushButton(IDOK, 140, 223, 50, 14, "DEFAULT", "Ok", ok)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9888,15 +9833,13 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
   <para>
     This example adds a static image control that uses a bitmap and the control automatically sizes itself to the size of
     the bitmap.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method defineDialog
 
   self~createStaticImage(IDC_BMP_PICTURE, 10, 10, 20, 17, "BITMAP REALSIZEIMAGE")
   self~createStatic(IDC_ST_DESCRIPTION, 14, 190, 176, 20, "TEXT LEFT", "Description")
   self~createPushButton(IDC_PB_NEXT, 10, 223, 50, 14, , "Next", onNext)
   self~createPushButton(IDOK, 140, 223, 50, 14, "DEFAULT", "Ok")
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -10132,8 +10075,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
     This example is similar to the one used to produce the <link linkend="figFramesRects">picture</link> of frames and
     rectangles.  You can copy and paste it into 2 files and it should run as is.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* UserAllStyles.rex  Simple Dialog to display static frames */
 
   dlg = .SimpleDialog~new( , 'AllStyles.h')
@@ -10174,9 +10116,12 @@ return 0
   self~createBlackFrame(IDC_ST_BLACKFRAME_BORDER143, 119, 25, 20, "BORDER")
 
   self~createStaticText( , 9, 151, 33, 20, "CENTER", "Sunken / Border")
-  self~createWhiteFrame(IDC_ST_WHITEFRAME_SUNKEN_BORDER, 56, 151, 25, 20, "NOTIFY SUNKEN BORDER")
-  self~createGrayFrame(IDC_ST_GRAYFRAME_SUNKEN_BORDER, 100, 151, 25, 20, "SUNKEN BORDER")
-  self~createBlackFrame(IDC_ST_BLACKFRAME_SUNKEN_BORDER, 143, 151, 25, 20, "SUNKEN BORDER")
+  self~createWhiteFrame(IDC_ST_WHITEFRAME_SUNKEN_BORDER, 56, 151, 25, 20,  -
+    "NOTIFY SUNKEN BORDER")
+  self~createGrayFrame(IDC_ST_GRAYFRAME_SUNKEN_BORDER, 100, 151, 25, 20,   -
+    "SUNKEN BORDER")
+  self~createBlackFrame(IDC_ST_BLACKFRAME_SUNKEN_BORDER, 143, 151, 25, 20, -
+    "SUNKEN BORDER")
 
   self~createStaticText( , 193, 31, 23, 8, , "Etched")
   self~createStaticText( , 193, 59, 31, 17, , "Etched Horizontal")
@@ -10199,8 +10144,7 @@ return 0
 ::method onClick
   say 'Got click on static with ID:' .DlgUtil~loWord(arg(1))
 
-
-/* AllStyles.h */
+/* AllStyles.h
 
 #define IDD_DIALOG1                        100
 #define IDC_ST_WHITERECT                   215
@@ -10221,7 +10165,8 @@ return 0
 #define IDC_ST_WHITEFRAME_SUNKEN_BORDER   1015
 #define IDC_ST_GRAYFRAME_SUNKEN_BORDER    1016
 #define IDC_ST_BLACKFRAME_SUNKEN_BORDER   1017
-]]>
+
+*/
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -10664,10 +10609,8 @@ return 0
     that the position and size of the status bar are ignored by the operating system when it creates the control. Instead,
     the control is placed at the bottom of the dialog, using a default height, and its width is the width of the dialog:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   self~createStatusBar(IDC_STATUS, 167, 90, 50, 14, 'SIZEGRIP TOOLTIPS')
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -10883,12 +10826,10 @@ return 0
     value of the <xref linkend="defSymbolicId"/> id: IDC_TAB. If needed, multiple rows of tabs are
     displayed so tat all tabs are visible at once. All tabs have the same width. Its data (the selected tab) is
     associated with data attribute CURRENTPAGE.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11106,10 +11047,10 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
   <para>
     The following example creates a toolbar that is initially invisible. In the application, after the buttons from the
     toolbar have been added, the toolbar is made visible:
-<programlisting>
-<![CDATA[
-  self~createToolBar(IDC_TOOLBAR, 0, 0, 20, 11, "TOOLTIPS LIST HIDDEN BORDER FLAT CCS_ADJUSTABLE ALTDRAG")
-]]>
+<programlisting language="rexx">
+self~createToolBar(IDC_TOOLBAR, 0, 0, 20, 11,               -
+  "TOOLTIPS LIST HIDDEN BORDER FLAT CCS_ADJUSTABLE ALTDRAG" -
+)
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11330,13 +11271,11 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
     <xref linkend="defSymbolicId"/> resource ID of IDC_TB_PRESSURE and its data
     <link linkend="sctUnderstandingDataAttributes">attribute</link> is named PRESSURE. The trackbar displays automatic
     tick marks on both sides.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
                     "VERTICAL BOTH AUTOTICKS", "PRESSURE")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11629,12 +11568,10 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
       control is positioned at x=100 and y=80 and with a size of width=40 and height=120. The name for the data
       attribute of the tree view will be ORGCHART The tree view uses lines for child items and roots, displays a button
       to the left of each parent item, and supports item editing.
-<programlisting>
-<![CDATA[
-
-self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROOT", "ORGCHART")
-
-]]>
+<programlisting language="rexx">
+self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, -
+  "LINES BUTTON EDIT ATROOT", "ORGCHART"                -
+)
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -11853,12 +11790,10 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
     the control automatically selects the control previous to to be its <emphasis role="italic">buddy</emphasis>
     window. The control will also set the text of its buddy window to the value of the up down control's position.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~createUpDown(IDC_UPD, 81, 26, 12, 16, "WRAP ARROWKEYS AUTOBUDDY SETBUDDYINT")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11918,19 +11853,15 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
     This example demonstrates how to create a push <link linkend="mthCreatePushButton">button</link> and an <link
     linkend="mthCreateEdit">edit</link> control in a dialog:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class MyDialog subclass UserDialog
-     .
-     .
-     .
+  /* ... */
 ::method defineDialog
-self~createPushButton(401, 20, 235, 40, 15, "NOTAB", "&More...")
-self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
+  self~createPushButton(401, 20, 235, 40, 15, "NOTAB", "&More...")
+  self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
      .
      .
      .
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -12050,12 +11981,10 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
     buttons are connected to a methods in the Rexx dialog object. See the CONNECTBUTTONS and CONNECTRADIOS keyword above for
     a little more detail on how the method names are constructed.
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   MyDlg = .UserDialog~new( , 'Dialog1.h')
   MyDlg~load("Dialog1.rc", IDD_DIALOG1, "CONNECTBUTTONS CONNECTRADIOS")
-  ]]>
-  </programlisting>
+    </programlisting>
 
   </para>
   </listitem></varlistentry>
