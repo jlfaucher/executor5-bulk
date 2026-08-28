@@ -527,8 +527,7 @@
   <para>
     The program code should look similar to this:
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   treeView = self~newTreeView("IDC_TV_INLAWS")
 
@@ -549,7 +548,6 @@
   treeView~add(,"Michelle")
   treeView~add(,"Diana")
 
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -584,13 +582,11 @@ retrieved.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example displays the name of parent of the selected item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method Child
   curTree = self~newTreeView("IDC_TREE")
   itemInfo. = curTree~itemInfo(curTree~Child(curTree~selected))
   say ItemInfo.!Text
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -633,12 +629,10 @@ items associated with the specified parent item.</para>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example collapses the selected item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method CollapseSelected
   curTree = self~newTreeView("IDC_TREE")
   curTree~Collapse(curTree~selected)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -684,12 +678,10 @@ removed.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example collapses the selected item and removes
 all its child items:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method CollapseSelectedAndReset
   curTree = self~newTreeView("IDC_TREE")
   curTree~CollapseAndReset(curTree~selected)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -735,12 +727,10 @@ valid value.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example deletes the selected item and all its children,
 if any:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method IDC_PB_DELETE
   curTree = self~newTreeView("IDC_TREE")
   curTree~delete(curTree~selected)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -983,12 +973,10 @@ associated with the specified parent item.</para>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example expands the selected item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method ExpandSelected
   curTree = self~newTreeView("IDC_TREE")
   curTree~Expand(curTree~selected)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1065,15 +1053,13 @@ associated with the specified parent item.</para>
   <para>
     This example searches for the first tree-view item whose label is <emphasis role="italic">Computers</emphasis>, and
     if found, selects that item.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   tv = self~newTreeView(IDC_TV_PRODUCTS)
 
   hItem = tv~find('Computers')
   if hItem \== 0 then tv~select(hItem)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1097,13 +1083,11 @@ item in the client window of a tree-view control.</para>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example displays the name of the first visible item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method FirstVisibleName
   curTree = self~newTreeView("IDC_TREE")
   itemInfo. = curTree~itemInfo(curTree~firstVisible)
   say ItemInfo.!Text
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1172,8 +1156,7 @@ item in the client window of a tree-view control.</para>
   <listitem>
   <para>
     This example releases the tree-view's image lists, if they exist, when the dialog ends.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method ok
   self~doImageLists return self~ok:super
 
@@ -1191,7 +1174,6 @@ item in the client window of a tree-view control.</para>
     if il \== .nil then il~release
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1356,8 +1338,7 @@ item in the client window of a tree-view control.</para>
     This example shows the event handler for a tool tip used for a tree-view. When the tool tip is about to be shown, the
     bounding rectangle for the text only portion of the item is used to reposition the tool tip so that it is in line with
     the item and to the right of the item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onShow unguarded
   expose currentItem
@@ -1377,7 +1358,6 @@ item in the client window of a tree-view control.</para>
 
   return .false
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1849,19 +1829,18 @@ minimum.
     This example inserts a new folder tree-view item as a sibling of the currently selected item. It also assigns both a
     selected and unselected icon to the item from the tree-view's image list by specifying the index in the image list for
     the icons:
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::constant UNSELECTED_FOLDER  0         -- Index for the icon of an unselected folder item
 ::constant SELECTED_FOLDER    1         -- Index for the icon of a selected folder item
 ::constant UNSELECTED_LEAF    2         -- Index for the icon of an unselected leaf item
 ::constant SELECTED_LEAF      3         -- Index for the icon of a selected leaf item
 
-...
+/* ... */
 
-treeControl~insert(treeControl~Parent(selected), , text, self~UNSELECTED_FOLDER, self~SELECTED_FOLDER)
-
-]]>
+::method myMethod
+  ...
+  treeControl~insert(treeControl~Parent(selected), , text, self~UNSELECTED_FOLDER, self~SELECTED_FOLDER)
+  ...
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2031,8 +2010,7 @@ of <emphasis role="italic">hItem</emphasis>.
   <para>
     The following example displays the attributes of the selected item:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method Info
   tree = self~newTreeView(IDC_TREE)
   itemInfo. = curTree~itemInfo(tree~selected)
@@ -2041,7 +2019,6 @@ of <emphasis role="italic">hItem</emphasis>.
   say itemInfo.!IMAGE
   say itemInfo.!STATE
   say itemInfo.!ITEMDATA
-]]>
   </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2067,12 +2044,10 @@ in a tree-view control.</para>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example counts all items in a tree-view control:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method Count
   curTree = self~newTreeView("IDC_TREE")
   say curTree~items
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -2115,8 +2090,7 @@ in a tree-view control.</para>
   <listitem>
   <para>
     This example retrieves the text of the selected item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   tv = self~newTreeVies(IDC_TV_BOOK)
 
@@ -2128,7 +2102,6 @@ in a tree-view control.</para>
       say 'The text for the selected item is:' tv~itemText(selectedItem)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2392,12 +2365,10 @@ items fit in the dialog.</para>
   <listitem>
   <para>
     The following example changes the text of the item to bold when it is selected:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSelectChanging
   tree = self~newTreeView(IDC_TREE)
   tree~modify(tree~selected, , , ,"BOLD")
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2481,8 +2452,7 @@ to <emphasis role="italic">hItem</emphasis>.</para>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example displays the name of the selected item and its
 siblings:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method SiblingNames
   curTree = self~newTreeView("IDC_TREE")
   nextItem = curTree~selected
@@ -2491,7 +2461,6 @@ siblings:
     say ItemInfo.!Text
     nextItem = curTree~next(nextItem)
   end
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -2555,13 +2524,11 @@ specified or is 0, or 0 in all other cases.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example displays the name of the selected item's parent:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method Parent
   curTree = self~newTreeView("IDC_TREE")
   itemInfo. = curTree~itemInfo(curTree~Parent(curTree~selected))
   say ItemInfo.!Text
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -2711,12 +2678,10 @@ in all other cases.
   <listitem>
   <para>
     The following example displays the text, or label, of the root item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method rootLabel
   tv = self~newTreeView(IDC_TV_ORG_CHART)
   say 'The head of the organization is' tv~getItemText(tv~root)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2780,13 +2745,11 @@ item.</para>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example displays the name of the selected item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method SelectedName
   curTree = self~newTreeView("IDC_TREE")
   itemInfo. = curTree~itemInfo(curTree~selected)
   say ItemInfo.!Text
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -2879,8 +2842,7 @@ item.</para>
   <para>
     This example creates an image list and assigns it to the tree-view control for use as the normal image list. Since the
     normal is the default, the <emphasis role="italic">type</emphasis> argument does not need to be specified:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   /* set images for the items */
   image = .Image~getImage("bmp\psdemotv.bmp")
@@ -2891,7 +2853,6 @@ item.</para>
      image~release
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3029,13 +2990,11 @@ item.</para>
   <para>
     This example sets the height of each tree-view item to 20 pixels.  (For this specific application the previous height
     was 16 pixels.)
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   tv = self~newTreeView(IDC_TREE)
   tv~setItemHeight(20)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3101,8 +3060,7 @@ item.</para>
   <listitem>
   <para>
     This example ...
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method setStateIndex private
     expose tv
@@ -3120,7 +3078,6 @@ item.</para>
 
     return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3293,11 +3250,9 @@ was not specified or is 0.
     should be coded as follows:
   </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSortChildrenCB unguarded
   use arg data1, data2, param
-]]>
 </programlisting>
 
   <variablelist>
@@ -3351,8 +3306,7 @@ was not specified or is 0.
   <listitem>
   <para>
     This example sorts the children of the selected item in descending alphabetic order:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onSortChildren unguarded
     expose tv
@@ -3370,7 +3324,6 @@ was not specified or is 0.
     return itemData2~compareTo(itemData1)
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3417,12 +3370,10 @@ or is 0.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example toggles between expanding and
 collapsing a selected item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method ToggleSelected
   curTree = self~newTreeView("IDC_TREE")
   curTree~Toggle(curTree~selected)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -3451,12 +3402,10 @@ see all of 19 items and part of another item, the return value is 19, not
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example returns the number of items that can be fully
 visible:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method Visible
   curTree = self~newTreeView("IDC_TREE")
   say curTree~VisibleItems
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -3500,13 +3449,11 @@ visible:
   tree-view draw the item as it normally would.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onCustomDraw unguarded
   use arg tvcdSimple
 
   return boolean
-]]>
 </programlisting>
 
 <variablelist>
@@ -3557,8 +3504,7 @@ visible:
   <listitem>
   <para>
     The following example shows the code for the discussion in the remarks section
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onCustomDraw unguarded
   use arg tvcds
@@ -3575,7 +3521,6 @@ visible:
   tvcds~reply = self~CDRF_NEWFONT
   return .true
 
-]]>
 </programlisting>
 
   </para>
@@ -3717,13 +3662,11 @@ visible:
   <para>
     In this example snippet of code the <emphasis role="italic">clrText</emphasis> attribute is set to a reddish color and
     the background color is set to a yellowish color:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   cdInfo~clrText   = self~RGB(247,   7,  59)
   cdInfo~clrTextBk = self~RGB(245, 245, 127)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3778,13 +3721,11 @@ visible:
   <para>
     In this example snippet of code the <emphasis role="italic">clrText</emphasis> attribute is set to a reddish color and
     the background color is set to a yellowish color:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   cdInfo~clrText   = self~RGB(247,   7,  59)
   cdInfo~clrTextBk = self~RGB(245, 245, 127)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3929,8 +3870,7 @@ visible:
     This example uses custom draw with a list-view and a tree-view. It uses the same event handler, <emphasis
     role="italic">onCustomDraw</emphasis> for both controls and then use the <emphasis role="italic">id</emphasis> attribute
     to determine which control has sent the event notification:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~customDraw
   self~customDrawControl(IDC_LV_STATS, 'ListView', onCustomDraw)
@@ -3946,7 +3886,6 @@ visible:
     else
         return self~customDrawPlayers(customDrawInfo)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4000,8 +3939,7 @@ visible:
     This example changes the font and colors of the selected item in a tree-view It uses the <emphasis
     role="italic">item</emphasis> attribute to determine if item to be drawn is the selected item or not. Notice that if the
     item is not the selected item, .false is returned which tells the tree-view to draw the item without any customization:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
     bkClr        = self~RGB(250, 250, 250)
     selectedClr  = self~RGB(82, 0, 20)
@@ -4025,7 +3963,6 @@ visible:
 
     return .false
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4085,8 +4022,7 @@ visible:
   <para>
     In this example the color to draw the text for each item is stored in the item data for the item. This makes for a very
     simple event handler, the text color is just set to whatever value the item data is:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onCustomDraw unguarded
     use arg tvcds
@@ -4099,7 +4035,6 @@ visible:
 
     return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4147,8 +4082,7 @@ visible:
   <listitem>
   <para>
     This snippet of code colors each level in a tree in alternating colors:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ...
 
@@ -4164,7 +4098,6 @@ visible:
   tvcds~reply = self~CDRF_NEWFONT
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
