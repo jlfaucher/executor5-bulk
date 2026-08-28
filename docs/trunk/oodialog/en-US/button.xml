@@ -118,12 +118,10 @@ is provided with the ooDialog sample programs. </para>
 </para></listitem></varlistentry>
 <varlistentry><term>init</term>
 <listitem><para>Initialize the animation parameters:</para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 but = .AnimatedButton~new(buttonid,from,to, ,
                           movex,movey,sizex,sizey,delay, ,
                           startx,starty,parentdialog)
-]]>
 </programlisting>
 <para>The values are
 stored in a stem variable: </para>
@@ -176,117 +174,91 @@ and sprite.to for bitmaps in a DLL
 </listitem></varlistentry>
 <varlistentry><term>SetSprite</term>
 <listitem><para>Set all the sprite. animation values using a stem:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 mysprite.from = .array~of(bmp1,bmp2,...)
 mysprite.to = 0
 mysprite.movex = ...
 ...
 self~setSprite(mysprite.)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>GetSprite</term>
 <listitem><para>Retrieve the animation values into a stem:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~getSprite(mysprite.)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>SetFromTo</term>
 <listitem><para>Set bitmap information (sprite.from and sprite.to):
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~setFromTo(bmpfrom,bmpto)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>SetMove</term>
 <listitem><para>Set size of one move (sprite.movex and sprite.movey):
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~setMove(movex,movey)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>SetDelay</term>
 <listitem><para>Set delay between moves in milliseconds (sprite.delay):
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~setDelay(delay)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>SetSmooth</term>
 <listitem><para>Set smooth (1) or bouncy (0) edges (sprite.smooth):
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~setSmooth(smooth)  /* 1 or 0 */
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>setStep</term>
 <listitem><para>Set the step size (sprite.step) between sprite.from and
 sprite.to for bitmaps in a DLL, for example, if bitmap resources are numbered
 202, 204, 206, etc:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~setFromTo(202,210)
 self~setStep(2)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>Run</term>
 <listitem><para>Run the animation by going through all the bitmaps repetitively
 until dialog is stopped; invokes MoveSeq:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~run
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>MoveSeq</term>
 <listitem><para>Animate one sequence through all the bitmaps in the given move
 steps; invokes MovePos:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~moveSeq
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>MovePos</term>
 <listitem><para>Move the bitmaps by the arguments:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~movePos(movex,movey)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>MoveTo</term>
 <listitem><para>Move the bitmaps in the predefined steps to
 the given position; invokes MoveSeq:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~moveTo(posx,posy)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>setPos</term>
 <listitem><para>Set the new starting position of the bitmaps:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~setPos(newx,newy)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>getPos</term>
 <listitem><para>Retrieve the current position into a stem:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~getPos(pos.)
 say "pos=" pos.x pos.y
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>ParentStopped</term>
@@ -515,8 +487,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <listitem>
     <para>
       This example is a variation of the example for the isIndeterminate() method.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   state = self~newCheckBox(IDC_CHK_BACKGROUND)~getCheckState
 
   select
@@ -527,7 +498,6 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   end
   -- End select
 
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -565,11 +535,9 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
     <para>
       This example is from a program that sets the background color to black, white, or gray.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   chkBox = self~newCheckBox(IDC_CHK_BACKGROUND)
   if chkBox~isIndeterminate then return self~grayBackground
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -774,12 +742,10 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para> Changing the style is straightforward:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   gb = self~newGroupBox(IDC_GB_AREACODES)
   if gb == .Nil then return
   gb~style="RIGHT"
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -1008,11 +974,9 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <listitem>
     <para>
       This method is simple to use:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ret = .RadioButton~checkInGroup(self, IDC_RB_WHITE, IDC_RB_BLACK, IDC_GREEN)
 return 0
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -1081,8 +1045,7 @@ return 0
     <para>
       This example determines if the user is choosing to print the current page, all pages, or a
       selection:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 if self~newRadioButton(IDC_RB_CURRENT)~checked then do
   --Print the current page ...
 end
@@ -1092,7 +1055,6 @@ end
 else do
   -- Must be print the selection ...
 end
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -1142,12 +1104,10 @@ end
   <listitem>
     <para>
       This method is straightforward to use:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 rb = self~newRadioButton(IDC_RB_ITALIC)
 if rb~getCheckState == "CHECKED" then self~printInItalics()
 ...
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -1407,10 +1367,8 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   <para>
     This example closes the dialog as if the user had clicked the cancel button.  (Provided of course that the dialog
     has a cancel button.)
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~newPushButton(IDCANCEL)~click
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1480,8 +1438,7 @@ self~newPushButton(IDCANCEL)~click
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   size = self~newPushButton(IDC_PB_REVIEW)~getIdealSize
   say 'The ideal height for the button is' size~height
@@ -1491,7 +1448,6 @@ self~newPushButton(IDCANCEL)~click
    *   The ideal height for the button is 24
    *   The ideal width for the button is 45
    */
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -1537,14 +1493,12 @@ self~newPushButton(IDCANCEL)~click
     In this example a bitmap has been set for the button on a popup dialog. When the dialog closes, bitmap image is
     retrieved from the button and released.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method cancel
   button = self~newPushButton(IDC_PB_PUSHME)
   image = button~getImage
-  if image <> .nil then image~release
+  if image &lt;&gt; .nil then image~release
   return self~cancel:super
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -1636,14 +1590,13 @@ self~newPushButton(IDCANCEL)~click
   <listitem>
   <para>
     This example gets the image list from the View push button and displays the information returned.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   pbView = self~newPushButton(IDC_PB_VIEW)
   d = pbView~getImageList
 
   say 'Got image list:' d
-  if d <> .nil then do
+  if d &lt;&gt; .nil then do
     say '  image:  ' d~imageList
     say '  rect:   ' d~rect
     say '  align:  ' d~alignmentKeyword
@@ -1661,7 +1614,6 @@ self~newPushButton(IDCANCEL)~click
   Image margins: 1, 1, 1, 1
 
  */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1724,8 +1676,7 @@ self~newPushButton(IDCANCEL)~click
   <para>
     This example gets the text margins for the Redraw button and displays the information:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   margins = self~newPushButton(IDC_PB_REDRAW)~getTextMargin
   say 'The text margins for the "Redraw" button:'
   say '  Left:  ' margins~left
@@ -1740,7 +1691,6 @@ self~newPushButton(IDCANCEL)~click
    *     Right:  1
    *     Bottom: 1
    */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1781,8 +1731,7 @@ self~newPushButton(IDCANCEL)~click
     the user can push to update the window list.  The code comes from a section of the program that is
     checking if a specific window handle is valid.  If the handle is not valid, the code simulates the user pushing the
     Refresh button to update the window list.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method validateHandle private
     use strict arg hwnd
     if \ self~isWindowHandle(hwnd) then do
@@ -1791,7 +1740,6 @@ self~newPushButton(IDCANCEL)~click
     end
     ...
 return .true
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1852,14 +1800,12 @@ return .true
     This example gets an image from the resource file for a <xref linkend="clsResDialog"/> and associates
     it with the Push Me button.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   module = .ResourceImage~new("imageButton.dll", self)
   image = module~getImage(101)
   self~newPushButton(IDC_PB_PUSHME)~setImage(image)
   self~connectButtonEvent(IDC_PB_PUSHME, "CLICKED", onPushMe)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2026,11 +1972,10 @@ return .true
     proceeding. For further information on some of the methods used in the example see <xref
     linkend="mthGetIdealSize" /> and <xref linkend="mthComCtl32Version"/>.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ...
-  if .DlgUtil~comCtl32Version  < 6 then return -2
+  if .DlgUtil~comCtl32Version  &lt; 6 then return -2
 
   files = .array~new()
   files[1] = "resources\Normal.bmp"       -- Normal
@@ -2052,7 +1997,7 @@ return .true
   margin = .Rect~new(1)
 
   ret = pbView~setImageList(imageList, margin, align)
-  if .systemErrorCode <> 0 then do
+  if .systemErrorCode &lt;&gt; 0 then do
     -- put some error handling here
     return -1
   end
@@ -2067,7 +2012,6 @@ return .true
   pbView~setRect(0, 0, bestSize~width, bestSize~height, "NOMOVE")
 
 return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2139,12 +2083,10 @@ return 0
   <para>
     This example sets a new text margin of 5 for the button control.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   margins = .Rect~new(5, 5, 5, 5)
   self~newPushButton(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2222,12 +2164,10 @@ return 0
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 button = MyDialog~newPushButton("IDOK")
 if button == .Nil then return
 say button~State
-]]>
 </programlisting>
   </para>
   <para>
@@ -2313,12 +2253,10 @@ say button~State
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 button = MyDialog~newPushButton("IDOK")
 if button == .Nil then return
 button~state="FOCUS PUSHED"
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2624,12 +2562,10 @@ button~state="FOCUS PUSHED"
   <para>
     The following example makes the OK button the default button:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 button = MyDialog~newPushButton("IDOK")
 if button == .Nil then return
 button~style="DEFPUSHBUTTON"
-]]>
 </programlisting>
 
   </para>
@@ -2641,8 +2577,7 @@ button~style="DEFPUSHBUTTON"
     is long, the multi-line style is added and the placement of the text in relation to the button rectangle is changed.
     When the text is short, the button style is set back to the default style.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ::method idCheckOne
     use arg wParam, lParam
 
@@ -2658,7 +2593,6 @@ button~style="DEFPUSHBUTTON"
       chkButton~setTitle("Connect")
     end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
