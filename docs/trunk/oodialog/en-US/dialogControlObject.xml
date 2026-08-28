@@ -1045,8 +1045,7 @@ Generic form:
     This is a complete working example. It can be used to experiment with the <emphasis
     role="italic">connectCharEvent</emphasis> method. As the user types in the edit box, information from the character
     event are printed to the console. This allows the user to see what key presses reach the application as characters:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 /* Print characters received */
 
@@ -1077,13 +1076,12 @@ Generic form:
 ::method onChar unguarded
   use arg char, isShift, isCtrl, isAlt, misc, control
 
-  if misc~pos('extended') <> 0 then c = .VK~key2name(char)
+  if misc~pos('extended') &lt;&gt; 0 then c = .VK~key2name(char)
   else c = char~d2c
 
   say 'Char:' char c 'isShift' isShift 'isCtrl' isCtrl 'isAlt' isAlt 'misc' misc
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1103,13 +1101,11 @@ Generic form:
   linkend="clsEventNotification"/> class.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onChar unguarded
   use arg char, isShift, isCtrl, isAlt, misc, controlObj
 
   return response
-]]>
 </programlisting>
 
 <variablelist>
@@ -1276,15 +1272,14 @@ Generic form:
     assigned extra chores for the next week.  My nephew injected the following code into his brother's typing tutorial.
     He thought it was hilarious, his brother was not amused:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~newEdit(IDC_EDIT_TYPING_WINDOW)~connectCharEvent(onChar)
 
 ::method onChar unguarded
   use arg char, isShift, isCtrl, isAlt, misc, control
 
-  if misc~pos('extended') <> 0 then do
+  if misc~pos('extended') &lt;&gt; 0 then do
     if char == .VK~END then char = .VK~HOME
     else if char == .VK~HOME then char = .VK~END
     else if char == .VK~LEFT then char = .VK~RIGHT
@@ -1296,7 +1291,6 @@ Generic form:
 
   return char
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1401,9 +1395,7 @@ Generic form:
     The following example connects the F key down events for an edit control. The application determines which F key
     was pressed and takes appropriate action.  For this application, the F3 key is the search key.
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method initDialog
   expose editControl lastSearchToken
 
@@ -1431,11 +1423,9 @@ Generic form:
     when key == .VK~F4 then do
       ...
     end
-    ...
+    -- ...
   end
   ...
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1560,8 +1550,7 @@ Generic form:
       </para>
       <para>
         Some examples may make this more clear:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -1592,7 +1581,6 @@ Generic form:
   -- not invoke the method.
 
   editControl~connectKeyPress(onF4, .VK~F4, "NONE")
-]]>
 </programlisting>
 
       </para>
@@ -1643,9 +1631,7 @@ Generic form:
         return of -9 but still have some keys connected. For instance in the following example the C and D keys would be
         connected and the filter applied. The &quot;"dog&quot;" token would result in -9 being returned:
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   editControl = self~newEdit(IDC_EDIT_ENTRY)
 
   keys = .VK~C ", dog," .VK~D
@@ -1653,11 +1639,10 @@ Generic form:
   say 'Got a return of:' ret
   say "Have connection to onAltCD?" self~hasKeyPressConnection('onAltCD')
 
-  -- The output would be:
-  Got a return of: -9
-  Have connection to onAltCD? 1
-
-]]>
+/* The output would be:
+   Got a return of: -9
+   Have connection to onAltCD? 1
+*/
 </programlisting>
 
       </para>
@@ -1815,9 +1800,7 @@ Generic form:
     The following example could be from an application that supplies extended editing abilities for a multi-line edit
     control.  When the edit control has the focus the user can use Alt-D to delete the current word, Ctrl-D to delete
     the current line, and Shift-Alt-D delete the current paragraph:
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method initDialog
   expose editControl
 
@@ -1836,15 +1819,13 @@ Generic form:
   -- Determine which of the key press combinations this is and take
   -- appropriate action if it is a combination we are interested in.
 
-  isAltD = \ shift & \ control & alt
-  isCtrlD = \ shift & control & \ alt
-  isShiftAltD = shift & \ control & alt
+  isAltD      = \ shift & \ control &   alt
+  isCtrlD     = \ shift &   control & \ alt
+  isShiftAltD =   shift & \ control &   alt
 
-  if isAltD then self~deleteWord(editControl)
-  if isCtrlD the self~deleteLine(editControl)
+  if isAltD      then self~deleteWord(editControl)
+  if isCtrlD     then self~deleteLine(editControl)
   if isShiftAltD then self~deleteParagraph(editControl)
-
-]]>
 </programlisting>
 
   </para>
@@ -1900,8 +1881,7 @@ Generic form:
     The following example determines if the restart check box is checked, and if so sets a flag that tells the
     application to restart the computer:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method leaving
   expose restartChk fancyFont logoBmp appCleanUpParams
@@ -1919,12 +1899,10 @@ Generic form:
     appCleanUpParams['Restart'] = .false
   end
 
-]]>
 </programlisting>
     The same thing can be accomplished in this manner:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method leaving
   expose restartChk fancyFont logoBmp appCleanUpParams
@@ -1942,7 +1920,6 @@ Generic form:
     appCleanUpParams['Restart'] = .false
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1995,8 +1972,7 @@ Generic form:
   <para>
     The following example checks the restart check box and unchecks the verify check box:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method setRestart private
   expose restartChk verifyChk
@@ -2004,12 +1980,10 @@ Generic form:
   restartChk~data = 1
   verifyChk~data = 0
 
-]]>
 </programlisting>
     The same thing can be accomplished in this manner:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method setRestart private
   expose restartChk verifyChk
@@ -2017,7 +1991,6 @@ Generic form:
   restartChk~check
   verifyChk~uncheck
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2112,8 +2085,7 @@ Generic form:
     working within an edit control.  When the user presses the disable hot keys button, the dialog disables
     the hot keys for the edit control by removing the key press connections.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineDialog
 
@@ -2125,7 +2097,6 @@ method onDisable
   editControl = self~newEdit(IDC_EDIT)
   editControl~disconnectKeyPress
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2370,8 +2341,7 @@ method onDisable
     things done when the state is reset to check or uncheck a check box that shows whether hot keys are currently
     enabled or not.
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
 
   ::method defineDialog
 
@@ -2392,8 +2362,7 @@ method onDisable
       self~newCheckBox(IDC_CHECK_FKEYSENABlED)~uncheck
     ...
 
-  ]]>
-  </programlisting>
+    </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2558,15 +2527,13 @@ Generic form:
   <listitem>
   <para>
     This example changes the text color of a static control in the dialog to a bright red using a COLORREF number:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method changeColor
   expose staticText
 
   staticText~setColor( , .Image~colorRef(161, 6, 17), .true)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2652,8 +2619,7 @@ Generic form:
     This example sets the parent of an edit control to be a list-view in the dialog. When the user clicks on a subitem in
     the list-view, the edit control is position over the subitem and made visible. The user can type in the edit control to
     change the text of the subitem:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose list edit
@@ -2669,8 +2635,8 @@ Generic form:
   expose list edit editVisible lastIdx lastCol
   use arg id, itemIndex, columnIndex, keyState
 
-  if lastIdx == itemIndex & lastCol == columnIndex then do
-    if columnIndex > 0 then do
+  if lastIdx == itemIndex &amp; lastCol == columnIndex then do
+    if columnIndex &gt; 0 then do
         r = list~getSubitemRect(itemIndex, columnIndex, 'LABEL')
 
         r~right  -= r~left
@@ -2688,7 +2654,6 @@ Generic form:
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2759,15 +2724,13 @@ Generic form:
   <para>
     This example changes the background color of a static text lable in the dialog to the system background color for a
     menu:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method changeColor
   expose label
 
   label~setSysColor('MENU')
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2833,8 +2796,7 @@ Generic form:
   <listitem>
   <para>
     This example updates a tree-view control to use the small triangle images for its expand buttons:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose tv treeData
@@ -2846,7 +2808,6 @@ Generic form:
   end
 
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
