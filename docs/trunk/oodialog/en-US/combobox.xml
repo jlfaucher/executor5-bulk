@@ -520,12 +520,10 @@
     <computeroutput>.rex</computeroutput> in the <computeroutput>C:\work.ooRexx</computeroutput> directory into the
     combo box:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   cb = self~newComboBox(IDC_CB_FILES)
   self~addDirectory("C:\work.ooRexx\*.rex", "READWRITE")
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -699,8 +697,7 @@
   <para>
     This, somewhat contrived, example demonstrates how the arguments to <emphasis role="italic">find</emphasis> control
     the search:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose comboBox
@@ -744,7 +741,6 @@ new orleans
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -796,8 +792,7 @@ new orleans
   <listitem>
   <para>
     This example sets a simple cue for a combo box and then reads it back:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   comboBox = self~newComboBox(IDC_COMBOBOX)
 
@@ -810,7 +805,6 @@ new orleans
    Cue set: Select a city
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -917,8 +911,7 @@ new orleans
   <listitem>
   <para>
     This example shows a method that prints out the information for a simple combo box:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method printInfo
     expose cbSimple
@@ -941,7 +934,6 @@ Simple Combo Box
   List object:  a ListBox
   Button state: absent
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1004,15 +996,13 @@ Simple Combo Box
     This example gets the child edit control of the combo box so that the application can manipulate the edit control. It
     also uses the <xref linkend="mthIsGrandchildClsEdit"/> so that the application can monitor some of the edit control's
     event notifications:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   cb = self~newComboBox(IDC_CB)
 
   edit = cb~getEditControl
   edit~isGrandchild
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1065,14 +1055,12 @@ Simple Combo Box
   <para>
     This example calculates the top y coordinate of the item under the mouse by subtracting the top index from the index of
     the item under the mouse and multiplying that by the individual height:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   topIndex = comboBox~getFirstVisible
   r = lbRect~copy
   r~top = (currentItem - topIndex) * itemHeight
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1179,22 +1167,18 @@ Simple Combo Box
   <para>
     This example gets the data stored for the selected combooBox item and says it's string value.
     The data can be any ooRexx object
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method initDialog
   ...
   self~connectComboBoxEvent(100, "SELCHANGE", "onSelChange")
   ...
 
-::method onSelChange                                               unguarded
-use arg info, hwnd, id, notifyCode, comboBox
+::method onSelChange unguarded
+  use arg info, hwnd, id, notifyCode, comboBox
   idx = comboBox~selectedIndex
-  if idx > 0
-  then say idx':' comboBox~getItemData(idx)
-RETURN 0
-
-]]>
+  if idx &gt; 0
+    then say idx':' comboBox~getItemData(idx)
+  return 0
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1246,13 +1230,11 @@ RETURN 0
   <listitem>
   <para>
     This example gets the height of the combo box items and increases it by 2 pixels:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   itemHeight = comboBox~getItemHeight
   itemHeight += 2
   comboBox~setItemHeight(itemHeight)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1305,8 +1287,7 @@ RETURN 0
   <listitem>
   <para>
     This example queries the current minimum visible setting, and then changes it to 10:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   say 'Current minimum visible setting:' comboBox~getMinVisible
   comboBox~setMinVisible(10)
@@ -1318,7 +1299,6 @@ Current minimum visible setting: 30
 New minimum visible setting is:  10
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1632,8 +1612,7 @@ New minimum visible setting is:  10
     This example sets the parent of a combo box to be a list-view. It then invokes <emphasis
     role="italic">isGrandchild</emphasis> so that the <emphasis role="italic">onComboBoxGrandchildEvent</emphasis> method
     will be invoked in the Rexx dialog for the KILLFOCUS, RETURN keydown, and ESCAPE keydown events:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   list = self~newListView(IDC_LISTVIEW)
   cb   = self~newComboBox(IDC_COMBOBOX)
@@ -1641,7 +1620,6 @@ New minimum visible setting is:  10
   cb~setParent(list)
   cb~isGrandChild
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1847,8 +1825,7 @@ New minimum visible setting is:  10
   <listitem>
   <para>
     This example restores the combo box to its default colors after it had been set to some custom colors:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
     ...
     mediumSpringGreen =  .Image~colorRef(0, 238, 118)
@@ -1863,7 +1840,6 @@ New minimum visible setting is:  10
 
     cbDropDown~removeFullColor
     return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1980,8 +1956,7 @@ New minimum visible setting is:  10
     Notice that the result(s) as specified in the code comments, are dependent on the combo box not having the SORT
     style. If the combo box does have the sort style, then in both cases <emphasis role="italic">new orleans</emphasis>
     would be selected.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose comboBox
@@ -2001,7 +1976,6 @@ New minimum visible setting is:  10
   /* On the other hand this would select new orleans */
   -- comboBox~select("NEW O")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2173,8 +2147,7 @@ New minimum visible setting is:  10
   <listitem>
   <para>
     This example sets a simple cue for a combo box and then reads it back:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   comboBox = self~newComboBox(IDC_COMBOBOX)
 
@@ -2187,7 +2160,6 @@ New minimum visible setting is:  10
    Cue set: Select a city
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2258,13 +2230,11 @@ New minimum visible setting is:  10
     arguments are positive then text is selected, but the selection is exclusive of the staring and ending indexes. For
     example this code:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   cb = self~newComboBox(200)
   ret = cb~setEditSelection(8, 3)
 
-]]>
 </programlisting>
 
     will select characters 4 through 7 inclusive.  Provided there are at least 7 characters in the edit control of
@@ -2374,14 +2344,12 @@ New minimum visible setting is:  10
   <listitem>
   <para>
     This example sets the color for a drop down combo box to light green on red:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   mediumSpringGreen =  .Image~colorRef(0, 238, 118)
   fireBrickRed      =  .Image~colorRef(205, 38, 38)
 
   cbDropDown = self~getComboBox(IDC_CB_DROPDOWN)
   cbDropDown~setFullColor(mediumSpringGreen, fireBrickRed)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2456,8 +2424,7 @@ New minimum visible setting is:  10
     This example calculates the width in pixels of the longest item added to the combo box. If this width is longer than
     the width of the combo box, then the horizontal extent is set to that width.  Otherwise the horizontal extent is not
     changed. This will have no effect unless the combo box has a horizontal scroll bar, see the Remarks section.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose comboBox comboBoxItems
@@ -2469,17 +2436,16 @@ New minimum visible setting is:  10
     comboBox~add(i)
 
     size = self~getTextSizePx(i)
-    if size~width > longest~width then longest = size
+    if size~width &gt; longest~width then longest = size
   end
 
   -- Be sure we have a 1 pixel space at the end of the longest item.
   longest~width += 1
 
-  if comboBox~pixelCX < longest~width then do
+  if comboBox~pixelCX &lt; longest~width then do
     comboBox~setHorizontalExtent(longest~width)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2606,13 +2572,11 @@ New minimum visible setting is:  10
   <listitem>
   <para>
     This example gets the height of the combo box items, increases it by 2 pixels, and sets that as the height of the items:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   itemHeight = comboBox~getItemHeight
   itemHeight += 2
   comboBox~setItemHeight(itemHeight)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2674,8 +2638,7 @@ New minimum visible setting is:  10
   <listitem>
   <para>
     This example queries the current minimum visible setting, and then changes it to 10:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   say 'Current minimum visible setting:' comboBox~getMinVisible
   comboBox~setMinVisible(10)
@@ -2687,7 +2650,6 @@ Current minimum visible setting: 30
 New minimum visible setting is:  10
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
