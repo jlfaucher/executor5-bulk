@@ -331,8 +331,7 @@ boxes than max - that is, labels. has more items than the value of max
 </para></listitem></varlistentry>
 </variablelist>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 lst.1 = "Monday";   lst.2 = "Tuesday"; lst.3 = "Wednesday"
 lst.4 = "Thursday"; lst.5 = "Friday";  lst.6 = "Saturday"
 lst.7 = "Sunday"
@@ -349,7 +348,6 @@ if dlg~execute = 1 then do
       if chk.i = 1 then say lst.a
    end
 end
-]]>
 </programlisting>
 </section>
 </section>
@@ -402,14 +400,12 @@ text in the entry line, just pass an empty string.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example shows an InputBox dialog with the title of
 <emphasis role="italic">Input</emphasis> and an entry line:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 dlg = .InputBox~New("Please enter your email address", -
                     "Input", "user@host.domain", 150)
 value = dlg~execute
 say "You entered:" value
 drop dlg
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -566,13 +562,11 @@ values that are inserted into the list box
 can select exactly one dessert:
 </para></listitem></varlistentry>
 </variablelist>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 lst.1 = "Cookies"; lst.2 = "Pie"; lst.3 = "Ice cream"; lst.4 = "Fruit"
 
 dlg = .ListChoice~new("Select the dessert please","YourChoice",lst., , ,"Pie")
 say "Your ListChoice data:" dlg~execute
-]]>
 </programlisting>
 </section>
 </section>
@@ -641,8 +635,7 @@ and continue in increments of 1.
 <listitem><para>The following example creates a four-line input box. The data entered
 is stored in the object attributes that are displayed after dialog execution.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 lab.1 = "First name"  ;     lab.2 = "Last name "
 lab.3 = "Street and City" ; lab.4 = "Profession:"
 
@@ -657,7 +650,6 @@ if dlg~execute = 1 then do
   say dlg~StreetandCity
   say dlg~Profession
 end
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -694,8 +686,7 @@ of the selected entries. </para>
 can select multiple entries:
 </para></listitem></varlistentry>
 </variablelist>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 lst.1 = "Monday" ;   lst.2 = "Tuesday" ; lst.3 = "Wednesday"
 lst.4 = "Thursday" ; lst.5 = "Friday" ;  lst.6 = "Saturday"
 lst.7 = "Sunday"
@@ -703,11 +694,10 @@ lst.7 = "Sunday"
 dlg = .MultiListChoice~new("Select the days you are working this week", ,
                            "YourMultipleChoice",lst., , ,"2 5")
 s = dlg~execute
-if s <> "" then do while s \= ""
+if s &lt;&gt; "" then do while s \= ""
                   parse var s res s
                   say lst.res
                end
-]]>
 </programlisting>
 </section>
 
@@ -1059,8 +1049,7 @@ of a simple entry line.</para>
   <para>
     This example instantiates a progress dialog, specifying a title and message for the dialog. It changes the range from
     0 to 100, to 0 to 200, and changes the step increment value to 4:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   title = 'Acme Widgets - Business Contacts'
   msg = 'Creating and inserting the contact information. This will take some time.'
@@ -1068,7 +1057,6 @@ of a simple entry line.</para>
   pbDlg = .ProgressDialog~new(title, msg, , 200, 4)
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1115,8 +1103,7 @@ of a simple entry line.</para>
   <para>
     In this example the programmer wants the progress dialog to be wider than that calculated from the message text and
     wider than the enforced minimum:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   title = 'Acme Widgets - Business Contacts'
   msg = 'Inserting information.'
@@ -1127,7 +1114,6 @@ of a simple entry line.</para>
   pbDlg~width = 196
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1196,8 +1182,7 @@ of a simple entry line.</para>
   <listitem>
   <para>
     This example instantiates a new progress dialog object and then configures its title and message:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   pbDlg = .ProgressDialog~new
 
@@ -1207,7 +1192,6 @@ of a simple entry line.</para>
 
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1245,8 +1229,7 @@ of a simple entry line.</para>
   <listitem>
   <para>
     This example instantiates a new progress dialog and then configures its step increment to 4.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   title = 'Acme Widgets - Business Contacts'
   msg = 'Inserting information.'
@@ -1256,7 +1239,6 @@ of a simple entry line.</para>
   pbDlg~incrStep = 4
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1289,8 +1271,7 @@ of a simple entry line.</para>
     This example configures the progress dialog to have a status line, but to display no text for the status when the dialog
     starts. Then, as the operation of creating rows proceeds, the application periodically updates the status line with the
     number of rows created.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   pbDlg = .ProgressDialog~new
   pbDlg~initialStatusText = ''
@@ -1300,7 +1281,6 @@ of a simple entry line.</para>
   pbDlg~updateStatus(i 'full rows created')
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1345,8 +1325,7 @@ of a simple entry line.</para>
     This example configures a progress dialog to use marquee mode with an initial pause time of 50 milliseconds. At some
     later point during the operation, the animation is turned off. At a later point following that, the animation is turned
     back on with a pause time of 25 milliseconds:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   progressDlg = .ProgressDialog~new
   progressDlg~marqueeMode = .true
@@ -1364,7 +1343,6 @@ of a simple entry line.</para>
   -- Turn the animation back on, but faster
   pb~setMarquee(.true, 25)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1394,14 +1372,12 @@ of a simple entry line.</para>
   <para>
     This example configures the progress dialog to use marquee mode for the progress bar and sets the pause time ot 50
     milliseconds instead of the default 100.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   progressDlg = .ProgressDialog~new
   progressDlg~marqueeMode = .true
   progressDlg~marqueePause = 50
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1453,14 +1429,13 @@ of a simple entry line.</para>
     In this example, the application sometimes adds some extra text to the message. Knowing that the progress dialog will be
     very short and very long without some change, the message height is set to 5 lines to produce a balanced dialog. Note the
     insertion of two new lines in the message text to set off the added text:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   pbDlg = .ProgressDialog~new
   pbDlg~msgText = 'Creating and inserting the contact information. ' || -
                   'This will take some time.'
 
-  if self~itemCount > 30000 then do
+  if self~itemCount &gt; 30000 then do
     extra = .endOfLine~copies(2) || -
             'It is possible that inserting' self~itemCount 'items'   || -
             ' will exhaust your system resources.'
@@ -1469,7 +1444,6 @@ of a simple entry line.</para>
     pbDlg~msgHeight = 5
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1505,14 +1479,12 @@ of a simple entry line.</para>
   <listitem>
   <para>
     This example changes the default message to one appropriate for the specific application:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   pbDlg = .ProgressDialog~new
   pbDlg~msgText = 'Creating and inserting the contact information. ' || -
                   'This will take some time.'
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1549,14 +1521,12 @@ of a simple entry line.</para>
   <listitem>
   <para>
     This example configures a progress dialog so that it has no status line area and no message text area.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   progressDlg = .ProgressDialog~new
   progressDlg~noMsg = .true
   progressDlg~noStatus = .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1592,14 +1562,12 @@ of a simple entry line.</para>
   <listitem>
   <para>
     This example configures a progress dialog so that it has no message text area and no status line area.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   progressDlg = .ProgressDialog~new
   progressDlg~noStatus = .true
   progressDlg~noMsg = .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1690,8 +1658,7 @@ of a simple entry line.</para>
   <para>
     This example configures a progress dialog to not have a message or a status line. Rather than allow the progress dialog
     to calculate a width, the application sets the width to a specific value:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   title = 'Acme Widgets - Business Contacts'
   pbDlg = .ProgressDialog~new(title)
@@ -1702,7 +1669,6 @@ of a simple entry line.</para>
   pbDlg~width = 192
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1747,8 +1713,7 @@ of a simple entry line.</para>
   <listitem>
   <para>
     This example configures a progress dialog and then uses the <emphasis role="italic">begin</emphasis> method to start it:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   pbDlg = .ProgressDialog~new
   pbDlg~msgText = 'Creating and inserting the contact information. ' || -
@@ -1759,7 +1724,6 @@ of a simple entry line.</para>
   pbDlg~begin
   pbDlg~updateStatus('0 full rows created')
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1806,8 +1770,7 @@ of a simple entry line.</para>
     This example uses the <emphasis role="italic">complete</emphasis> method to move the position of the progress bar to the
     end when it drops out of the processing loop. It then updates the status line and pauses a short time before actually
     ending the dialog. This gives the user a visual clue that the operation completed successfully:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   do i = 1 to rows~items
       ...
@@ -1818,7 +1781,6 @@ of a simple entry line.</para>
   r = SysSleep(1.5)
   pbDlg~endNow
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1864,8 +1826,7 @@ of a simple entry line.</para>
   <para>
     This example supplies the user with a visual clue that the operation completed successfully when it drops out of the
     processing loop. It then ends the dialog using the <emphasis role="italic">endNow</emphasis> method.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   do i = 1 to rows~items
       ...
@@ -1876,7 +1837,6 @@ of a simple entry line.</para>
   r = SysSleep(1.5)
   pbDlg~endNow
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1937,8 +1897,7 @@ of a simple entry line.</para>
     This example immediately invokes the <emphasis role="italic">increase</emphasis> method after it starts the dialog. If
     the underlying Windows dialog has not been fully created, the <emphasis role="italic">increase</emphasis> method will
     wait until it has been created:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   pbDlg = .ProgressDialog~new
   pbDlg~msgText = 'Creating and inserting the contact information. ' || -
@@ -1949,7 +1908,6 @@ of a simple entry line.</para>
   pbDlg~begin
   pbDlg~increase
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2023,8 +1981,7 @@ of a simple entry line.</para>
     to cancel the dialog. The <computeroutput>Alerter</computeroutput> class provides the <xref linkend="atrIsCanceled"/>
     attribute. By checking the <emphasis role="italic">isCanceled</emphasis> attribute within the processing loop, the
     application can determine if the user has canceled the operation and end the processing loop:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   pbDlg = .ProgressDialog~new
   pbDlg~msgText = 'Creating and inserting the contact information. ' || -
@@ -2048,7 +2005,6 @@ of a simple entry line.</para>
             leave
       end
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2108,8 +2064,7 @@ of a simple entry line.</para>
     This example creates a progress dialog and enters a processing loop. Every 100 iterations, it updates the status line
     using the <emphasis role="italic">updateStatus</emphasis> method. When i equals 200, the status line will read: <emphasis
     role="italic">Status: 200 records inserted.</emphasis>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   pbDlg = .ProgressDialog~new
   pbDlg~msgText = 'Creating and inserting the contact information. ' || -
@@ -2126,7 +2081,6 @@ of a simple entry line.</para>
       end
       ...
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2186,8 +2140,7 @@ of a simple entry line.</para>
     This example creates a progress dialog and enters a processing loop. Every 100 iterations, it updates the status line
     using the <emphasis role="italic">updateStatusText</emphasis> method. When i equals 200, the status line will read:
     <emphasis role="italic">Have now inserted the contact information for 200 contacts ...</emphasis>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   pbDlg = .ProgressDialog~new
   pbDlg~msgText = 'Creating and inserting the contact information. ' || -
@@ -2200,11 +2153,13 @@ of a simple entry line.</para>
 
       if i // 100 = 0 then do
             pbDlg~increase
-            pbDlg~updateStatus('Have now inserted the contact information for' i 'contacts ...')
+            pbDlg~updateStatus(                               -
+              'Have now inserted the contact information for' -
+              i 'contacts ...'                                -
+            )
       end
       ...
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2315,8 +2270,7 @@ of a simple entry line.</para>
     This example shows an <computeroutput>Alerter</computeroutput> object being used with a progress dialog. Within a
     processing loop, the application periodically checks to see if the user has canceled the operation by checking the
     <emphasis role="italic">isCanceled</emphasis> attribute of the alerter:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   pbDlg = .ProgressDialog~new
   pbDlg~msgText = 'Creating and inserting the contact information. ' || -
@@ -2340,7 +2294,6 @@ of a simple entry line.</para>
             leave
       end
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2668,8 +2621,7 @@ of a simple entry line.</para>
     The following example instantiates and executes a dialog that contains a two-column radio button group. The fifth radio
     button (the button with the label May) is preselected.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 mon.1 = "January" ; mon.2 = "February" ; mon.3 = "March"
 mon.4 = "April"   ; mon.5 = "May"      ; mon.6 = "June"
 mon.7 = "July"    ; mon.8 = "August"   ; mon.9 = "September"
@@ -2679,7 +2631,6 @@ dlg = .SingleSelection~new("Please select a month:", ,
                            "Single Selection", mon., 5, , 6)
 s = dlg~execute
 say  "You Selected the month:" mon.s
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2731,8 +2682,7 @@ say  "You Selected the month:" mon.s
   <listitem>
   <para>
     This example instantiates a single selection dialog
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 rex.1 = "Regina" ; rex.2 = "ooRexx" ; rex.3 = "Reginald" ; rex.4 = "Personal Rexx"
 
@@ -2749,7 +2699,6 @@ else say "The Rexx you picked:" rex.index
 The Rexx you picked: ooRexx
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2824,13 +2773,11 @@ to display for its specified duration and then dismisses itself automatically.
   1:</emphasis></term>
 <listitem><para>The following example shows a window with the title of <emphasis
 role="italic">Infomation</emphasis> for a duration of 3 seconds:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 dlg = .TimedMessage~New("Application will be started, please wait", -
                         "Information", 3000)
 dlg~execute
 drop dlg
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry id="example2TimedMessage"><term><emphasis role="bold">Example
@@ -2840,18 +2787,16 @@ while an application is doing its time consuming start up routine.  Since this
 start up process can vary in time depending on the individual system, the window
 is set to display indefinitely.  When the start up process is finished, the
 programmer dismisses the window and destroys the dialog manually.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 dlg = .TimedMessage~New("The WidgetCreator Application - loading ...", -
                         "The Widget Factory", -1)
 dlg~execute
 ret = doStartup()
 dlg~ok
 drop dlg
-if ret <> 0 then do
+if ret &lt;&gt; 0 then do
   ...
 end
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry id="example3TimedMessage"><term><emphasis role="bold">Example
@@ -2866,14 +2811,13 @@ and the dialog is destroyed automatically.
 <note><title>Note</title><para>It is not necessary to explicitly drop the dlg
 variable.  That is shown in the other examples to emphasize the point that the
 dialog has been destroyed.</para></note>
-<programlisting> <![CDATA[
+<programlisting language="rexx">
 dlg = .TimedMessage~New("The WidgetCreator Application - loading ...", -
                         "The Widget Factory", 2000)
 dlg~execute
-if doStartup() <> 0 then do
+if doStartup() &lt;&gt; 0 then do
   ...
 end
-]]>
 </programlisting></listitem></varlistentry>
 </variablelist>
 </section>
@@ -2898,14 +2842,12 @@ you have to forward the message to the parent class by using the keyword super.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example shows how to subclass the TimedMessage
 class and how to add a background bitmap to the dialog window:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class MyTimedMessage subclass TimedMessage inherit DialogExtensions
 
 ::method defineDialog
    self~backgroundBitmap("mybackg.bmp", "USEPAL")
    self~DefineDialog:super()
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -2939,10 +2881,8 @@ class and how to add a background bitmap to the dialog window:
   The routines listed in this section can be used in any Rexx program.  They are designed to be even easier to use than
   the standard dialogs. Simply add a requires directive for the <computeroutput>ooDialog.cls</computeroutput> file in
   a Rexx program to use any of these routines.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::requires ooDialog.cls
-]]>
 </programlisting>
 </para>
 
@@ -3065,8 +3005,7 @@ box was checked by the user or will contain <computeroutput>.false
 <listitem><para>The following example show how to use the
 <computeroutput>CheckList</computeroutput> public routine:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   weekdays = .array~of("Monday","Tuesday","Wednesday","Thursday", -
                        "Friday","Saturday","Sunday")
@@ -3082,13 +3021,12 @@ box was checked by the user or will contain <computeroutput>.false
 
   days = CheckList("Check the days", "Working Days", weekdays, checks, 60, 4)
 
-  if days <> .Nil then do i = 1 to days~items
+  if days &lt;&gt; .Nil then do i = 1 to days~items
     if days[i] then say "Working day =" weekdays[i]
   end
 
 ::requires "ooDialog.cls"
 
-]]>
 </programlisting>
 
 </para></listitem></varlistentry>
@@ -3201,8 +3139,7 @@ an error symbol.</para>
     <para>
       An example of how to construct this string is as follows:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   delimiter = '0'x
 
@@ -3211,13 +3148,11 @@ an error symbol.</para>
 
   filter = pair1 || pair2
 
-]]>
 </programlisting>
       To specify multiple file extension patterns for a single display string, use a semicolon to separate the patterns,
       for example:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   delimiter = '0'x
 
@@ -3226,7 +3161,6 @@ an error symbol.</para>
 
   filter = pair1 || pair2
 
-]]>
 </programlisting>
 
     </para>
@@ -3239,14 +3173,12 @@ an error symbol.</para>
       To have the dialog box not display any filters, use the empty string for this argument. The default filter string
       when this argument is omitted is:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   delimiter = '0'x
 
   "Text Files (*.txt)"delimiter"*.txt"delimiter"All Files (*.*)"delimiter"*.*"delimiter
 
-]]>
 </programlisting>
     </para>
     </listitem></varlistentry>
@@ -3333,12 +3265,10 @@ C:\WINNT#file with blank.ext#fileWithNoBlank.TXT
     of the underlying Windows dialog, which is designed to work that way.  The ooDialog programmer should be aware of
     this behavior and insert code to change the directory back if that is needed. For example:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 curdir = directory()
 file = FileNameDialog("*.pdf", , "Adobe PDF Files"'0'x"*.pdf"'0'x)
 call directory curdir
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3379,10 +3309,8 @@ call directory curdir
 <para>
   A shortcut function to invoke an <xref linkend="clsInputBox"/> dialog as a function:
 </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 say "Your name:" InputBox("Please enter your name","Personal Data")
-]]>
 </programlisting>
 <para>
   The parameters are described in the <xref linkend="initInputBox"/> method of the<computeroutput>InputBox</computeroutput>
@@ -3398,10 +3326,8 @@ say "Your name:" InputBox("Please enter your name","Personal Data")
 <para>A shortcut to invoke an <xref linkend="clsIntegerBox"/>
 dialog as a function:
 </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 say "Your age:" IntegerBox("Please enter your age","Personal Data")
-]]>
 </programlisting>
 <para>
   The parameters are described in the <xref linkend="initInputBox"/> method of the <computeroutput>InputBox</computeroutput>
@@ -3417,13 +3343,11 @@ say "Your age:" IntegerBox("Please enter your age","Personal Data")
 <para>The ListChoice function provides a shortcut to invoke a
  <xref linkend="clsListChoice"/> dialog:
 </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 day = ListChoice("Select a day","My favorite day", ,
                  .array~of("Monday","Tuesday","Wednesday","Thursday", ,
                           "Friday","Saturday","Sunday") , , ,"Thursday")
 say "Your favorite day is" day
-]]>
 </programlisting>
 <para>
   The parameters are described in the <xref linkend="initListChoice"/> method of the
@@ -3931,8 +3855,7 @@ returned rather than the empty string.
   <para>
     This example is from a Wizard 97 program that warns the user when she is about to change the page and has not
     completed all of the steps on the page she is on.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method wizNext unguarded
   expose selectedMovies movieTheaters movieCombo
@@ -3962,7 +3885,6 @@ returned rather than the empty string.
   end
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3977,15 +3899,13 @@ returned rather than the empty string.
 <secondary>MultiInputBox</secondary></indexterm>
 <para>Provides a shortcut function to invoke a
  <xref linkend="clsMultiInputBox"/> dialog:</para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 res = MultiInputBox("Enter your address","Personal Data", ,
-                    .array~of("&First name","Last &name","&City"), ,
+                    .array~of("&amp;First name","Last &amp;name","&amp;City"), ,
                     .array~of("John","Smith","San Jose"), 100)
 if res \= .Nil then do entry over res
                        say "Address-line[]= " entry
                     end
-]]>
 </programlisting>
 <para>
   The parameters are described in the <xref linkend="initMultiInputBox"/> method of the
@@ -4005,15 +3925,13 @@ other difference from the MultiInputBox dialog: if the user cancels the dialog
 <para>Provides a shortcut to invoke a
  <xref linkend="clsMultiListChoice"/> dialog as a function:
 </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 days = MultiListChoice("Select days","My TV Days", ,
                        .array~of("Monday","Tuesday","Wednesday", ,
                               "Thursday","Friday","Saturday","Sunday"), , ,"2 5")
-if days <> .Nil then do day over days
+if days &lt;&gt; .Nil then do day over days
                        say "TV day =" day
                     end
-]]>
 </programlisting>
 <para>
   The parameters are described in the <xref linkend="initListChoice"/> method of the
@@ -4032,10 +3950,8 @@ if days <> .Nil then do day over days
 <para>A shortcut to invoke a <xref linkend="clsPasswordBox"/>
 dialog as a function:
 </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 pwd = PasswordBox("Please enter your password","Security")
-]]>
 </programlisting>
 <para>
   The parameters are described in the <xref linkend="initInputBox"/> method of the <computeroutput>InputBox</computeroutput>
@@ -4141,8 +4057,7 @@ pwd = PasswordBox("Please enter your password","Security")
     The following example shows a dialog that contains a two-column radio button group. The sixth radio button (the button
     with the label Jun) is checked, (preselected.)
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 months = .array~of("Jan","Feb","Mar","Apr","May","Jun",  -
                    "Jul","Aug","Sep","Oct","Nov","Dec")
@@ -4157,7 +4072,6 @@ else
     say "Born in month" m "=" months[m]
 
 ::requires "ooDialog.cls"
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4172,10 +4086,8 @@ else
 <para>The TimedMessage routine provides a shortcut to invoke a
  <xref linkend="clsTimedMessage"/> dialog as a function:
 </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ret = TimedMessage("We are starting...","Please wait",3000)
-]]>
 </programlisting><para> The parameters are the same as described in the
 <xref linkend="initTimedMessage"/> method of the <computeroutput>
 TimedMessage</computeroutput> class.
@@ -4192,10 +4104,8 @@ modified to work with the public routine:
  1:</emphasis></term>
 <listitem><para>The following example shows a window with the title of <emphasis
 role="italic">Infomation</emphasis> for a duration of 3 seconds:
-<programlisting> <![CDATA[
-ret = timedMessage("Application will be started, please wait", -
+<programlisting language="rexx">ret = timedMessage("Application will be started, please wait", -
                    "Information", 3000)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example
@@ -4207,16 +4117,14 @@ is set to display indefinitely.  When the start up process is finished, the
 programmer dismisses the window and destroys the dialog manually.  Note how a
 reference to the <computeroutput>TimedMessage</computeroutput> dialog is
 returned.  The programmer only needs to use this to dismiss / destroy the dialog
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 dlg = timedMessage("The WidgetCreator Application - loading ...", -
                    "The Widget Factory", -1)
 ret = doStartup()
 dlg~ok
-if ret <> 0 then do
+if ret &lt;&gt; 0 then do
   ...
 end
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example
@@ -4228,14 +4136,12 @@ the customer and then close.  The early reply argument is used so that the start
 up routine executes immediately.  After 2 seconds the splash screen dismisses
 and the dialog is destroyed automatically.
 </para>
-<programlisting> <![CDATA[
-ret = timedMessage("The WidgetCreator Application - loading ...", -
+<programlisting language="rexx">ret = timedMessage("The WidgetCreator Application - loading ...", -
                    "The Widget Factory", 2000)
 
-if doStartup() <> 0 then do
+if doStartup() &lt;&gt; 0 then do
   ...
 end
-]]>
 </programlisting></listitem></varlistentry>
 </variablelist>
 </section>
