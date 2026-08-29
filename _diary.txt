@@ -30,6 +30,11 @@ Implement the native method .RexxUnicodeServices~utf8StringUnescape.
 This method is private and is called by .RexxUnicode~stringUnescape.
 The old ooRexx implementation is still temporarily available as .RexxUnicode~stringUnescapeRexx.
 
+Optimize.RexxUnicodeServices~utf8StringUnescape
+with the help of Claude Sonnet 5
+https://claude.ai/share/ae729d6c-71ab-46f8-a01d-c9518d0d48d0
+
+
 Benchmark on MacBookPro M1 32GB:
     The private method .RexxUnicode~utf8StringUnescape has been temporarily made non-private
     to measure the cost of:
@@ -49,6 +54,7 @@ Benchmark on MacBookPro M1 32GB:
     do 1000; ustring = .RexxUnicode~utf8StringUnescape(string); end     -- Duration: 1.464047, 1.457741, 1.467016, 1.461891, 1.465127
     do 1000; ustring = .RexxUnicode~stringUnescape(string); end         -- Duration: 1.461897, 1.476557, 1.466868, 1.468858, 1.476453
     do 1000; ustring = .RexxUnicode~stringUnescapeRexx(string); end     -- Duration: 1.470234, 1.478192, 1.484150, 1.495065, 1.479851
+    -- Not impacted by optimization
 
     -- 100 000 iterations, 4.2 times faster (5.9 with direct call of utf8StringUnescape)
     string = "\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94"    -- '𝓐B𝓒𝓓𝓔'
@@ -56,12 +62,20 @@ Benchmark on MacBookPro M1 32GB:
     do 100000; ustring = .RexxUnicode~utf8StringUnescape(string); end   -- Duration: 0.200575, 0.202871, 0.202426, 0.200843, 0.198210. Average = 0.200985 without numeric digits 10
     do 100000; ustring = .RexxUnicode~stringUnescape(string); end       -- Duration: 0.276280, 0.282232, 0.274240, 0.280292, 0.287442. Average = 0.2800972
     do 100000; ustring = .RexxUnicode~stringUnescapeRexx(string); end   -- Duration: 1.193504, 1.180647, 1.166351, 1.205894, 1.192920. Average = 1.1878632
+    -- Optimized, 8.64 times faster than Rexx, 2.04 times faster than non-optimized
+    do 100000; ustring = .RexxUnicode~stringUnescape(string); end       -- Duration: 0.139293, 0.122272, 0.148886, 0.137343, 0.139994. Average = 0.1375576
+    do 100000; ustring = .RexxUnicode~stringUnescape(string); end       -- Duration: 0.118803, 0.131541, 0.125234, 0.120463, 0.139671. Average = 0.1271424 when not appending to the buffer
+    do 100000; ustring = .RexxUnicode~stringUnescape(string); end       -- Duration: 0.124736, 0.129402, 0.125312, 0.122572, 0.136474. Average = 0.1276992 when preallocating the buffer with string length
 
     -- 10 000 iterations, 8.12 times faster (8.00 with direct call of utf8StringUnescape)
     string = .RexxUnicode~stringEscape(xrange("00"x, "FF"x))            -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'
     do 10000; ustring = .RexxUnicode~utf8StringUnescape(string); end    -- Duration: 0.260237, 0.265792, 0.255820, 0.264146, 0.259022. Average = 0.2610034
     do 10000; ustring = .RexxUnicode~stringUnescape(string); end        -- Duration: 0.253131, 0.263919, 0.253934, 0.252294, 0.262376. Average = 0.2571308
     do 10000; ustring = .RexxUnicode~stringUnescapeRexx(string); end    -- Duration: 2.080179, 2.057582, 2.081659, 2.120388, 2.103751. Average = 2.0887118
+    -- Optimized, 36.33 times faster than Rexx, 4.47 times faster than non-optimized
+    do 10000; ustring = .RexxUnicode~stringUnescape(string); end        -- Duration: 0.050614, 0.064815, 0.053925, 0.054046, 0.064102. Average = 0.0575004
+    do 10000; ustring = .RexxUnicode~stringUnescape(string); end        -- Duration: 0.038062, 0.043275, 0.039218, 0.049132, 0.042803. Average = 0.042498 when not appending to the buffer
+    do 10000; ustring = .RexxUnicode~stringUnescape(string); end        -- Duration: 0.055565, 0.051351, 0.043594, 0.069116, 0.059300. Average = 0.0557852 when preallocating the buffer with string lengt
 
 
 ===============================================================================
@@ -3181,15 +3195,38 @@ Examples
     .RexxUnicode~stringUnescape("\u{}")=          -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
     .RexxUnicode~stringUnescape("\u{1D4_D0}")=    -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
 
+    .RexxUnicode~stringUnescape("\u0000")~c2x=    --  00
+    .RexxUnicode~stringUnescape("\u{0000}")~c2x=  --  00
+    .RexxUnicode~stringUnescape("\uFFFF")~c2x=    -- 'EFBFBF'
+    .RexxUnicode~stringUnescape("\u{FFFF}")~c2x=  -- 'EFBFBF'
+
     .RexxUnicode~stringUnescape("\U")=            -- Expected 8 hex digits after \U at position 1.
     .RexxUnicode~stringUnescape("\U0")=           -- Expected 8 hex digits after \U at position 1.
     .RexxUnicode~stringUnescape("\U0000_0000")=   -- Expected 8 hex digits after \U at position 1.
+
+    .RexxUnicode~stringUnescape("\U00000000")~c2x=    --  00
+    .RexxUnicode~stringUnescape("\u{00000000}")~c2x=  --  00
+    .RexxUnicode~stringUnescape("\UFFFFFFFF")~c2x=    -- Cannot UTF-8 encode code point 4294967295 \U{FFFFFFFF} at position 1.
+    .RexxUnicode~stringUnescape("\u{FFFFFFFF}")~c2x=  -- Cannot UTF-8 encode code point 4294967295 \u{FFFFFFFF}} at position 1.
 
     .RexxUnicode~stringUnescape("\x")=            -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
     .RexxUnicode~stringUnescape("\x0")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
     .RexxUnicode~stringUnescape("\x{")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
     .RexxUnicode~stringUnescape("\x{}")=          -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
     .RexxUnicode~stringUnescape("\x{1D4_D0}")=    -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+
+    .RexxUnicode~stringUnescape("\x00")~c2x=      --  00
+    .RexxUnicode~stringUnescape("\x{00}")~c2x=    --  00
+    .RexxUnicode~stringUnescape("\xFF")~c2x=      -- 'FF'
+    .RexxUnicode~stringUnescape("\x{FF}")~c2x=    -- 'FF'
+
+    .RexxUnicode~stringUnescape("\x00\xFF")~c2x=  -- '00FF'
+    .RexxUnicode~stringUnescape("\x{00FF}")~c2x=  -- '00FF
+    .RexxUnicode~stringUnescape("\x{00 FF}")~c2x= -- '00FF
+
+    .RexxUnicode~stringUnescape("\x{00 01  02   03}")~c2x=      --  00010203
+    .RexxUnicode~stringUnescape("\x{ 00 01  02   03}")~c2x=     -- Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
+    .RexxUnicode~stringUnescape("\x{00 01  02   03 }")~c2x=     -- Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 
     .RexxUnicode~stringUnescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
 

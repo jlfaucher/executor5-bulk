@@ -42,8 +42,8 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
-</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 28 Aug 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S12c0dQbc489cb40
+</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 29 Aug 2026
+</span><span style="font-weight:bold;color:green;">Input queue name: S4594Qbc489ce40
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
@@ -4796,6 +4796,15 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnesc
 <span style="font-weight:bold;color:red;">Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\u0000&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">--  00</span>
+ 00
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\u{0000}&quot;)~c2x=  </span><span style="font-weight:bold;color:blue;">--  00</span>
+ 00
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\uFFFF&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 'EFBFBF'</span>
+'EFBFBF'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\u{FFFF}&quot;)~c2x=  </span><span style="font-weight:bold;color:blue;">-- 'EFBFBF'</span>
+'EFBFBF'
+
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\U&quot;)=            </span><span style="font-weight:bold;color:blue;">-- Expected 8 hex digits after \U at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected 8 hex digits after \U at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
@@ -4805,6 +4814,17 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnesc
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\U0000_0000&quot;)=   </span><span style="font-weight:bold;color:blue;">-- Expected 8 hex digits after \U at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected 8 hex digits after \U at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\U00000000&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">--  00</span>
+ 00
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\u{00000000}&quot;)~c2x=  </span><span style="font-weight:bold;color:blue;">--  00</span>
+ 00
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\UFFFFFFFF&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- Cannot UTF-8 encode code point 4294967295 \U{FFFFFFFF} at position 1.</span>
+<span style="font-weight:bold;color:red;">Cannot UTF-8 encode code point 4294967295 \U{FFFFFFFF} at position 1.
+</span><span style="font-weight:bold;color:red;">Error code= 22.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\u{FFFFFFFF}&quot;)~c2x=  </span><span style="font-weight:bold;color:blue;">-- Cannot UTF-8 encode code point 4294967295 \u{FFFFFFFF}} at position 1.</span>
+<span style="font-weight:bold;color:red;">Cannot UTF-8 encode code point 4294967295 \u{FFFFFFFF}} at position 1.
+</span><span style="font-weight:bold;color:red;">Error code= 22.900
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x&quot;)=            </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
@@ -4819,6 +4839,31 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnesc
 <span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x{1D4_D0}&quot;)=    </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
+<span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
+</span><span style="font-weight:bold;color:red;">Error code= 23.900
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x00&quot;)~c2x=      </span><span style="font-weight:bold;color:blue;">--  00</span>
+ 00
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x{00}&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">--  00</span>
+ 00
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\xFF&quot;)~c2x=      </span><span style="font-weight:bold;color:blue;">-- 'FF'</span>
+'FF'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x{FF}&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 'FF'</span>
+'FF'
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x00\xFF&quot;)~c2x=  </span><span style="font-weight:bold;color:blue;">-- '00FF'</span>
+'00FF'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x{00FF}&quot;)~c2x=  </span><span style="font-weight:bold;color:blue;">-- '00FF</span>
+'00FF'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x{00 FF}&quot;)~c2x= </span><span style="font-weight:bold;color:blue;">-- '00FF</span>
+'00FF'
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x{00 01  02   03}&quot;)~c2x=      </span><span style="font-weight:bold;color:blue;">--  00010203</span>
+ 00010203
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x{ 00 01  02   03}&quot;)~c2x=     </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.</span>
+<span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
+</span><span style="font-weight:bold;color:red;">Error code= 23.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x{00 01  02   03 }&quot;)~c2x=     </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.</span>
 <span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>

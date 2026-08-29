@@ -891,7 +891,6 @@ How other languages are supporting escape characters for Unicode:
 
 
 ::method stringUnescape class
-    numeric digits 10 -- to support FFFFFFFF, even if way too big for a codepoint
     forward message "utf8StringUnescape" -- inherited private method
 
 

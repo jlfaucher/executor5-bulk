@@ -4750,6 +4750,15 @@ ooRexx> .RexxUnicode~stringUnescape("\u{1D4_D0}")=    -- Expected either 4 hex d
 Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
 Error code= 23.900
 
+ooRexx> .RexxUnicode~stringUnescape("\u0000")~c2x=    --  00
+ 00
+ooRexx> .RexxUnicode~stringUnescape("\u{0000}")~c2x=  --  00
+ 00
+ooRexx> .RexxUnicode~stringUnescape("\uFFFF")~c2x=    -- 'EFBFBF'
+'EFBFBF'
+ooRexx> .RexxUnicode~stringUnescape("\u{FFFF}")~c2x=  -- 'EFBFBF'
+'EFBFBF'
+
 ooRexx> .RexxUnicode~stringUnescape("\U")=            -- Expected 8 hex digits after \U at position 1.
 Expected 8 hex digits after \U at position 1.
 Error code= 23.900
@@ -4759,6 +4768,17 @@ Error code= 23.900
 ooRexx> .RexxUnicode~stringUnescape("\U0000_0000")=   -- Expected 8 hex digits after \U at position 1.
 Expected 8 hex digits after \U at position 1.
 Error code= 23.900
+
+ooRexx> .RexxUnicode~stringUnescape("\U00000000")~c2x=    --  00
+ 00
+ooRexx> .RexxUnicode~stringUnescape("\u{00000000}")~c2x=  --  00
+ 00
+ooRexx> .RexxUnicode~stringUnescape("\UFFFFFFFF")~c2x=    -- Cannot UTF-8 encode code point 4294967295 \U{FFFFFFFF} at position 1.
+Cannot UTF-8 encode code point 4294967295 \U{FFFFFFFF} at position 1.
+Error code= 22.900
+ooRexx> .RexxUnicode~stringUnescape("\u{FFFFFFFF}")~c2x=  -- Cannot UTF-8 encode code point 4294967295 \u{FFFFFFFF}} at position 1.
+Cannot UTF-8 encode code point 4294967295 \u{FFFFFFFF}} at position 1.
+Error code= 22.900
 
 ooRexx> .RexxUnicode~stringUnescape("\x")=            -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
@@ -4773,6 +4793,31 @@ ooRexx> .RexxUnicode~stringUnescape("\x{}")=          -- Expected either 2 hex d
 Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 Error code= 23.900
 ooRexx> .RexxUnicode~stringUnescape("\x{1D4_D0}")=    -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
+Error code= 23.900
+
+ooRexx> .RexxUnicode~stringUnescape("\x00")~c2x=      --  00
+ 00
+ooRexx> .RexxUnicode~stringUnescape("\x{00}")~c2x=    --  00
+ 00
+ooRexx> .RexxUnicode~stringUnescape("\xFF")~c2x=      -- 'FF'
+'FF'
+ooRexx> .RexxUnicode~stringUnescape("\x{FF}")~c2x=    -- 'FF'
+'FF'
+
+ooRexx> .RexxUnicode~stringUnescape("\x00\xFF")~c2x=  -- '00FF'
+'00FF'
+ooRexx> .RexxUnicode~stringUnescape("\x{00FF}")~c2x=  -- '00FF
+'00FF'
+ooRexx> .RexxUnicode~stringUnescape("\x{00 FF}")~c2x= -- '00FF
+'00FF'
+
+ooRexx> .RexxUnicode~stringUnescape("\x{00 01  02   03}")~c2x=      --  00010203
+ 00010203
+ooRexx> .RexxUnicode~stringUnescape("\x{ 00 01  02   03}")~c2x=     -- Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
+Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
+Error code= 23.900
+ooRexx> .RexxUnicode~stringUnescape("\x{00 01  02   03 }")~c2x=     -- Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 Error code= 23.900
 

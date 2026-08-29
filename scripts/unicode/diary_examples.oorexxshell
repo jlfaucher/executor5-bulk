@@ -3118,15 +3118,38 @@ Examples
 .RexxUnicode~stringUnescape("\u{}")=          -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
 .RexxUnicode~stringUnescape("\u{1D4_D0}")=    -- Expected either 4 hex digits or {1..8 hex digits} after \u at position 1.
 
+.RexxUnicode~stringUnescape("\u0000")~c2x=    --  00
+.RexxUnicode~stringUnescape("\u{0000}")~c2x=  --  00
+.RexxUnicode~stringUnescape("\uFFFF")~c2x=    -- 'EFBFBF'
+.RexxUnicode~stringUnescape("\u{FFFF}")~c2x=  -- 'EFBFBF'
+
 .RexxUnicode~stringUnescape("\U")=            -- Expected 8 hex digits after \U at position 1.
 .RexxUnicode~stringUnescape("\U0")=           -- Expected 8 hex digits after \U at position 1.
 .RexxUnicode~stringUnescape("\U0000_0000")=   -- Expected 8 hex digits after \U at position 1.
+
+.RexxUnicode~stringUnescape("\U00000000")~c2x=    --  00
+.RexxUnicode~stringUnescape("\u{00000000}")~c2x=  --  00
+.RexxUnicode~stringUnescape("\UFFFFFFFF")~c2x=    -- Cannot UTF-8 encode code point 4294967295 \U{FFFFFFFF} at position 1.
+.RexxUnicode~stringUnescape("\u{FFFFFFFF}")~c2x=  -- Cannot UTF-8 encode code point 4294967295 \u{FFFFFFFF}} at position 1.
 
 .RexxUnicode~stringUnescape("\x")=            -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 .RexxUnicode~stringUnescape("\x0")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 .RexxUnicode~stringUnescape("\x{")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 .RexxUnicode~stringUnescape("\x{}")=          -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
 .RexxUnicode~stringUnescape("\x{1D4_D0}")=    -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+
+.RexxUnicode~stringUnescape("\x00")~c2x=      --  00
+.RexxUnicode~stringUnescape("\x{00}")~c2x=    --  00
+.RexxUnicode~stringUnescape("\xFF")~c2x=      -- 'FF'
+.RexxUnicode~stringUnescape("\x{FF}")~c2x=    -- 'FF'
+
+.RexxUnicode~stringUnescape("\x00\xFF")~c2x=  -- '00FF'
+.RexxUnicode~stringUnescape("\x{00FF}")~c2x=  -- '00FF
+.RexxUnicode~stringUnescape("\x{00 FF}")~c2x= -- '00FF
+
+.RexxUnicode~stringUnescape("\x{00 01  02   03}")~c2x=      --  00010203
+.RexxUnicode~stringUnescape("\x{ 00 01  02   03}")~c2x=     -- Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
+.RexxUnicode~stringUnescape("\x{00 01  02   03 }")~c2x=     -- Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 
 .RexxUnicode~stringUnescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
 
