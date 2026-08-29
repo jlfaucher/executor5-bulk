@@ -42,8 +42,8 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
-</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 12 Aug 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S27c3Qbc482a880
+</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 28 Aug 2026
+</span><span style="font-weight:bold;color:green;">Input queue name: S12c0dQbc489cb40
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
@@ -4807,19 +4807,19 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnesc
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x&quot;)=            </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
-<span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+<span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x0&quot;)=           </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
-<span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+<span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x{&quot;)=           </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
-<span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+<span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x{}&quot;)=          </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
-<span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+<span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\x{1D4_D0}&quot;)=    </span><span style="font-weight:bold;color:blue;">-- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.</span>
-<span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+<span style="font-weight:bold;color:red;">Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 </span><span style="font-weight:bold;color:red;">Error code= 23.900
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94&quot;)=     </span><span style="font-weight:bold;color:blue;">-- '𝓐B𝓒𝓓𝓔'</span>

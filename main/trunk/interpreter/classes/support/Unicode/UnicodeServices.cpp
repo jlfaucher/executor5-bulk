@@ -47,6 +47,7 @@
 #include "MutableBufferClass.hpp"
 #include "NumberStringClass.hpp" // for NumberString::classInstanc needed by the macro TheNumberStringClass
 
+#include <algorithm> // for std::min
 
 #include "Unicode/utf8proc/utf8proc.h"
 #include "Unicode/unicode-width/src-cpp/lookup.hpp"
@@ -160,7 +161,44 @@ RexxInteger *RexxUnicodeServicesClass::systemIsLittleEndian()
 
 /******************************************************************************/
 /*                                                                            */
-/* Helpers                                                                    */
+/* snprintf Helper                                                            */
+/*                                                                            */
+/******************************************************************************/
+
+#include <stdarg.h>
+#include <stdio.h>
+
+/**
+ * Encapsulation of snprintf Unix|Windows implementation.
+ *
+ * @param buffer  Buffer receiving the formated output.
+ * @param size    Size of buffer.
+ * @param format  Format string.
+ * @param ...     Optional arguments
+ *
+ * @return Upon successful completion, return the number of bytes stored in buffer, not counting the terminating null character
+ *         or a negative value if an error was encountered.
+ */
+int formatString(char *buffer, size_t size, const char *format, ...)
+{
+    if (buffer == NULL || size == 0 || format == NULL) return -1;
+    va_list args;
+    va_start(args, format);
+#if defined(_WIN32)
+    int n = _vsnprintf(buffer, size, format, args);
+#else
+    int n = vsnprintf(buffer, size, format, args);
+#endif
+    va_end(args);
+    buffer[size-1] = '\0';
+    if (n >= size) n = -1; // The output has been truncated
+    return n;
+}
+
+
+/******************************************************************************/
+/*                                                                            */
+/* ooRexx Helpers                                                             */
 /*                                                                            */
 /******************************************************************************/
 
@@ -220,6 +258,31 @@ void requiredBaseString(RexxString *string, const char *argumentName)
     errmsg = errmsg->concatWithCstring(" class: expected String, found ");
     errmsg = errmsg->concat(stringClass->getId());
     reportException(Error_Invalid_argument_user_defined, errmsg);
+}
+
+
+/******************************************************************************/
+/*                                                                            */
+/* RexxUnicode Helpers                                                        */
+/* Precondition: self is the RexxUnicode class (not RexxUnicodeServices)      */
+/*                                                                            */
+/******************************************************************************/
+
+bool ICU4ooRexxIsRegistered(RexxObject *self)
+{
+    ProtectedObject result;
+    self->messageSend(GlobalNames::ICU4OOREXXISREGISTERED, OREF_NULL, 0, result);
+    return ((RexxObject *)result) == TheTrueObject;
+}
+
+
+utf8proc_int32_t codepointFromName(RexxObject *self, RexxString *name)
+{
+    RexxObject *args[1];
+    args[0] = name;
+    ProtectedObject result;
+    self->messageSend(GlobalNames::CODEPOINTFROMNAME, args, 1, result);
+    return ((RexxObject *)result)->integerValue(9)->getValue();
 }
 
 
@@ -1288,6 +1351,251 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
     }
 
     return (errorCount == 0) ? RexxInteger::integerZero : new_integer(firstInvalidByteSequence - start + 1);
+}
+
+
+/**
+ * Returns a string in which escape sequences are replaced with their corresponding values.
+ * If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
+ * Escape sequences are normally handled in string literals at parse time. This method handles them at run time instead.
+ *
+ * This method must be called from the RexxUnicode class so that these messages are understood:
+ *  - codepointFromName
+ *  - ICU4ooRexxIsRegistered
+ * This constraint is enforced by declaring this method private.
+ */
+RexxObject *RexxUnicodeServicesClass::utf8StringUnescape(RexxString *string, MutableBuffer *destination)
+{
+    // Check arguments
+    requiredArgument(string, "string");
+    requiredBaseString(string, "string");
+    if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
+
+    const char *start = string->getStringData();
+    size_t length = string->getLength();
+    const char *end = start + length;
+
+    const char *pos = (const char *)memchr(start, '\\', end - start);
+    if (pos == NULL)
+    {
+        // don't create intermediate buffer if nothing to unescape
+        if (destination == OREF_NULL) return string;
+        destination->append(string);
+        return destination;
+    }
+
+    Protected<MutableBuffer> buffer = destination;
+    if (buffer == OREF_NULL) buffer = new MutableBuffer();
+
+    // Buffer to format error messages
+    char error[200];
+
+    // Used in error messages
+    size_t slashPos = 0;
+    char character = '?';
+    Protected<RexxString> name;
+    utf8proc_int32_t codepoint = -1;
+    Protected<RexxString> hexdigits;
+
+    const char *from = start;
+    do {
+        // Here, *pos is a '\' in string
+        slashPos = pos - start + 1;
+
+        // Append into buffer the part of the string
+        // from the end of the previous escape character (or start)
+        // and the current escape character
+        buffer->append(from, pos - from);
+
+        pos++; // skip '\'
+        character = *pos; // escape type letter '\', 'a', ..., 'N', 'u', 'U', 'x'
+        pos++; // skip the escape type letter
+        switch (character) {
+            case '\\': buffer->append('\\');   break; // escaped backslash
+            case 'a':  buffer->append('\x07'); break; // audible bell (BEL)
+            case 'b':  buffer->append('\x08'); break; // backspace (BS)
+            case 'f':  buffer->append('\x0C'); break; // form feed (FF)
+            case 'n':  buffer->append('\x0A'); break; // linefeed (LF)
+            case 'r':  buffer->append('\x0D'); break; // carriage return (CR)
+            case 't':  buffer->append('\x09'); break; // horizontal tab (HT)
+            case 'v':  buffer->append('\x0B'); break; // vertical tab (VT)
+            // Rust
+            case '\'': buffer->append('\x27'); break; // single quote
+            case '"':  buffer->append('\x22'); break; // double quote
+            case '0':  buffer->append('\x00'); break; // NUL
+
+            case 'N':
+                {
+                    // \N{Unicode name}    Character name in the Unicode database
+                    if (*pos != '{') goto expected_name;
+                    pos++; // skip {
+                    const char *first = pos;
+                    pos = (const char *)memchr(pos, '}', end - pos);
+                    if (pos == NULL) goto expected_name;
+                    length = pos - first;
+                    if (length == 0) goto expected_name;
+                    pos++; // skip }
+                    name = new_string(first, length);
+                    codepoint = codepointFromName(this, name);
+                    if (codepoint == -1) goto name_not_found;
+                    char buf[4];
+                    utf8proc_ssize_t size = utf8proc_encode_char(codepoint, (utf8proc_uint8_t *)buf);
+                    if (size == 0) goto name_encoding_error; // Should not happen
+                    buffer->append(buf, size);
+                }
+                break;
+
+            case 'u':
+                // \u{X..X}            Unicode scalar value, 1-8 hex digits
+                // \uXXXX              Unicode scalar value, exactly 4 hex digits
+                if (*pos == '{')
+                {
+                    // \u{X..X}
+                    pos++; // skip {
+                    const char *first = pos;
+                    pos = (const char *)memchr(pos, '}', end - pos);
+                    if (pos == NULL) goto expected_4_or_1_8_hexdigits;
+                    length = pos - first;
+                    if (length == 0 | length > 8) goto expected_4_or_1_8_hexdigits;
+                    pos++; // skip }
+                    hexdigits = new_string(first, length);
+                    if (hexdigits->dataType(GlobalNames::X) == TheFalseObject) goto expected_4_or_1_8_hexdigits;
+                    // Precondition: numeric digits 10 -- set by the caller, to support FFFFFFFF, even if way too big for a codepoint
+                    codepoint = hexdigits->x2d(OREF_NULL)->integerValue(10)->getValue();
+                    char buf[4];
+                    utf8proc_ssize_t size = utf8proc_encode_char(codepoint, (utf8proc_uint8_t *)buf);
+                    if (size == 0) goto encoding_1_8_hexdigits_error;
+                    buffer->append(buf, size);
+                }
+                else
+                {
+                    // \uXXXX
+                    length = std::min<size_t>(4, end - pos);
+                    if (length != 4) goto expected_4_or_1_8_hexdigits;
+                    hexdigits = new_string(pos, 4);
+                    if (hexdigits->dataType(GlobalNames::X) == TheFalseObject) goto expected_4_or_1_8_hexdigits;
+                    codepoint = hexdigits->x2d(OREF_NULL)->integerValue(9)->getValue();
+                    char buf[4];
+                    utf8proc_ssize_t size = utf8proc_encode_char(codepoint, (utf8proc_uint8_t *)buf);
+                    if (size == 0) goto encoding_1_4_hexdigits_error;
+                    buffer->append(buf, size);
+                    pos += 4;
+                }
+                break;
+
+            case 'U':
+                {
+                    // \UXXXXXXXX          Unicode scalar value, exactly 8 hex digits
+                    length = std::min<size_t>(8, end - pos);
+                    if (length != 8) goto expected_8_hexdigits;
+                    hexdigits = new_string(pos, 8);
+                    if (hexdigits->dataType(GlobalNames::X) == TheFalseObject) goto expected_8_hexdigits;
+                    // Precondition: numeric digits 10 -- set by the caller, to support FFFFFFFF, even if way too big for a codepoint
+                    codepoint = hexdigits->x2d(OREF_NULL)->integerValue(10)->getValue();
+                    char buf[4];
+                    utf8proc_ssize_t size = utf8proc_encode_char(codepoint, (utf8proc_uint8_t *)buf);
+                    if (size == 0) goto encoding_1_8_hexdigits_error;
+                    buffer->append(buf, size);
+                    pos += 8;
+                }
+                break;
+
+            case 'x':
+                // \x{X..X}         Arbitrary number of hex digits
+                // \xXX             1 byte, exactly 2 hex digits
+                {
+                    // \x{X..X}
+                    if (*pos == '{')
+                    {
+                        pos++; // skip {
+                        const char *first = pos;
+                        pos = (const char *)memchr(pos, '}', end - pos);
+                        if (pos == NULL) goto expected_2_or_1_n_hexdigits;
+                        length = pos - first;
+                        if (length == 0) goto expected_2_or_1_n_hexdigits;
+                        pos++; // skip }
+                        hexdigits = new_string(first, length);
+                        if (hexdigits->dataType(GlobalNames::X) == TheFalseObject) goto expected_2_or_1_n_hexdigits;
+                        Protected<RexxString> bytes = hexdigits->x2c();
+                        buffer->append(bytes);
+                    }
+                    else
+                    {
+                        // \xXX
+                        length = std::min<size_t>(2, end - pos);
+                        if (length != 2) goto expected_2_or_1_n_hexdigits;
+                        hexdigits = new_string(pos, 2);
+                        if (hexdigits->dataType(GlobalNames::X) == TheFalseObject) goto expected_2_or_1_n_hexdigits;
+                        Protected<RexxString> bytes = hexdigits->x2c(); // 2 bytes
+                        buffer->append(bytes);
+                        pos += 2;
+                    }
+                }
+                break;
+
+            default: goto invalid_escape_character;
+        }
+        from = pos;
+        pos = (const char *)memchr(from, '\\', end - from);
+    } while (pos != NULL);
+
+    buffer->append(from, end - from);
+
+    if (destination != OREF_NULL) return destination; // The user passed a buffer, returns this buffer
+    return buffer->makeString(); // The user did not pass a buffer, returns a string
+
+    invalid_escape_character:
+        // raise syntax 23.900 array("Invalid escape character" quoted("\"character, "'") "at position" slashPos)
+        if (character == '\0') formatString(error, sizeof(error), "Invalid escape character '\\' at position %zu", slashPos);
+        else formatString(error, sizeof(error), "Invalid escape character '\\%c' at position %zu", character, slashPos);
+        reportException(Error_Invalid_data_string_user_defined, error);
+
+    expected_name:
+        // raise syntax 23.900 array("Expected {a Unicode character name} after \"character "at position" slashPos)
+        formatString(error, sizeof(error), "Expected {a Unicode character name} after \\%c at position %zu", character, slashPos);
+        reportException(Error_Invalid_data_string_user_defined, error);
+
+    name_not_found:
+        // additional = ""
+        // if \ self~ICU4ooRexxIsRegistered then additional = " (ICU4ooRexx not loaded)"
+        // raise syntax 98.900 array("Name" quoted(name) "at position" slashPos "not found" || additional)
+        {
+            const char *additional = ICU4ooRexxIsRegistered(this) ? "" : " (ICU4ooRexx not loaded)";
+            formatString(error, sizeof(error), "Name \"%*s\" at position %zu not found%s", name->getLength(), name->getStringData(), slashPos, additional);
+            reportException(Error_Execution_user_defined, error);
+        }
+
+    expected_8_hexdigits:
+        // raise syntax 23.900 array("Expected 8 hex digits after \"character "at position" slashPos)
+        formatString(error, sizeof(error), "Expected 8 hex digits after \\%c at position %zu", character, slashPos);
+        reportException(Error_Invalid_data_string_user_defined, error);
+
+    expected_4_or_1_8_hexdigits:
+        // raise syntax 23.900 array("Expected either 4 hex digits or {1..8 hex digits} after \"character "at position" slashPos)
+        formatString(error, sizeof(error), "Expected either 4 hex digits or {1..8 hex digits} after \\%c at position %zu", character, slashPos);
+        reportException(Error_Invalid_data_string_user_defined, error);
+
+    expected_2_or_1_n_hexdigits:
+        // raise syntax 23.900 array("Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \"character "at position" slashPos)
+        formatString(error, sizeof(error), "Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \\%c at position %zu", character, slashPos);
+        reportException(Error_Invalid_data_string_user_defined, error);
+
+    name_encoding_error:
+        // raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character"{"name"} at position" slashPos)
+        formatString(error, sizeof(error), "Cannot UTF-8 encode code point %u \\%c{%*s} at position %zu", codepoint, character, name->getLength(), name->getStringData(), slashPos);
+        reportException(Error_Invalid_character_string_user_defined, error);
+
+    encoding_1_8_hexdigits_error:
+        // raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character"{"hexdigits"} at position" slashPos)
+        formatString(error, sizeof(error), "Cannot UTF-8 encode code point %u \\%c{%*s} at position %zu", codepoint, character, hexdigits->getLength(), hexdigits->getStringData(), slashPos);
+        reportException(Error_Invalid_character_string_user_defined, error);
+
+    encoding_1_4_hexdigits_error:
+        // raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character || hexdigits "at position" slashPos)
+        formatString(error, sizeof(error), "Cannot UTF-8 encode code point %u \\%c%*s at position %zu", codepoint, character, hexdigits->getLength(), hexdigits->getStringData(), slashPos);
+        reportException(Error_Invalid_character_string_user_defined, error);
+
+    return OREF_NULL;
 }
 
 

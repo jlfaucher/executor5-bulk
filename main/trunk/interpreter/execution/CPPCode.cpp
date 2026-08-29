@@ -1340,6 +1340,7 @@ PCPPM CPPCode::exportedMethods[] =
     CPPM(RexxUnicodeServicesClass::utf8DecodePreviousCodepoint),
     CPPM(RexxUnicodeServicesClass::utf8EncodeCodepoint),
     CPPM(RexxUnicodeServicesClass::utf8StringInfo),
+    CPPM(RexxUnicodeServicesClass::utf8StringUnescape),
     CPPM(RexxUnicodeServicesClass::utf8StringWidth),
     CPPM(RexxUnicodeServicesClass::utf8Transform),
     CPPM(RexxUnicodeServicesClass::graphemeBreak),

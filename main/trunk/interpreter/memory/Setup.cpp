@@ -166,6 +166,25 @@ void MemoryObject::definePrivateMethod(const char *name, RexxBehaviour * behavio
 
 
 /**
+ * Add a C++ method to an object's behaviour.  This method is
+ * marked as private and unguarded.
+ *
+ * @param name       The name of the method.
+ * @param behaviour  The target behaviour.
+ * @param entryPoint The entry point of the C++ method that implements the
+ *                   method.
+ * @param arguments  The method argument style (argument count or array indicator).
+ */
+void MemoryObject::definePrivateUnguardedMethod(const char *name, RexxBehaviour * behaviour, PCPPM entryPoint, size_t arguments, const char *entryPointName)
+{
+    MethodClass *method = behaviour->defineMethod(name, entryPoint, arguments, entryPointName);
+    // mark the method as private
+    method->setPrivate();
+    method->setUnguarded();
+}
+
+
+/**
  * Add a object to the environment using the provided name.
  *
  * @param name   The name of the new environment entry.
@@ -359,6 +378,7 @@ void MemoryObject::createImage(const char *imageTarget)
 #define AddClassProtectedMethod(name, entryPoint, args) defineProtectedMethod(name, currentClassBehaviour, CPPM(entryPoint), args, #entryPoint);
 #define AddClassPrivateMethod(name, entryPoint, args) definePrivateMethod(name, currentClassBehaviour, CPPM(entryPoint), args, #entryPoint);
 #define AddClassUnguardedMethod(name, entryPoint, args) defineUnguardedMethod(name, currentClassBehaviour, CPPM(entryPoint), args, #entryPoint);
+#define AddClassPrivateUnguardedMethod(name, entryPoint, args) definePrivateUnguardedMethod(name, currentClassBehaviour, CPPM(entryPoint), args, #entryPoint);
 #define HideClassMethod(name) currentClassBehaviour->hideMethod(name);
 #define RemoveClassMethod(name) currentClassBehaviour->removeMethod(name);
 
@@ -1741,6 +1761,7 @@ StartClassDefinition(RexxUnicodeServices)
         AddClassUnguardedMethod("UTF8DecodePreviousCodepoint", RexxUnicodeServicesClass::utf8DecodePreviousCodepoint, 5);
         AddClassUnguardedMethod("UTF8EncodeCodepoint", RexxUnicodeServicesClass::utf8EncodeCodepoint, 3);
         AddClassUnguardedMethod("UTF8StringInfo", RexxUnicodeServicesClass::utf8StringInfo, 5);
+        AddClassPrivateUnguardedMethod("UTF8StringUnescape", RexxUnicodeServicesClass::utf8StringUnescape, 2);
         AddClassUnguardedMethod("UTF8StringWidth", RexxUnicodeServicesClass::utf8StringWidth, 3);
         AddClassUnguardedMethod("UTF8Transform", RexxUnicodeServicesClass::utf8Transform, A_COUNT);
         AddClassUnguardedMethod("GraphemeBreak", RexxUnicodeServicesClass::graphemeBreak, 3);

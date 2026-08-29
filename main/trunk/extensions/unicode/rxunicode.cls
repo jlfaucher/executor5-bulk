@@ -59,6 +59,7 @@ Native methods of RexxUnicodeServices
     MutableBuffer *utf8EncodeCodepoint(RexxInteger *rexxCodepoint, MutableBuffer *destination, VariableReference *refSizeB);
 
     RexxInteger *utf8StringInfo(RexxString *string, VariableReference *refGraphemeCount, VariableReference *refCodepointCount, VariableReference *refErrorCount, RexxInteger *rexxStopAtFirstError);
+    RexxObject *utf8StringUnescape(RexxString *string, MutableBuffer *destination);
     RexxInteger *utf8StringWidth(RexxString *string, RexxInteger *indexB, RexxInteger *eastAsianContext);
 
     RexxString *utf8Transform(RexxObject **arguments, size_t argCount);
@@ -382,8 +383,12 @@ non-printable codepoints are returned as a Unicode escape notation.
 Codepoint from identifier
 *******************************************************************************/
 
--- Gets a codepoint from a character name
--- Private helper for .RexxUnicode~stringUnescape and .RexxUnicode~codepoint
+-- Gets a codepoint from a character name.
+-- Private helper for .RexxUnicodeServices~utf8StringUnescape, .RexxUnicode~stringUnescape and .RexxUnicode~codepoint.
+-- The native utf8StringUnescape method cannot call a private method when the native method is called outside an ooRexx method context.
+-- Workaround:
+--     - Call the native utf8StringUnescape method from an ooRexx method of RexxUnicode.
+--     - Make the native utf8StringUnescape method private.
 ::method codepointFromName class private
     use strict arg name
     name = requestBaseString(name, "name")
@@ -717,7 +722,8 @@ How other languages are supporting escape characters for Unicode:
 
 -- Escape characters are normally handled in string literals at parse time.
 -- This method handles them at run time instead.
-::method StringUnescape class
+-- Will be removed after validation of utf8StringUnescape
+::method stringUnescapeRexx class
     use strict arg string, buffer=.nil
     string = requestBaseString(string, "string")
     pos = string~pos("\")
@@ -786,12 +792,13 @@ How other languages are supporting escape characters for Unicode:
                     if length == 0 then signal expected_4_or_1_8_hexdigits
                     pos += 1 -- skip }
                     hexdigits = string~substr(first, length)
-                    hexdigits = hexdigits~space(0) -- remove all spaces
-                    if hexdigits~length == 0 then signal expected_4_or_1_8_hexdigits
-                    hexdigits = hexdigits~strip("L", "0") -- remove leading zeros
-                    if hexdigits~length == 0 then hexdigits = "0" -- 0 or 00 or 000 or ...
+                    -- hexdigits = hexdigits~space(0) -- remove all spaces
+                    -- if hexdigits~length == 0 then signal expected_4_or_1_8_hexdigits
+                    -- hexdigits = hexdigits~strip("L", "0") -- remove leading zeros
+                    -- if hexdigits~length == 0 then hexdigits = "0" -- 0 or 00 or 000 or ...
                     if hexdigits~length == 0 | hexdigits~length > 8 then signal expected_4_or_1_8_hexdigits
                     if \hexdigits~datatype("X") then signal expected_4_or_1_8_hexdigits
+                    -- TODO: Should not accept whitespaces
                     numeric digits 10 -- to support FFFFFFFF, even if way too big for a codepoint
                     codepoint = hexdigits~x2d
                     self~utf8EncodeCodepoint(codepoint, buffer, >size)
@@ -804,6 +811,7 @@ How other languages are supporting escape characters for Unicode:
                     if length \== 4 then signal expected_4_or_1_8_hexdigits
                     hexdigits = string~substr(pos, 4)
                     if \hexdigits~datatype("X") then signal expected_4_or_1_8_hexdigits
+                    -- TODO: Should not accept whitespaces
                     codepoint = hexdigits~x2d
                     self~utf8EncodeCodepoint(codepoint, buffer, >size)
                     if size == 0 then signal encoding_1_4_hexdigits_error
@@ -817,6 +825,7 @@ How other languages are supporting escape characters for Unicode:
                 if length \== 8 then signal expected_8_hexdigits
                 hexdigits = string~substr(pos, 8)
                 if \hexdigits~datatype("X") then signal expected_8_hexdigits
+                -- TODO: Should not accept whitespaces
                 numeric digits 10 -- to support FFFFFFFF, even if way too big for a codepoint
                 codepoint = hexdigits~x2d
                 self~utf8EncodeCodepoint(codepoint, buffer, >size)
@@ -847,6 +856,7 @@ How other languages are supporting escape characters for Unicode:
                     if length \== 2 then signal expected_2_or_1_n_hexdigits
                     hexdigits = string~substr(pos, 2)
                     if \hexdigits~datatype("X") then signal expected_2_or_1_n_hexdigits
+                    -- TODO: Should not accept whitespaces
                     bytes = hexdigits~x2c -- 2 bytes
                     buffer~append(bytes)
                     pos += 2
@@ -873,11 +883,16 @@ How other languages are supporting escape characters for Unicode:
 
     expected_8_hexdigits:               raise syntax 23.900 array("Expected 8 hex digits after \"character "at position" slashPos)
     expected_4_or_1_8_hexdigits:        raise syntax 23.900 array("Expected either 4 hex digits or {1..8 hex digits} after \"character "at position" slashPos)
-    expected_2_or_1_n_hexdigits:        raise syntax 23.900 array("Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \"character "at position" slashPos)
+    expected_2_or_1_n_hexdigits:        raise syntax 23.900 array("Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \"character "at position" slashPos)
 
     name_encoding_error:                raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character"{"name"} at position" slashPos)
     encoding_1_8_hexdigits_error:       raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character"{"hexdigits"} at position" slashPos)
     encoding_1_4_hexdigits_error:       raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character || hexdigits "at position" slashPos)
+
+
+::method stringUnescape class
+    numeric digits 10 -- to support FFFFFFFF, even if way too big for a codepoint
+    forward message "utf8StringUnescape" -- inherited private method
 
 
 ::method stringEscape class

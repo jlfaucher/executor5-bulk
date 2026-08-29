@@ -4761,19 +4761,19 @@ Expected 8 hex digits after \U at position 1.
 Error code= 23.900
 
 ooRexx> .RexxUnicode~stringUnescape("\x")=            -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
-Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 Error code= 23.900
 ooRexx> .RexxUnicode~stringUnescape("\x0")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
-Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 Error code= 23.900
 ooRexx> .RexxUnicode~stringUnescape("\x{")=           -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
-Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 Error code= 23.900
 ooRexx> .RexxUnicode~stringUnescape("\x{}")=          -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
-Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 Error code= 23.900
 ooRexx> .RexxUnicode~stringUnescape("\x{1D4_D0}")=    -- Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
-Expected either 2 hex digits or {1..n hex digits (whitespace allowed)} after \x at position 1.
+Expected either 2 hex digits or {1..n hex digits grouped in units that are multiples of two characters (whitespace allowed)} after \x at position 1.
 Error code= 23.900
 
 ooRexx> .RexxUnicode~stringUnescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'

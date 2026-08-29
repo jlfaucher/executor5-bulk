@@ -2508,7 +2508,7 @@ This method handles them at run time instead.
     \u{X..X}            Unicode scalar value, 1 to 8 hex digits
     \uXXXX              Unicode scalar value, exactly 4 hex digits
     \UXXXXXXXX          Unicode scalar value, exactly 8 hex digits
-    \x{X..X}            Arbitrary number of hex digits
+    \x{X..X}            Arbitrary number of hex digits (whitespace allowed)
     \xXX                One byte, exactly 2 hex digits
 
 **Examples**
