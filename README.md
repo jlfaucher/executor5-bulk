@@ -69,6 +69,6 @@ Unlike [Executor][executor] and [Executor5][executor5], this repository includes
 [rxmessagebox]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/rexxutil/rxmessagebox.html "RxMessageBox"
 [sourceforge]: https://sourceforge.net/p/oorexx/code-0/HEAD/tree "SourceForge"
 [stream_istty]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/stream/stream_istty.html "stream~query('isTTY')"
-[diary_string_isascii]: https://github.com/jlfaucher/executor5-bulk/blob/1fb5ce12391fb74b818973fccd167a7883018ccc/_diary.txt#L54-L219
+[diary_string_isascii]: https://github.com/jlfaucher/executor5-bulk/blob/b9a6fbb04015f96634c707412a0ff735e19a80df/_diary.txt#L470-L583
 [string_translateinto]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/string/translateInto.html "String~translateInto"
 [unicode_support]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/README.html
