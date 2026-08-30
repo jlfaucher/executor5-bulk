@@ -30,7 +30,7 @@ Implement the native method .RexxUnicodeServices~utf8StringUnescape.
 This method is private and is called by .RexxUnicode~stringUnescape.
 The old ooRexx implementation is still temporarily available as .RexxUnicode~stringUnescapeRexx.
 
-Optimize.RexxUnicodeServices~utf8StringUnescape
+Optimize .RexxUnicodeServices~utf8StringUnescape
 with the help of Claude Sonnet 5
 https://claude.ai/share/ae729d6c-71ab-46f8-a01d-c9518d0d48d0
 
@@ -75,7 +75,7 @@ Benchmark on MacBookPro M1 32GB:
     -- Optimized, 36.33 times faster than Rexx, 4.47 times faster than non-optimized
     do 10000; ustring = .RexxUnicode~stringUnescape(string); end        -- Duration: 0.050614, 0.064815, 0.053925, 0.054046, 0.064102. Average = 0.0575004
     do 10000; ustring = .RexxUnicode~stringUnescape(string); end        -- Duration: 0.038062, 0.043275, 0.039218, 0.049132, 0.042803. Average = 0.042498 when not appending to the buffer
-    do 10000; ustring = .RexxUnicode~stringUnescape(string); end        -- Duration: 0.055565, 0.051351, 0.043594, 0.069116, 0.059300. Average = 0.0557852 when preallocating the buffer with string lengt
+    do 10000; ustring = .RexxUnicode~stringUnescape(string); end        -- Duration: 0.055565, 0.051351, 0.043594, 0.069116, 0.059300. Average = 0.0557852 when preallocating the buffer with string length
 
 
 ===============================================================================
