@@ -872,6 +872,7 @@ This isn't a sequence of valid flag pairs semantically — it doesn't matter,
 
 ```rexx
 -- Durations on Macbook Pro M1 32GB, non-native suppliers, non-native indexers
+-- The second duration is after the optimizations applied on 2026.08.30: there is a slight performance improvement.
 
 RI_A = .RexxUnicode~U2C("U+1F1E6")
 
@@ -880,19 +881,19 @@ RI_A = .RexxUnicode~U2C("U+1F1E6")
 .RexxUnicode~stringInfo(RI_A~copies(3))=    -- '(not-ASCII, 2 graphemes, 3 codepoints, 12 bytes, 0 error)'
 .RexxUnicode~stringInfo(RI_A~copies(4))=    -- '(not-ASCII, 2 graphemes, 4 codepoints, 16 bytes, 0 error)'
 
-s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(100)); do while s~available; s~next; end      -- Duration: 0.001217
-s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(1000)); do while s~available; s~next; end     -- Duration: 0.026591
-s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(10000)); do while s~available; s~next; end    -- Duration: 0.312036
-s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(20000)); do while s~available; s~next; end    -- Duration: 1.20119
-s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(30000)); do while s~available; s~next; end    -- Duration: 2.629657
-s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(40000)); do while s~available; s~next; end    -- Duration: 4.611944
-s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(100000)); do while s~available; s~next; end   -- Duration: 28.448092
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(100)); do while s~available; s~next; end      -- Duration: 0.001217, 0.001396
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(1000)); do while s~available; s~next; end     -- Duration: 0.026591, 0.007801
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(10000)); do while s~available; s~next; end    -- Duration: 0.312036, 0.274569
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(20000)); do while s~available; s~next; end    -- Duration: 1.20119, 0.998965
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(30000)); do while s~available; s~next; end    -- Duration: 2.629657, 2.236128
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(40000)); do while s~available; s~next; end    -- Duration: 4.611944, 3.891604
+s=.RexxUnicodeReverseGraphemeSupplier~new(RI_A~copies(100000)); do while s~available; s~next; end   -- Duration: 28.448092, 23.731936
 
 -- The forward grapheme supplier is not quadratic
-s=.RexxUnicodeGraphemeSupplier~new(RI_A~copies(100000)); do while s~available; s~next; end          -- Duration: 0.257308
+s=.RexxUnicodeGraphemeSupplier~new(RI_A~copies(100000)); do while s~available; s~next; end          -- Duration: 0.257308, 0.221115
 
 -- The reverse grapheme supplier is not quadratic when no RI
-s=.RexxUnicodeReverseGraphemeSupplier~new("A"~copies(100000)); do while s~available; s~next; end    -- Duration: 0.395018
+s=.RexxUnicodeReverseGraphemeSupplier~new("A"~copies(100000)); do while s~available; s~next; end    -- Duration: 0.395018, 0.379371
 
 ```
 
@@ -926,26 +927,28 @@ string start without finding a Consonant, then returns "break allowed."
 
 ```rexx
 -- Durations on Macbook Pro M1 32GB, non-native suppliers, non-native indexers
+-- The second duration is after the optimizations applied on 2026.08.30: there is almost no performance improvement.
 
 ZWJ = .RexxUnicode~U2C("U+200D")
 KA = .RexxUnicode~U2C("U+0915")
 
-.RexxUnicode~stringInfo(ZWJ~copies(100) || KA)=         -- '(not-ASCII, 2 graphemes, 101 codepoints, 303 bytes, 0 error)'                       Duration: 0.001262
-.RexxUnicode~stringInfo(ZWJ~copies(100000000) || KA)=   -- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'           Duration: 45.556058
-.RexxUnicode~stringInfo("A"~copies(100000000) || KA)=   -- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'   Duration: 53.451210
+.RexxUnicode~stringInfo(ZWJ~copies(100) || KA)=         -- '(not-ASCII, 2 graphemes, 101 codepoints, 303 bytes, 0 error)'                       Duration: 0.001262, 0.001317
+.RexxUnicode~stringInfo(ZWJ~copies(100000000) || KA)=   -- '(not-ASCII, 2 graphemes, 100000001 codepoints, 300000003 bytes, 0 error)'           Duration: 45.556058, 1.157233 (native)
+.RexxUnicode~stringInfo("A"~copies(100000000) || KA)=   -- '(not-ASCII, 100000001 graphemes, 100000001 codepoints, 100000003 bytes, 0 error)'   Duration: 53.451210, 0.721975 (native)
 
-s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(100) || KA); do while s~available; s~next; end         -- Duration: 0.000577
-s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(1000) || KA); do while s~available; s~next; end        -- Duration: 0.001165
-s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(10000) || KA); do while s~available; s~next; end       -- Duration: 0.016968
-s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(1000000) || KA); do while s~available; s~next; end     -- Duration: 0.395289
-s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(10000000) || KA); do while s~available; s~next; end    -- Duration: 3.669910
-s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(100000000) || KA); do while s~available; s~next; end   -- Duration: 36.272723
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(100) || KA); do while s~available; s~next; end         -- Duration: 0.000577, 0.000675
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(1000) || KA); do while s~available; s~next; end        -- Duration: 0.001165, 0.000894
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(10000) || KA); do while s~available; s~next; end       -- Duration: 0.016968, 0.011748
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(100000) || KA); do while s~available; s~next; end      -- Duration: ?       , 0.052046
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(1000000) || KA); do while s~available; s~next; end     -- Duration: 0.395289, 0.371651
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(10000000) || KA); do while s~available; s~next; end    -- Duration: 3.669910, 3.652665
+s=.RexxUnicodeReverseGraphemeSupplier~new(ZWJ~copies(100000000) || KA); do while s~available; s~next; end   -- Duration: 36.272723, 36.140983
 
 -- The forward grapheme supplier is not faster
-s=.RexxUnicodeGraphemeSupplier~new(ZWJ~copies(100000000) || KA); do while s~available; s~next; end           -- Duration: 38.077146
+s=.RexxUnicodeGraphemeSupplier~new(ZWJ~copies(100000000) || KA); do while s~available; s~next; end           -- Duration: 38.077146, 36.868622
 
 -- The reverse grapheme supplier is much slower when GB9c is not applicable (100000001 graphemes instead of 2)
-s=.RexxUnicodeReverseGraphemeSupplier~new("A"~copies(100000000) || KA); do while s~available; s~next; end    -- Duration: 395.163515
+s=.RexxUnicodeReverseGraphemeSupplier~new("A"~copies(100000000) || KA); do while s~available; s~next; end    -- Duration: 395.163515, 387.563225
 
 ```
 
@@ -956,28 +959,29 @@ with no pictograph in it, then a `ZWJ`, then a pictograph:
 
 ```rexx
 -- Durations on Macbook Pro M1 32GB, non-native suppliers, non-native indexers
+-- The second duration is after the optimizations applied on 2026.08.30: there is no significant performance improvement.
 
 acute = .RexxUnicode~U2C("U+0301")
 ZWJ = .RexxUnicode~U2C("U+200D")
 grin = .RexxUnicode~U2C("U+1F600")
 
-.RexxUnicode~stringInfo(acute~copies(100) || ZWJ || grin)=          -- '(not-ASCII, 2 graphemes, 102 codepoints, 207 bytes, 0 error)'                       Duration: 0.000829
-.RexxUnicode~stringInfo(acute~copies(100000000) || ZWJ || grin)=    -- '(not-ASCII, 2 graphemes, 100000002 codepoints, 200000007 bytes, 0 error)'           Duration: 44.753312
-.RexxUnicode~stringInfo("A"~copies(100000000) || ZWJ || grin)=      -- '(not-ASCII, 100000001 graphemes, 100000002 codepoints, 100000007 bytes, 0 error)'   Duration: 53.045773
+.RexxUnicode~stringInfo(acute~copies(100) || ZWJ || grin)=          -- '(not-ASCII, 2 graphemes, 102 codepoints, 207 bytes, 0 error)'                       Duration: 0.000829, 0.002128
+.RexxUnicode~stringInfo(acute~copies(100000000) || ZWJ || grin)=    -- '(not-ASCII, 2 graphemes, 100000002 codepoints, 200000007 bytes, 0 error)'           Duration: 44.753312, 0.852905 (native)
+.RexxUnicode~stringInfo("A"~copies(100000000) || ZWJ || grin)=      -- '(not-ASCII, 100000001 graphemes, 100000002 codepoints, 100000007 bytes, 0 error)'   Duration: 53.045773, 0.792457 (native)
 
-s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100) || ZWJ || grin); do while s~available; s~next; end          -- Duration: 0.001653
-s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(1000) || ZWJ || grin); do while s~available; s~next; end         -- Duration: 0.001594
-s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(10000) || ZWJ || grin); do while s~available; s~next; end        -- Duration: 0.006053
-s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100000) || ZWJ || grin); do while s~available; s~next; end       -- Duration: 0.045627
-s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(1000000) || ZWJ || grin); do while s~available; s~next; end      -- Duration: 0.389713
-s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(10000000) || ZWJ || grin); do while s~available; s~next; end     -- Duration: 3.623596
-s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100000000) || ZWJ || grin); do while s~available; s~next; end    -- Duration: 35.995098
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100) || ZWJ || grin); do while s~available; s~next; end          -- Duration: 0.001653, 0.000657
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(1000) || ZWJ || grin); do while s~available; s~next; end         -- Duration: 0.001594, 0.002071
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(10000) || ZWJ || grin); do while s~available; s~next; end        -- Duration: 0.006053, 0.006550
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100000) || ZWJ || grin); do while s~available; s~next; end       -- Duration: 0.045627, 0.052067
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(1000000) || ZWJ || grin); do while s~available; s~next; end      -- Duration: 0.389713, 0.369322
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(10000000) || ZWJ || grin); do while s~available; s~next; end     -- Duration: 3.623596, 3.563701
+s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(100000000) || ZWJ || grin); do while s~available; s~next; end    -- Duration: 35.995098, 35.997714
 
 -- The forward grapheme supplier is not faster
-s=.RexxUnicodeGraphemeSupplier~new(acute~copies(100000000) || ZWJ || grin); do while s~available; s~next; end           -- Duration: 37.414371
+s=.RexxUnicodeGraphemeSupplier~new(acute~copies(100000000) || ZWJ || grin); do while s~available; s~next; end           -- Duration: 37.414371, 38.254360
 
 -- The reverse grapheme supplier is much slower when GB11 is not applicable (100000001 graphemes instead of 2)
-s=.RexxUnicodeReverseGraphemeSupplier~new("A"~copies(100000000) || ZWJ || grin); do while s~available; s~next; end      -- Duration: 398.995352
+s=.RexxUnicodeReverseGraphemeSupplier~new("A"~copies(100000000) || ZWJ || grin); do while s~available; s~next; end      -- Duration: 398.995352, 390.545392
 
 ```
 

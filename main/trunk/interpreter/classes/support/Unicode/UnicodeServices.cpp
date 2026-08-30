@@ -179,7 +179,7 @@ RexxInteger *RexxUnicodeServicesClass::systemIsLittleEndian()
  * @return Upon successful completion, return the number of bytes stored in buffer, not counting the terminating null character
  *         or a negative value if an error was encountered.
  */
-int formatString(char *buffer, size_t size, const char *format, ...)
+static inline int formatString(char *buffer, size_t size, const char *format, ...)
 {
     if (buffer == NULL || size == 0 || format == NULL) return -1;
     va_list args;
@@ -220,7 +220,7 @@ static inline int hexNibbleValue(char c)
 // (bit pattern only -- caller may reinterpret as unsigned/overflowed).
 // Note: testing result == -1 is not enough to decide if the result is valid.
 // FFFFFFFF will return -1 with ok == true.
-utf8proc_int32_t hex2int(const char *firstHexDigit, size_t length, bool *ok)
+static inline utf8proc_int32_t hex2int(const char *firstHexDigit, size_t length, bool *ok)
 {
     *ok = false;
     if (length == 0 || length > 8) return -1;
@@ -243,7 +243,7 @@ utf8proc_int32_t hex2int(const char *firstHexDigit, size_t length, bool *ok)
 // On success, appends the resulting bytes directly to buffer (an implicit
 // leading zero nibble is used if the total digit count is odd, matching
 // standard x2c semantics).
-bool hex2bytes(const char *firstHexDigit, size_t length, MutableBuffer *buffer)
+static inline bool hex2bytes(const char *firstHexDigit, size_t length, MutableBuffer *buffer)
 {
     if (length == 0) return false;
 
@@ -312,7 +312,7 @@ bool hex2bytes(const char *firstHexDigit, size_t length, MutableBuffer *buffer)
 /*                                                                            */
 /******************************************************************************/
 
-RexxObject *get(RexxObject **arguments, size_t argCount, size_t index, RexxObject *defaultValue)
+static inline RexxObject *get(RexxObject **arguments, size_t argCount, size_t index, RexxObject *defaultValue)
 {
     if (index >= argCount) return defaultValue;
     RexxObject *value = arguments[index];
@@ -320,7 +320,7 @@ RexxObject *get(RexxObject **arguments, size_t argCount, size_t index, RexxObjec
 }
 
 
-ssize_t integerRange(RexxObject *obj, ssize_t min, ssize_t max, RexxErrorCodes error, const char *errorMessage)
+static inline ssize_t integerRange(RexxObject *obj, ssize_t min, ssize_t max, RexxErrorCodes error, const char *errorMessage)
 {
     if (obj != OREF_NULL)
     {
@@ -336,7 +336,7 @@ ssize_t integerRange(RexxObject *obj, ssize_t min, ssize_t max, RexxErrorCodes e
 }
 
 
-ssize_t integer(RexxObject *obj, const char *errorMessage)
+static inline ssize_t integer(RexxObject *obj, const char *errorMessage)
 {
     if (obj != OREF_NULL)
     {
@@ -354,7 +354,7 @@ It must also accept TheIntegerClass and TheNumberStringClass because these two
 classes lie about their identity! They claim to be a String, which results in
 this stupid error message: "Argument string class: expected String, found String."
 */
-void requiredBaseString(RexxString *string, const char *argumentName)
+static inline void requiredBaseString(RexxString *string, const char *argumentName)
 {
     if (string == OREF_NULL) return;
 
@@ -378,7 +378,7 @@ void requiredBaseString(RexxString *string, const char *argumentName)
 /*                                                                            */
 /******************************************************************************/
 
-bool ICU4ooRexxIsRegistered(RexxObject *self)
+static inline bool ICU4ooRexxIsRegistered(RexxObject *self)
 {
     ProtectedObject result;
     self->messageSend(GlobalNames::ICU4OOREXXISREGISTERED, OREF_NULL, 0, result);
@@ -386,7 +386,7 @@ bool ICU4ooRexxIsRegistered(RexxObject *self)
 }
 
 
-utf8proc_int32_t codepointFromName(RexxObject *self, RexxString *name)
+static inline utf8proc_int32_t codepointFromName(RexxObject *self, RexxString *name)
 {
     RexxObject *args[1];
     args[0] = name;
@@ -407,7 +407,7 @@ utf8proc_int32_t codepointFromName(RexxObject *self, RexxString *name)
 /******************************************************************************/
 
 // Duplicated, to update if needed each time utf8proc is updated
-static utf8proc_bool grapheme_break_simple(int lbc, int tbc) {
+static inline utf8proc_bool grapheme_break_simple(int lbc, int tbc) {
   return
     (lbc == UTF8PROC_BOUNDCLASS_START) ? true :       // GB1
     (lbc == UTF8PROC_BOUNDCLASS_CR &&                 // GB3
@@ -439,7 +439,7 @@ static utf8proc_bool grapheme_break_simple(int lbc, int tbc) {
 
 
 // Duplicated, to update if needed each time utf8proc is updated
-static utf8proc_bool grapheme_break_extended(int lbc, int tbc, int licb, int ticb, utf8proc_int32_t *state)
+static inline utf8proc_bool grapheme_break_extended(int lbc, int tbc, int licb, int ticb, utf8proc_int32_t *state)
 {
   if (state) {
     int state_bc, state_icb; /* boundclass and indic_conjunct_break state */
@@ -566,11 +566,11 @@ static utf8proc_bool grapheme_break_extended(int lbc, int tbc, int licb, int tic
  * May be NULL if no error message is needed.
  */
 #define utf_cont(ch)  (((ch) & 0xc0) == 0x80)
-utf8proc_ssize_t utf8proc_iterate_extended(
+static inline utf8proc_ssize_t utf8proc_iterate_extended(
   const utf8proc_uint8_t *str, utf8proc_ssize_t strlen, utf8proc_int32_t *dst,
-  size_t index = 0,
-  char *errcode = NULL, size_t errcodeSize = 0,
-  char *errmsg = NULL, size_t errmsgSize = 0
+  size_t index,
+  char *errcode, size_t errcodeSize,
+  char *errmsg, size_t errmsgSize
 ) {
   utf8proc_int32_t uc;
   const utf8proc_uint8_t *end;
@@ -654,6 +654,90 @@ utf8proc_ssize_t utf8proc_iterate_extended(
 }
 
 
+// Same as previous utf8proc_iterate_extended, without error messages
+static inline utf8proc_ssize_t utf8proc_iterate_extended(
+  const utf8proc_uint8_t *str, utf8proc_ssize_t strlen, utf8proc_int32_t *dst
+) {
+  utf8proc_int32_t uc;
+  const utf8proc_uint8_t *end;
+
+  *dst = -1;
+
+  if (!strlen) return 0;
+
+  end = str + ((strlen < 0) ? 4 : strlen);
+  uc = *str++;
+  if (uc < 0x80) {
+    *dst = uc;
+    return 1;
+  }
+
+  // Must be between 0xc2 and 0xf4 inclusive to be valid
+  // if ((utf8proc_uint32_t)(uc - 0xc2) > (0xf4-0xc2)) return UTF8PROC_ERROR_INVALIDUTF8;
+  if (uc < 0xc2) return -1;
+  if (uc > 0xf4) return -1;
+
+  if (uc < 0xe0) {         // 2-byte sequence 110xxxxx (C0..DF but only C2..DF is valid)
+     // Must have valid continuation character
+     // if (str >= end || !utf_cont(*str)) return UTF8PROC_ERROR_INVALIDUTF8;
+     if (str >= end) return -1;
+     if (!utf_cont(*str)) return -1;
+     *dst = ((uc & 0x1f)<<6) | (*str & 0x3f);
+     return 2;
+  }
+
+  if (uc < 0xf0) {        // 3-byte sequence 1110xxxx
+     // if ((str + 1 >= end) || !utf_cont(*str) || !utf_cont(str[1]))
+     //    return UTF8PROC_ERROR_INVALIDUTF8;
+     if (str >= end) return -1;
+     if (!utf_cont(*str)) return -1;
+     if (uc == 0xed && *str > 0x9f)
+     {   // case #1
+         if (*str <= 0xaf) return -1;
+         else return -1;
+     }
+     if (uc == 0xe0 && *str < 0xa0) return -1; // case #2 — non-shortest form
+
+     if (str + 1 >= end) return -2;
+     if (!utf_cont(str[1])) return -2;
+
+     // Check for surrogate chars
+     // if (uc == 0xed && *str > 0x9f)
+     //     return UTF8PROC_ERROR_INVALIDUTF8; // case #1
+
+     uc = ((uc & 0xf)<<12) | ((*str & 0x3f)<<6) | (str[1] & 0x3f);
+     // if (uc < 0x800)
+     //    return UTF8PROC_ERROR_INVALIDUTF8; // case #2
+     *dst = uc;
+     return 3;
+  }
+
+  // 4-byte sequence 11110xxx
+  // Must have 3 valid continuation characters
+  // if ((str + 2 >= end) || !utf_cont(*str) || !utf_cont(str[1]) || !utf_cont(str[2]))
+  //    return UTF8PROC_ERROR_INVALIDUTF8;
+  if (str >= end) return -1;
+  if (!utf_cont(*str)) return -1;
+  if (uc == 0xf0 && *str < 0x90) return -1; // case #3
+  if (uc == 0xf4 && *str >= 0x90) return -1; // case #4
+
+  if (str + 1 >= end) return -2;
+  if (!utf_cont(str[1])) return -2;
+
+  if (str + 2 >= end) return -3;
+  if (!utf_cont(str[2])) return -3;
+
+  // Make sure in correct range (0x10000 - 0x10ffff)
+  // if (uc == 0xf0) {
+  //   if (*str < 0x90) return UTF8PROC_ERROR_INVALIDUTF8; // case #3
+  // } else if (uc == 0xf4) {
+  //   if (*str > 0x8f) return UTF8PROC_ERROR_INVALIDUTF8; // case #4
+  // }
+  *dst = ((uc & 7)<<18) | ((*str & 0x3f)<<12) | ((str[1] & 0x3f)<<6) | (str[2] & 0x3f);
+  return 4;
+}
+
+
 /**
  * utf8proc_iterate_extended_backward — backward counterpart to utf8proc_iterate_extended,
  * with exact error-code/message parity with a full forward pass.
@@ -688,14 +772,14 @@ utf8proc_ssize_t utf8proc_iterate_extended(
  *
  * Return value: same convention as utf8proc_iterate_extended.
  */
-utf8proc_ssize_t utf8proc_iterate_extended_backward(
+static inline utf8proc_ssize_t utf8proc_iterate_extended_backward(
   const utf8proc_uint8_t *str_start,
   const utf8proc_uint8_t *str_end,
   const utf8proc_uint8_t *buffer_end,
   utf8proc_int32_t *dst,
-  size_t end_index = 0,
-  char *errcode = NULL, size_t errcodeSize = 0,
-  char *errmsg = NULL, size_t errmsgSize = 0
+  size_t end_index,
+  char *errcode, size_t errcodeSize,
+  char *errmsg, size_t errmsgSize
 ) {
   const utf8proc_uint8_t *anchor;
   int back;
@@ -749,6 +833,62 @@ utf8proc_ssize_t utf8proc_iterate_extended_backward(
   result = utf8proc_iterate_extended(anchor, buffer_end - anchor, dst,
                                       anchor_index, errcode, errcodeSize,
                                       errmsg, errmsgSize);
+
+  return result;
+}
+
+
+// Same as previous utf8proc_iterate_extended_backward, without error messages
+static inline utf8proc_ssize_t utf8proc_iterate_extended_backward(
+  const utf8proc_uint8_t *str_start,
+  const utf8proc_uint8_t *str_end,
+  const utf8proc_uint8_t *buffer_end,
+  utf8proc_int32_t *dst
+) {
+  const utf8proc_uint8_t *anchor;
+  int back;
+  utf8proc_ssize_t result;
+  size_t anchor_index;
+
+  *dst = -1;
+
+  if (str_end <= str_start) return 0;
+
+  /*
+   * Scan back from str_end-1 over continuation bytes (10xxxxxx), at most 3
+   * positions: no subpart is ever longer than 4 bytes (1 lead + up to 3
+   * continuations). Every byte we step over here is, by this very condition,
+   * confirmed to be a continuation-pattern byte (0x80-0xBF) — this fact is
+   * relied on below.
+   */
+  anchor = str_end - 1;
+  back = 0;
+  while (anchor > str_start && back < 3 && utf_cont(*anchor)) {
+    anchor--;
+    back++;
+  }
+
+  /* Decode from anchor with the REAL remaining buffer, not just up to str_end,
+   * so any TRUNCATED/CONTINUATION-type message matches what a forward pass
+   * over the whole buffer would have produced at this position. */
+  result = utf8proc_iterate_extended(anchor, buffer_end - anchor, dst);
+
+  if (anchor + (result >= 0 ? result : -result) == str_end) {
+    /* anchor's subpart lands exactly on str_end: this is the real subpart. */
+    return result;
+  }
+
+  /*
+   * Mismatch: anchor's subpart ends before str_end. Every byte strictly
+   * between anchor and str_end is confirmed continuation-pattern (0x80-0xBF)
+   * by the scan above, and such bytes can never be valid lead bytes -- so
+   * str_end-1 is necessarily an isolated 1-byte subpart of its own. Decode
+   * it standalone, still with full buffer_end context for message accuracy
+   * (though for a continuation-pattern byte this never actually needs
+   * lookahead, since it always fails the uc < 0xc2 check immediately).
+   */
+  anchor = str_end - 1;
+  result = utf8proc_iterate_extended(anchor, buffer_end - anchor, dst);
 
   return result;
 }
@@ -863,7 +1003,7 @@ block's terminator, so M blocks of length k cost O(M·k) = O(n), not O(n²).
  * not itself a Consonant or Linker) -- same derivation Swift uses for
  * _isInCBExtend.
  */
-static utf8proc_bool isInCBExtendOrLinker(utf8proc_int32_t codepoint)
+static inline  utf8proc_bool isInCBExtendOrLinker(utf8proc_int32_t codepoint)
 {
     const utf8proc_property_t *p = utf8proc_get_property(codepoint);
 
@@ -885,7 +1025,7 @@ static utf8proc_bool isInCBExtendOrLinker(utf8proc_int32_t codepoint)
  * zwjStartPos) over an Extend* run to see whether an
  * Extended_Pictographic codepoint started it.
  */
-static utf8proc_bool isPictographicBeforeZwj(
+static inline  utf8proc_bool isPictographicBeforeZwj(
     const utf8proc_uint8_t *str_start,
     const utf8proc_uint8_t *zwjStartPos,
     const utf8proc_uint8_t *buffer_end)
@@ -923,7 +1063,7 @@ static utf8proc_bool isPictographicBeforeZwj(
  * too -- it's part of the run, not something to skip past before
  * scanning starts.
  */
-static utf8proc_bool isConsonantThroughLinkerRun(
+static inline  utf8proc_bool isConsonantThroughLinkerRun(
     const utf8proc_uint8_t *str_start,
     utf8proc_int32_t firstCodepoint,
     const utf8proc_uint8_t *runEndPos,
@@ -967,7 +1107,7 @@ static utf8proc_bool isConsonantThroughLinkerRun(
  * pathologically almost-all REGIONAL_INDICATOR scalars would make
  * backward iteration quadratic over that stretch.
  */
-static utf8proc_bool precedingRIRunLengthIsOdd(
+static inline  utf8proc_bool precedingRIRunLengthIsOdd(
     const utf8proc_uint8_t *str_start,
     const utf8proc_uint8_t *riStartPos,
     const utf8proc_uint8_t *buffer_end)
@@ -1009,7 +1149,7 @@ static utf8proc_bool precedingRIRunLengthIsOdd(
  *   codepoint1  the codepoint to the left of the candidate break.
  *   codepoint2  the codepoint to the right of the candidate break.
  */
-utf8proc_bool utf8proc_grapheme_break_backward(
+static inline utf8proc_bool utf8proc_grapheme_break_backward(
     const utf8proc_uint8_t *str_start,
     const utf8proc_uint8_t *buffer_end,
     const utf8proc_uint8_t *pos1,
@@ -1085,6 +1225,149 @@ utf8proc_bool utf8proc_grapheme_break_backward(
 
     /* GB999: otherwise, break */
     return true;
+}
+
+
+/******************************************************************************/
+/*                                                                            */
+/* UTF8Proc Extensions                                                        */
+/*                                                                            */
+/* Iterator helpers                                                           */
+/*                                                                            */
+/******************************************************************************/
+
+
+/**
+ * Performs a full scan of a UTF-8 string.
+ * Returns a pointer to the first invalid byte sequence, or NULL.
+ * Returns additional information through reference (out) variables.
+ *
+ * @param str                   (in)    A UTF-8 string.
+ * @param length                (in)    The string length in bytes
+ * @param codepointCount        (out)   The count of codepoints.
+ * @param errorCount            (out)   The count of errors.
+ * @param stopAtFirstError      (in)    true if must stop at first error.
+ *                                      The default value is false.
+ *
+ * @return a pointer to the first invalid byte sequence, or NULL.
+ */
+static inline const utf8proc_uint8_t *utf8StringCodepointIterator(const utf8proc_uint8_t *str, utf8proc_ssize_t length, size_t &codepointCount, size_t &errorCount, bool stopAtFirstError)
+{
+    codepointCount = 0;
+    errorCount = 0;
+
+    const utf8proc_uint8_t *firstInvalidByteSequence = NULL;
+
+    for (;;)
+    {
+        utf8proc_int32_t codepoint;
+        utf8proc_ssize_t sizeB = utf8proc_iterate_extended(str, length, &codepoint);
+        if (sizeB == 0) break;
+        if (sizeB < 0)
+        {
+            // Here, codepoint == -1
+            errorCount += 1;
+
+            if (firstInvalidByteSequence == NULL) firstInvalidByteSequence = str;
+            if (stopAtFirstError) break;
+
+            codepointCount += 1;
+            sizeB = -sizeB;
+        }
+        else
+        {
+            codepointCount += 1;
+        }
+        str += sizeB;
+        length -= sizeB;
+    }
+
+    return firstInvalidByteSequence;
+}
+
+
+/**
+ * Performs a full scan of a UTF-8 string.
+ * Returns a pointer to the first invalid byte sequence, or NULL.
+ * Returns additional information through reference (out) variables.
+ *
+ * @param str                   (in)    A UTF-8 string.
+ * @param length                (in)    The string length in bytes
+ * @param graphemeCount         (out)   The count of graphemes.
+ * @param codepointCount        (out)   The count of codepoints.
+ * @param errorCount            (out)   The count of errors.
+ * @param stopAtFirstError      (in)    true if must stop at first error.
+ *                                      The default value is false.
+ *
+ * @return a pointer to the first invalid byte sequence, or NULL.
+ */
+static inline const utf8proc_uint8_t *utf8StringGraphemeIterator(const utf8proc_uint8_t *str, utf8proc_ssize_t length, size_t &graphemeCount, size_t &codepointCount, size_t &errorCount, bool stopAtFirstError)
+{
+    graphemeCount = 0;
+    codepointCount = 0;
+    errorCount = 0;
+
+    utf8proc_int32_t previousCodepoint = -1;
+    const utf8proc_property_t *previousCodepointProperty = NULL;
+
+    utf8proc_int32_t codepoint = -1;
+    const utf8proc_property_t *codepointProperty = NULL;
+
+    utf8proc_int32_t graphemeBreakState = 0;
+
+    const utf8proc_uint8_t *firstInvalidByteSequence = NULL;
+
+    for (;;)
+    {
+        utf8proc_ssize_t sizeB = utf8proc_iterate_extended(str, length, &codepoint);
+        if (sizeB == 0) break;
+        if (sizeB < 0)
+        {
+            // Here, codepoint == -1, so previousCodepoint will become -1
+            codepointProperty = NULL;
+            errorCount += 1;
+
+            if (firstInvalidByteSequence == NULL) firstInvalidByteSequence = str;
+            if (stopAtFirstError) break;
+
+            codepointCount += 1;
+            graphemeCount += 1;
+            graphemeBreakState = 0;
+            sizeB = -sizeB;
+        }
+        else
+        {
+            // optim 2: if codepoint == previousCodepoint then no need to retrieve the property record of codepoint.
+            if (codepoint != previousCodepoint) codepointProperty = utf8proc_get_property(codepoint); // must get it now, will be assigned to previousCodepointProperty
+
+            codepointCount += 1;
+            if (previousCodepoint < 0)
+            {
+                // First codepoint or Error recovery
+                graphemeCount += 1;
+            }
+            else
+            {
+                // optim 1: reuse the property record of previousCodepoint instead of retrieving 2 property records at each iteration.
+
+                // Here, previousCodepoint is >= 0, so previousCodepointProperty has already the right value
+                utf8proc_bool graphemeBreak = grapheme_break_extended(  previousCodepointProperty->boundclass,
+                                                                        codepointProperty->boundclass,
+                                                                        previousCodepointProperty->indic_conjunct_break,
+                                                                        codepointProperty->indic_conjunct_break,
+                                                                        &graphemeBreakState);
+
+                //utf8proc_bool graphemeBreak = utf8proc_grapheme_break_stateful(previousCodepoint, codepoint, &graphemeBreakState);
+                if (graphemeBreak) graphemeCount += 1;
+            }
+        }
+        previousCodepoint = codepoint;
+        previousCodepointProperty = codepointProperty;
+        str += sizeB;
+        length -= sizeB;
+    }
+
+    return firstInvalidByteSequence;
 }
 
 
@@ -1318,15 +1601,19 @@ MutableBuffer *RexxUnicodeServicesClass::utf8EncodeCodepoint(RexxInteger *rexxCo
 
 /**
  * Performs a full scan of a UTF-8 string.
- * Returns .true if `string` is a valid UTF-8 string.
+ * Returns the byte position (1-based) of the first invalid byte sequence, or 0.
  * Returns additional information through reference variables.
  *
  * @param string            (in)                A UTF-8 string.
- * @param refCodepointCount (out, optional)     The count of codepoints.
  * @param refGraphemeCount  (out, optional)     The count of graphemes.
+ * @param refCodepointCount (out, optional)     The count of codepoints.
  * @param refErrorCount     (out, optional)     The count of errors.
+ * @param rexxStopAtFirstError  (in, optional)  true if must stop at first error.
+ *                                              The default value is false.
  *
- * @return .true if `string` is a valid UTF-8 string, .false otherwise.
+ * @return 0 if string is a valid UTF-8 string.
+ *         Otherwise returns the byte position (1-based) of the first invalid
+ *         byte sequence (always a grapheme boundary).
  */
 RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, VariableReference *refGraphemeCount, VariableReference *refCodepointCount, VariableReference *refErrorCount, RexxInteger *rexxStopAtFirstError)
 {
@@ -1355,91 +1642,12 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
     if (refGraphemeCount == OREF_NULL)
     {
         // Fast path, no need to count graphemes
-
-        for (;;)
-        {
-            utf8proc_int32_t codepoint;
-            utf8proc_ssize_t sizeB = utf8proc_iterate_extended(str, remainingLength, &codepoint);
-            if (sizeB == 0) break;
-            if (sizeB < 0)
-            {
-                // Here, codepoint == -1
-                errorCount += 1;
-
-                if (firstInvalidByteSequence == NULL) firstInvalidByteSequence = str;
-                if (stopAtFirstError) break;
-
-                codepointCount += 1;
-                sizeB = -sizeB;
-            }
-            else
-            {
-                codepointCount += 1;
-            }
-            str += sizeB;
-            remainingLength -= sizeB;
-        }
-    }
+        firstInvalidByteSequence = utf8StringCodepointIterator(str, remainingLength, /*reference*/ codepointCount, /*reference*/ errorCount, stopAtFirstError);
+   }
     else
     {
         // Slower path, must count graphemes
-        utf8proc_int32_t previousCodepoint = -1;
-        const utf8proc_property_t *previousCodepointProperty = NULL;
-
-        utf8proc_int32_t codepoint = -1;
-        const utf8proc_property_t *codepointProperty = NULL;
-
-        utf8proc_int32_t graphemeBreakState = 0;
-
-        for (;;)
-        {
-            utf8proc_ssize_t sizeB = utf8proc_iterate_extended(str, remainingLength, &codepoint);
-            if (sizeB == 0) break;
-            if (sizeB < 0)
-            {
-                // Here, codepoint == -1, so previousCodepoint will become -1
-                codepointProperty = NULL;
-                errorCount += 1;
-
-                if (firstInvalidByteSequence == NULL) firstInvalidByteSequence = str;
-                if (stopAtFirstError) break;
-
-                codepointCount += 1;
-                graphemeCount += 1;
-                graphemeBreakState = 0;
-                sizeB = -sizeB;
-            }
-            else
-            {
-                // optim 2: if codepoint == previousCodepoint then no need to retrieve the property record of codepoint.
-                if (codepoint != previousCodepoint) codepointProperty = utf8proc_get_property(codepoint); // must get it now, will be assigned to previousCodepointProperty
-
-                codepointCount += 1;
-                if (previousCodepoint < 0)
-                {
-                    // First codepoint or Error recovery
-                    graphemeCount += 1;
-                }
-                else
-                {
-                    // optim 1: reuse the property record of previousCodepoint instead of retrieving 2 property records at each iteration.
-
-                    // Here, previousCodepoint is >= 0, so previousCodepointProperty has already the right value
-                    utf8proc_bool graphemeBreak = grapheme_break_extended(  previousCodepointProperty->boundclass,
-                                                                            codepointProperty->boundclass,
-                                                                            previousCodepointProperty->indic_conjunct_break,
-                                                                            codepointProperty->indic_conjunct_break,
-                                                                            &graphemeBreakState);
-
-                    //utf8proc_bool graphemeBreak = utf8proc_grapheme_break_stateful(previousCodepoint, codepoint, &graphemeBreakState);
-                    if (graphemeBreak) graphemeCount += 1;
-                }
-            }
-            previousCodepoint = codepoint;
-            previousCodepointProperty = codepointProperty;
-            str += sizeB;
-            remainingLength -= sizeB;
-        }
+        firstInvalidByteSequence = utf8StringGraphemeIterator(str, remainingLength, /*reference*/ graphemeCount, /*reference*/ codepointCount, /*reference*/ errorCount, stopAtFirstError);
     }
 
     if (refGraphemeCount != OREF_NULL)

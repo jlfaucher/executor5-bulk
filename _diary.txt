@@ -22,6 +22,69 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 Aug 30
+
+Modify the implementation of .RexxUnicodeServices~utf8StringInfo:
+Use a static inlined codepoint iterator, and a static inlined grapheme iterator.
+
+Declare other helpers `static inline`.
+
+Implement a specialized version of these methods that don't build error messages:
+- utf8proc_iterate_extended (3 arguments instead of 8)
+- utf8proc_iterate_extended_backward (4 arguments instead of 9)
+
+Benchmark
+    Temporary:
+    .RexxUnicodeServices~utf8StringInfo is the old implementation.
+    .RexxUnicodeServices~utf8StringInfo1 is the new implementation with 2 iterators.
+
+    -- Macbook pro M1 32GB
+
+    -- 10 millions bytes, 10 millions codepoints, 10 millions graphemes
+    string = "Family 👨‍👩‍👧" || "*"~copies(10000000) || "🤶 and 🎅."
+    -- Durations collected a few days ago
+    .RexxUnicodeServices~utf8StringInfo(string, , >c, >e)   -- Duration: 0.027473, 0.033450, 0.032635, 0.027523, 0.036320. Average = 0.0314802
+    c=; e=                                                  --  10000020; 0
+    -- Durations collected today, to compare the old implementation with the new implementation
+    .RexxUnicodeServices~utf8StringInfo(string, , >c, >e)   -- Duration: 0.037272, 0.038396, 0.038900, 0.037714, 0.028434. Average = 0.0361432
+    .RexxUnicodeServices~utf8StringInfo1(string, , >c, >e)  -- Duration: 0.020711, 0.028494, 0.024489, 0.022970, 0.021133. Average = 0.0235594
+    -- ratio = 1.53 times faster
+
+    -- 300 millions bytes, 100 millions codepoints, 2 graphemes
+    ZWJ = .RexxUnicode~U2C("U+200D")
+    KA = .RexxUnicode~U2C("U+0915")
+    -- Durations collected a few days ago
+    .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, , >c, >e)      -- Duration: 0.805320, 0.774022, 0.812426, 0.792617, 0.772113. Average = 0.7912996
+    c=; e=                                                                          --  100000001; 0
+    -- Durations collected today, to compare the old implementation with the new implementation
+    .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, , >c, >e)      -- Duration: 0.886202, 0.887352, 0.906097, 0.839566, 0.881502. Average = 0.8801438
+    .RexxUnicodeServices~utf8StringInfo1(ZWJ~copies(100000000) || KA, , >c, >e)     -- Duration: 1.125926, 1.152798, 1.149876, 1.133795, 1.194245. Average = 1.151328
+    -- ratio = 1.31 times slower
+    -- Why this difference? Redo the same tests...
+    .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, , >c, >e)      -- Duration: 0.985490, 0.803017, 0.918935, 0.852280, 0.837697. Average = 0.8794838
+    .RexxUnicodeServices~utf8StringInfo1(ZWJ~copies(100000000) || KA, , >c, >e)     -- Duration: 1.274351, 1.133474, 1.142084, 1.115649, 1.124249. Average = 1.1579614
+    -- ratio = 1.32 times slower
+    -- Durations after declaring the two iterators `static inline` and defining decoding without error messages: GOOD!
+    .RexxUnicodeServices~utf8StringInfo1(ZWJ~copies(100000000) || KA, , >c, >e)     -- Duration: 0.714958, 0.672227, 0.819921, 0.726988, 0.710795. Average = 0.7289778
+    -- ratio = 1.21 times faster
+
+    -- 100 millions bytes, 100 millions codepoints, 100 millions graphemes
+    KA = .RexxUnicode~U2C("U+0915")
+    -- Durations collected a few days ago
+    .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, , >c, >e)      -- Duration: 0.384425, 0.387391, 0.414862, 0.395159, 0.396718. Average = 0.395711
+    c=; e=                                                                          --  100000001; 0
+    -- Durations collected today, to compare the old implementation with the new implementation
+    .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, , >c, >e)      -- Duration: 0.425859, 0.450510, 0.410667, 0.403922, 0.404968. Average = 0.4191852
+    .RexxUnicodeServices~utf8StringInfo1("A"~copies(100000000) || KA, , >c, >e)     -- Duration: 0.396618, 0.403906, 0.408597, 0.392821, 0.394776. Average = 0.3993436
+    .RexxUnicodeServices~utf8StringInfo1("A"~copies(100000000) || KA, , >c, >e)     -- Duration: 0.353569, 0.338855, 0.330014, 0.332901, 0.315172. Average = 0.3341022
+    -- ratio = 1.25 times faster
+
+Conclusion:
+Declaring the helpers `static inline` has a real performance benefit.
+Having a specialized decoding that don't build error messages has a slight performance benefit, worth keeping.
+
+
+===============================================================================
 2026 Aug 23
 
 [Unicode]
@@ -48,6 +111,10 @@ Benchmark on MacBookPro M1 32GB:
         user    0m17.498s
         sys     0m0.089s
     12s faster with the native method (was 29s, now 17s)
+    After the optimizations applied on 2026.08.30:
+        real	0m16.921s
+        user	0m16.804s
+        sys	0m0.098s
 
     -- No performance improvement when the substitutions are mainly Unicode names
     string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n"
