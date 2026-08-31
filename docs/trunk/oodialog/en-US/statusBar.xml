@@ -351,8 +351,7 @@ FONT 8, "Ms Shell Dlg", 400, 0, 1
   <listitem>
   <para>
     This example ...
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onTest2 unguarded
 
   sb = self~newStatusBar(IDC_STATUS)
@@ -369,7 +368,6 @@ Width Vertical Border  : 2
 Spacing Border         : 2
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -421,8 +419,7 @@ Spacing Border         : 2
   <para>
     This example comes from an application that assigns an icon to every part in the status bar. When the dialog is closed,
     each icon is retrieved and released to free up system resources:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method leaving
 
   status = self~newStatusBar(IDC_STATUSBAR)
@@ -430,7 +427,6 @@ Spacing Border         : 2
     icon = status~getIcon(i)
     icon~release
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -484,8 +480,7 @@ Spacing Border         : 2
   <listitem>
   <para>
     This example gets the number of parts in a status bar and also the right edge of each part:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onTest2 unguarded
 
   sb = self~newStatusBar(IDC_STATUS)
@@ -507,7 +502,6 @@ Status bar has 4 parts.
   part 4 right edge at -1
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -564,8 +558,7 @@ Status bar has 4 parts.
   <para>
     This example attempts to get the bounding rectangle for part 6 to part 2, descending, for a status bar. The status bar
     only has 4 parts:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onTest2 unguarded
 
   sb = self~newStatusBar(IDC_STATUS)
@@ -585,7 +578,6 @@ Rect for part 3: a Rect (102, 2, 200, 23)
 Rect for part 2: a Rect (52, 2, 100, 23)
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -709,8 +701,7 @@ Rect for part 2: a Rect (52, 2, 100, 23)
   <listitem>
   <para>
     This example retrieves the text and the extra info for all the parts in a status bar:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onTest2 unguarded
 
   sb = self~newStatusBar(IDC_STATUS)
@@ -750,7 +741,6 @@ Text for part 4: Viking Victory
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -953,8 +943,7 @@ Text for part 4: Viking Victory
   <para>
     This example shows a code snippet that is used in an application that has a basic mode and an advanced mode. The code
     snippet is used to toggle between the 2 modes:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ...
   sb = self~newStatusBar(IDC_STATUSBAR)
 
@@ -968,7 +957,6 @@ Text for part 4: Viking Victory
       self~useAdvancedTasks
       self~useWizrds = .false
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1088,8 +1076,7 @@ Text for part 4: Viking Victory
   <para>
     This example shows a status bar with 4 parts. An image list is used with 4 icons in it. After loading the image list and
     setting up the status bar, the first 4 icons in the image list are assigned to the 4 parts in the status bar:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
     expose imageList status
     ...
@@ -1102,7 +1089,6 @@ Text for part 4: Viking Victory
         status~setIcon(icon, i)
     end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1167,8 +1153,7 @@ Text for part 4: Viking Victory
   <para>
     In this example, the minimum height of the client area of the status bar is set to 28 pixels. The actual height was
     verified using Spy++
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   sb = self~newStatusBar(IDC_STATUS)
 
   -- We want the minimum height to be 28 pixels.
@@ -1178,7 +1163,6 @@ Text for part 4: Viking Victory
   min -= borders[2]
 
   sb~setMinHeight(min)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1239,13 +1223,11 @@ Text for part 4: Viking Victory
     This example divides the status bar up into 4 parts. The first 3 parts are each 75 pixels in width and the fourth part
     takes of the remainder of the status bar. Its width will be dependent on the width of the status bar. If the width of the
     status bar was only 200 pixels, the fourth part would not show at all and the third part would only be 50 pixels wide:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
     status = self~newStatusBar(IDC_STATUSBAR)
 
     parts = .array~of(75, 150, 225, -1)
     status~setParts(parts)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1355,8 +1337,7 @@ Text for part 4: Viking Victory
   <listitem>
   <para>
     This example divides a status bar into 4 parts and then sets the text for the parts
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   status = self~newStatusBar(IDC_STATUSBAR)
 
   parts = .array~of(75, 150, 225, -1)
@@ -1365,7 +1346,6 @@ Text for part 4: Viking Victory
   status~setText("January", 2, 'POPOUT')
   status~setText("22nd", 3)
   status~setText("Viking Victory", 4)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1441,8 +1421,7 @@ Text for part 4: Viking Victory
   <para>
     This example divides a status bar up into 4 parts. Since the first 3 parts are not wide enough to display the entire text
     string, a tool tip is added for each of them:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
     status = self~newStatusBar(IDC_STATUSBAR)
 
     parts = .array~of(75, 150, 225, -1)
@@ -1461,7 +1440,6 @@ Text for part 4: Viking Victory
     status~setTipText(text, 3)
 
     status~setText("Viking Victory", 4)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1524,15 +1502,13 @@ Text for part 4: Viking Victory
   <listitem>
   <para>
     This simple code snippet merely toggles the simple mode each time it is executed:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
     if sb~isSimple then do
       sb~simple(.false)
     end
     else do
       sb~simple(.true)
     end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

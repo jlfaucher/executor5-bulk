@@ -364,19 +364,15 @@ Total time:         00:03:11.620000
   Unfortunately these failing two test are a little complex, maybe not the best
   for an intro, but to continue with what we have.  If we look at the failing
   test file on line 576 we see:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   self~assertEquals("'123.'", .class123~info)
-]]>
 </programlisting>
 </para>
 <para>
   Okay, it has a method, but just bear with me for a second.  This is
   the heart of writing a test case.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   assertEquals("123", .class123~info)
-]]>
 </programlisting>
 </para>
 <para>
@@ -393,12 +389,10 @@ Total time:         00:03:11.620000
 <para>
   Next, let's look at the lines around 567, and you see this:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method "test_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES"
 
      self~assertEquals("'123.'", .class123~info)
-]]>
 </programlisting>
   Think of the method as a routine, for now, that is named:
   <computeroutput>test_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES</computeroutput>.
@@ -420,12 +414,10 @@ Total time:         00:03:11.620000
 <para>
   In the last section we looked at this, which I said was the heart of a test
   case:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ::method "test_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES"
 
       self~assertEquals("'123.'", .class123~info)
-]]>
 </programlisting>
   In this section we will start to write our own test case.
 </para>
@@ -448,10 +440,8 @@ Total time:         00:03:11.620000
   the framework executes each method whose name begins with 'test', case
   not significant, as a test case.  We need to name the test case method,
   so we do this:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ::method test_simpleAddition
-]]>
 </programlisting>
 </para>
 <para>
@@ -463,12 +453,10 @@ Total time:         00:03:11.620000
   2 + 3 we would expect the result to be 5.  We write some code that
   adds 2 + 3 and then assert that the result is 5:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ::method test_simpleAdditon
       val = 2 + 3
       self~assertEquals(5, val)
-]]>
 </programlisting>
 </para>
 <para>
@@ -548,11 +536,9 @@ Total time:         00:03:11.620000
 <para>
   For example, you may think that there is no way the say instruction could be
   broken.  But what about if you have this in a Rexx file:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   /* Simple.rex */
   say 'Hello World'
-]]>
 </programlisting>
   and then run it like this:
 <programlisting>
@@ -644,14 +630,11 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 <para>
     Then starting at the top of the editor we have the first 41 lines that
     you just ignore and leave alone.  The first few are:
-<programlisting>
-<![CDATA[
-    #!/usr/bin/env rexx
-    /*
-     SVN Revision: $Rev: 2267 $
-     Change Date:  $Date: 2008-01-18 09:41:04 -0800 (Fri, 18 Jan 2008) $
-    */
-]]>
+<programlisting language="rexx">#!/usr/bin/env rexx
+/*
+ SVN Revision: $Rev: 2267 $
+ Change Date:  $Date: 2008-01-18 09:41:04 -0800 (Fri, 18 Jan 2008) $
+*/
 </programlisting>
     Which are just book keeping. The <computeroutput>#!/usr/bin/env rexx</computeroutput>
     causes the file to execute as a script on Linux, etc.  The next is just svn
@@ -665,8 +648,7 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
     you changed <computeroutput>template.testGroup</computeroutput> to
     <computeroutput>STREAM.testGroup</computeroutput>.  The lines look
     like:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   parse source . . s
 
   group = .TestGroup~new(s)
@@ -678,7 +660,6 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 
  return testResult
  -- End of entry point.
-]]>
 </programlisting>
 </para>
 <para>
@@ -772,8 +753,7 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 <para>
   This is the rest of the file, leaving out some comment lines.  Format your
   code however you like.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   -- End of entry point.
 
   ::requires 'ooTest.frm'
@@ -785,7 +765,6 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 
   ::method  test_XXX
       self~assertSame('dog', 'dog')
-]]>
 </programlisting>
   The <computeroutput>::requires</computeroutput> line pulls in the ooTest
   framework.  That is what provides the backing code for our test cases.
@@ -856,23 +835,19 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 <para>
   Here goes, rename the method:
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     ::method test_description_arg
-  ]]>
-  </programlisting>
+    </programlisting>
 </para>
 <para>
   One of the most common types of streams is file input or output.  The name of
   the stream is the file name.  One approach is to use a file name for the
   stream name, use the Description arg, and validate the return:
-<programlisting>
-<![CDATA[
-  ::method test_description_arg
-      streamName = ???
-      retString = stream(streamName, "Description")
-      <check retString>
-]]>
+<programlisting language="rexx">
+::method test_description_arg
+    streamName = ???
+    retString = stream(streamName, "Description")
+    -- check retString
 </programlisting>
 </para>
 <para>
@@ -884,13 +859,11 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   The <computeroutput>STREAM.testGroup</computeroutput> file, for sure, because that is the file we are using.
   We can get that name from parse source.  If you don't know parse source, look
   it up in the doc.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ::method test_description_arg
       parse source junk notUsed streamName
       retString = stream(streamName, "Description")
-      <check retString>
-]]>
+      -- check retString
 </programlisting>
   Now we just need to code the check of retString.
 </para>
@@ -903,10 +876,8 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </para>
 <para>
   In the template code we already had:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
    self~assertTrue(.true)
-]]>
 </programlisting>
   The meaning of that should be easy enough to discern.  We are asserting that
   .true is true.
@@ -922,14 +893,12 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   We know that if the returned string has a colon in it, then the pos
   bif will return a non-zero position for the colon.   Here is the
   complete test case:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ::method test_description_arg
       parse source junk notUsed streamName
       retString = stream(streamName, "Description")
       p = pos(retSting, ":")
-      self~assertTrue(p > 0)
-]]>
+      self~assertTrue(p &gt; 0)
 </programlisting>
 </para>
 </section>
@@ -968,25 +937,21 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 <para>
   What was expected was 1 (true) but the actual was 0 (false) Let's look at the
   test case again:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
  p = pos(retSting, ":")
- self~assertTrue(p > 0)
-]]>
+ self~assertTrue(p &gt; 0)
 </programlisting>
 </para>
 <para>
   I always forget the args to pos.  They are needle, haystack.  I coded
   haystack, needle.  Well the astute observer may have noticed that I
   also coded retSting rather than retString.  The fixed test case:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ::method test_description_arg
       parse source junk notUsed streamName
       retString = stream(streamName, "Description")
       p = pos(":", retString)
-      self~assertTrue(p > 0)
-]]>
+      self~assertTrue(p &gt; 0)
 </programlisting>
 </para>
 <para>
@@ -1028,8 +993,7 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   Here is the code.  Notice the use of <computeroutput>assertSame()</computeroutput>
   which really fits in with the semantics of the test.  We are testing that the
   Description and State args return the same string:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ::method  test_description_state_same
       parse source junk notUsed streamName
 
@@ -1039,7 +1003,6 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
       retDiscrpt = left(retDiscrpt, pos(":", retDiscrpt) - 1)
 
       self~assertSame(retDiscrpt, retState)
-]]>
 </programlisting>
 </para>
 <para>
@@ -1114,39 +1077,31 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </para>
 <para>
   1.) All of these are methods, so to use them in your tests you do, for example:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   self~assertTrue(.true)
-]]>
 </programlisting>
   If you are hazy on objects, just think of that as a routine with a
   mandatory prefix of 'self~'
 </para>
 <para>
   2.) Where you have expected and actual args, expected always comes first.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   val = 2 + 3
   self~assertSame(5, val)
-]]>
 </programlisting>
   5 is expected, val is the actual.
 </para>
 <para>
   3.) Where you just have the actual arg, it is the actual thing.
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     val = .true
     self~assertTrue(val)
-  ]]>
-  </programlisting>
+    </programlisting>
   or
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     val = 2 + 3
     self~assertTrue(val == 5)
-  ]]>
-  </programlisting>
+    </programlisting>
 </para>
 <para>
   4.) As the above shows, there are usually several ways to write the
@@ -1158,13 +1113,11 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </para>
 <para>
   Here is an example:
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     ::method test_addition
         val = 2 + 3
         self~assertSame(6, val, 'Special test, 2 plus 3 must equal 6')
-  ]]>
-  </programlisting>
+    </programlisting>
   and the output:
   <programlisting>
   <![CDATA[
@@ -1201,13 +1154,11 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   </programlisting>
   which, if you were not the one that wrote the test, might leave you
   clueless.  Then if you look at the test you would see:
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     ::method test_001
         val = 2 + 3
         self~assertSame(6, val)
-  ]]>
-  </programlisting>
+    </programlisting>
   And you might really wonder what the test writer had in mind for this test
   in the STREAM test group.  (Of course even with the message, we still don't
   know why 2 + 3 should equal 6.)
@@ -1231,19 +1182,15 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   </programlisting>
   <computeroutput>assertEquals()</computeroutput> (and <computeroutput>assertNotEquals()</computeroutput>)
   assert that 2 things are loosely equal.
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     'dog ' = 'dog'
-  ]]>
   </programlisting>
   Equals is also used to test if 2 collections are loosely equal.
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     a1 = .array~of(1, 2, 3)
     a2 = .array~of(1, 2, 3)
     self~assertEquals(a1, a2)
-  ]]>
-  </programlisting>
+    </programlisting>
 </para>
 <para>
   <computeroutput>assertNull()</computeroutput> and <computeroutput>assertNotNull()</computeroutput>
@@ -1352,14 +1299,12 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 <para>
   Staying with the same <computeroutput>STREAM.testGroup</computeroutput>.  How
   do we test this? Maybe something along those lines?
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     ::method test_wrong_2nd_arg
         parse source junk notUsed streamName
 
         retDiscrpt = stream(streamName, "FILESTATE")
-  ]]>
-  </programlisting>
+    </programlisting>
   Output:
   <programlisting>
   <![CDATA[
@@ -1392,15 +1337,13 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </para>
 <para>
   We code our test like this:
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     ::method test_wrong_2nd_arg
         parse source junk notUsed streamName
 
         self~expectSyntax(40.904)
         retDiscrpt = stream(streamName, "FILESTATE")
-  ]]>
-  </programlisting>
+    </programlisting>
   And the output we get is:
   <programlisting>
   <![CDATA[
@@ -1434,14 +1377,12 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </para>
 <para>
   Now how to code it?  Similar to what we just did:
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     ::method test_no_args
 
         --self~expectSyntax(40.904)
         retDiscrpt = stream()
-  ]]>
-  </programlisting>
+    </programlisting>
 </para>
 <para>
   But, what syntax error do we expect?  The best thing to do, is to look up the
@@ -1475,14 +1416,12 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </para>
 <para>
   Our test looks like:
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     ::method test_no_args
 
         self~expectSyntax(40.005)
         retDiscrpt = stream()
-  ]]>
-  </programlisting>
+    </programlisting>
   and our output looks like this:
   <programlisting>
   <![CDATA[
@@ -1523,14 +1462,12 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </para>
 <para>
   So, the test looks like this:
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     ::method test_no_args
 
         self~expectSyntax(40.003)
         retDiscrpt = stream()
-  ]]>
-  </programlisting>
+    </programlisting>
   output:
   <programlisting>
   <![CDATA[
@@ -1559,14 +1496,12 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </para>
 <para>
   Okay, no bug.  Our test looks like this:
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     ::method test_no_args
 
         self~expectSyntax(40.3)
         retDiscrpt = stream()
-  ]]>
-  </programlisting>
+    </programlisting>
   output:
   <programlisting>
   <![CDATA[

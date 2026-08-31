@@ -57,8 +57,7 @@
   <computeroutput>CORRUPT</computeroutput> in her Rexx code, the prefix <computeroutput>.ooSQLite~</computeroutput> is added
   to <computeroutput>CORRUPT</computeroutput> like so
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dbConn = ''
   ret = oosqlOpen('ooFoods.rdbx', 'dbConn')
@@ -77,7 +76,6 @@ The "ooFoods.rdbx" database file has been corrupted.
 
 */
 
-]]>
 </programlisting>
 </para>
 <para>The <computeroutput>ooSQLiteConstants</computeroutput> class a mixin class that provides <emphasis
@@ -3133,15 +3131,13 @@ The "ooFoods.rdbx" database file has been corrupted.
   <listitem>
   <para>
     This example
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 	dbName = 'ooFoods.rdbx'
   openOpts = .ooSQLite~merge(.ooSQLite~OPEN_READWRTITE, .ooSQLite~OPEN_CREATE)
 
   dbConn = .ooSQLiteConnection~new(dbName, openOpts)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

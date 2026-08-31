@@ -57,7 +57,7 @@
   <computeroutput>winSystm.cls</computeroutput>. To use the class, place a
   <computeroutput>::requires</computeroutput> statement in the program file:
 </para>
-<programlisting>
+<programlisting language="rexx">
 ::requires "winSystm.cls"
 </programlisting>
 <para>
@@ -259,26 +259,26 @@ HKEY_LOCAL_MACHINE
     <para>
       When opening, querying, or reading event logs, using an event source name is no different than
       using the log name itself. For the above registry example, using:
-<programlisting>
+<programlisting language="rexx">
 eventLog~open( , "WinApp1")
 </programlisting>
       or:
-<programlisting>
+<programlisting language="rexx">
 eventLog~open( , "LoadPerf")
 </programlisting>
       is exactly the same as:
-<programlisting>
+<programlisting language="rexx">
 eventLog~open( , "Application")
 </programlisting>
     </para>
     <para>
       However, when writing to an event log, the event source is included as part of the event log
       record. Therefore:
-<programlisting>
+<programlisting language="rexx">
 eventLog~open( , "WinApp1")
 </programlisting>
       produces a different result than using:
-<programlisting>
+<programlisting language="rexx">
 eventLog~open( , "LoadPerf")
 </programlisting>
       Although both event records will be written to the System log, the records will show the event
@@ -375,8 +375,9 @@ eventLog~open( , "LoadPerf")
       Assuming that <emphasis role="italic">rec</emphasis> is the event record string, the following
       shows how to parse the string into its component fields:
     </para>
-<programlisting>
-parse var rec type date time "'" source "'" id userID computer "'" description "'" "'" data "'"
+<programlisting language="rexx">
+parse var rec type date time "'" source "'" id userID -
+  computer "'" description "'" "'" data "'"
 </programlisting>
   </listitem></varlistentry>
   <varlistentry id="eventType" xreflabel="Event Type"><term><emphasis role="bold">Event Type</emphasis></term>
@@ -566,8 +567,7 @@ parse var rec type date time "'" source "'" id userID computer "'" description "
       The use of the attribute is straight-forward.
 <example id="ex.WindowsEventLog-1-class">
 <title>WindowsEventLog class - minimumRead method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 eventLog = .WindowsEventLog~new
 say "Smallest possible read buffer is" eventLog~minimumReadMin "kilobytes"
@@ -579,7 +579,6 @@ say "Smallest possible read buffer is" eventLog~minimumReadMin "kilobytes"
 Smallest possible read buffer is 16 kilobytes
 
 */
-]]>
 </programlisting>
 </example>
     </para>
@@ -621,8 +620,7 @@ Smallest possible read buffer is 16 kilobytes
     <para> This example displays the maximum size the programmer can set the minimum read buffer to.
 <example id="ex.WindowsEventLog-2-class">
 <title>WindowsEventLog class - minimumReadMax method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
  eventLog = .WindowsEventLog~new
  say "Largest possible minimum read buffer is" eventLog~minimumReadMax "kilobytes"
@@ -634,7 +632,6 @@ Smallest possible read buffer is 16 kilobytes
 Largest possible minimum read buffer is 256 kilobytes
 
 */
-]]>
 </programlisting>
 </example>
     </para>
@@ -679,13 +676,12 @@ Largest possible minimum read buffer is 256 kilobytes
       created and then displays the size after the programmer has changed the minimum.
 <example id="ex.WindowsEventLog-3-class">
 <title>WindowsEventLog class - minimumReadBuffer method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
- eventLog = .WindowsEventLog~new
- say "Current size of the minimum read buffer is" eventLog~minimumReadBuffer "bytes"
+  eventLog = .WindowsEventLog~new
+  say "Current size of the minimum read buffer is" eventLog~minimumReadBuffer "bytes"
 
- eventLog~minimumRead = 64
+  eventLog~minimumRead = 64
   say "Adjusted size of the minimum read buffer to" eventLog~minimumReadBuffer "bytes"
 
 ::requires 'winSystm.cls'
@@ -696,7 +692,6 @@ Current size of the minimum read buffer is 16384 bytes
 Adjusted size of the minimum read buffer to 65536 bytes
 
 */
-]]>
 </programlisting>
 </example>
     </para>
@@ -746,8 +741,7 @@ Adjusted size of the minimum read buffer to 65536 bytes
       This example displays the number of event log records that were read from the System log.
 <example id="ex.WindowsEventLog-4-class">
 <title>WindowsEventLog class - events method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   eventLog = .WindowsEventLog~new
   if eventLog~readRecords("BACKWARDS", , "System") == 0 then do
@@ -761,7 +755,6 @@ Adjusted size of the minimum read buffer to 65536 bytes
 The System log has 1983 records
 
 */
-]]>
 </programlisting>
 </example>
     </para>
@@ -827,7 +820,7 @@ The System log has 1983 records
     </para>
 <example id="ex.WindowsEventLog-5-class">
 <title>WindowsEventLog class - open method</title>
-<programlisting>
+<programlisting language="rexx">
 eventLog1 = .WindowsEventLog~new
 ret = eventLog1~open
 if ret \== 0 then do
@@ -850,7 +843,7 @@ end
   </para>
 <example id="ex.WindowsEventLog-6-class">
 <title>WindowsEventLog class - open method</title>
-<programlisting>
+<programlisting language="rexx">
 
 eventLog = .WindowsEventLog~new
 ret = eventLog~open("\\SERVER01", "System")
@@ -909,7 +902,7 @@ end
     </para>
 <example id="ex.WindowsEventLog-7-class">
 <title>WindowsEventLog class - close method</title>
-<programlisting>
+<programlisting language="rexx">
 log = .WindowsEventLog~new
 
 ret = log~open
@@ -928,7 +921,7 @@ end
   Last record number  1827
   Log is full?        0
 
-/*
+*/
 </programlisting>
 </example>
   </listitem></varlistentry>
@@ -1060,8 +1053,7 @@ end
       console. (If there are less than 5 records in the log, then all the records are read.)
 <example id="ex.WindowsEventLog-8-class">
 <title>WindowsEventLog class - readRecords method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   log = .WindowsEventLog~new
 
@@ -1086,7 +1078,8 @@ end
 
   do record over records
     say "=========================================================================="
-    parse var record type date time "'" sourcename"'" id userid computer "'" string "'" "'" data "'"
+    parse var record type date time "'" sourcename"'" id userid -
+      computer "'" string "'" "'" data "'"
     say 'Type     : 'type
     say 'Date     : 'date
     say 'Time     : 'time
@@ -1130,7 +1123,6 @@ Data     :
 Displayed 5 records
 
 */
-]]>
 </programlisting>
 </example>
     </para>
@@ -1229,8 +1221,7 @@ Displayed 5 records
       This example writes some fictitious data to an event log.
 <example id="ex.WindowsEventLog-9-class">
 <title>WindowsEventLog class - write method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   log = .WindowsEventLog~new
 
@@ -1248,7 +1239,6 @@ Displayed 5 records
 
 
 ::requires 'winSystm.cls'
-]]>
 </programlisting>
 </example>
     </para>
@@ -1324,8 +1314,7 @@ Displayed 5 records
       not on the local machine.
 <example id="ex.WindowsEventLog-10-class">
 <title>WindowsEventLog class - clear method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   log = .WindowsEventLog~new
 
@@ -1343,7 +1332,6 @@ Displayed 5 records
 
 ::requires 'winSystm.cls'
 
-]]>
 </programlisting>
 </example>
     </para>
@@ -1385,8 +1373,7 @@ Displayed 5 records
       This example displays the current value of the minimum read buffer size.
 <example id="ex.WindowsEventLog-11-class">
 <title>WindowsEventLog class - minimumRead method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   log = .WindowsEventLog~new
   say 'Current minimum size of the read buffer is:' log~minimumRead "KB"
@@ -1398,7 +1385,6 @@ Displayed 5 records
 Current minimum size of the read buffer is: 16 KB
 
 */
-]]>
 </programlisting>
 </example>
     </para>
@@ -1475,8 +1461,7 @@ Current minimum size of the read buffer is: 16 KB
       This method is straight forward to use:
 <example id="ex.WindowsEventLog-12-class">
 <title>WindowsEventLog class - minimumRead= method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   log = .WindowsEventLog~new
   log~minimumRead = 64
@@ -1489,7 +1474,6 @@ Current minimum size of the read buffer is: 16 KB
 Current minimum size of the read buffer is: 64 KB
 
 */
-]]>
 </programlisting>
 </example>
     </para>
@@ -1545,8 +1529,7 @@ Current minimum size of the read buffer is: 64 KB
       gets full, the log is backed up and cleared.
 <example id="ex.WindowsEventLog-13-class">
 <title>WindowsEventLog class - isFull method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::routine checkLog
   use strict arg sysLog, monitor
@@ -1557,7 +1540,6 @@ Current minimum size of the read buffer is: 64 KB
   end
 return success
 
-]]>
 </programlisting>
 </example>
     </para>
@@ -1616,19 +1598,17 @@ return success
       records before reading the log:
 <example id="ex.WindowsEventLog-14-class">
 <title>WindowsEventLog class - getNumber method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   log = .WindowsEventLog~new
   log~open("\\Osprey", "System")
-  if log~getNumber > 10 then do
+  if log~getNumber &gt; 10 then do
     log~readRecords
     say 'Read' log~events~items 'records.'
   end
 
 ::requires 'winSystm.cls'
 
-]]>
 </programlisting>
 </example>
     </para>
@@ -1679,8 +1659,7 @@ return success
       This example displays the names of all the event logs on the current system.
 <example id="ex.WindowsEventLog-15-class">
 <title>WindowsEventLog class - getLogNames method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 logNames = .array~new
 ret = log~getLogNames(logNames)
@@ -1699,7 +1678,6 @@ Log: Security
 Log: System
 
 */
-]]>
 </programlisting>
 </example>
     </para>
@@ -1756,15 +1734,15 @@ Log: System
       This example displays the last record written to application log.
 <example id="ex.WindowsEventLog-16-class">
 <title>WindowsEventLog class - getLast method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   log = .WindowsEventLog~new~~open
   log~readRecords( , , , log~getLast, 1)
   rec = log~events[1]
   if rec \== .nil then do
 
-    parse var rec type date time "'" src"'" id user computer "'" string "'" "'" data "'"
+    parse var rec type date time "'" src"'" id user -
+      computer "'" string "'" "'" data "'"
     say 'Type     : 'type
     say 'Date     : 'date
     say 'Time     : 'time
@@ -1792,7 +1770,6 @@ description: Class not registered.
 Data     :
 
 */
-]]>
 </programlisting>
 </example>
     </para>
@@ -1853,15 +1830,15 @@ Data     :
       name.  This can be seen when the record is displayed, the Computer field is MACHINENAME.
 <example id="ex.WindowsEventLog-17-class">
 <title>WindowsEventLog class - getFirst method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   log = .WindowsEventLog~new~~open("\\Osprey", "System")
   log~readRecords( , , , log~getFirst, 1)
   rec = log~events[1]
   if rec \== .nil then do
 
-    parse var rec type date time "'" src"'" id user computer "'" string "'" "'" data "'"
+    parse var rec type date time "'" src"'" id user -
+      computer "'" string "'" "'" data "'"
     say 'Type     : 'type
     say 'Date     : 'date
     say 'Time     : 'time
@@ -1888,7 +1865,6 @@ Detail   : 5.02. 3790 Service Pack 1 Multiprocessor Free
 Data     :
 
 */
-]]>
 </programlisting>
 </example>
     </para>

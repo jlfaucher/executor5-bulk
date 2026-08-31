@@ -413,8 +413,7 @@
     This example constructs a mouse object using the dialog object and then connects the double click mouse event to a
     method in the dialog. When the user double clicks the primary mouse button on the background of the dialog, not on a
     dialog control, the event handler is invoked:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ::method init
     ...
@@ -428,7 +427,6 @@
 
     -- Do something ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -473,9 +471,7 @@
   <listitem>
   <para>
     This simple example prints the double-click time to the screen:
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   ::method showDoubleClkTime
 
     say 'The system-wide mouse double-click time is:' .Mouse~doubleClickTime 'milliseconds.'
@@ -484,9 +480,7 @@
 
   The system-wide mouse double-click time is: 340 milliseconds.
 
-  /*
-
-]]>
+  */
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -661,8 +655,7 @@
   <para>
     This example loads the <emphasis role="italic">No</emphasis> system cursor and checks for error. In reality, there
     is almost no chance of failure provided the correct keyword is used.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method init
   ...
@@ -680,7 +673,6 @@
     return self~initCode
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -753,8 +745,7 @@
   <para>
     This example is similar to the <xref linkend="mthLoadCursor"/>, but it loads a custom cursor from a
     file:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method init
   ...
@@ -772,7 +763,6 @@
     return self~initCode
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -837,18 +827,16 @@
   <para>
     This example checks the current double-click time and if it is below 500 milliseconds, it resets the time to the
     usual system default.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method resetDefaults private
 
   ...
 
-  if .Mouse~doubleClickTime > 500 then .Mouse~setDoubleClickTime
+  if .Mouse~doubleClickTime &gt; 500 then .Mouse~setDoubleClickTime
 
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -930,8 +918,7 @@
   <para>
     This example comes from a program my nephew wrote and set to automatically run at 12:01 am, April 1st on his
     brother's computer. He thought it was hilarious, his brother was not amused.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 /* aprilFools.rex */
 
@@ -941,7 +928,6 @@
 
 ::requires 'ooDialog.cls'
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -994,8 +980,7 @@
     This example sets the cursor to the application starting cursor for 2 seconds, then restores it. This could be done,
     for instance, while the application is displaying a splash screen when it starts up. (A practice that used to be
     very common in Windows, but you don't see that often anymore.)
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   self~startingUp
@@ -1032,7 +1017,6 @@
   p~decr
   mouse~setCursorPos(p)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1083,13 +1067,11 @@
   <listitem>
   <para>
     This example just shows syntax, the method is not difficult to understand:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   mouse = .Mouse~new(self)
   oldCursor = mouse~arrow
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1157,8 +1139,7 @@
     This example shows a method that initiates a drag and drop operation. It captures the mouse so that all mouse
     messages are directed to the same window and the program can monitor both the current position of the mouse, and
     when the mouse button is released:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method doDrag private
   expose oldCursor noDropCursor cursorIsNoDrop dragging
@@ -1174,7 +1155,6 @@
 
   return dragItem
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1245,14 +1225,12 @@
   <listitem>
   <para>
     This example confines the cursor to the client area of the dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   r = self~clientRect
   self~client2screen(r)
   mouse~clipCursor(r)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1633,8 +1611,7 @@
     effect of <emphasis role="italic">swallowing</emphasis> the event. The event notification is intercepted before it
     reaches the edit control, and no method in the dialog is invoked. When the user scrolls the mouse wheel while over
     the edit control, nothing happens.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -1645,7 +1622,6 @@
 
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1665,13 +1641,11 @@
   used in the <xref linkend="mthConnectEvent"/> method.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onCaptureChanged unguarded
   use arg hwnd, mouse
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -1747,13 +1721,11 @@
   indicates if the event was processed or not. A common value to return would be <computeroutput>.true</computeroutput>.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onMouseEvent unguarded
   use arg state, pos, mouse
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -1871,8 +1843,7 @@
   <para>
     The following example uses the <xref linkend="mthConnectEvent"/> method to connect the mouse left
     button down event sent to a list view window with the onLBDown method of the dialog.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose listView
@@ -1908,7 +1879,6 @@
   -- Indicate the event was processed.
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1929,13 +1899,11 @@
   used in the <xref linkend="mthConnectEvent"/> method.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onNcMouseHover unguarded
   use arg hit, pos, mouse
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -2011,13 +1979,11 @@
   used in the <xref linkend="mthConnectEvent"/> method.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onMouseLeave unguarded
   use arg mouse
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -2069,13 +2035,11 @@
   indicates if the event was processed or not. A common value to return would be <computeroutput>.true</computeroutput>.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onMouseWheel unguarded
   use arg state, pos, mouse, delta
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -2214,8 +2178,7 @@
     event sent to the edit control to a method in the Rexx dialog. This then allows the programmer to supply some custom
     scrolling.  Normally, a multi-line edit control handles the mouse wheel event itself and the notification message
     will never reach the dialog.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose eData
@@ -2237,7 +2200,7 @@
 
   -- Mouse is over our edit control, do custom scrolling ...
 
-  if delta > 0 then direction = 'up'
+  if delta &gt; 0 then direction = 'up'
   else direction = 'down'
 
   scrollLines = .SPI~wheelScrollLines
@@ -2249,19 +2212,19 @@
       else cmd = 'DOWN'
     end
 
-    when state~wordPos('Control') <> 0, state~wordPos('Shift') <> 0 then do
+    when state~wordPos('Control') &lt;&gt; 0, state~wordPos('Shift') &lt;&gt; 0 then do
       amt = 3
       if direction == 'up' then cmd = 'PAGEUP'
       else cmd = 'PAGEDOWN'
     end
 
-    when state~wordPos('Control') <> 0 then do
+    when state~wordPos('Control') &lt;&gt; 0 then do
       amt = 1
       if direction == 'up' then cmd = 'PAGEUP'
       else cmd = 'PAGEDOWN'
     end
 
-    when state~wordPos('Shift') <> 0 then do
+    when state~wordPos('Shift') &lt;&gt; 0 then do
       amt = 3 * scrollLines
       if direction == 'up' then cmd = 'UP'
       else cmd = 'DOWN'
@@ -2281,7 +2244,6 @@
   -- Indicate the event was processed.
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2335,13 +2297,11 @@
   <listitem>
   <para>
     This a simple method to use:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   mouse = .Mouse~new(self)
   oldCursor = mouse~cross
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2416,8 +2376,7 @@
     This example shows the event handler for a left button down event. When the event occurs, the handler checks if the
     user has started a drag operation. If so, the application initiates the operation and returns true. If not, the
     handler simply returns:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onLBdown unguarded
   expose dragItem
@@ -2430,7 +2389,6 @@
 
   return .false
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2682,12 +2640,11 @@
   <para>
     This example carries out some operation, does stuff, while either the right or the left mouse button, but not both
     buttons, is pressed:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   lMB = self~isMouseButtonDown("LEFT")
   rMB = self~isMouseButtonDown("RIGHT")
-  do while (lMB | rMB) & \(lMB & rMB)
+  do while (lMB | rMB) &amp; \(lMB &amp; rMB)
       -- do stuff
       ...
 
@@ -2695,7 +2652,6 @@
       rMB = self~isMouseButtonDown("RIGHT")
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2746,13 +2702,11 @@
   <listitem>
   <para>
     This a simple method to use:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   mouse = .Mouse~new(self)
   oldCursor = mouse~no
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2811,8 +2765,7 @@
     button up event handler. If <emphasis role="italic">dragging</emphasis> is <computeroutput>.true</computeroutput>
     then we know that the mouse was captured when the drag operation was initiated, so the capture is released. The
     return from <emphasis role="italic">releaseCapture</emphasis> is not checked because it is unlikely to fail:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   if dragging then do
     okayToDrop = (cursorIsNoDrop \== .true)
@@ -2824,7 +2777,6 @@
     ...
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2884,13 +2836,11 @@
   <listitem>
   <para>
     This example releases the cursor from the clipped state.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   mouse = .Mouse~new(self)
   mouse~releaseClipCursor
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2957,8 +2907,7 @@
   <para>
     This example calculates pi to 35 decimal places. While the calculation is being done the cursor is changed to the
     busy cursor, and then restored when the calculation is finished:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   -- Get the current mouse position.
   mouse = .Mouse~new(self)
@@ -2978,7 +2927,6 @@
   mouse~restoreCursor(oldCursor)
   mouse~setCursorPos(oldCursorPos)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3144,8 +3092,7 @@
   <para>
     This example is similar to the example for the <xref linkend="mthRestoreCursor"/> method, but it
     only uses the <emphasis role="italic">setCursor</emphasis> method:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   -- Get the current mouse position.
   mouse = .Mouse~new(self)
@@ -3165,7 +3112,6 @@
   mouse~setCursor(oldCursor)
   mouse~setCursorPos(oldCursorPos)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3241,8 +3187,7 @@ Generic form:
     cursor. Both methods retrieve the current position of the mouse and move it by one screen pixel in each direction
     to force the repainting of the cursor.
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method indicateBeginProcessing
   expose oldCursor
 
@@ -3258,7 +3203,6 @@ Generic form:
   mouse~restoreCursor(oldCursor)
   p = mouse~getCursorPos
   mouse~setCursorPos(p~decr)
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -3335,14 +3279,13 @@ Generic form:
   <para>
     This example is a code snippet from a program that hides the cursor while it is over one of the dialog windows in
     the program and shows it when not over that dialog window
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method hideCursor private
   use strict arg obj
 
   mouse = .Mouse~new(obj)
-  do while mouse~showCursor(.false) >= 0
+  do while mouse~showCursor(.false) &gt;= 0
     nop
   end
 
@@ -3350,11 +3293,10 @@ Generic form:
   use strict arg obj
 
   mouse = .Mouse~new(obj)
-  do while mouse~showCursor(.true) < 0
+  do while mouse~showCursor(.true) &lt; 0
     nop
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3534,8 +3476,7 @@ Generic form:
     When either one of the events is received, the tracking for that event is canceled. In order to receive further
     events, a flag is set so that on the next mouse move event, the <emphasis role="italic">trackEvent</emphasis> method
     is invoked again.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method init
 
@@ -3589,7 +3530,6 @@ Generic form:
   ...
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3640,13 +3580,11 @@ Generic form:
   <listitem>
   <para>
     This a simple method to use:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   mouse = .Mouse~new(self)
   oldCursor = mouse~wait
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

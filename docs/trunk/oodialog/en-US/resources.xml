@@ -291,8 +291,7 @@
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
  ref = .Image~colorRef(245, 89, 255)
  say 'A fancy purple:' ref '(0x' || ref~d2x~right(8, '0')')'
  say
@@ -304,7 +303,6 @@
 A fancy purple: 16734709 (0x00FF59F5)
 
 */
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -753,8 +751,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <programlisting>
-    <![CDATA[
+    <programlisting language="rexx">
     flags = .DlgUtil~or(.Image~toID(LR_DEFAULTSIZE), .Image~toID(LR_SHARED), -
                         .Image~toID(LR_LOADMAP3DCOLORS))
 
@@ -773,8 +770,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       say 'Error getting the question icon.  Error code:' .systemErrorCode
     end
 
-    ]]>
-    </programlisting>
+        </programlisting>
     </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::getImage() [class method] -->
@@ -816,10 +812,9 @@ A fancy purple: 16734709 (0x00FF59F5)
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <programlisting id="exampleGetRValueClsImage">
-    <![CDATA[
+    <programlisting language="rexx" id="exampleGetRValueClsImage">
       progressBar = self~newProgressBar("IDC_PB_FILES")
-      if progressBar <> .nil then do
+      if progressBar &lt;&gt; .nil then do
         purple = .Image~colorRef(245, 89, 255)
 
         say 'Going to set the background color for the progress bar'
@@ -841,8 +836,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         Blue:  174
 
       */
-    ]]>
-    </programlisting>
+        </programlisting>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::getRValue() [class method] -->
@@ -892,13 +886,11 @@ A fancy purple: 16734709 (0x00FF59F5)
   either use the numerical value of 32514 or use the <emphasis role="italic">toID</emphasis> method as
   follows.  Note that the two invocations of getImage() are equivalent:
 </para>
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     qIcon = .Image~getImage(.Image~toID(IDI_QUESTION))
 
     qIcon = .Image~getImage(32514)
-  ]]>
-  </programlisting>
+    </programlisting>
 <para>
   The symbolic ID keywords are spelled exactly as Microsoft spells them in the
   MSDN <xref linkend="defWindowsDoc"/> which allows the ooDialog to easily look up the meaning
@@ -930,16 +922,14 @@ A fancy purple: 16734709 (0x00FF59F5)
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <programlisting>
-    <![CDATA[
+    <programlisting language="rexx">
     say 'The numeric value of the IDI_WINLOGO symbol is:' .Image~toID(IDI_WINLOGO)
     /*
       Output on the console would be:
 
       The numeric value of the IDI_WINLOGO symbol is: 32517
     */
-    ]]>
-    </programlisting>
+        </programlisting>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::id() [class method] -->
@@ -1063,8 +1053,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     This example adds an icon resource to the dialog through the
  <xref linkend="mthAddIconResource"/> method and then uses that icon for the image in a
  <xref linkend="clsStatic"/> image control.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dlg = .SimpleDialog~new("Simple.rc", IDD_DIALOG1, , 'Simple.h')
   if dlg~initCode = 0 then do
@@ -1076,7 +1065,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   expose iconControl
 
   iconControl = self~newStatic(IDC_ICON_QUESTION)
-  if iconControl <> .nil then do
+  if iconControl &lt;&gt; .nil then do
     questionMark = .Image~userIcon(self, IDI_ENHANCED_QUESTION_MARK, .Size~new(64, 64) )
     if \ questionMark~isNull then iconControl~setIcon(questionMark)
   end
@@ -1084,7 +1073,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   self~connectButtonEvent(IDC_PB_YES, "CLICKED", onYes)
   self~connectButtonEvent(IDC_PB_NO, "CLICKED", onNo)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1126,8 +1114,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <programlisting>
-    <![CDATA[
+    <programlisting language="rexx">
     hIcon = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_ICON))
     say 'hIcon:  ' hIcon
     say ' handle:' hIcon~handle
@@ -1137,8 +1124,7 @@ A fancy purple: 16734709 (0x00FF59F5)
        hIcon:  an Image
        handle: 0x000000000001002B
     */
-    ]]>
-    </programlisting>
+        </programlisting>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::handle() -->
@@ -1205,12 +1191,11 @@ A fancy purple: 16734709 (0x00FF59F5)
     <para>
       In this example, when the user presses the Test button, the current image for the static control is
       replaced by the system question mark image. The old image is no longer needed and it is released.
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       ::method onTest
 
         iconControl = self~newStatic(IDC_ICON_QUESTION)
-        if iconControl <> .nil then do
+        if iconControl &lt;&gt; .nil then do
           hQuestion = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_ICON))
           say 'Question icon:' hQuestion~handle
           if hQuestion~isNull then do
@@ -1237,8 +1222,7 @@ A fancy purple: 16734709 (0x00FF59F5)
          Released old image return: 0 .SystemErrorCode: 0
 
         */
-      ]]>
-      </programlisting>
+            </programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1281,8 +1265,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       image.  To test if the image was loaded okay, use the isNull() method.  Note that the getImage()
       method set the .SystemErrorCode.  As in all software, the error codes are not always that
       informative.
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       hQuestion = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_BITMAP))
       if hQuestion~isNull then do
         say 'System Error code:' .systemErrorCode
@@ -1295,8 +1278,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         System message:   The specified resource name cannot be found in the image file.
 
       */
-      ]]>
-      </programlisting>
+            </programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1344,37 +1326,34 @@ A fancy purple: 16734709 (0x00FF59F5)
       In this example the system error code attribute for an image is checked at a point in the
       life-cycle of the application when checking the <computeroutput>.systemErrorCode</computeroutput>
       would be meaningless:
-      <programlisting>
-      <![CDATA[
-      ::method onYes
-        expose hIcon
+<programlisting language="rexx">
+  ::method onYes
+    expose hIcon
 
-        -- Need to release the icon image, but it is not always valid.
-        if \ hIcon~isNull then hIcon~release
-        else do
-          say 'The icon image is not valid.'
-          say '  Error when it was loaded:' hIcon~systemErrorCode
-          say '  System message:          ' SysGetErrorText(hIcon~systemErrorCode)
-        end
-        return self~ok:super
+     -- Need to release the icon image, but it is not always valid.
+    if \ hIcon~isNull then hIcon~release
+    else do
+      say 'The icon image is not valid.'
+      say '  Error when it was loaded:' hIcon~systemErrorCode
+      say '  System message:          ' SysGetErrorText(hIcon~systemErrorCode)
+    end
+    return self~ok:super
 
-      /* Output might be:
+   /* Output might be:
+   The icon image is not valid.
+    Error when it was loaded: 2
+    System message:           The system cannot find the file specified.
+   */
 
-      The icon image is not valid.
-        Error when it was loaded: 2
-        System message:           The system cannot find the file specified.
+   /* Note that the below was the error that caused the above.  The file name
+   * is actually 'shaveIce.ico' not shavedIce.ico.
+   */
 
-      */
-
-      /* Note that the below was the error that caused the above.  The file name
-       * is actually 'shaveIce.ico' not shavedIce.ico.
-       */
-
-        if iconControl <> .nil then do
-          hIcon = .Image~getImage("shavedIce.ico", .Image~toID(IMAGE_ICON))
-          ...
-      ]]>
-      </programlisting>
+    if iconControl \= .nil then do
+      hIcon = .Image~getImage("shavedIce.ico", .Image~toID(IMAGE_ICON))
+      ...
+    end
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1674,15 +1653,13 @@ A fancy purple: 16734709 (0x00FF59F5)
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   -- We set the flags to create a 24 bit color, masked image list.
   flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
 
   -- Create an empty .ImageList object:
   imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10);
-  ]]>
-  </programlisting>
+    </programlisting>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ImageList::create() [class method] -->
@@ -1763,8 +1740,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       which is a bitmap 16 pixels high by 64 pixels wide, containing 4 individual images.  Since the
       image list is created with a size of 16 x 16, when the add() method is used, the image list infers
       that the bitmap is 4 images.
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       -- Set the images for the items in the list-view.
       image = .Image~getImage("bmp\psdemolv.bmp")
       imageList = .ImageList~create(.Size~new(16, 16), .Image~toID(ILC_COLOR8), 4, 0)
@@ -1775,8 +1751,7 @@ A fancy purple: 16734709 (0x00FF59F5)
          -- The image list makes a copy of the bitmap, so we can release it now.
          image~release
       end
-      ]]>
-      </programlisting>
+            </programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1839,8 +1814,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       the list-view with the text for the icon being its numeric resource ID. Since the system icons are
       shared, the icon images are not released after they are added to the image list.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ids = .array~new()
   ids[ 1] = .Image~toID(IDI_APPLICATION)
   ids[ 2] = .Image~toID(IDI_HAND)
@@ -1864,7 +1838,6 @@ A fancy purple: 16734709 (0x00FF59F5)
     list~add(ids[i], i - 1)
   end
 
-]]>
 </programlisting>
     </para>
   </listitem></varlistentry>
@@ -1937,8 +1910,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     <para>
       This example creates an image list from a number icons and then displays them in a list-view
       control in a dialog.
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       list  = self~newListView(IDC_LV_IMAGES)
 
       files1 = .array~new()
@@ -1963,7 +1935,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       size = .Size~new(32, 32)
 
       images = .Image~fromFiles(files1, .Image~toID(IMAGE_ICON), size)
-      if images~items <> files1~items then do
+      if images~items &lt;&gt; files1~items then do
         say 'Error loading images.'
         say '  System error:' .systemErrorCode
         say '  Message:     ' SysGetErrorText(.systemErrorCode)
@@ -1976,7 +1948,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       imageList = .ImageList~create(size, flags, 20, 10);
 
       lastAdded = imageList~addImages(images)
-      if lastAdded <> (count - 1) then do
+      if lastAdded &lt;&gt; (count - 1) then do
         -- Not all images were added.  We just ignore this and display
         -- in the list-view what was added.
       end
@@ -1990,8 +1962,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       do i = 0 to lastAdded
         list~add(files1[i + 1], i)
       end
-      ]]>
-      </programlisting>
+            </programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2062,8 +2033,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       tab.  Each icon is a colored letter on a white background.  Using a white color to generate the
       mask causes the image to be drawn transparently.  The colored letter itself shows, and the rest of
       the image lets the underlying color show through.
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       -- Add all the tabs, including the index into the image list for an icon for
       -- each tab.
       tc~addFullSeq("Red", 0, ,"Green", 1, , "Moss", 2, , "Blue", 3, ,   -
@@ -2086,8 +2056,7 @@ A fancy purple: 16734709 (0x00FF59F5)
          image~release
       end
 
-      ]]>
-      </programlisting>
+            </programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2142,8 +2111,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       them their meal when it is ready.  The dinner menu has all the items that the lunch menu does, plus
       some more.  The customer can choose whether to order from the lunch menu or the dinner menu, so the
       lunch menu image list has to remain unchanged.
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       ::method getDinnerImageList private
         use strict arg lunchImageList
 
@@ -2152,8 +2120,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         dinnerList~addImages(fileArray)
 
       return dinnerList
-      ]]>
-      </programlisting>
+            </programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2198,8 +2165,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <programlisting>
-    <![CDATA[
+    <programlisting language="rexx">
     ::method displayImageListCount private
       use strict arg imageList
       say 'Image list:' imageList~handle 'has' imagelist~getCount 'images.'
@@ -2209,8 +2175,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 
         Image list: 0x00000000000ED420 has 17 images.
       */
-    ]]>
-    </programlisting>
+        </programlisting>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ImageList::getCount() -->
@@ -2359,8 +2324,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     pixels. The bitmap is used to create an image list, then an icon can be retrieved from the image list for any of the
     images in the bitmap file using the <emphasis role="italic">getIcon</emphasis> method and the index of the image in the
     bitmap:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ri = .ResourceImage~new(self)
   imageBMP = ri~getImage(IDI_ICONS_IL)
 
@@ -2370,7 +2334,6 @@ A fancy purple: 16734709 (0x00FF59F5)
 
   icon = imageList~getIcon(1)
   statusBar~setIcon(icon, 1)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2417,8 +2380,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <programlisting>
-    <![CDATA[
+    <programlisting language="rexx">
     ::method displayImageListSize private
       use strict arg imageList
       s = imageList~getImageSize
@@ -2432,8 +2394,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         Image list: 0x00000000000DCB20 contains images 32 pixels high by 32 pixels wide
       */
 
-    ]]>
-    </programlisting>
+        </programlisting>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ImageList::getImageSize() -->
@@ -2472,8 +2433,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <programlisting>
-    <![CDATA[
+    <programlisting language="rexx">
     ::method displayImageList private
       use strict arg imageList
       say 'Currently using this image list:' imageList~handle
@@ -2483,8 +2443,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 
         Currently using this image list: 0x00000000000DCB20
       */
-    ]]>
-    </programlisting>
+        </programlisting>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ImageList::handle() -->
@@ -2524,8 +2483,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       This example comes from some test code.
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       -- See if we can create an image list with no size.
       imageList = .ImageList~create(.Size~new(0, 0), .Image~toID(ILC_COLOR24),  20, 10)
       if imageList~isNull then do
@@ -2541,8 +2499,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         Can not create a 0 x 0 image list.
 
       */
-      ]]>
-      </programlisting>
+            </programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2583,8 +2540,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       it displays and then closes a dialog that creates some image lists.  The image lists are always
       different depending on the state of things.  Each time the dialog closes, it releases the image
       lists it created to free up the operating system resources.
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       ::method ok
         self~cleanUp
         return self~ok:super
@@ -2600,8 +2556,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         if warningImages \== .nil then warningImages~release
         if buildingStatusImages \== .nil then buildingStatusImages~release
 
-      ]]>
-      </programlisting>
+            </programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2660,8 +2615,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       chef runs out of a menu item and the item is then removed from the list-view so that the customers
       can no longer order it.  (Rigorous error checking is not done because the application was written
       by one of the waiters.)
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       ::method removeFromMenu private
         use strict arg index
 
@@ -2679,8 +2633,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         menu~delete(index)
 
       return 0
-      ]]>
-      </programlisting>
+            </programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2731,8 +2684,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       a feature that removes all the menu items as it gets near closing time to prevent customers from
       ordering something they do not have time to finish eating.  (However, the waiter noticed that he
       often got huge tips from customers that had drinks after their meal.)
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       ::method stopOrders private
 
         menu = self~newListView(IDC_LV_MENU)
@@ -2752,8 +2704,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 
       return 0
 
-      ]]>
-      </programlisting>
+            </programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2920,8 +2871,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     This example instantiates a resource image using the oodialog.dll module and uses it to load
     the generally available icon resources from that module.  The icons are then displayed in a
     list-view control.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   expose list
 
@@ -2941,7 +2891,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   imageList = .ImageList~create(size, 'COLOR24 MASK', 4, 0)
   imageList~addImages(icons)
 
-  list~setImageList(imageList, 'NORMAL'
+  list~setImageList(imageList, 'NORMAL')
 
   names = .array~new()
   names[1] = "IDI_DLG_OODIALOG"
@@ -2952,8 +2902,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   do i = 1 to ids~items
     list~add(names[i] '('ids[i]')', i - 1)
   end
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3070,10 +3018,10 @@ A fancy purple: 16734709 (0x00FF59F5)
     <para>
       This example uses a ResDialog with a static control that displays a bitmap image.  The image for
       the static control is obtained from the resource-only DLL used by the ResDialog.
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       ::class SimpleDialog subclass ResDialog
-      ...
+
+      /* ... */
 
       ::method initDialog
         ...
@@ -3082,7 +3030,6 @@ A fancy purple: 16734709 (0x00FF59F5)
         ...
         picture = self~newStatic(IDC_BMP_PICTURE)
         oldImage = picture~setImage(image)
-      ]]>
       </programlisting>
     </para>
   </listitem></varlistentry>
@@ -3219,8 +3166,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       An array is constructed containing the resource IDs of the 4 images.  A new resource image object
       is instantiated from the <computeroutput>images.dll</computeroutput> module.  The getImages()
       method is then used to get an array of 4 .Image objects, using the array of resource IDs.
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       /* Simple Dialog to display some images */
 
         dlg = .SimpleDialog~new( , 'simpleImage.h')
@@ -3271,14 +3217,13 @@ A fancy purple: 16734709 (0x00FF59F5)
       ::method onNext
         expose picture description images descriptions nextImage
 
-        if nextImage > images~items then nextImage = 1
+        if nextImage &gt; images~items then nextImage = 1
 
         picture~setImage(images[nextImage])
 
         description~setText(descriptions[nextImage])
         nextImage += 1
-      ]]>
-      </programlisting>
+            </programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3319,8 +3264,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       This example ...
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       ::method showHandles
 
         oodMod = .ResourceImage~new("oodialog.dll", self)
@@ -3335,8 +3279,7 @@ A fancy purple: 16734709 (0x00FF59F5)
          The oodialog.dll module handle is:         0x009E0000
          The resource module for this ResDialog is: 0x00AF0000
       */
-      ]]>
-      </programlisting>
+            </programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3445,8 +3388,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       module is no longer needed after the image list is created. Since an image list makes a copy of the
       images added to it, once the image list has all the images added to it, the resource image can be
       released.
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       ::method getImages private
         use strict arg resourceIDs, size, ilFlags
 
@@ -3462,8 +3404,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         module~release
 
         return imageList
-      ]]>
-      </programlisting>
+            </programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3509,21 +3450,19 @@ A fancy purple: 16734709 (0x00FF59F5)
     <para>
       This example uses the <computeroutput>systemErrorCode</computeroutput> attribute to get more
       information on a possible error, rather than the <computeroutput>.systemErrorCode</computeroutput>.
-      <programlisting>
-      <![CDATA[
+      <programlisting language="rexx">
       ::method initDialog
         ...
         mod = .ResourceImage~new("simpleImage.dll", self)
-        if mod~isNull the do
+        if mod~isNull then do
           self~writeToLog("Error with resource module simpleImage.dll")
           self~writeToLog("  RC: " mod~systemErrorCode)
-          self~writeToLog("  msg:" SysGetErrorText(mod~systemErrorCode)
+          self~writeToLog("  msg:" SysGetErrorText(mod~systemErrorCode))
           return
         end
 
         image = resources~getImage(self~constDir[ID_BMP_IMAGE1])
         ...
-      ]]>
       </programlisting>
     </para>
   </listitem></varlistentry>

@@ -349,17 +349,13 @@
     Another way of saying that is, if two commas follow the text argument, the third argument is required.  This is
     acceptable:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   tabControl~addSequence(myText, , , myText2, ,)
-]]>
 </programlisting>
     But this is not, and will raise a syntax error:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   tabControl~addSequence("Label One", , , "Label Two", , , )
-]]>
 </programlisting>
     If no arguments are used, -1 is returned.
   </para>
@@ -375,8 +371,7 @@
   <para>
     The following example adds a sequence of tabs and sets their label and icon index, but omits any user data for each
     tab:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
 
   tab = self~newTab("IDC_TAB")
@@ -385,7 +380,6 @@
     tab~addFullSeq("s11", 0, , "s12", 1, , "s13", 2, , "s14", 3)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -449,8 +443,7 @@
   <para>
     The following example inserts three tabs in a tab control:
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
 
   tab = self~newTab("IDC_TAB")
@@ -458,7 +451,6 @@
     tab~addSequence("First Tab", "Second Tab", "Third Tab")
   end
 
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -776,8 +768,7 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
   <para>
     This example gets the current image list from the tab control when the dialog is closed and releases it as it is no
     longer userd.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method ok
   self~releaseImageLists
@@ -793,7 +784,6 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
   imageList = tabControl~getImageList
   if imageList \== .nil then imageList~release
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -905,8 +895,7 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
   <para>
     The following example inserts three tabs in a tab control with the specified label and index in the image list for
     an icon for the tab:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
 
   tab = self~newTab("IDC_TAB")
@@ -917,7 +906,6 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
     tab~insert(, "Third Tab", 2)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -963,8 +951,7 @@ if the tab does not have an image.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example displays the text of all tabs:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method DisplayText
   curTab = self~newTab("ID_TAB")
   if curTab \= .Nil then do
@@ -973,7 +960,6 @@ if the tab does not have an image.
        say ItemInfo.!Text
     end
   end
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -997,14 +983,12 @@ a tab control.</para>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example displays the number of tabs:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method DisplayTabNum
   curTab = self~newTab("ID_TAB")
   if curTab \= .Nil then do
     say curTab~items
   end
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1318,8 +1302,7 @@ the currently selected tab.</para>
     role="italic">onNewTab</emphasis> method is connected to the SELCHANGE event. Since the tab control does not
     generate the SELCHANGE event when the <emphasis role="italic">selectIndex</emphasis> method is invoked, the program
     just calls the <emphasis role="italic">onNewTab</emphasis> method directly.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineDialog
 
@@ -1345,7 +1328,6 @@ the currently selected tab.</para>
   tabControl~selectIndex(tabControl~selectedIndex - 1)
   self~onNewTab
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1406,8 +1388,7 @@ the currently selected tab.</para>
   <para>
     This example creates an image list from a bitmap file that is a series of 16x16 bitmaps, each one a
     colored letter. The image list is then assigned to the tab control.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   -- Add all the tabs, including the index into the image list for an icon for
   -- each tab.
@@ -1436,7 +1417,6 @@ the currently selected tab.</para>
      -- do some type of error handling
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

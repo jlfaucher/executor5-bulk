@@ -396,15 +396,13 @@
     This example initializes a month calendar control with a currently selected date 10 years prior to the current
     day.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
   mc = self~newMonthCalendar(IDC_MC)
   mc~date = .DateTime~new~addYears(-10)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -530,9 +528,7 @@
   <listitem>
   <para>
     This example adds the NOSELCHANGE style to the calendar, provide the Rexx program is running on Vista or later.
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method initDialog
 
   ...
@@ -541,8 +537,6 @@
     mc = self~newMonthCalendar(IDC_MC)
     mc~addStyle("NOSELCHANGE")
   end
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -849,8 +843,7 @@
   <listitem>
   <para>
     This example gets the color for the head and trailing day text, and checks for an error.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   monthCalendar = self~newMonthCalendar(IDC_MC)
   invalid = .Image~colorRef(CLR_INVALID)
@@ -860,7 +853,6 @@
     -- Fill in with some error routine.
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1224,9 +1216,7 @@
   <para>
     This contrived example determines the date of the cell at row 2, column 3 in the second displayed calendar, if there
     is a second calendar.  It also determines if the cell is selected and its dimensions:
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   if .OS~isAtLeastVista then do
     mc = self~newMonthCalendar
     if mc~getCalendarCount >= 2 then do
@@ -1244,9 +1234,10 @@
         width  = info~rect~right - info~rect~left
         height = info~rect~bottom - info~rect~top
 
-        say "The date of the day at row 2, column 3 in the second calendar is" info~name"."
+        say "The date of the day at row 2, column 3 in the second calendar is" -
+          info~name"."
         say "The day" selectedWords
-        say "The day is at ("info~rect~left"," info~rect~top")" on the screen."
+        say "The day is at ("info~rect~left"," info~rect~top") on the screen."
         say "It is" width "pixels wide and" height "pixels high."
       end
       else do
@@ -1254,8 +1245,6 @@
       end
     end
   end
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1401,8 +1390,7 @@
   <para>
     This example resizes a month calendar control to the minimum required size. The position of the control, i.e., the
     upper left hand corner, remains unchanged.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method sizeCalendar private
   use strict arg calendar
@@ -1410,7 +1398,6 @@
   r = .Rect~new
   if calendar~getMinRect(r) then calendar~resizeTo(.Size~new(r~right, r~bottom))
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1594,8 +1581,7 @@
   <listitem>
   <para>
     This example checks for minimum and maximum allowable dates and displays the results:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   mc = self~newMonthCalendar(IDC_MC)
   range = .array~new(2)
@@ -1625,7 +1611,6 @@
     end
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1798,15 +1783,12 @@
   <listitem>
   <para>
     This example displays the current style of a month calendar control:
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method printStyle private
 
-  mc = self~newMonthCalendar(IDC_MC_HOLIDAYS
+  mc = self~newMonthCalendar(IDC_MC_HOLIDAYS)
   say 'The holidays month calendar has this style:' mc~getStyle
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2059,8 +2041,7 @@
   <listitem>
   <para>
     This example gets the current cursor position, hit tests that point, and then prints out the hit test information:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onF7
   expose calendar
@@ -2095,7 +2076,6 @@ Row:    The NIL object
 Column: The NIL object
 
  */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2359,8 +2339,7 @@ Column: The NIL object
   <para>
     This example checks if the Rexx program is running on a Vista or later system. If it is, it removes the NOTODAY and
     NOCIRCLE styles and adds the Vista specific, NOSELCHANGE, SHORTDAYS, and NOTRAILING styles.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -2371,7 +2350,6 @@ Column: The NIL object
     mc~replaceStyle("NOTODAY NOCIRCLE", "NOSELCHANGE SHORTDAYS NOTRAILING")
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2426,8 +2404,7 @@ Column: The NIL object
   <listitem>
   <para>
     This example sets the calendar border to a very large size and then resizes the calendar to its optimal size:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method sizeCalendar private
   use strict arg calendar
@@ -2440,7 +2417,6 @@ Column: The NIL object
   calendar~resizeTo(.Size~new(r~right, r~bottom))
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2679,8 +2655,7 @@ Column: The NIL object
   <listitem>
   <para>
     This example sets the color for the TEXT calendar part to blue and prints out the RGB values for the previous color.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   monthCalendar = self~newMonthCalendar(IDC_MC_HOLIDAYS)
   invalid = .Image~colorRef(CLR_INVALID)
@@ -2700,7 +2675,6 @@ Column: The NIL object
     say 'The old color for "TEXT" was:('R',' G',' B')'
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2867,8 +2841,7 @@ Column: The NIL object
     This example sets the 15th and 30th of each month to be bolded in the month calendar when the dialog is first shown.
     Notice that the day state for each month is the same (15th and 30th) so the code does not determine exactly which
     months are showing, it only needs to determine how many months are showing.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose calendar
@@ -2887,7 +2860,6 @@ Column: The NIL object
   calendar~setDayState(dayStates)
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2970,8 +2942,7 @@ Column: The NIL object
     This example sets the day states for the month calendar when the dialog is initially displayed. Since the programmer
     knows the calendar is set to only display 1 month, she knows that she need exactly 3 day state objects. 1 for the
     displayed month, and 1 each for the leading and trailing days of the previous and next months:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose calendar
@@ -2981,7 +2952,6 @@ Column: The NIL object
   dayState = .DayState~new(15, 30)
   calendar~setDayStateQuick(dayState, dayState, dayState)
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3230,8 +3200,7 @@ Column: The NIL object
   <listitem>
   <para>
     This example sets a month calendar to only show the months of 2011:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose calendar
@@ -3245,7 +3214,6 @@ Column: The NIL object
 
   calendar~setRange(.array~of(start, end))
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3373,8 +3341,7 @@ Column: The NIL object
   <listitem>
   <para>
     The following example sets the <emphasis role="italic">today</emphasis> selection to tomorrow.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   calendar = self~newMonthCalendar(IDC_MC_PAYDAYS)
 
@@ -3383,7 +3350,6 @@ Column: The NIL object
   calendar~setToday(date~addDays(2))
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3544,17 +3510,13 @@ Column: The NIL object
     This example constructs a day state for an application that displays the author's birth date in a
  <xref linkend="clsMonthCalendar"/> calendar control in bold. All other days of the year are displayed
     without emphasis.
-<programlisting> <![CDATA[
-
-::method getProperDayState private
+<programlisting language="rexx">::method getProperDayState private
   use strict arg date
 
   if date~orderedDate~substr(3, 2) == 07, date~orderedDate~right(2) == 14 then
     return .DayState~new(14)
   else
     return .DayState~new
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3611,8 +3573,7 @@ Column: The NIL object
   <listitem>
   <para>
     This example is for the curious and displays the bit encoding of a day state value:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dayState = .DayState~new(1, 4, 17)
   say 'dayState value:' dayState~value 'binary form:' dayState~value~d2x~x2b
@@ -3622,7 +3583,6 @@ Column: The NIL object
      dayState value: 65545 binary form: 00010000000000001001
 
   */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3771,9 +3731,7 @@ Column: The NIL object
     date requested, and then, for the number of months requested, a day state object is created and put into an array.
     The <emphasis role="italic">makeDayStateBuffer</emphasis> method is invoked to get the proper buffer, which is
     returned from the event handler.
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method onGetDayState unguarded
   use arg startDate, count, id, hwnd
 
@@ -3811,14 +3769,12 @@ Column: The NIL object
     when month ==  1 then ds = .DayState~new(17)
     when month ==  2 then ds = .DayState~new(21)
     when month ==  3 then ds = .DayState~new
-    ...
+    /* ... */
     otherwise ds = .DayState~new
   end
   -- End select
 
   return ds
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3896,8 +3852,7 @@ Column: The NIL object
     years, with the start year one year prior to the current date. It then sets the state of July 4th of every year to
     on:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   yr = (.DateTime~today~year - 1)
 
@@ -3909,7 +3864,6 @@ Column: The NIL object
     yr += 1
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3988,8 +3942,7 @@ Column: The NIL object
     This example shows the event handler for the GETDAYSTATE notification in an application that shows the 1st and the
     15th of each month in bold. The application always sizes the month calendar with 1 full month displayed. Because of
     this, we know the count will be 3.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onGetDayState unguarded
   use arg startDate, count, id, hwnd
@@ -3998,7 +3951,6 @@ Column: The NIL object
   ds = .DayState~new(1, 15)
   return .DayStates~quickDayStateBuffer(ds, ds, ds)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4143,8 +4095,7 @@ Column: The NIL object
     This example expands on the example for the <xref linkend="mthPutYear"/> method by checking the values
     of the <xref linkend="atrStartMonth"/> and <xref linkend="atrEndMonth"/> day state
     objects.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dayStates = .DayStates~new(2010, 3)
   dayState = .DayState~new(7, 14, 21, 28)
@@ -4174,7 +4125,6 @@ Start month day state value: 1000000100000010000001000000
 End month day state value:   1000000100000010000001000000
 
  */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4240,7 +4190,7 @@ End month day state value:   1000000100000010000001000000
     This example sets up a cache of <computeroutput>DayState</computeroutput> objects before the application dialog is
     displayed.  It then gets buffers from this cache during the
     <xref linkend="evtMonthCalendarGETDAYSTATE"/> event to return from the event handler.
-<programlisting> <![CDATA[
+<programlisting language="rexx">
 
 ::class 'PaidHolidaysDlg' subclass ResDialog
 
@@ -4259,7 +4209,6 @@ End month day state value:   1000000100000010000001000000
 
   return dayStates~getDayStateBuffer(startDate, count)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4333,8 +4282,7 @@ End month day state value:   1000000100000010000001000000
     day states object was December 2011. After <emphasis role="italic">putMonth</emphasis> is invoked, the end month is
     December 2012. Adding July 2012 to the cache extended the entire year of 2012. All months other than July will have
     all days in the month turned off.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dayStates = .DayStates~new(2010, 2)
   say "Day states end month:" dayStates~endMonth~standardDate
@@ -4355,7 +4303,6 @@ End month day state value:   1000000100000010000001000000
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4431,8 +4378,7 @@ End month day state value:   1000000100000010000001000000
     <computeroutput>DayStates</computeroutput> object, each year in the cache is updated with a
     <computeroutput>DayState</computeroutput> object that turns the state of the 7th, 14th, 21st, and 28th on.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dayStates = .DayStates~new(2010, 3)
   dayState = .DayState~new(7, 14, 21, 28)
@@ -4448,7 +4394,6 @@ End month day state value:   1000000100000010000001000000
     dayStates~putYear(year, a)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

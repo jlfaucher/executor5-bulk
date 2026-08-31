@@ -1034,14 +1034,12 @@
 <para>
   This method is <xref linkend="apxDeprecated"/>. Replace this method using the
 <xref linkend="mthConnectButtonEvent"/> method in this manner:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   -- Change the following code:
   self~connectButton(IDC_PB_REFRESH, onRefresh)
 
   -- To this code:
   self~connectListButtonEvent(IDC_PB_REFRESH, "CLICKED", onRefresh)
-]]>
 </programlisting>
 </para>
 </section>
@@ -1085,14 +1083,12 @@
 <para>
   This method is <xref linkend="apxDeprecated"/>. Replace this method by using the
 <xref linkend="mthConnectListViewEvent"/> method in this manner:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   -- Change the following code:
   self~connectList(IDC_LISTBOX, onList)
 
   -- To this code:
   self~connectListBoxEvent(IDC_LISTBOX, "SELCHANGE", onList)
-]]>
 </programlisting>
 </para>
 </section>
@@ -1108,14 +1104,12 @@
 <para>
   This method is <xref linkend="apxDeprecated"/>. Replace this method by using the
 <xref linkend="mthConnectListViewEvent"/> method in this manner:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   -- Change the following code:
   self~connectListLeftDoubleClick(IDC_LISTBOX, onDoubleClick)
 
   -- To this code:
   self~connectListBoxEvent(IDC_LISTBOX, "DLBCLK", onDoubleClick)
-]]>
 </programlisting>
 </para>
 </section>

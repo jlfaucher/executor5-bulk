@@ -669,8 +669,7 @@
   <para>
     This example creates a 16 point, italic, underlined, Ariel font and then uses the font for a static
     control.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   additional = .directory~new
   additional~italic = .true
@@ -679,15 +678,13 @@
   hFont = self~createFontEx("Arial", 16, additional)
   hOldFont = self~newStatic(IDC_ST_ALERT)~setFont(hFont)
   ...
-]]>
 </programlisting>
   </para>
   <para>
     This example creates a 14 point, bold, italic, Times New Roman font and instructs the font mapper
     to only choose from true type fonts. If there are no true type fonts installed on the system, then
     the font mapper returns to its default behavior.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   FW_BOLD = 700
   OUT_TT_ONLY_PRECIS = 7
@@ -699,7 +696,6 @@
 
   hFont = self~createFontEx("Times New Roman", 14, additional)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1239,10 +1235,8 @@
   <para>
     The following example creates a dotted pen object with a width of 1:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   hPen = dlg~createPen(1, "DOT", 13)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1395,15 +1389,13 @@ of these lines with the full circle or ellipse.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>This example draws a full ellipse and a quarter circle:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 dc = self~getControlDC(100)
 pen = self~createPen(4,"solid",13)
 oldp = self~objectToDC(dc,pen)
 self~drawArc(dc,50,50,200,150)                 /* full ellipse */
 self~drawArc(dc,100,100,150,150, 200,50,75,75) /* quarter circle */
 self~objectToDC(dc,oldp); self~deleteObject(pen)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1699,8 +1691,7 @@ context. </para>
     time is not erased, it just becomes a smear as the different digits are written over the top of each other. The example
     gets a system brush that is the color of the background of the clock and uses that to erase the background of the area
     that displays the digital time before it is updated with the current time:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   -- Get a system brush using the button's system color. Do not delete system
   -- brushes
   btnBrush = self~getSysBrush('BTNFACE')
@@ -1713,7 +1704,6 @@ context. </para>
   s = button~getTextExtent(dc, time)
   r = .Rect~new(290, 40, 290 + s~width, 40 + s~height)
   self~fillRect(dc, r, btnBrush)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1785,8 +1775,7 @@ the <xref linkend="mthFreeWindowDC"/>, <xref linkend="mthFreeDC"/>, or
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>This example loads an Arial font into the current dialog window:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 additional = .directory~new
 additional~italic = .true
 hfnt = MyDialog~createFontEx("Arial", 16, additional)
@@ -1795,7 +1784,6 @@ oldf = MyDialog~fontToDC(dc,hfnt)  /* activate font */
 ...
 MyDialog~fontToDC(dc,oldf)         /* restore previous font */
 MyDialog~freeDC(dc)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1849,15 +1837,13 @@ MyDialog~freeDC(dc)
   <para>
     This example gets the device context of a button window, draws something in the client space of the button, and then
     releases the device context:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   pb = self~newPushButton("DRAWINGS")
   if pb = .nil then return -1
   dc = pb~getDC
   if dc = 0 then return -1
   ... /* draw something */
   pb~freeDC(dc)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1913,15 +1899,13 @@ returns the handle to the display device context of a dialog or dialog control.<
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example retrieves the device context of button DRAWINGS,
 processes the drawing commands, and frees the device context resources:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 obj = MyDialog~newPushButton("DRAWINGS")
 if obj = .Nil then return -1
 dc = obj~getDC
 if dc = 0 then return -1
 ... /* draw something */
 obj~freeDC(dc)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1966,8 +1950,7 @@ When you have finished with the device context, call <xref linkend="mthFreeDC"/>
     This is an example from a fictious program where a custom font is used to emphasis the text in two
     static controls.  When the user does some action, the text in one control is emphasised and the
     other is de-emphasised.  One way to do this is to just swap the fonts.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onToggle private
   static1 = self~newStatic(IDC_ST_OUTSTANDING_BALANCE)
   static2 = self~newStatic(IDC_ST_LASTPAYMENT)
@@ -1977,7 +1960,6 @@ When you have finished with the device context, call <xref linkend="mthFreeDC"/>
   static1~setFont(font2)
   static2~setFont(font1)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2074,15 +2056,13 @@ within the device context. </para>
   <para>
     This example gets a brush with the system color of a push button and then selects it into a device context to use it form
     painting:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   -- Get a system brush using the button's system color. Do not delete system
   -- brushes
   btnBrush = self~getSysBrush('BTNFACE')
   curBrush = self~objectToDC(dc, btnBrush)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2361,10 +2341,8 @@ horizontal scroll bar in the associated dialog or dialog control.</para>
     The following example loads the bitmap file, <computeroutput>Walker.bmp</computeroutput>, into memory. The file is
     located in the <computeroutput>bmp</computeroutput> subdirectory. hBmp is the handle to this in-memory bitmap.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   hBmp = MyDialog~loadBitmap("bmp\Walker.bmp", "USEPAL")
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2406,14 +2384,12 @@ the previous environment.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example activates a pen for drawing:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 dc = MyBaseDialog~getDC
 hpen = MyDialog~createPen(2, "SOLID", 4)
 MyDialog~objectToDC(dc,hpen)
 ... /* do lines, rectangles, ... */
 MyDialog~deleteObject(hpen)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -2491,8 +2467,7 @@ the default brush is white. </para>
 <listitem><para>The following example draws a red rectangle filled with yellow, surrounded
 by a black rectangle:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 dc = self~getControlDC(100)
 brush = self~createBrush(15)        /* yellow */
 pen = self~createPen(10,"solid",13) /* thick red */
@@ -2502,7 +2477,6 @@ self~rectangle(dc, 50, 50, 200, 150, "FILL")
 self~objectToDC(dc,oldp); self~deleteObject(pen)
 self~objectToDC(dc,oldb); self~deleteObject(brush)
 self~rectangle(dc, 40, 40, 210, 160) /* default */
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -2693,11 +2667,9 @@ is to be scrolled downward or upward, if negative.
   <para>
     The following example creates the font Arial with a size of 14 and assigns it to the tree view
     control FILES, which is forced to be redrawn.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 hfnt = dlg~createFontEx("Arial", 14)
 dlg~newTreeView("FILES")~setFont(hfnt, .true)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3167,11 +3139,9 @@ vertical scroll bar in the associated dialog or dialog control.</para>
     The following example writes the string &quot;Hello world!&quot; to the dialog using a blue 24pt Arial font in bold
     and transparent, italic style:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   dlg~write(5, 5, "Hello world!", "Arial", 24, "BOLD ITALIC TRANSPARENT CLIENT", 4)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

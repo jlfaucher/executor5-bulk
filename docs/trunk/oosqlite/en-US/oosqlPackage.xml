@@ -148,8 +148,7 @@
   <para>
     This example is from a program where only a single function in an ooSQLite package is needed to be registered with a
     database connection:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   -- Load the package
   success = .ooSQLExtensions~loadPackage(packageFile)
@@ -179,7 +178,6 @@
 
   dbConn~createFunction('half', function)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -230,8 +228,7 @@
   <para>
     This example uses the <emphasis role="italic">lastErrCode</emphasis> attribute as part of producing a meaningful error
     message when an <computeroutput>ooSQLFunction</computeroutput> object can not be retrieved from a package:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   function  = package~getFunction('half')
   if function == .nil then do
     say 'Failed to get function: half'
@@ -240,7 +237,6 @@
 
     return package~lastErrCode
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -289,8 +285,7 @@
   <para>
     This example uses the <emphasis role="italic">lastErrMsg</emphasis> attribute to produce a meaningful error message when
     an <computeroutput>ooSQLFunction</computeroutput> object can not be retrieved from a package:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   function  = package~getFunction('half')
   if function == .nil then do
@@ -301,7 +296,6 @@
     return package~lastErrCode
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

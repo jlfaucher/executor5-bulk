@@ -184,8 +184,7 @@
 </para>
 <example id="ex.ole-ie">
 <title>OLEObject - WatchedIE</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 -- Instantiate an instance of the subclassed OLEObject
 myIE = .WatchedIE~new("InternetExplorer.Application", "WITHEVENTS")
@@ -209,7 +208,6 @@ myIE = .WatchedIE~new("InternetExplorer.Application", "WITHEVENTS")
 ::method onQuit
   ...
 
-]]>
 </programlisting>
 </example>
 <para>
@@ -231,8 +229,7 @@ myIE = .WatchedIE~new("InternetExplorer.Application", "WITHEVENTS")
 </para>
 <example id="ex.ole-word">
 <title>OLEObject - Watch Word</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   wordApp = .OLEObject~new("Word.Application")
   wordApp~visible = .true
@@ -257,7 +254,6 @@ myIE = .WatchedIE~new("InternetExplorer.Application", "WITHEVENTS")
     document~connectEvents
   end
 
-]]>
 </programlisting>
 </example>
 <para>
@@ -308,8 +304,7 @@ echo " " > stop.monitor
 </para>
 <example id="ex.ole-outlook">
 <title>OLEObject - Monitor Outlook</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 /* Monitor OutLook for new mail */
   say; say; say 'ooRexx Mail Monitor version 1.0.0'
@@ -408,7 +403,6 @@ return 0
 
   return 'continue'
 
-]]>
 </programlisting>
 </example>
 </section>
@@ -525,10 +519,8 @@ return 0
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 myOLEObject = .OLEObject~new("InternetExplorer.Application")
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -578,7 +570,7 @@ myOLEObject = .OLEObject~new("InternetExplorer.Application")
 </para>
 <example id="ex.ole-getObkectMoniker">
 <title>OLEObject - getObjectMoniker method</title>
-<programlisting>
+<programlisting language="rexx">
 /* create a Word.Document by opening a certain file */
 myOLEObject = .OLEObject~GetObject("C:\DOCS\HELLOWORLD.DOC")
 </programlisting>
@@ -619,8 +611,7 @@ myOLEObject = .OLEObject~GetObject("C:\DOCS\HELLOWORLD.DOC")
 </para>
 <example id="ex.ole-printNewMail">
 <title>OLEObject - printNewMail method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   inboxID = outLook~getConstant(olFolderInBox)
   inboxItems = outLook~getNameSpace("MAPI")~getDefaultFolder(inboxID)~items
@@ -634,7 +625,6 @@ myOLEObject = .OLEObject~GetObject("C:\DOCS\HELLOWORLD.DOC")
   say 'You have mail'
   say 'Subject:' mailItem~subject
 
-]]>
 </programlisting>
 </example>
 </section>
@@ -659,16 +649,14 @@ then forwards to Windows, otherwise to superclass (ooRexx root class Object).</p
 
 <example id="ex.ole-classOverride">
 <title>OLEObject - use scope override option to resolve to ooRexx root class Object</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ... cut ...
 
   clz=oleObj~class:.object    -- use method 'class' in the ooRexx root class Object
 
-  .. cut ...
+  ... cut ...
 
-]]>
 </programlisting>
 </example>
 </section>
@@ -710,16 +698,14 @@ then forwards to Windows, otherwise to superclass (ooRexx root class Object).</p
 
 <example id="ex.ole-copyOverride">
 <title>OLEObject - use scope override option to resolve to ooRexx root class Object</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ... cut ...
 
   o=oleObj~copy:.object    -- use method 'copy' in the ooRexx root class Object
 
-  .. cut ...
+  ... cut ...
 
-]]>
 </programlisting>
 </example>
 </section>
@@ -747,8 +733,7 @@ then forwards to Windows, otherwise to superclass (ooRexx root class Object).</p
 </para>
 <example id="ex.ole-connectEvents">
 <title>OLEObject - connectEvents method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   wordApp = .OLEObject~new("Word.Application")
   wordApp~visible = .true
@@ -756,7 +741,6 @@ then forwards to Windows, otherwise to superclass (ooRexx root class Object).</p
 
   wordApp~connectEvents
 
-]]>
 </programlisting>
 </example>
 </section>
@@ -797,8 +781,7 @@ then forwards to Windows, otherwise to superclass (ooRexx root class Object).</p
 </para>
 <example id="ex.ole-disconnectEvents">
 <title>OLEObject - disconnectEvents method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   outLook = .oleObject~new("Outlook.Application")
   inboxID = outLook~getConstant(olFolderInBox)
@@ -827,7 +810,6 @@ then forwards to Windows, otherwise to superclass (ooRexx root class Object).</p
     -- End select
 
 
-]]>
 </programlisting>
 </example>
 </section>
@@ -869,7 +851,7 @@ You can also omit the name of the constant; this returns a stem with all known
 constants and their values. In this case the constant names will be prefixed
 with a "!" symbol.</para>
 <para><emphasis role="bold">Example 1:</emphasis></para>
-<programlisting>
+<programlisting language="rexx">
 myExcel = .OLEObject~new("Excel.Application")
 say "xlCenter has the value" myExcel~getConstant("xlCenter")
 myExcel~quit
@@ -880,7 +862,7 @@ exit
 xlCenter has the value -4108
 </programlisting>
 <para><emphasis role="bold">Example 2:</emphasis></para>
-<programlisting>
+<programlisting language="rexx">
 myExcel = .OLEObject~new("Excel.Application")
 constants. = myExcel~getConstant
 myExcel~quit
@@ -970,7 +952,7 @@ end
   support events.
 </para>
 <para><emphasis role="bold">Example script:</emphasis></para>
-<programlisting>
+<programlisting language="rexx">
 myIE = .OLEObject~new("InternetExplorer.Application","NOEVENTS")
 events. = myIE~getKnownEvents
 
@@ -1128,7 +1110,7 @@ opt]").</entry>
 </simplelist>
 <example id="ex.ole-getKnownMethods">
 <title>OLEObject - getKnownMethods method</title>
-<programlisting>
+<programlisting language="rexx">
 myOLEObject = .OLEObject~new("InternetExplorer.Application")
 methods. = myOLEObject~getKnownMethods
 
@@ -1187,7 +1169,7 @@ value gets processed as usual. In this case the method will return the .NIL
 object:</para>
 <example id="ex.ole-getOutParameters">
 <title>OLEObject - getOutParameters method</title>
-<programlisting>
+<programlisting language="rexx">
 resultTest = myOLEObject~aMethod(1, 2, .NIL)
 say "Invocation result  :" resultTest
 say "Result in out array:" myOLEObject~getOutParameters~at(1)
@@ -1246,8 +1228,7 @@ Returns <computeroutput>.true</computeroutput> if methodName exists, <computerou
 </para>
 <example id="ex.ole-isConnectable">
 <title>OLEObject - isConnectable method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   outLook = .oleObject~new("Outlook.Application")
 
@@ -1256,7 +1237,7 @@ Returns <computeroutput>.true</computeroutput> if methodName exists, <computerou
   nameSpace = outLook~getNameSpace('MAPI')
   folders = nameSpace~folders
   do i = 1 to folders~count
-    if folders~item(i)~name~caselessPos("Mailbox") <> 0 then do
+    if folders~item(i)~name~caselessPos("Mailbox") &lt;&gt; 0 then do
       theMailBoxFolder = folders~item(i)
       leave
     end
@@ -1271,7 +1252,6 @@ Returns <computeroutput>.true</computeroutput> if methodName exists, <computerou
     ...
   end
 
-]]>
 </programlisting>
 </example>
 </section>
@@ -1296,8 +1276,7 @@ Returns <computeroutput>.true</computeroutput> if methodName exists, <computerou
 </para>
 <example id="ex.ole-isConnected">
 <title>OLEObject - isConnected method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   wordObj = .oleObject~new("Word.Application", "WITHEVENTS")
   if wordObj~isConnected then do
     ...
@@ -1306,7 +1285,6 @@ Returns <computeroutput>.true</computeroutput> if methodName exists, <computerou
     ...
   end
 
-]]>
 </programlisting>
 </example>
 </section>
@@ -1355,13 +1333,11 @@ Returns <computeroutput>.true</computeroutput> if methodName exists, <computerou
 </para>
 <example id="ex.ole-removeEventHandler">
 <title>OLEObject - removeEventHandler method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   inboxItems~removeEventHandler
   inboxItems~removeEventMethod("ItemAdd")
 
-]]>
 </programlisting>
 </example>
 </section>
@@ -1387,8 +1363,7 @@ Returns <computeroutput>.true</computeroutput> if methodName exists, <computerou
 </para>
 <example id="ex.ole-removeEventMethod">
 <title>OLEObject - removeEventMethod method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   inboxID = outLook~getConstant(olFolderInBox)
   inboxItems = outLook~getNameSpace("MAPI")~getDefaultFolder(inboxID)~items
@@ -1404,7 +1379,6 @@ Returns <computeroutput>.true</computeroutput> if methodName exists, <computerou
   inboxItems~removeEventHandler
   inboxItems~removeEventMethod("ItemAdd")
 
-]]>
 </programlisting>
 </example>
 </section>
@@ -1430,16 +1404,12 @@ then forwards to Windows, otherwise to superclass (ooRexx root class Object).</p
 
 <example id="ex.ole-startOverride">
 <title>OLEObject - use scope override option to resolve to ooRexx root class Object</title>
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   ... cut ...
 
-  m=oleObj~start:.object(…)    -- use method 'start' in the ooRexx root class Object
+  m=oleObj~start:.object(...)    -- use method 'start' in the ooRexx root class Object
 
-  .. cut ...
-
-]]>
+  ... cut ...
 </programlisting>
 </example>
 </section>
@@ -1464,16 +1434,12 @@ then forwards to Windows, otherwise to superclass (ooRexx root class Object).</p
 
 <example id="ex.ole-startwithOverride">
 <title>OLEObject - use scope override option to resolve to ooRexx root class Object</title>
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   ... cut ...
 
-  m=oleObj~startWith:.object(…) -- use method 'startWith' in the ooRexx root class Object
+  m=oleObj~startWith:.object(...) -- use method 'startWith' in the ooRexx root class Object
 
-  .. cut ...
-
-]]>
+  ... cut ...
 </programlisting>
 </example>
 </section>
@@ -1503,7 +1469,7 @@ then forwards to Windows, otherwise to superclass (ooRexx root class Object).</p
   The programmer can invoke the methods of the real OLE object by simply invoking the methods on the
   the Rexx (proxy) OLEObject object like this:
 </para>
-<programlisting>
+<programlisting language="rexx">
 myOLEObject~OLEMethodName
 </programlisting>
 <para>
@@ -1527,7 +1493,7 @@ myOLEObject~OLEMethodName
 </para>
 <example id="ex.ole-unknown">
 <title>OLEObject - unknown method</title>
-<programlisting>
+<programlisting language="rexx">
 msgArgs = .array~of("C:\open\myFile.txt", "C:\processDir\")
 val = myOLEObject~unknown("copy", msgArgs)
 </programlisting>
@@ -1545,7 +1511,7 @@ val = myOLEObject~unknown("copy", msgArgs)
   make the code a little easier to understand.  In the above example the
   <computeroutput>dispatch</computeroutput> method would be used like this:
 </para>
-<programlisting>
+<programlisting language="rexx">
 val = myOLEObject~dispatch("copy", "C:\open\myFile.txt", "C:\processDir\")
 </programlisting>
 </section>
@@ -1740,7 +1706,7 @@ conversion was failing.
 </para>
 <example id="ex.ole-conversion">
 <title>OLEObject - automatic conversions</title>
-<programlisting>
+<programlisting language="rexx">
   connect  = .OLEObject~new("Ccl.Connect")
   flow     = .OLEObject~new("Ccl.Flow")
   buffer   = .OLEObject~new("Ccl.Buffer")
@@ -1772,7 +1738,7 @@ second parameter in the ~execute method call.
 </para>
 <example id="ex.olevariant-new">
 <title>OLEVariant - new</title>
-<programlisting>
+<programlisting language="rexx">
   sql = "update myTable set id=id*3 where id > 7"
   param = .OLEVariant~new(0)
   conn~execute(sql, param)
@@ -1794,7 +1760,7 @@ to transport the returned data back to the calling program.
 </para>
 <example id="ex.ole-parameterflags">
 <title>OLEObject - incorrect parameter flags</title>
-<programlisting>
+<programlisting language="rexx">
   objProcess = .oleObject~getObject("WinMgmts:Win32_Process")
 
   param = .OLEVariant~new( 0, , "IN,OUT" )
@@ -1893,7 +1859,7 @@ Automation.  If they are not valid, a syntax error will be raised.
 </para></note>
 <example id="ex.ole-parameters">
 <title>OLEObject - parameters</title>
-<programlisting>
+<programlisting language="rexx">
 manager = .oleObject~new("com.sun.star.ServiceManager", "WITHEVENTS")
 cf = manager~createInstance("com.sun.star.reflection.CoreReflection")
 ...
@@ -1921,7 +1887,7 @@ parameter, than the value object of the instance will be the data returned
 by the COM object.  Otherwise, the value object is that set by the ooRexx
 programmer.
 </para>
-<programlisting>
+<programlisting language="rexx">
 manager = .oleObject~new("com.sun.star.ServiceManager", "WITHEVENTS")
 cf = manager~createInstance("com.sun.star.reflection.CoreReflection")
 ...

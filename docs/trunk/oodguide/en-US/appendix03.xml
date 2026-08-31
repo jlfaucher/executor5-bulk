@@ -199,8 +199,7 @@ A Leaf Dialog:
           <computeroutput>UserDialog</computeroutput>) which has one class attribute and two methods,
           <emphasis role="italic">getPopupPos</emphasis> and <emphasis role="italic">offset</emphasis>,
           as follows:
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
     ::CLASS View SUBCLASS UserDialog
 
       ::ATTRIBUTE offsetAmount CLASS PUBLIC
@@ -215,8 +214,7 @@ A Leaf Dialog:
         use arg dlgPos
         self~moveTo(dlgPos, 'SHOWWINDOW')
         self~ensureVisible()
-  ]]>
-  </programlisting>
+    </programlisting>
   The class attribute <emphasis role="italic">offsetAmount</emphasis> is set
   at the start of the program, and defines the amount of space by which to offset a junior dialog.
   The term "junior dialog" in this section

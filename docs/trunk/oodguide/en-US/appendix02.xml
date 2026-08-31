@@ -96,8 +96,7 @@
     <listitem><para>Displays the message in a message box.</para></listitem>
   </itemizedlist>
 </para>
-<para>The ooDialog content of the program is very simple, and is as follows: <programlisting>
-    <![CDATA[
+<para>The ooDialog content of the program is very simple, and is as follows: <programlisting language="rexx">
 -- (1) Set text in the edit control:
 statement = "It's a fine day today."
 dlgData.IDC_EDIT1 = statement
@@ -114,6 +113,7 @@ if ret == 1 then do			-- if the user pressed OK
   statement2 = dlgData.1002		-- get data from the edit control
   agree = dlgData.IDC_RADIO1		-- get the state of the radio buttons:
   disagree = dlgData.1004
+  end
 
 -- (4) Set up the appropriate message to display:
 
@@ -125,19 +125,16 @@ ret = MessageDialog(msg, 0, title, 'OK', icon, 'TOPMOST')
 ::requires "ooDialog.cls"
 
 ::CLASS ASimpleDialog SUBCLASS RcDialog
-    ]]>
 </programlisting>As illustrated by section (1) of the code, data is first set up in the stem
         <emphasis role="italic">dlgData.</emphasis> by the statement:
         <computeroutput>dlgData.IDC_EDIT1 = statement</computeroutput>. Note that the name <emphasis
         role="italic">dlgData.</emphasis> is not reserved - it could be any name. When the dialog is
       created, the text "It's a fine day today." is automatically placed in the edit control
       identified by the symbolic ID <computeroutput>IDC_EDIT1</computeroutput>. </para>
-<para>Section (2) creates and displays the dialog. Only two statements are required to do this: <programlisting>
-    <![CDATA[
+<para>Section (2) creates and displays the dialog. Only two statements are required to do this: <programlisting language="rexx">
       dlg = .ASimpleDialog~new("ASimpleDialog.rc", IDD_DIALOG1, dlgData.,"ASimpleDialog.h" )
       ret = dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
-    ]]>
-  </programlisting>The first parameter of the dialog creation statement is the name of the
+      </programlisting>The first parameter of the dialog creation statement is the name of the
       .rc file, and the second the symbolic ID of the dialog as defined in that file. The third
       parameter - <emphasis role="italic">dlgData.</emphasis> - is the stem variable that contains
       the data - that is the attribute values - to be placed in the dialog's controls. Finally, the
@@ -173,13 +170,11 @@ ret = MessageDialog(msg, 0, title, 'OK', icon, 'TOPMOST')
   is instantiated. To turn auto detection off, just invoke <emphasis role="italic">noAutoDetection</emphasis>
   on <emphasis role="italic">self</emphasis>. Try adding the following method to
   <emphasis role="bold">ASimpleDialog</emphasis>
-  <programlisting>
-    <![CDATA[
+  <programlisting language="rexx">
     ::CLASS ASimpleDialog SUBCLASS RcDialog
       ::method initAutoDetection
         self~noAutoDetection
-    ]]>
-  </programlisting>
+      </programlisting>
       When the program is run, the edit control is blank. On pressing "OK", the
       dialog closes and an error is reported on the console. The error occurs because the radio
       button "data" (i.e. a boolean) is not returned, and so an "if" statement fails because it's

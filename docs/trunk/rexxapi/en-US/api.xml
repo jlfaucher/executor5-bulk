@@ -1299,7 +1299,7 @@ variable name as a quoted string.  For example, for a routine defined using</par
 RexxRoutine1(int, MyRoutine, RexxStemObject, stem)
 </programlisting>
 <para>the following calls are equivalent:</para>
-<programlisting>
+<programlisting language="rexx">
 x = MyRoutine(a.)
 x = MyRoutine('a.')
 </programlisting>
@@ -1540,7 +1540,7 @@ For example, for a method defined using</para>
 RexxMethod1(int, MyMethod, RexxStemObject, stem)
 </programlisting>
 <para>the following call passes a stem object associated with a stem variable to the method:</para>
-<programlisting>
+<programlisting language="rexx">
 x = o~myMethod(a.)
 </programlisting>
 </listitem></varlistentry>
@@ -1841,11 +1841,11 @@ pass Pointer or Buffer references to the private native code.  For example, the 
 code might look like this:</para>
 <example>
 <title>API &mdash; RexxObjectPtr</title>
-<programlisting>
+<programlisting language="rexx">
 ::method setTitle
   expose title prefix handle
   use arg title
-  // set the title to the title concatenated to the prefix
+  -- set the title to the title concatenated to the prefix
   self~privateSetTitle(handle, prefix title)
 
 ::method privateSetTitle PRIVATE EXTERNAL "LIBRARY mygui setTitle"
@@ -1931,7 +1931,7 @@ that set MYDATA originally and the subclass method that wishes to access the dat
 are defined at different class scopes, GetObjectVariable() will access different variable
 pools and MYDATA will not be found.  One solution would be to create a private
 attribute method in the base class:</para>
-<programlisting>
+<programlisting language="rexx">
 ::attribute mydata get private
 </programlisting>
 <para>The subclass method can then access the method using

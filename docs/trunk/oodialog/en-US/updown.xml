@@ -440,8 +440,7 @@
     It is difficult to prevent the user from typing in numbers, that are outside of the range of the up-down, in an edit
     control that is the buddy window. This example shows a generic method that could be used to check that what the user
     typed lies within the proper range of the up-down.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method checkUpDownIntegrity private
   use strict arg upd
@@ -452,7 +451,6 @@
     if buddy~getText \== pos then buddy~setText(pos)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -506,9 +504,7 @@
     This example retrieves the up-down's position value during validation when the dialog is closing. If the user has
     manually typed in a value in the buddy edit control, then that is the value that will be used. However, if that
     value is out of range, the validation is failed and the user is warned:
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method validate unguarded
 
   ...
@@ -518,7 +514,7 @@
     eol = .endOfLine
     edit = upd~getBuddy
 
-    msg = 'You've typed in' edit~getText 'years of' || eol || -
+    msg = "You've typed in" edit~getText 'years of' || eol || -
           'experience.  That is outside of the'     || eol || -
           'allowable range.'              || eol~copies(2) || -
           'Please use a reasonable number.'
@@ -534,8 +530,6 @@
   end
 
   return .true
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -672,8 +666,7 @@
   <listitem>
   <para>
     The following example sets the acceleration to be very fast, much faster than normal:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -689,7 +682,6 @@
 
   upd~setAcceleration(accels)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -742,16 +734,12 @@
   <listitem>
   <para>
     This example changes the base of the up-down control to 16:
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   upDown = self~newUpDown(IDC_UPD)
   ret = upDown~setBase(16)
   if ret == 16 then say "The up-down base was already set to 16."
-  else if ret == 10 say "The up-down base was changed from 10 to 16."
+  else if ret == 10 then say "The up-down base was changed from 10 to 16."
   else say "This else will never execute."
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -814,8 +802,7 @@
   <para>
     This example sets the buddy window during the <xref linkend="mthInitDialog"/> method for an up-down
     control that does not have the AUTOBUDDY style.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -823,7 +810,6 @@
   upd = self~newUpDown(IDC_UPD_EXPIRATION)
   upd~setBuddy(edit)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -883,8 +869,7 @@
   <para>
     This example sets the range for an up-down control to be the years 1900 through 2100 and then sets the current
     position of the up-down control to the current year:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -892,7 +877,6 @@
   upDown~setRange(1900, 2100)
   upDown~setPosition(.DateTime~today~year)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1001,9 +985,7 @@ Generic form:
   <para>
     This example sets the range of an up-down control when the dialog first starts. Later in the life cycle of the
     dialog the range is changed numerous times, so a generic functions is used to change the range:
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method initDialog
   expose upDown staticPresident
 
@@ -1035,7 +1017,7 @@ Generic form:
       self~changeRange(r)
     end
 
-    ...
+    /* ... */
 
     when president == 'Zachary Taylor' then do
       r = .directory~new
@@ -1050,8 +1032,6 @@ Generic form:
   use strict arg range
 
   upDown~setRange(range)
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

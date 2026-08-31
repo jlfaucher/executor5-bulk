@@ -241,8 +241,7 @@
 <para>
   <emphasis role="bold">Examples:</emphasis>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dtp = self~newDateTimePicker(IDC_DTP)
 
@@ -275,7 +274,6 @@
      Don't forget Mar 02, 2011
   */
 
-]]>
 </programlisting>
 
 </para>
@@ -601,8 +599,7 @@
   <listitem>
   <para>
     This example sets a longish format for a DTP control and then resizes the control to its ideal size:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose dtp
@@ -621,7 +618,6 @@
   dtp~resizeTo(ideal)
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -739,8 +735,7 @@
   <para>
     This example connects the <computeroutput>F3</computeroutput> key to the dialog. When the user presses the
     <computeroutput>F3</computeroutput> key, the current DTP control information is displayed:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineDialog
 
@@ -797,7 +792,6 @@ UpDown:      The NIL object
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -861,8 +855,7 @@ UpDown:      The NIL object
     control and changes the first day of the week to Friday. The <emphasis role="italic">Today</emphasis> selection is
     also removed. This is an example of a <xref linkend="evtDateTimePickerDROPDOWN"/> event handler. Note that no reference
     is kept for the month calendar. The object will be invalid as soon as the user closes the drop down:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onDropDown unguarded
   use arg idFrom, hwndFrom
@@ -874,7 +867,6 @@ UpDown:      The NIL object
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1150,8 +1142,7 @@ UpDown:      The NIL object
     For an expanded version of this example, see the <link linkend="exampleSetMonthCalStyle">example</link> for the
     <xref linkend="mthSetMonthCalStyle"/> method.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 /*
  * Simple test program to display the DTP control's month calendar's initial
@@ -1196,7 +1187,6 @@ return 0
 
 /* Output will be: */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1255,8 +1245,7 @@ return 0
   <listitem>
   <para>
     This example shows a method designed to display the current range of the DTP control:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method showRange
   expose dtp
@@ -1302,7 +1291,6 @@ The maximum time for the DTP control is: 2011-12-31T11:59:59.999000.
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1366,8 +1354,7 @@ The maximum time for the DTP control is: 2011-12-31T11:59:59.999000.
   <listitem>
   <para>
     This example sets the date and time of the DTP control to March 1st, 2011 at 10:00 am:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose dtp
@@ -1377,7 +1364,6 @@ The maximum time for the DTP control is: 2011-12-31T11:59:59.999000.
   time = .DateTime~fromISODate('2011-03-01T10:00:00.000000')
   dtp~setDateTime(time)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1430,8 +1416,7 @@ The maximum time for the DTP control is: 2011-12-31T11:59:59.999000.
   <listitem>
   <para>
     This example creates a format string and then sets the DTP to use it:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose dtp
@@ -1448,7 +1433,6 @@ Monday October 24, 2011 - 11:52 AM
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1740,8 +1724,7 @@ Monday October 24, 2011 - 11:52 AM
   <para>
     This example is a stand-alone program. It is a slightly expanded version of the <emphasis
     role="italic">getMonthCalStyle</emphasis> <link linkend="exampleGetMonthCalStyle">example</link>.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 /*
  * Simple test program to set and show the DTP control's month calendar's
@@ -1809,7 +1792,6 @@ Style (Windows 2000 or XP): NOCIRCLE NOTODAY
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1869,8 +1851,7 @@ Style (Windows 2000 or XP): NOCIRCLE NOTODAY
   <listitem>
   <para>
     This example restricts the range of the DTP control to the year 2011:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose dtp
@@ -1882,7 +1863,6 @@ Style (Windows 2000 or XP): NOCIRCLE NOTODAY
 
   dtp~setRange(.array~of(min, max))
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

@@ -152,13 +152,13 @@
 <para>
   The <computeroutput>defineDialog</computeroutput> method has not changed. But the
   <computeroutput>okClicked</computeroutput> method is different - and much shorter:
-<programlisting><![CDATA[
+<programlisting language="rexx">
     ::method okClicked
       expose wowPicker newText
       wow = wowPicker~pickWow
       newText~setText(wow)
       return
-]]></programlisting>
+</programlisting>
 To get the "words of wisdom" to display, it now merely asks
   <computeroutput>wowPicker</computeroutput> for a string to display.
 </para>
@@ -178,7 +178,7 @@ To get the "words of wisdom" to display, it now merely asks
 <section id="chap03-struc-bus"><title>The "Model" Component</title><!-- section 3.1.2 -->
 <para> The class implementing the model component - <computeroutput>WowPicker</computeroutput>
           - is very simple:
-<programlisting><![CDATA[
+<programlisting language="rexx">
     ::METHOD init
       expose wowSet
       dataSource = .WowData~new
@@ -189,7 +189,7 @@ To get the "words of wisdom" to display, it now merely asks
       expose wowSet
       i = random(1,7)
       return wowSet[i]
-]]></programlisting>
+</programlisting>
   The <computeroutput>init</computeroutput>method gets a reference to an
   instance of the class <computeroutput>WowData</computeroutput> - which handles the data
   area of concern - and then gets a set of Words of Wisdom into the array variable
@@ -254,7 +254,7 @@ To get the "words of wisdom" to display, it now merely asks
           <computeroutput>WowView</computeroutput>, <computeroutput>WowModel</computeroutput>, and
           <computeroutput>WowData</computeroutput>. The code in
           <computeroutput>Startup.rex</computeroutput> is very simple:
-<programlisting><![CDATA[
+<programlisting language="rexx">
     .local~my.idWowData = .WowData~new
     .local~my.idWowPicker = .WowPicker~new
      dlg = .WowView~new
@@ -266,7 +266,7 @@ To get the "words of wisdom" to display, it now merely asks
     ::REQUIRES "WowView.rex"
     ::REQUIRES "WowModel.rex"
     ::REQUIRES "WowData.rex"
-]]></programlisting>The first three statements create the three classes, with the ids of the
+</programlisting>The first three statements create the three classes, with the ids of the
         first two being stored in <computeroutput>.local</computeroutput>. Creation of the dialog is
         done by the third statement (<computeroutput>dlg = .WowView~new</computeroutput>). The next
     three statements send an <computeroutput>activate</computeroutput> message to each of the

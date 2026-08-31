@@ -182,20 +182,18 @@
   It would be most common to use the <computeroutput>.application</computeroutput> object at the start of a program.
   This example shows a typical way of changing the default for automatic data detection off for the entire application:
 </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   .application~autoDetection(.false)
 
   dlg = .SimpleDialog~new("UserMenuBar.rc", IDD_MAIN_DIALOG)
-  if dlg~initCode <> 0 then do
+  if dlg~initCode &lt;&gt; 0 then do
     return 99
   end
 
   dlg~execute("SHOWTOP")
   ...
 
-]]>
 </programlisting>
 </section>
 
@@ -396,8 +394,7 @@ ResourceUtils::<xref linkend="atrConstDir"/>
     This example shows the <emphasis role="italic">Locate</emphasis> function being used to get the installation directory of
     an application and then the <emphasis role="italic">srcDir</emphasis> attribute being used to access the directory value
     in a private method of a class:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   srcDir = Locate()
 
   rcFile = srcDir"resources\imageButton.rc"
@@ -406,15 +403,17 @@ ResourceUtils::<xref linkend="atrConstDir"/>
   .application~setDefaults("O", symbolFile, .false)
 
   dlg = .ImageListDlg~new(rcFile, IDD_IMAGELIST_BUTTON)
-  ...
+
+  /* ... */
 
 ::class 'ImageListDlg' subclass RcDialog
-  ...
+
+  /* ... */
 
 ::method setPictureButtons private
   expose pbView pbAdd stStatus imagesLoaded imageList
 
-  if .DlgUtil~comCtl32Version < 6 then return self~oldSetButtons
+  if .DlgUtil~comCtl32Version &lt; 6 then return self~oldSetButtons
 
   pbView~style = "MULTILINE BOTTOM"
 
@@ -428,8 +427,8 @@ ResourceUtils::<xref linkend="atrConstDir"/>
   files[4] = srcDir"resources\Disabled.bmp"     -- Disabled
   files[5] = srcDir"resources\Default.bmp"      -- Default button
   files[6] = srcDir"resources\Hot.bmp"          -- Stylus hot, tablet PC only
-  ...
-]]>
+
+  /* ... */
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -500,8 +499,7 @@ ResourceUtils::<xref linkend="atrConstDir"/>
   <para>
     This example creates a table of symbolic IDs and then uses that table to add symbols to the
     <computeroutput>.constDir</computeroutput>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   symbols = getSymbols()
   .application~addToConstDir(symbols)
@@ -535,7 +533,6 @@ ResourceUtils::<xref linkend="atrConstDir"/>
 
   return tbl
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -797,14 +794,12 @@ ResourceUtils::<xref linkend="atrConstDir"/>
   <listitem>
   <para>
     This example sets the default icon for the application using a stand alone icon file:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   .application~setDefaults('O', 'rc\oodStandardDialog.h')
   .application~defaultIcon('bmp\oodStandardDialog.ico')
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -886,10 +881,8 @@ ResourceUtils::<xref linkend="mthParseIncludeFile"/>
     for instance, the <emphasis role="italic">requiredOS</emphasis> method will display a message to the user stating that:
     <emphasis role="italic">The openSaveFileDemo.rex application requires Windows Vista or later. It can not run on
     XP.</emphasis> before it returns:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   if \ .application~requiredOS('Vista', 'openSaveFileDemo.rex') then return 99
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1115,8 +1108,7 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
     This example specifies that only the <computeroutput>.constDir</computeroutput> should be used to resolve symbolic
     IDs, loads symbols into the <computeroutput>.constDir</computeroutput> from the file:
     <computeroutput>rc\PropertySheetDemo.h</computeroutput> and sets the default for automatic data detection to off:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   .application~setDefaults("O", "rc\PropertySheetDemo.h", .false)
 
@@ -1128,7 +1120,6 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
 
   tabContent = .array~of(t1, t2, t3, t4, t5)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1270,8 +1261,7 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
     In this example the programmer specifies to only use the <computeroutput>.constDir</computeroutput> to resolve
     symbolic IDs, and at the same time loads symbols into the <computeroutput>.constDir</computeroutput> from the
     <computeroutput>ticketWizard.h</computeroutput> file:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   .application~useGlobalConstDir('O', "rc\ticketWizard.h")
 
@@ -1282,7 +1272,6 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
 
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1321,8 +1310,7 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
   <computeroutput>accountingApp.h</computeroutput>. Notice that the <computeroutput>.constDir</computeroutput> is not
   even directly referenced.
 </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   .application~useGlobalConstDir('O', 'accountingApp.h')
 
@@ -1332,7 +1320,6 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
   end
   ...
 
-]]>
 </programlisting>
 <para>
   Much of the time the programmer never needs to directly access the <computeroutput>.constDir</computeroutput>.
@@ -1340,8 +1327,7 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
   radion buttons are connected to one event handling method and which radio button was selected is determined using the
   <computeroutput>.constDir</computeroutput>:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onRbSelect
   expose process
@@ -1361,7 +1347,6 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
   end
   -- End select
 
-]]>
 </programlisting>
 </para>
 </section>
@@ -1559,17 +1544,15 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
   </para>
   <para>
     The value of the ES_READONLY style is 0x0800.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method getEditText private
   use strict arg control
 
   -- If the control is read only, we just return .nil
-  if .DlgUtil~and(control~getStyleRaw, 0x0800) <> 0 then return .nil
+  if .DlgUtil~and(control~getStyleRaw, 0x0800) &lt;&gt; 0 then return .nil
 
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1657,11 +1640,10 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
  <xref linkend="mthGetIdealSize"/> method is available.  If it is not available he uses an
     alternative, but less accurate method to reposition the controls.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method repositionControls
 
-  if .DlgUtil~comCtl32Version < 6.0 then return self~doW2KReposition
+  if .DlgUtil~comCtl32Version &lt; 6.0 then return self~doW2KReposition
 
   size = self~newPushButton(IDC_CHECK_TWO)~getIdealSize
   if size == .nil then return .false
@@ -1669,11 +1651,9 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
   -- do the repositioning
 
 return .true
-]]>
 </programlisting>
     An alternative way to achieve the same thing might be:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method repositionControls
 
   if .DlgUtil~comCtl32Version('O') == "XP" then return self~doXPReposition
@@ -1682,7 +1662,6 @@ return .true
   ...
 
 return .true
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1751,8 +1730,7 @@ return .true
   <listitem>
   <para>
     This example shows several usages of the <emphasis role="italic">errMsg</emphasis> method:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   say .DlgUtil~errMsg('0x80004024')
   say .DlgUtil~errMsg(2147500068)
@@ -1779,7 +1757,6 @@ Error code 87 (0x00000057): The parameter is incorrect.
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1857,15 +1834,13 @@ Error code 87 (0x00000057): The parameter is incorrect.
   <para>
     This example prints out a new GUID every time it is executed. Typically, the GUID would then be copy-pasted into the
     software it will be used in:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* genGUID.rex - simple GUID generating program. */
 
     guid = .DlgUtil~getGUID
     say guid
 return 0
 ::requires 'ooDialog.cls'
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1933,8 +1908,7 @@ return 0
     shifted down the width of the title bar.  (This width is the title bar width plus the thin border around the
     title bar.)  The height of the thin border, the height of the title bar, and the width of a scroll bar are all
     determined by querying the system metrics.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onTile
   expose offSetX offSetY dialogQueue
@@ -1960,7 +1934,6 @@ return 0
 
     self~setWindowRect(dlg~dlgHandle, x, y, 0, 0, "NOSIZE")
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2076,8 +2049,7 @@ return 0
     A common place in the Windows API where two values are packed into a single number is where the API deals with
     position.  This example shows how to extract the x and y position coordinates of a dialog after it has been moved.
     The example is complete, it can be cut and pasted into a file and will execute as is.
-<programlisting id="exampleLoWordClsDlgUtil">
-<![CDATA[
+<programlisting language="rexx" id="exampleLoWordClsDlgUtil">
 
   dlg = .MovingDialog~new
   dlg~createCenter(100, 60, "Move Me")
@@ -2099,7 +2071,6 @@ return 0
   y = .DlgUtil~hiWord(posInfo)
   say 'At coordinate (' x',' y' ) on the screen. (In pixels.)'
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2163,8 +2134,7 @@ return 0
   <listitem>
   <para>
     This example shows the implementation of a method used to set the margins in an edit control
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method setEditMargins
     use arg left, right
 
@@ -2184,7 +2154,6 @@ return 0
        self~sendMessage(EM_SETMARGINS, flag, lParam)
     end
     return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2309,29 +2278,25 @@ return 0
     One method that has an argument that can be the result of combining a number of flags is the
 <xref linkend="mthCreateClsImageList"/> method of the
 <xref linkend="clsImage"/> class.  This is how the or method might be used
-<programlisting> <![CDATA[
+<programlisting language="rexx">
   flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
 
   -- Create an empty .ImageList object:
   imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10);
-]]>
 </programlisting>
     </para>
     <para>
       The following is equivalent to the above example:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   flags = .DlgUtil~or(0x00000018, 0x00000001)
 
   -- Create an empty .ImageList object:
   imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10);
-]]>
 </programlisting>
   </para>
   <para>
     To round out the examples a little:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
   say "Flags value:" flags
 
@@ -2345,7 +2310,6 @@ return 0
      Flags value: 25
      Flags value: 25
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2468,8 +2432,7 @@ return 0
   <para>
     This example calculates the mid-point of the upper left quadrant of the screen and positions the dialog at that
     point:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -2477,7 +2440,6 @@ return 0
   s = .DlgUtil~screenSize('P')
   p = .Point~new(s~width % 4, s~height % 4)
   self~moveTo(p, "SHOWWINDOW")
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2818,8 +2780,7 @@ return 0
     This example shows the result of using the <xref linkend="mthScrollCommand"/> repeatedly until
     the top of the edit control is reached:
 
-<programlisting id="exampleSLoWordClsDlgUtil">
-<![CDATA[
+<programlisting language="rexx" id="exampleSLoWordClsDlgUtil">
 
   success = .true
   do while success
@@ -2854,7 +2815,6 @@ Scrolled the edit control:
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3003,8 +2963,7 @@ Scrolled the edit control:
   <listitem>
   <para>
     This example displays the thread ID from several different threads, (activities,) during the life cycle of a dialog.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dlg = .SimpleDialog~new
   say "In the start up of the program thread ID:  " .DlgUtil~threadID
@@ -3048,7 +3007,6 @@ Executing in the second activity thread ID: 2672
 In the ok method thread ID:                 2344
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3237,17 +3195,16 @@ In the ok method thread ID:                 2344
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 v = .DlgUtil~version
 say v
 say
 
-if .DlgUtil~version("SHORT") < 4.1.0.0000 then do
+if .DlgUtil~version("SHORT") &lt; 4.1.0.0000 then do
   say 'Too bad, you are still running ooRexx 4.0.0'
 end
 else do
-  if .DlgUtil~version("LEVEL") < 4.2.0 then
+  if .DlgUtil~version("LEVEL") &lt; 4.2.0 then
     say 'You should really get a 4.2.0 ooDialog, it is much improved.'
 end
 
@@ -3260,7 +3217,6 @@ ooDialog Version 4.0.0.3768 (an ooRexx Windows Extension)
 Too bad, you are still running ooRexx 4.0.0
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3320,8 +3276,7 @@ Too bad, you are still running ooRexx 4.0.0
   <para>
     This example shows a method that tests if the mouse is over a list view control and that there is no other window
     covering the list view at that point:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ::method overListView private
 
@@ -3335,7 +3290,6 @@ Too bad, you are still running ooRexx 4.0.0
     if .DlgUtil~windowFromPoint(pos) == hwndLV then return .true
     else return .false
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3443,9 +3397,7 @@ returns its handle.</para>
     directory. The <emphasis role="italic">Locate</emphasis> function is used to get the complete path name of the directory
     the main program file is in and then the returned value is used to construct complete path names to the application's
     resource files:
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   srcDir = Locate()
 
   rcFile = srcDir"resources\imageButton.rc"
@@ -3454,15 +3406,17 @@ returns its handle.</para>
   .application~setDefaults("O", symbolFile, .false)
 
   dlg = .ImageListDlg~new(rcFile, IDD_IMAGELIST_BUTTON)
-  ...
+
+  /* ... */
 
 ::class 'ImageListDlg' subclass RcDialog
-  ...
+
+  /* ... */
 
 ::method setPictureButtons private
   expose pbView pbAdd stStatus imagesLoaded imageList
 
-  if .DlgUtil~comCtl32Version < 6 then return self~oldSetButtons
+  if .DlgUtil~comCtl32Version &lt; 6 then return self~oldSetButtons
 
   pbView~style = "MULTILINE BOTTOM"
 
@@ -3476,8 +3430,8 @@ returns its handle.</para>
   files[4] = srcDir"resources\Disabled.bmp"     -- Disabled
   files[5] = srcDir"resources\Default.bmp"      -- Default button
   files[6] = srcDir"resources\Hot.bmp"          -- Stylus hot, tablet PC only
-  ...
-]]>
+
+  /* ... */
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3683,8 +3637,7 @@ returns its handle.</para>
     The <xref linkend="clsMonthCalendar"/> class has a number of methods that are only available on
     Windows Vista or Windows 7. This example is from a program that demonstrates those methods. It first checks if the
     program is running on Vista, and if not it quits.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 /* Simple MonthCalendar example */
 
@@ -3696,7 +3649,6 @@ returns its handle.</para>
     return messageDialog(info, , "Error", "OK", "HAND")
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4066,8 +4018,7 @@ returns its handle.</para>
   <para>
     This example updates the user PATH variable and then notifies the system so that the new path takes effect
     immediately:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   reg = .WindowsRegistry~new
   envKey = reg~open(reg~current_user, 'Environment', 'WRITE QUERY')
@@ -4085,7 +4036,6 @@ returns its handle.</para>
 ::requires 'ooDialog.cls'
 ::requires 'winsystm.cls'
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4180,8 +4130,7 @@ returns its handle.</para>
   <para>
     This example writes to the registry to add a file type association and then invokes <emphasis
     role="italic">shellChangeNotify</emphasis> to have the new file association take place immediately:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   reg = .WindowsRegistry~new
 
@@ -4193,7 +4142,6 @@ returns its handle.</para>
 ::requires 'ooDialog.cls'
 ::requires 'winsystm.cls'
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4262,10 +4210,8 @@ returns its handle.</para>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example plays a welcoming message:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 rc = play("Welcome.wav")
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -4411,8 +4357,7 @@ rc = play("Welcome.wav")
   <listitem>
   <para>
     This example simply creates a few <computeroutput>Point</computeroutput> objects:
-<programlisting id="exampleNewClsPoint">
-<![CDATA[
+<programlisting language="rexx" id="exampleNewClsPoint">
 p = .Point~new(45, 90)
 say 'Point p is at ('p~x','p~y')'
 say
@@ -4436,7 +4381,6 @@ A new point q is at (55,55)
 Changed point q to be at (150,300)
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4580,8 +4524,7 @@ Changed point q to be at (150,300)
   <listitem>
   <para>
     This example shows a generic method used to move a number of controls the same relative distance in a dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method moveControls private
   use strict arg controlArray, x = 0, y = 0
@@ -4593,7 +4536,6 @@ Changed point q to be at (150,300)
     obj~moveTo(newPos, "NOREDRAW")
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4647,8 +4589,7 @@ Changed point q to be at (150,300)
   <listitem>
   <para>
     A simple example:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 
   p1 = .Point~new(250, 200)
@@ -4662,7 +4603,6 @@ Changed point q to be at (150,300)
 
   */
 ::requires "ooDialog.cls"
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4701,8 +4641,7 @@ Changed point q to be at (150,300)
   <para>
     This example makes a copy of the current mouse postion so that it can be mapped to the client coordinates of the
     dialog without altering the position in screen coordinates:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ::method initDialog
     expose mouse
@@ -4725,7 +4664,6 @@ Changed point q to be at (150,300)
   return clientPos~inRect(self~clientRect)
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4795,14 +4733,12 @@ Changed point q to be at (150,300)
   <para>
     This example changes the pointer to the hourglass shape then moves the cursor one pixel up and one pixel to the
     left. Moving the cursor forces the cursor to be redrawn
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   oldCursorPosition = self~getCursorPos
   oldCursorShape = self~cursor_wait
   self~setCursorPos(oldCursorPosition~decr)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4872,14 +4808,12 @@ Changed point q to be at (150,300)
   <para>
     This example changes the pointer to the hourglass shape then moves the cursor one pixel down and one pixel to the
     right. Moving the cursor it to be redrawn
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   oldCursorPosition = self~getCursorPos
   oldCursorShape = self~cursor_wait
   self~setCursorPos(oldCursorPosition~incr)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4942,8 +4876,7 @@ Changed point q to be at (150,300)
   <listitem>
   <para>
     This example tests if the current cursor position lies with the client area of the dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   mouse = .Mouse~new(self)
   p = mouse~getCursorPos
@@ -4956,7 +4889,6 @@ Changed point q to be at (150,300)
     say 'The mouse cursor is NOT over this dialog'
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4997,8 +4929,7 @@ Changed point q to be at (150,300)
   <listitem>
   <para>
     A trivial example.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   p = .Point~new(5, 120)
   say s
@@ -5009,7 +4940,6 @@ Changed point q to be at (150,300)
 
   */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5154,8 +5084,7 @@ Changed point q to be at (150,300)
   <varlistentry id="exampleNewClsRect"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 r = .Rect~new(3, 4, 13, 9)
 say 'Upper corner ('r~left','r~top') lower corner 'r~right','r~bottom')'
 say
@@ -5185,9 +5114,8 @@ Margins:
 
 New upper corner (55,75) new lower corner 110,125)
 
-/*
+*/
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5415,8 +5343,7 @@ New upper corner (55,75) new lower corner 110,125)
   <listitem>
   <para>
     This example makes a copy of the client rectangle of an edit control:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   editOffsetRect = editRect~copy
   editOffsetRect~top -= height
@@ -5429,7 +5356,6 @@ New upper corner (55,75) new lower corner 110,125)
 
   text rect:       a Rect (0, 0, 104, 21)
   text offset rect a Rect (0, -21, 104, 0)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5473,8 +5399,7 @@ New upper corner (55,75) new lower corner 110,125)
   <listitem>
   <para>
     A trivial example.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   r = .Rect~new(5, 5, 120, 40)
   say r
@@ -5485,7 +5410,6 @@ New upper corner (55,75) new lower corner 110,125)
 
   */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5533,13 +5457,11 @@ size in pixels of the width is at index 3 and the height in pixels is at index
 </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example</emphasis></term>
 <listitem><para>Get the screen size and display it to the user.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 size = screenSize()
 say
 say 'The monitor is' size[1] 'dialog units wide and' size[2] 'dialog units high.'
 say 'The monitor is' size[3] 'pixels wide and' size[4] 'pixels high.'
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -5666,8 +5588,7 @@ say 'The monitor is' size[3] 'pixels wide and' size[4] 'pixels high.'
   <varlistentry id="exampleNewClsSize"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 size = .Size~new(4, 8)
 say 'Width:' size~width 'Height:' size~height
@@ -5696,7 +5617,6 @@ A new size object:
 New width: 100 new height: 300
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5835,28 +5755,24 @@ New width: 100 new height: 300
   When there is not a doubled operator, then the <emphasis role="italic">area</emphasis> of the size objects is
   compared. For example:
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   s1 = .Size~new(4, 4)
   s2 = .Size~new(2, 8)
   s3 = .Size~new(8, 2)
   s4 = .Size~new(2, 8)
 
-  s1 = s2    -- True
-  s1 == s2   -- False
-  s2 == s4   -- True
-  s2 == s3   -- False
+  (s1 =  s2)   -- True
+  (s1 == s2)   -- False
+  (s2 == s4)   -- True
+  (s2 == s3)   -- False
 
   s5 = .Size~new(3, 4)
   s6 = .Size~new(4, 4)
 
-  s5 < s6    -- True
-  s5 << s6   -- False
-  s5 <= s6   -- True
-  s5 <<= s6  -- True
-
-]]>
+  (s5 &lt;   s6)  -- True
+  (s5 &lt;&lt;  s6)  -- False
+  (s5 &lt;=  s6)  -- True
+  (s5 &lt;&lt;= s6)  -- True
 </programlisting>
 
 </para>
@@ -5976,8 +5892,7 @@ New width: 100 new height: 300
   <listitem>
   <para>
     This is a simple method as the example shows:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   s1 = .Size~new(14, 57)
   s2 = .Size~new(2, 3)
@@ -6002,7 +5917,6 @@ s2: a Size (2, 3)
 
  */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6045,8 +5959,7 @@ s2: a Size (2, 3)
   <listitem>
   <para>
     A trivial example.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   s = .Size~new(4, 17)
   say s
@@ -6057,7 +5970,6 @@ s2: a Size (2, 3)
 
   */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7348,14 +7260,12 @@ s2: a Size (2, 3)
     This example changes the WheelScrollLines system parameter to 5. It has the operating system update the user profile
     and broadcast the setting changed message to all top-level windows so the applications currently running can update
     their settings if needed. It then changes the <emphasis role="italic">updateFlag</emphasis> back to the default.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   .SPI~updateFlag = 'SendChange'
   .SPI~wheelScrollLines = 5
   .SPI~updateFlag = 'N'
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7417,8 +7327,7 @@ s2: a Size (2, 3)
     the appropriate amount. Note that this is a simplistic example. The code should really check if <emphasis
     role="italic">scrollLines</emphasis> is 0, or equal to the WHEEL_PAGESCROLL constant, or greater than the number of
     visible lines in the edit control.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method scrollUp private
   use strict arg editCtrl
@@ -7426,7 +7335,6 @@ s2: a Size (2, 3)
   scrollLines = .SPI~wheelScrollLines
   editCtrl~scrollCommand("UP", scrollLines)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7521,12 +7429,11 @@ s2: a Size (2, 3)
   message for the error code. The message is provided by Windows, not by ooRexx or ooDialog. This is an example of a
   possible usage:
 </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 image = .Image~getImage("resources\bogus.bmp")
 if image~isNull then do
   say "Error getting the bogus.bmp image."
-  if .systemErrorCode <> 0 then do
+  if .systemErrorCode &lt;&gt; 0 then do
     say 'System error code:' .systemErrorCode
     say '  system message:' SysGetErrorText(.systemErrorCode)
   end
@@ -7539,7 +7446,6 @@ Error getting the bogus.bmp image.
 System error code: 2
   system message: The system cannot find the file specified.
 */
-]]>
 </programlisting>
 </section>
 
@@ -7574,8 +7480,7 @@ System error code: 2
   along with the instance method. The following two examples should clarify that:
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::class 'SimpleDlg' subclass RcDialog inherit VK
 
@@ -7588,7 +7493,6 @@ System error code: 2
     return self~deleteAllItems
   end
 
-]]>
 </programlisting>
 <para>
   The above example inherits the <computeroutput>VK</computeroutput> class and thus the DELETE constant and the
@@ -7596,8 +7500,7 @@ System error code: 2
   class. The same thing can be accomplished using the class methods of the <computeroutput>VK</computeroutput> class:
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::class 'SimpleDlg' subclass RcDialog
 
@@ -7610,7 +7513,6 @@ System error code: 2
     return self~deleteAllItems
   end
 
-]]>
 </programlisting>
 <para>
   Using the class methods of the <computeroutput>VK</computeroutput> class has the advantage of not conflicting with any
@@ -8450,24 +8352,20 @@ System error code: 2
   <para>
     There is both a class method and an instance method with this method's name. Therefore the method can be use like
     this:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ::class 'MyClass' subclass ResDialog inherit VK
+  ::method myMethod
     ...
     say "The key pressed was:" self~key2Name(key)
-
-]]>
 </programlisting>
 
     or like this:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ::class 'MyClass' subclass RcDialog
+  ::method myMethod
     ...
     say "The key pressed was:" .VK~key2name(key)
-
-]]>
 </programlisting>
 
   </para>
@@ -8478,28 +8376,24 @@ System error code: 2
     This method is a convenience method which allows a program to print the key code name to the screen in a say
     statement. The method is usually not needed. In particular, code like this:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ::method someMethod
     use arg key
     ...
     if .VK~key2Name(key) == "INSERT" then
       ...
 
-]]>
 </programlisting>
 
     can be replaced by this:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ::method someMethod
     use arg key
     ...
     if key == .VK~INSERT then
       ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8520,11 +8414,10 @@ System error code: 2
   insert key he is given the opportunity to insert a new item into the tree.
 </para>
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::class 'TreeDlg' subclass ResDialog
-...
+
+/* ... */
 
 ::method initDialog
 
@@ -8542,8 +8435,6 @@ if key == .VK~DELETE then
    tree~delete(tree~selected)
 else if key == .VK~INSERT then
    self~newPushButton(IDC_PB_NEW_ITEM)~push
-
-]]>
 </programlisting>
 </section>
 
@@ -8843,8 +8734,7 @@ else if key == .VK~INSERT then
   <para>
     Given an array of dialog control resource IDs this method enables all the controls without having to know what the
     type of the individual control is:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method enableControls
   use strict arg IDs
   hDlg = self~hwnd
@@ -8855,7 +8745,6 @@ else if key == .VK~INSERT then
   end
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9599,8 +9488,7 @@ WindowBase::<xref linkend="mthWindowRect"/>
   <para>
     This example that shows how to correctly start and use a timer with the <emphasis role="italic">WinTimer</emphasis>
     routine:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method doStuff unguarded
   expose finished
@@ -9609,7 +9497,7 @@ WindowBase::<xref linkend="mthWindowRect"/>
   reply 0
 
   id = WinTimer("START", 2000)
-  if id <> 0 then do while \ finished
+  if id &lt;&gt; 0 then do while \ finished
     say "Still working at:" time()
 
     do i = 1 to 10
@@ -9619,14 +9507,13 @@ WindowBase::<xref linkend="mthWindowRect"/>
     ...
 
     ret = WinTimer("WAIT", id)
-    if ret <> 0 then leave
+    if ret &lt;&gt; 0 then leave
   end
 
-  if id <> 0 then ret = WinTimer("STOP", id)
+  if id &lt;&gt; 0 then ret = WinTimer("STOP", id)
 
   finished = .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

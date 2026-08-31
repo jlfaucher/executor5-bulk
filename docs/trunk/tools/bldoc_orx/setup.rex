@@ -62,7 +62,17 @@
     if \zips~isDirectory then
         zips~makeDir
 
-    -- First we handle the Liberation Fonts
+    -- First we handle the Liberation Fonts.
+    -- The fonts ship with the docs in the sibling LiberationFonts folder
+    -- (docs/trunk/tools/LiberationFonts), so we just copy them into place
+    -- rather than downloading them.  fontsquirrel.com no longer serves the
+    -- per-family zips the old code fetched.
+    --
+    -- The original download-and-unzip code is preserved, commented out, in
+    -- case a network-fetch path is ever wanted again.  It pulled only the
+    -- sans and mono families; the local copy below also brings in serif.
+    --
+    /* --- old fontsquirrel download path (kept for reference) ---
     src_url = "https://www.fontsquirrel.com/fonts/download/"
     fonts = .file~new(".\Liberation Fonts")
     if \fonts~isDirectory then
@@ -87,6 +97,38 @@
                 call unzip font_zip_name, "'"fonts~string"'"
                 if result \= 0 then
                     say _"Error unzipping" font_zip_name"; RC was" result"."
+            end
+        end
+    end
+    --- end old download path --- */
+
+    fonts = .file~new(".\Liberation Fonts")
+    if \fonts~isDirectory then
+        fonts~makeDir
+    /* Each font family has 4 font files plus a license file; assume that if we
+        have 8 or more files, then we are OK */
+    if fonts~list~items < 8 then do -- missing fonts
+        say "Making the Liberation Fonts available for installation. (1/5)"
+        fonts_src = .file~new("..\LiberationFonts")
+        if \fonts_src~isDirectory then
+            say _"Cannot find" fonts_src~string"; the fonts are optional," -
+                "skipping."
+        else do
+            sep = .file~separator
+            do aFont over fonts_src~listFiles
+                -- copy the *.ttf files and the license into place
+                ext = aFont~extension~lower
+                if ext \== "ttf" & aFont~name~pos("License") == 0 then
+                    iterate
+                say _"Copying" aFont~name"."
+                -- Give SysFileCopy a full destination path.  A bare folder
+                --  name as the target is copied as if it were a file name,
+                --  so we spell out folder + separator + file name.  The
+                --  blank in "Liberation Fonts" needs no quoting here.
+                dest = fonts~absolutePath || sep || aFont~name
+                call SysFileCopy aFont~absolutePath, dest
+                if result \= 0 then
+                    say _"Error copying" aFont~name"; RC was" result"."
             end
         end
     end
@@ -226,6 +268,36 @@
         end
     end
 
+    -- Bonus: the Rexx Parser
+    -- https://rexx.epbcn.com/rexx-parser/Rexx-Parser-latest.zip
+    --
+
+    ParserFolderName = ".\rexx-parser"
+    parserFolder = .file~new(ParserFolderName)
+    if \parserFolder~isDirectory then
+        parserFolder~makeDir
+    if \.file~new(ParserFolderName"\bin\Rexx.Parser.cls")~exists then do
+        say "Bonus: Making the Rexx Parser available."
+        src_url = "https://rexx.epbcn.com/rexx-parser/"
+        parser_pkg = "Rexx-Parser-latest"
+        parser_zip_name = zips_dir"\"parser_pkg".zip"
+        parser_zip = .file~new(parser_zip_name)
+        if \parser_zip~exists then do
+            say _"Downloading" parser_pkg".zip"
+            say _"  from" src_url
+            call retrieve src_url||parser_pkg".zip", parser_zip_name
+            if result \= 0 then
+                say _"Error retrieving" parser_pkg".zip; RC was" result"."
+        end
+        if parser_zip~exists then do
+            say _"Unzipping" parser_pkg".zip"
+            call unzip parser_zip_name, ParserFolderName
+            if result \= 0 then
+                say _"Error unzipping" parser_pkg".zip; RC was" result"."
+        end
+    end
+
+
 /* check that all the packages have been installed and inform the user */
     if fonts~list~items >= 8 then
         say "Liberation Fonts are available for installation. (1/5)"
@@ -239,6 +311,8 @@
         say "DocBook style sheets are now available. (4/5)"
     if .file~new(".\"fop_pkg)~isDirectory then
         say "Apache FOP package is now available. (5/5)"
+    if .file~new(ParserFolderName"\bin\Rexx.Parser.cls")~exists then
+        say "Bonus: The Rexx Parser is available"
     exit
 
 retrieve: procedure -- get the package from the Internet

@@ -520,15 +520,13 @@
   context menu. If the programmer picks one type of making the menu item connection for her menu(s), things are really
   pretty simple:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose menuBar
 
   menuBar = .BinaryMenuBar~new("menuResourceEx.dll", IDR_MENU1, , self, .true, onMenuSelect)
 
-]]>
 </programlisting>
 
   The above creates a menu bar from a binary resource, attaches it to the dialog, and automatically connects all the
@@ -557,13 +555,11 @@
   the return.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onMenuSelect unguarded
   use arg id, hMenu
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -610,8 +606,7 @@
     The following example connects the <emphasis role="italic">File Open</emphasis> menu item with a method and then
     opens a file when the user selects that menu item:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose menuBar
@@ -627,7 +622,6 @@
   self~openFile
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -644,13 +638,11 @@
   <computeroutput>.false</computeroutput>.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onMenuSelect unguarded
   use arg id, arg2
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -707,8 +699,7 @@
     connected to appropriate event handlers. Note that the event handlers shown in the example are just stubs. Real code
     to handle the event would need to be added:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose sysMenu
@@ -733,24 +724,23 @@
 ::method copy
   use arg id, x, y
 
-  say 'In SystemMenu->Edit->Copy, do a copy action id:' id 'x:' x 'y:' y
+  say 'In SystemMenu-&gt;Edit-&gt;Copy, do a copy action id:' id 'x:' x 'y:' y
   return .true
 
 
 ::method cut
   use arg id, x, y
 
-  say 'In SystemMenu->Edit->Cut, do a cut action id:' id 'x:' x 'y:' y
+  say 'In SystemMenu-&gt;Edit-&gt;Cut, do a cut action id:' id 'x:' x 'y:' y
   return .true
 
 
 ::method paste
   use arg id, x, y
 
-  say 'In SystemMenu->Edit->Paste, do a paste action id:' id 'x:' x 'y:' y
+  say 'In SystemMenu-&gt;Edit-&gt;Paste, do a paste action id:' id 'x:' x 'y:' y
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1117,8 +1107,7 @@
   <para>
     The example is complete and can be copy-pasted into a program file and executed as:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dlg = .FreezePositionDlg~new
   dlg~execute('ShowTop')
@@ -1155,7 +1144,6 @@
   expose isFrozen
   isFrozen = .false
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1188,10 +1176,8 @@
   <para>
     This is a <emphasis role="italic">get</emphasis> only attribute. The programmer can not set the attribute through
     assignment. I.e.,
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   menuObj~hMenu = handle
-]]>
 </programlisting>
     is not valid.
   </para>
@@ -1233,10 +1219,8 @@
   <para>
     This is a <emphasis role="italic">get</emphasis> only attribute. The programmer can not set the attribute through
     assignment. I.e.,
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   menuObj~wID = 110
-]]>
 </programlisting>
     is not valid.
   </para>
@@ -1332,8 +1316,7 @@
     forth between the hexadecimal and normal views using the menu item with the text of <emphasis
     role="italic">hex</emphasis>. When the user selects the menu item, the view is toggled. A check mark by the menu
     item shows it is in hex view, when there is no check mark the view is normal:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose inHex
@@ -1357,7 +1340,6 @@
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1440,8 +1422,7 @@
   <para>
     This example is from an application that has a <emphasis role="italic">zoom</emphasis> view. The user can select a
     zoom in a range through the menu. A radion button menu item shows which zoom is currently in place:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method setZoom
   expose menuBar
@@ -1451,7 +1432,6 @@
   self~zoomTo(zoomVal)
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1540,15 +1520,14 @@
   <para>
     This example connects every menu command item in the menu to the <emphasis role="italic">onMenuSelect</emphasis>
     method in the dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method connectMenu unguarded private
   use strict arg menu
 
-  if \ menu~connectAllCommandEvents(onMenuSelect) then self~error('Connect All Items Failed')
+  if \ menu~connectAllCommandEvents(onMenuSelect) then
+    self~error('Connect All Items Failed')
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1667,8 +1646,7 @@
     the dialog. Then the <emphasis role="italic">Close</emphasis>, <emphasis role="italic">Save</emphasis>, etc., menu
     items are connected. Since the menu bar has already been attached to the dialog, the third optional argument to
     <emphasis role="italic">connectCommandEvent</emphasis> is left out:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose menuBar
@@ -1681,7 +1659,6 @@
   menuBar~connectCommandEvent(IDM_SAVEAS, onFileSaveAs)
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1848,8 +1825,7 @@
   <listitem>
   <para>
     This example connects the INITMENU event to the <emphasis role="italic">menuInit</emphasis> method in the dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose menuBar
@@ -1857,7 +1833,6 @@
   menuBar~attachTo(self)
   menuBar~connectMenuEvent(menuInit, INITMENU)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1884,13 +1859,11 @@
   <computeroutput>.true</computeroutput>, the notification was processed, is a good value to return.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onContextMenu unguarded
   use arg hwnd, x, y
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -1939,16 +1912,14 @@
     menu, the handling of the menu command item selection is done in a menu command event
     <xref linkend="sctMenuCommandEventHandlers"/>.
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method initDialog
   expose shortCutMenu
   ...
 
   shortCutMenu = self~createMenu
   shortCutMenu~assignTo(self)
-  shortCutMenu~connectMenuEvent(onContext, 'CONTEXTMENU)
+  shortCutMenu~connectMenuEvent(onContext, 'CONTEXTMENU')
 
   ...
 
@@ -1970,12 +1941,9 @@
   -- Show the menu.
   ret = shortCutMenu~show(pos)
   if ret == -1 then do
-    say "shortCutMenu~show() failed SystemErrorCode:' || -
+    say "shortCutMenu~show() failed SystemErrorCode:" || -
     .SystemErrorCode SysGetErrortext(.SystemErrorCode)
   end
-
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1995,13 +1963,11 @@
   event handler, and the interpreter <link linkend="sctCodingEventHandlers">waits</link>) for this return.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onInitMenu unguarded
   use arg hMenu
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -2042,8 +2008,7 @@
     shown. Whether or not the items are disabled is controlled by an instance variable that is set in other parts of the
     application:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onInitMenu
   expose sysMenu disableItems
@@ -2060,7 +2025,6 @@
     return .false
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2080,13 +2044,11 @@
   event handler, and the interpreter <link linkend="sctCodingEventHandlers">waits</link>) for this return.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onInitMenuPopup unguarded
   use arg position, isSystemMenu, hMenu
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -2142,22 +2104,18 @@
     role="italic">Copy</emphasis> menu item is disabled, if and only if, the user actually navigates to the <emphasis
     role="italic">Edit</emphasis> submenu.
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   ...
   hMenu = menuBar~getPopup(IDM_EDIT_SUBMEN)~hMenu
   menuBar~connectMenuEvent(onEditMenuPopup, 'INITMENUPOPUP', hMenu)
   ...
 
-::method on EditMenuPopup unguarded
+::method onEditMenuPopup unguarded
   expose menuBar
   use arg pos, isSysMenu, hMenu
 
   if self~haveSomeSelection then menuBar~enable(IDM_COPY)
   else menuBar~disable(IDM_COPY)
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2284,8 +2242,7 @@
   <para>
     This example connects four menu command items in the menu bar, by their symbolic IDs, to 4 methods in the dialog.
     The method names will be constructed from the text of the menu item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method menuConnectItems
   expose menuBar
@@ -2293,10 +2250,10 @@
 
   ids = .array~of(IDM_EDIT_COPY, IDM_EDIT_PASTE, IDM_EDIT_CUT, IDM_EDIT_DELETE)
 
-  if \ menuBar~connectSomeCommandEvents(ids) then self~error('Connect Some Menu Items Failed')
+  if \ menuBar~connectSomeCommandEvents(ids) then
+    self~error('Connect Some Menu Items Failed')
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2381,12 +2338,10 @@
   <para>
     This example removes the <emphasis role="italic">View</emphasis> popup menu from a menubar and deletes it, freeing
     up the system resources used for it:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   menuBar~deletePopup(IDM_VIEW)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2455,8 +2410,7 @@
     mode. The simple and advanced modes each have their own menubars. When the user switches modes, the existing menubar
     is detached and the menubar for the new mode is attached to the dialog. When the dialog is ended, the menubar not
     currently in use is destroyed:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method leaving
   expose advancedMenubar simpleMenubar
@@ -2464,7 +2418,6 @@
   if self~isAdvancedMode then simpleMenubar~destroy
   else advancedMenubar~destroy
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2547,8 +2500,7 @@
   <para>
     This example comes from an application that only allows the user to open 1 file at a time. When the current file is
     closed, the Close File menu item is disabled and the Open File menu item is enabled.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onCloseFile unguarded
   expose menuBar
@@ -2559,7 +2511,6 @@
   self~closeCurrentFile
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2642,8 +2593,7 @@
   <para>
     This example comes from an application that only allows the user to open 1 file at a time. When the current file is
     opened, the Open File menu item is disabled and the Close File menu item is enabled.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onOpenFile unguarded
   expose menuBar
@@ -2655,7 +2605,6 @@
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2714,8 +2663,7 @@
   <listitem>
   <para>
     This code could be used to determine if autoconnection is on or off:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   if menu~getAutoConnectStatus~autoConnect then do
     -- autoconnection is on, do something ...
@@ -2723,7 +2671,6 @@
   else do
     -- autoconnection is no on, do something else ...
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2772,8 +2719,7 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   count = menuObj~count
   if count \== -1 then do
     say 'The menu has' count 'items.'
@@ -2782,7 +2728,6 @@
     say 'Error getting count of menu items:'
     say '  Error Code:' .systemErrorCode SysGetErrortext(.systemErrorCode)
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2834,8 +2779,7 @@
   <para>
     This example gets the handle for an Edit submenu and then uses it as a filter in the
  <xref linkend="mthConnectMenuEvent"/> method:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ...
 
@@ -2844,7 +2788,6 @@
 
   menuBar~connectMenuEvent(onEditMenuPopup, 'INITMENUPOPUP', hEditMenu)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2942,8 +2885,7 @@
   <para>
     This example searches a menu until it finds a menu item that matches the specified text. If it finds that item, it
     returns the item's resource ID, otherwise it returns -1.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method retrieveID private
   use strict arg menu, label
@@ -2951,13 +2893,12 @@
   do i = 1 to menu~getCount
     if menu~getText(i, .true) == label then do
       id = menu~getID(i)
-      if id > 0 then return id
+      if id &gt; 0 then return id
     end
   end
 
   return -1
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3117,8 +3058,7 @@
   <para>
     This example gets the current maximum height of the File drop down menu and checks if it is equal to the height
     of the dialog. If not, it changes the maximum height to the height of the dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method checkHeight private
   expose menuBar
@@ -3126,11 +3066,10 @@
   size = self~getRealSize
 
   filePopup = menuBar~getPopup(IDM_FILE)
-  if filePopup~getMaxHeight <> size~height then filePopup~setMaxHeight(size~height)
+  if filePopup~getMaxHeight &lt;&gt; size~height then filePopup~setMaxHeight(size~height)
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3208,8 +3147,7 @@
   <para>
     This example gets the handle of a submenu in the menubar in order to use it as a filter in the
  <xref linkend="mthConnectMenuEvent"/> method:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ...
 
@@ -3218,7 +3156,6 @@
   menuBar~connectMenuEvent(onEditMenuPopup, 'INITMENUPOPUP', hEditMenu)
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3310,13 +3247,11 @@
   <para>
     This example gets a popup menu from a menubar so that it can be used as a context menu. Note that the popup menu is
     gotten by its position ID rather than its resource ID:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ...
   dlgPopup = menubar~getPopup(1, .true)
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3398,8 +3333,7 @@
  <xref linkend="mthConnectAllCommandEvents"/>), but is having trouble supplying the correct
     event handling method in the code. The debug code gets the text of the menu item and then uses
  <xref linkend="mthItemTextToMethodName"/> to determine the correct method name:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method doDebug private
   expose menuBar
@@ -3408,7 +3342,6 @@
   text = menuBar~getText(id)
   say 'Method name for menu item' id 'should be:' menuBar~itemTextToMethodName(text)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3621,8 +3554,7 @@
   <para>
     This example comes from an application that only allows the user to open 1 file at a time. When the current file is
     closed, the Close File menu item is grayed and the Open File menu item is enabled.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onCloseFile unguarded
   expose menuBar
@@ -3633,7 +3565,6 @@
   self~closeCurrentFile
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3961,12 +3892,10 @@
     is true, so the new menu command item is connected to the <emphasis role="italic">onOrderByProfession</emphasis>
     method, either immediately if the menubar is already attached to a dialog, or when the menubar is first attached to
     a dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   menuBar~insertItem(IDM_LV_RESTORE, IDM_LV_PROFESSION, "Order by Profession", -
                      'DEFAULT CHECKED', 'RADIO', .false, .true, onOrderByProfession)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4266,8 +4195,7 @@
   <listitem>
   <para>
     This example creates a new popup menu and inserts several menu items, including a separator:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   subMenu = .PopupMenu~new(IDM_POP_FILE)
 
@@ -4277,7 +4205,6 @@
   subMenu~insertItem(IDM_MI_LEAVE, IDM_MI_CONTEXT, "Context")
   subMenu~insertSeparator(IDM_MI_LEAVE, IDM_SEPARATOR)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4818,8 +4745,7 @@
   <para>
     This example shows a method implemented by an overly-paranoid programmer as a replacement method for the
  <xref linkend="mthIsSeparator"/> method.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method isMenuSeparator private
   use strict arg menu, id, byPosition
@@ -4830,8 +4756,8 @@
   end
 
   -- Not a valid item id
-  msg =   'The menu id:' id 'with byPosition value:' byPosition 'is ' || .endOfLine          -
-          'not valid.'                                                || endOfLine~copies(2) -
+  msg =   'The menu id:' id 'with byPosition value:' byPosition 'is' .endOfLine -
+          'not valid.' .endOfLine~copies(2) -
           'Continue?'
 
   title = 'Invalid Menu Item ID Discovered'
@@ -4844,7 +4770,6 @@
 
   return .false
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4988,8 +4913,7 @@
   <para>
     This example shows a debugging method that could be temporarily added to a dialog with a menu to determine what
     method name would be constructed for any menu command item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ::method printMethodName private
     use strict arg menu, itemID
@@ -5005,7 +4929,6 @@
 
   return name
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5137,8 +5060,7 @@
   <para>
     This example is from an application that removes the Copy and Cut menu items from its menubar when there is
     currently no selected text. (A more common approach for this situation is to disable the two menu items.)
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method prepareMenu private
   expose menuBar
@@ -5151,7 +5073,6 @@
 
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5239,8 +5160,7 @@
   <para>
     This example uses a context menu that is gotten from a menubar. Since the menubar is not used in the application, it
     is just the source for the context menu, the menubar is destroyed after the context menu is removed:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dlgPopup = menubar~removePopup(1, .true)
 
@@ -5249,7 +5169,6 @@
 
   menuBar~destroy
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5323,8 +5242,7 @@
     In this example, if there is no text selected the Cut and Copy menu items are removed from the menu. If there is no
     data on the clipboard then the Paste menu item is removed. Above and below those 3 menu items are separators. If all
     3 menu items are removed then the separators are also removed.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method prepareMenu private
   expose menuBar
@@ -5344,14 +5262,13 @@
     menuBar~removeItem(IDM_MI_PASTE)
   end
 
-  if noSelection & noClipboard then do
+  if noSelection &amp; noClipboard then do
     menuBar~removeSeparator(IDM_MI_SEPARATOR_TOP)
     menuBar~removeSeparator(IDM_MI_SEPARATOR_BOTTOM)
   end
 
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5426,28 +5343,22 @@
   <para>
     This example turns autoconnection on and sets the autoconnection method name to onSelect. Thus, when autoconnection
     is done, every menu command item in the menu will be connected to the onSelect method:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   menuBar~setAutoConnection(.true, onSelect)
-]]>
 </programlisting>
   </para>
   <para>
     This example turns autoconnection off:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   menuBar~setAutoConnection(.false)
-]]>
 </programlisting>
   </para>
   <para>
     This example assumes autoconnection is already on, with the autoconnection method name set. However, the programmer
     now wants each menu command item connected to an individual method in the dialog. That is, the programmer wants the
     autoconnection method name removed:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   menuBar~setAutoConnection(.true, '')
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5519,8 +5430,7 @@
     This example sets the help ID for 3 of the submenus in a menubar. Since none of the submenus have submenus, the
     <emphasis role="italic">recurse</emphasis> argument is omitted. The application uses symbolic IDs for all resource
     IDs:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ...
   menuBar~getPopup(IDM_POP_FILE)~setHelpID(IDM_HELP_FILE)
@@ -5528,7 +5438,6 @@
   menuBar~getPopup(IDM_POP_VIEW)~setHelpID(IDM_HELP_VIEW)
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5668,8 +5577,7 @@
   <para>
     This example gets the current maximum height of the File drop down menu and checks if it is equal to the height
     of the dialog. If not, it changes the maximum height to the height of the dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method checkHeight private
   expose menuBar
@@ -5677,11 +5585,10 @@
   size = self~getRealSize
 
   filePopup = menuBar~getPopup(IDM_FILE)
-  if filePopup~getMaxHeight <> size~height then filePopup~setMaxHeight(size~height)
+  if filePopup~getMaxHeight &lt;&gt; size~height then filePopup~setMaxHeight(size~height)
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5836,8 +5743,7 @@
     forth between the hexadecimal and normal views using the menu item with the text of <emphasis
     role="italic">hex</emphasis>. When the user selects the menu item, the view is toggled. A check mark by the menu
     item shows it is in hex view, when there is no check mark the view is normal:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose inHex
@@ -5861,7 +5767,6 @@
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6116,8 +6021,7 @@
   <para>
     This example attaches a dialog's menu bar in the <emphasis role="italic">initDialog</emphasis> method. In the
     example, the menu bar was instantiated previously, and saved in an instance variable:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose menuBar
@@ -6125,7 +6029,6 @@
   menuBar~attachTo(self)
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6177,14 +6080,12 @@
   <listitem>
   <para>
     This example detaches the menu bar from the dialog and destroys it as it is no longer needed in the application:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ...
   menuBar~detach
   menuBar~destroy
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6326,8 +6227,7 @@
   <para>
     This example comes from a program that uses 2 completely different menu bars depending on if the application is in
     edit or view mode. When the mode is switched, the menu bar is replaced by the appropriate one for the mode:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onToggleMode
   expose fileMenu viewMenu currentMode
@@ -6341,7 +6241,6 @@
     currentMode = 'Edit'
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6564,8 +6463,7 @@
   <para>
     This example loads a menu bar from a DLL, immediately attaches it to the dialog, and connects all menu command item
     events to the <emphasis role="italic">onMenuSelect</emphasis> even handler method:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   .application~useGlobalConstDir('O', 'resource.h')
 
@@ -6576,9 +6474,10 @@
   expose menuBar
   ...
 
-  menuBar = .BinaryMenuBar~new("menuResourceEx.dll", IDR_MENU1, , self, .true, onMenuSelect)
+  menuBar = .BinaryMenuBar~new("menuResourceEx.dll", IDR_MENU1, , -
+    self, .true, onMenuSelect-
+  )
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6759,8 +6658,7 @@
     This example creates a script menu bar and attaches it immediately to the dialog. Methods in the Rexx dialog are
     automatically connected to the menu command events, no help ID is assigned, and the menu item count is left at the
     default:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   .application~useGlobalConstDir("O", "ScriptMenuBar.h")
 
@@ -6773,7 +6671,6 @@
   menuBar = .ScriptMenuBar~new("ScriptMenuBar.rc", IDR_MENU_LV, , , .true, self)
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6979,8 +6876,7 @@
     menu IDs. The default count of menu items is changed to 20 when the user menu bar is instantiated and auto
     connection is turned on. Since no method name is provided, each menu command event will be connected to a separate
     method.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   -- All resource IDs are symbolic and are defined in userMenu.h
   .application~useGlobalConstDir('O', "userMenu.h")
@@ -7011,7 +6907,6 @@
 
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7617,22 +7512,18 @@
   <para>
     This example shows a method that adds a separator to the menu template when invoked. It first checks that the menu
     template is still available to add menu items
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method maybeAddSeparator private
   use strict arg id, isEnd
 
   if self~isComplete then return .false
 
-  if isEnd the do
+  if isEnd then do
     self~addSeparator(id, 'END')
   end
   else do
     self~addSeparator(id)
   end
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7679,13 +7570,11 @@
   However, good practice would be to always return a value from an event handler. 0 would be a good value to return.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onContextMenu unguarded
   use arg hwnd, x, y
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -7734,13 +7623,12 @@
     menu, the handling of the menu command item selection is done in a menu command event
     <xref linkend="sctMenuCommandEventHandlers"/>.
 
-<programlisting>
-<![CDATA[
-
-  if \ lvPopup~connectContextMenu(onListViewContext, self~newListView(IDC_LV)~hwnd) then do
-    say 'Error connecting context menu. SystemErrorCode:' || -
-    .SystemErrorCode SysGetErrortext(.SystemErrorCode)
-  end
+<programlisting language="rexx">
+  if \lvPopup~connectContextMenu(onListViewContext, self~newListView(IDC_LV)~hwnd) then
+    do
+      say 'Error connecting context menu. SystemErrorCode:' || -
+      .SystemErrorCode SysGetErrortext(.SystemErrorCode)
+    end
   ...
 
 ::method onListViewContext
@@ -7766,7 +7654,6 @@
   end
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7932,8 +7819,7 @@
   <para>
     In this example the application creates the context menus after receiving the event notification. It needs to
     connect the event before the menu objects actually exist.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   ...
 
@@ -7944,7 +7830,6 @@
 
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8017,8 +7902,7 @@
   <listitem>
   <para>
     This example instantiates a popup menu and then adds a few menu items to it:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   m = .PopupMenu~new(IDM_LV_BAR)
 
@@ -8026,7 +7910,6 @@
   m~insertItem(IDM_LV_RESTORE, IDM_LV_PROFESSION, "Order by Profession")
   m~insertItem(IDM_LV_PROFESSION, IDM_LV_FNAME, "Order by First Name")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8128,8 +8011,7 @@
   <listitem>
   <para>
     This example calls a function that creates a context menu and then assigns the menu to the dialog object:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   contextMenu = createListViewMenu()
 
@@ -8138,7 +8020,6 @@
     .SystemErrorCode SysGetErrortext(.SystemErrorCode)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8250,8 +8131,7 @@
   <para>
     In this example the context menu notification is connected to the method, <emphasis
     role="italic">onContextMenu</emphasis>. All
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   ...
 
@@ -8262,7 +8142,6 @@
 
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8314,8 +8193,7 @@
   <para>
     This example checks if the context menu is already assigned to a dialog before assigning it to the current dialog
     object:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   if \ contextMenu~isAssigned then do
     if \ contextMenu~assignTo(self, .true) then do
@@ -8323,7 +8201,6 @@
       .SystemErrorCode SysGetErrortext(.SystemErrorCode)
     end
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8590,8 +8467,7 @@
   <listitem>
   <para>
     This example shows a context menu:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   pos = .Point~new(x, y)
 
@@ -8602,7 +8478,6 @@
   end
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8870,9 +8745,7 @@
   <listitem>
   <para>
     This example shows a context menu using the <emphasis role="italic">track</emphasis> method:
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   pos = .Point~new(x, y)
 
   id = dlgPopup~track(pos, self)
@@ -8881,10 +8754,9 @@
     .SystemErrorCode SysGetErrortext(.SystemErrorCode)
   end
   else do
-    return self~doMenuCommand(ret
+    return self~doMenuCommand(ret)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9142,8 +9014,7 @@
   <para>
     This example instantiates a new <computeroutput>SystemMenu</computeroutput> object and then adds a couple of menu
     items to the system menu:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose menu sysMenu
@@ -9162,7 +9033,6 @@
   sysMenu~insertItem(1, IDM_SYS_REMOVE_EDIT, 'Remove Edit Menu', , , .true)
   sysMenu~insertItem(1, IDM_SYS_ADD_EDIT, 'Add Edit Menu', , , .true)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9252,15 +9122,14 @@
   <para>
     This example connects every menu command item in the system menu to the <emphasis
     role="italic">onMenuSelect</emphasis> method in the dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method connectSystemMenu unguarded private
   use strict arg sysMenu
 
-  if \ sysMenu~connectAllCommandEvents(onMenuSelect) then self~error('Connect All Items Failed')
+  if \ sysMenu~connectAllCommandEvents(onMenuSelect) then
+    self~error('Connect All Items Failed')
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9436,14 +9305,13 @@
   <listitem>
   <para>
     This example reverts the system menu for the dialog back to the standard system menu.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onRevert
   expose sysMenu
 
-  if \ sysMenu~revert then say 'revert() failed' .SystemErrorCode SysGetErrortext(.SystemErrorCode)
-]]>
+  if \ sysMenu~revert then
+    say 'revert() failed' .SystemErrorCode SysGetErrortext(.SystemErrorCode)
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9568,8 +9436,7 @@
   <para>
     This example connects the Close, Size, and Move command items in the System menu to 3 methods in the dialog. Note
     that those methods will be: closeAltF4(), size(), and move()
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method systemMenuConnectItems
   expose sysMenu
@@ -9580,7 +9447,6 @@
   if \ sysMenu~connectSomeCommandEvents(ids) then self~error('Connect Some Items Failed')
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

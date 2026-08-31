@@ -344,8 +344,7 @@ the method is assumed to be defined in the dialog class.
 of the MyAnimatedButton class so that it is processed
 concurrently with the dialog execution:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
 
 ::class MyAnimatedButton
@@ -353,7 +352,6 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
      .
      .
      .
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -520,13 +518,11 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~changeBitmap("IDOK", "AddBut_n.bmp", "AddBut_f.bmp", -
                     "AddBut_s.bmp", "AddBut_d.bmp", "FRAME")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -680,8 +676,7 @@ Generic form:
     reading the code should give a better understanding of the <emphasis role="italic">clearRect</emphasis> method than
     a text description alone.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 /* Shows clearRect() at work. */
 
@@ -749,7 +744,6 @@ Generic form:
   pb~setText(text)
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -783,11 +777,9 @@ of the given window. </para>
 <listitem><para>The following example gets the window handle of a dialog control with the symbolic resource ID of
 IDC_PB_DONE and then clears the dialog control window:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 hwnd = self~getControlHandle(IDC_PB_DONE)
 MyDialog~clearWindowRect(hwnd)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -973,15 +965,13 @@ Each time the ScrollBarEventHandler is called by an event for scroll bar SB_SIZE
 the position of the scroll bar is calculated and updated. <computeroutput>posdata</computeroutput> is
 sent along with the scroll bar event.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
    /* Method ScrollBarEventHandler is connected to item SB_SIZE */
 ::method ScrollBarEventHandler
     use arg posdata, sbwnd
     pos = self~determineSBPosition("SB_SIZE",posdata,1,25)
     return pos
 
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1129,17 +1119,15 @@ sent along with the scroll bar event.
     The following example moves the bitmap within the associated bitmap button 4 screen pixels to the right and 3
     pixels upward. Contrast this with the setBitmapPosition <link linkend="exampleSetBitmapPosition">example</link>:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   parse value self~getBmpDisplacement(IDC_PB_BITMAP1) with dx dy
-  if dx <> -1 then do
+  if dx &lt;&gt; -1 then do
     dx += 4
     dy -=3
     self~displaceBitmap(IDC_PB_BITMAP1, dx, dy)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1499,8 +1487,7 @@ sent along with the scroll bar event.
     palette dialog can not be executed until its underlying owner dialog has been created. So the main dialog is
     started using <emphasis role="italic">executeAsync</emphasis>, then the palette dialog is executed, and finally
  <xref linkend="mthEndAsyncExecution"/> is used to wait for the main dialog to close:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   .application~useGlobalConstDir("O", "useTools.h")
 
@@ -1515,7 +1502,6 @@ sent along with the scroll bar event.
 
   dlg~endAsyncExecution
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1702,8 +1688,7 @@ of a window. </para>
   <listitem>
   <para>
     This example retrieves the size of the bitmap for the bitmap button with symbolic resource ID of IDC_PB_TICKET:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   size = self~getBitmapSize(IDC_PB_TICKET)
   say 'Size for the ticket push button bitmap:' size~width 'by' size~height
@@ -1713,7 +1698,6 @@ of a window. </para>
      Size for the ticket push button bitmap: 152 by 178
 
   */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1896,11 +1880,9 @@ of a window. </para>
   <para>
     This following example shows how to use the <emphasis role="italic">getBmpDisplacement</emphasis> method:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   bmpPos = self~getBmpDisplacement(IDC_PB_TICKET)
   parse var bmpPos x y
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2157,8 +2139,7 @@ separated by a blank. </para>
 <listitem><para>The following example demonstrates how to get the minimum and the maximum
 values of the scroll bar:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
      .
      .
      .
@@ -2168,7 +2149,6 @@ values of the scroll bar:
   parse var sbRange sbMin sbMax
   say sbMin " - " sbMax
 
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -2268,8 +2248,7 @@ plays a tune each time the animated bitmap hits the right border.
 </para></listitem></varlistentry>
 </variablelist>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* store array in .local */
 .Local["My.Bitmaps"] = .array~new(10)
 /* load 10 bitmaps into .local array */
@@ -2298,7 +2277,6 @@ end
 ::method HitRight
    ret = Play("sound.wav", yes)
    return self~super:hitright
-]]>
 </programlisting>
 </section>
 
@@ -2461,8 +2439,7 @@ end
   <listitem>
   <para>
     This example installs a bitmap push button using four bitmaps and connects the button click event to a method:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   ...
@@ -2475,7 +2452,6 @@ end
 ::method onBmpButtonClicked
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2651,8 +2627,7 @@ method to manually update the display.
     This example demonstrates how a dialog started with <emphasis role="italic">popup</emphasis> executes asynchronously
     to the code in the main portion of the program. The example code below is complete. I can be cut and pasted into a
     file and will run as is.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dlg = .ExampleDlg~new( , "simple.h")
   msgObj = dlg~popup("SHOWTOP", IDI_DLG_OOREXX)
@@ -2687,7 +2662,6 @@ method to manually update the display.
   self~createPushButton(IDOK, 142, 99, 50, 14, "DEFAULT", "Ok")
   self~createPushButton(IDCANCEL, 197, 99, 50, 14, , "Cancel")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2846,8 +2820,7 @@ method to manually update the display.
   <para>
     This example program is complete. It can be copy and pasted into a file and will execute as is:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   parentDlg = .SimpleParentDlg~new
 
@@ -2900,7 +2873,6 @@ method to manually update the display.
   self~createPushButton(IDOK, 142, 99, 50, 14, "DEFAULT", "Ok")
   self~createPushButton(IDCANCEL, 197, 99, 50, 14, , "Cancel")
 
-]]>
 </programlisting>
 
   </para>
@@ -3033,8 +3005,7 @@ Generic form:
     This example shows 2 methods in an application that hides some of its dialog controls, under certain circumstances,
     and unhides them later:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method hideCustomerControls private
 
@@ -3069,7 +3040,6 @@ Generic form:
   list~showFast
   self~redrawRect( , rRect)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3208,10 +3178,8 @@ to manually update the display.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example resizes a dialog control:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~resizeControl(IDC_PB_NEXT, 40, 30, "SHOWWINDOW")
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -3584,13 +3552,11 @@ self~resizeControl(IDC_PB_NEXT, 40, 30, "SHOWWINDOW")
     symbolic resource id of IDC_PB_SCROLLER. The text is located 2 pixels below the top of the client area, one move is
     3 screen pixels, and the delay time after each movement is 15 ms.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 self~start(scrollInControl, IDC_PB_SCROLLER, "Hello world!", "Arial", 36,   -
                             "BOLD ITALIC", 2, 3, 15, 4)
 
-]]>
 </programlisting>
 
   </para>
@@ -3796,15 +3762,13 @@ self~start(scrollInControl, IDC_PB_SCROLLER, "Hello world!", "Arial", 36,   -
     symbolic resource id of IDC_PB_SCROLLER. The text is located 2 pixels below the top of the client area, one move is
     3 screen pixels, and the delay time after each movement is 15 ms.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 hwnd = self~newPushButton(IDC_PB_SCROLLER)~hwnd
 
 self~start(scrollText, hwnd, "Hello world!", "Arial", 36,   -
                        "BOLD ITALIC", 2, 3, 15, 4)
 
-]]>
 </programlisting>
 
   </para>
@@ -3996,12 +3960,10 @@ Generic form:
   <listitem>
   <para>
     This example changes the background color of a static control to red and the text color to yellow using palette indexes:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 self~setControlColor(IDC_ST_EDIT_LABEL, 2, 4)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4053,15 +4015,13 @@ self~setControlColor(IDC_ST_EDIT_LABEL, 2, 4)
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example sets a 12-point Arial font for the control:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
      .
      .
      .
    hFont = self~createFontEx("Arial",12)
    self~setControlFont(IDC_LB_ADDRESSES, hFont, .false)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -4137,12 +4097,10 @@ self~setControlColor(IDC_ST_EDIT_LABEL, 2, 4)
   <listitem>
   <para>
     This example changes the background color of a static control to the system background color for a menu:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 self~setControlSysColor(IDC_ST_STATES, 'MENU')
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4228,8 +4186,7 @@ self~setControlSysColor(IDC_ST_STATES, 'MENU')
     This example makes another dialog the foreground window and returns the window handle of the current foreground
     window to the caller, or returns -1 if there was an error:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method switchToReportDlg
   expose reportDlg
@@ -4237,7 +4194,6 @@ self~setControlSysColor(IDC_ST_STATES, 'MENU')
   if currentHwnd == 0 then return -1  -- Report an error
   return currentHwnd
 
-]]>
 
 </programlisting>
   </para>
@@ -4652,10 +4608,8 @@ The default is 1.
 <listitem><para>The following example allows the scroll bar to take values between 1
 and 10:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 MyDialog~setSBRange(234, 1, 10, 1)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -4810,8 +4764,7 @@ Generic form:
   <para>
     This example resizes an edit control so that it takes up the entire <xref linkend="defClientArea"/>
     of the dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method resizeEditControl
   expose editControl isHidden
@@ -4826,7 +4779,6 @@ Generic form:
     isHidden = .false
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5055,13 +5007,11 @@ Generic form:
     using a blue 24pt Arial font in bold, italic style. The starting position of the text is at the point (3, 3)
     relative to the client area of the button:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 hwnd = self~NewPushButton(IDC_PB_CANVAS)
 self~writeToWindow(hwnd, 3, 3, "Hello world!", "Arial", 24, "BOLD ITALIC CLIENT", 4)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5292,12 +5242,12 @@ self~writeToWindow(hwnd, 3, 3, "Hello world!", "Arial", 24, "BOLD ITALIC CLIENT"
     control. The font of the text will be a blue 18pt Arial font in bold, italic style. The starting position of the
     text is at the point (5, 5) relative to the client area of the static control.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
-self~writeToControl(IDC_ST_BLANK, 5, 5, "I am done!", "Arial", 18, "BOLD ITALIC CLIENT", 4)
+self~writeToControl(IDC_ST_BLANK, 5, 5, "I am done!", "Arial", 18, -
+  "BOLD ITALIC CLIENT", 4                                          -
+)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

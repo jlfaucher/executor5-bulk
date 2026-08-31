@@ -122,8 +122,7 @@
   <para>
     This example shows how the enquote function can be ussed to create SQL INSERT statements that are not prone to SQL
     Injection flaws:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   r1.0 = 4
   r1.1 = "Tom"
@@ -147,11 +146,9 @@ INSERT INTO my_table (fName, lName, phone, gender) VALUES('Tom', 'Hanks', NULL, 
 INSERT INTO my_table (fName, lName, phone, gender) VALUES('Mike', NULL, '555-9988', NULL);
 
 */
-]]>
 </programlisting>
     This example shows a conversion for a single string that has an apostrophe within it:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 str = "It's a happy day!"
 say ooSQLiteEnquote(str)
@@ -161,7 +158,6 @@ say ooSQLiteEnquote(str)
 'It''s a happy day!'
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

@@ -85,21 +85,21 @@
       drag operation, then an instance of the <computeroutput>Mouse</computeroutput> class must be
       instantiated (typically in the dialog's <computeroutput>initDialog</computeroutput> method) and
       associated with the window. For example:
-      <programlisting><![CDATA[     mouse = .Mouse~new(self)]]></programlisting>
+      <programlisting language="rexx">     mouse = .Mouse~new(self)</programlisting>
       Mouse events are
       then connected to the mouse instance. For example, here's the code for
       connecting a left-button-down (aka "start drag" or "pickup") event:
-      <programlisting><![CDATA[     mouse~connectEvent('LBUTTONDOWN', dmOnLBdown)]]></programlisting>This
+      <programlisting language="rexx">     mouse~connectEvent('LBUTTONDOWN', dmOnLBdown)</programlisting>This
       defines the method <computeroutput>dmOnLBdown</computeroutput> as the event handler for a
       pickup. Other drag/drop events include mouse movement (dragging with the left
       button down) and a drop (left button up).</para>
     <para>When the user presses and holds the left mouse button then a pickup event is detected, and
       the "Left Button Down" event handler method is invoked. In this method, the mouse instance is
-      "captured" as follows: <programlisting><![CDATA[     if mouse~dragDetect(...) then do
+      "captured" as follows: <programlisting language="rexx">     if mouse~dragDetect(...) then do
         ...
         mouse~capture()
         ...
-      end]]></programlisting>The <computeroutput>dragDetect</computeroutput> method returns
+      end</programlisting>The <computeroutput>dragDetect</computeroutput> method returns
         <computeroutput>.true</computeroutput> if the user has indeed started dragging. Note that
       all drag/drop events are sent to the object in which the mouse was instantiated - and each
       mouse instance is affiliated with a specific window object. For clarity, in the above code

@@ -542,8 +542,7 @@ positions of the trackbar and redraws the trackbar, if required.</para>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example sets the range, the line step, the page step,
 and the tick frequency of the slider:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   curSL = self~newTrackBar("IDC_1")
   if curSL \= .Nil then do
@@ -552,7 +551,6 @@ and the tick frequency of the slider:
     curSL~setPageStep(10)
     curSL~setTickFrequency(10)
   end
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -623,13 +621,11 @@ of the slider.</para>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example displays the current trackbar position:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method displayPos
   ctrl=self~newTrackBar("IDC_1")
   pos = ctrl~pos
   say pos
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -679,14 +675,12 @@ positions of the slider.</para>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example displays the range of a slider:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method displayRange
   ctrl=self~newTrackBar("IDC_1")
   range = ctrl~range
   parse var range min max
   say min max
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -741,8 +735,7 @@ slider.</para>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example sets the range, the line step, the page step,
 and the tick frequency of the slider:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   curSL = self~newTrackBar("IDC_1")
   if curSL \= .Nil then do
@@ -751,7 +744,6 @@ and the tick frequency of the slider:
     curSL~setPageStep(10)
     curSL~setTickFrequency(10)
   end
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -873,8 +865,7 @@ and maximum positions of the slider.</para>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example sets the range, the line step, the page step,
 and the tick frequency of the slider:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   curSL = self~newTrackBar("IDC_1")
   if curSL \= .Nil then do
@@ -883,7 +874,6 @@ and the tick frequency of the slider:
     curSL~setPageStep(10)
     curSL~setTickFrequency(10)
   end
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -928,12 +918,10 @@ position.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example sets the trackbar to the maximum position, with
 the range of the trackbar already been set to 0 to 100 using the setRange method:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method setToMax
   ctrl=self~newTrackBar("IDC_1")
   ctrl~setPos(100,1)
-]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1106,8 +1094,7 @@ logical position in the slider.</para>
   <para>
     The following example sets the range, the line step, the page step, and the tick frequency of the trackbar:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   curSL = self~newTrackBar("IDC_1")
   if curSL \= .nil then do
@@ -1116,7 +1103,6 @@ logical position in the slider.</para>
     curSL~setPageStep(10)
     curSL~setTickFrequency(10)
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

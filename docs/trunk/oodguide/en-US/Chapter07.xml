@@ -352,7 +352,8 @@
             <listitem>
               <para><emphasis role="bold">A Data Component </emphasis>(a subclass of
                   <computeroutput>GenericFile</computeroutput>)</para>
-              <para><programlisting><![CDATA[::METHOD newInstance CLASS PUBLIC
+              <para><programlisting language="rexx">::CLASS GenericFile
+::METHOD newInstance CLASS PUBLIC
   ...
   -- Check if an instance has already been created; if so, return .false.
   ...
@@ -362,7 +363,7 @@
 ::METHOD init PRIVATE
   ...
   records = self~init:super(fileName, columns)
-  ...]]></programlisting>Data components such as <computeroutput>PersonData</computeroutput> are
+  ...</programlisting>Data components such as <computeroutput>PersonData</computeroutput> are
                 required to provide a <computeroutput>newInstance</computeroutput> class method,
                 which is invoked by the MVF. No parameters are provided. This method first checks if
                 an instance has already been created. If not, it is created, and its object ID is
@@ -375,14 +376,15 @@
             <listitem>
               <para><emphasis role="bold">A Model Component</emphasis> (a subclass of
                   <computeroutput>Model</computeroutput>)</para>
-              <para><programlisting><![CDATA[::METHOD newInstance CLASS PUBLIC
+              <para><programlisting language="rexx">::CLASS Model
+::METHOD newInstance CLASS PUBLIC
   use strict arg instanceName
     forward class (super) continue
     modelId = RESULT
     return modelId
 
  ::METHOD init
-   use strict arg myData]]></programlisting>Model components such as
+   use strict arg myData</programlisting>Model components such as
                   <computeroutput>PersonModel</computeroutput> are required to provide a
                   <computeroutput>newInstance</computeroutput> class method with one required argument - the
                 model's instance name. The method must be forwarded to the
@@ -394,7 +396,8 @@
               <para><emphasis role="bold">A View Component</emphasis> (a subclass of
                   <computeroutput>RcView</computeroutput>, <computeroutput>ResView</computeroutput>,
                 or <computeroutput>UdView</computeroutput>)</para>
-              <para><programlisting><![CDATA[::METHOD newInstance CLASS PUBLIC
+              <para><programlisting language="rexx">::Class xxView
+::METHOD newInstance CLASS PUBLIC
   use strict arg modelId, rootDlg
   -- create dialog, e.g. "dlg = .PersonView~new(...)"
   dlg~activate(modelId, rootDlg)
@@ -404,7 +407,7 @@
   use strict arg modelId, rootDlg
   forward class (super) continue
   personData = RESULT
-]]></programlisting>View components such as <computeroutput>PersonView</computeroutput> must provide
+</programlisting>View components such as <computeroutput>PersonView</computeroutput> must provide
                 a <computeroutput>newInstance</computeroutput> class method and an
                   <computeroutput>activate</computeroutput> method. The
                   <computeroutput>newInstance</computeroutput> method is invoked by MVF with the
@@ -999,7 +1002,7 @@ familyName: James; firstName: Alfred;
         <computeroutput>controlSizing</computeroutput> method (a method of ooDialog's
         <computeroutput>ResizingAdmin</computeroutput> class) on 'self'. As an example, the
       following code defines the resizing behavior of the "Reset Icons" button on the Order
-      Management dialog:<programlisting><![CDATA[
+      Management dialog:<programlisting language="rexx">
     ::METHOD defineSizing
       ...
       self~controlSizing(IDC_ORDMGR_RESET, -
@@ -1007,7 +1010,7 @@ familyName: James; firstName: Alfred;
                          .array~of('STATIONARY', 'BOTTOM'), -
                          .array~of('MYLEFT',     'LEFT'  ), -
                          .array~of('MYTOP',      'TOP'   )  -
-                        )]]></programlisting>
+                        )</programlisting>
       The <computeroutput>controlSizing</computeroutput>
       method takes five arguments: a control's resource ID (e.g. the Reset button) and four arrays.
       The first array addresses the left side of the control, the second the top, the third the
@@ -1095,34 +1098,34 @@ familyName: James; firstName: Alfred;
       plus two Control Dialogs (<computeroutput>RcControlDialog</computeroutput>) in a Tab Control. The two Control Dialogs -
       one for Customer Details and one for details of Products ordered, are
       created in the <computeroutput>activate</computeroutput> method as follows:
-<programlisting><![CDATA[    cd1 = .CustDetailsDlg~new("Order\OrderFormView.rc", IDD_ORDFORM_CUST_DIALOG)
+<programlisting language="rexx">    cd1 = .CustDetailsDlg~new("Order\OrderFormView.rc", IDD_ORDFORM_CUST_DIALOG)
     cd2 = .OrderLinesDlg~new("Order\OrderFormView.rc", IDD_ORDFORM_ORDLINES_DIALOG)
     tabContent = .array~of(cd1, cd2)
     cd1~ownerDialog = self
     self~prep(tabContent)
-    ]]></programlisting>The <computeroutput>prep</computeroutput> method is then called to set up the tabs:
-      <programlisting><![CDATA[  ::METHOD prep
+    </programlisting>The <computeroutput>prep</computeroutput> method is then called to set up the tabs:
+      <programlisting language="rexx">  ::METHOD prep
     expose tabContent lastSelected havePositioned
     use strict arg tabContent
     havePositioned = .array~of(.false, .false)
     lastSelected = 0
     self~connectTabEvent(IDC_ORDFORM_TABS, SELCHANGE, onNewTab)
-    ]]></programlisting>The 'havePositioned' array is used to determine if the page dialogs have been
+    </programlisting>The 'havePositioned' array is used to determine if the page dialogs have been
     positioned, and both are marked as not positioned. Then "no tab yet selected" is set. Finally, an
     event handling method is connected to the event <computeroutput>onNewTab</computeroutput>
     (which is invoked when the user clicks on a tab).</para>
     <para>Next, in the <computeroutput>initDialog</computeroutput> method, the tabs are added to the tab control,
       their size is calculated, and the control dialog used for the first page is positioned and
       shown:
-      <programlisting><![CDATA[  ::METHOD initDialog
-    expose ... tabContent lastSelected ...
+      <programlisting language="rexx">  ::METHOD initDialog
+    expose tabContent lastSelected -- ...
     ...
     tabControl = self~newTab(IDC_ORDFORM_TABS)
     tabControl~addSequence("Customer Details", "Order Lines")
     ...
     self~calculateDisplayArea
     self~positionAndShow(1)
-    ]]></programlisting>
+    </programlisting>
     </para>
     <para>The two methods <computeroutput>calculateDisplayArea</computeroutput> and <computeroutput>positionAndShow</computeroutput>
       are well-commented, and are copied from the ooDialog sample program <computeroutput>oodListViews.rex</computeroutput>
@@ -1145,13 +1148,13 @@ familyName: James; firstName: Alfred;
       .rc file (in ResEdit, <emphasis role="bold">Use Spin Control</emphasis> is set to <emphasis role="bold">false</emphasis>
       and <emphasis role="bold">Format</emphasis> is set to <emphasis role="bold">Short Date</emphasis>), and partly in code,
       as follows:
-      <programlisting><![CDATA[  ::METHOD initDialog
+      <programlisting language="rexx">  ::METHOD initDialog
     ...
     orderDate = self~newDateTimePicker(IDC_ORDFORM_DATE);
     orderDate~setFormat("MMM dd',' yyyy")
     today = .DateTime~today
     maxOrderDate = today~addYears(1)
-    orderDate~setRange(.array~of(today,maxOrderDate))]]></programlisting>
+    orderDate~setRange(.array~of(today,maxOrderDate))</programlisting>
       First the format of the edit field is set. Then the ooRexx <computeroutput>DateTime</computeroutput>
       class is used to set the allowable range of dates that the user can enter: the range is from "today" (i.e. the day on
       which the dialog is used) to a year from "today".

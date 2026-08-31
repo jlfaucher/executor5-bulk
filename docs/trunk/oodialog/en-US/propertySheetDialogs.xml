@@ -202,8 +202,7 @@
     the pages of a tab control. If the user closes the main dialog with <emphasis role="italic">ok</emphasis> then all
     the control dialogs used as pages are ended using <emphasis role="italic">endExecution</emphasis> with an argument
     of true:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method ok
     expose pages
@@ -212,7 +211,6 @@
       if page \== .nil then page~endExecution(.true)
     end
     return self~ok:super
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -263,8 +261,7 @@
     tab control. The dialog object is not instantiated until the user actually visits the page in the tab control. At
     that time, the dialog object is instantiated and then started executing through the <emphasis
     role="italic">execute</emphasis> method:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method activateHistory private unguarded
     expose historyDlg dlgRect pages
@@ -278,7 +275,6 @@
 
     self~postOnSelChange(10)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -361,16 +357,12 @@
   <listitem>
   <para>
     This example activates the internal work around for a list-view with the symbolic ID of IDC_LV_MAIN:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
-
   -- Initialize the internal fix for the list-view redrawing problem when a
   -- list-view is used in a tab control.
   self~initUpdateListView(IDC_LV_MAIN)
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -626,9 +618,7 @@
     role="italic">new</emphasis> method. This is sometimes easier than using a lot of omitted arguments for a
     <computeroutput>RcControlDialog</computeroutput>.
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   ...
 
   dlg3 = .ProgressBarDlg~new("rc\PropertySheetDemo.rc", IDD_PROGRESSBAR_DLG)
@@ -640,9 +630,7 @@
 
 ::requires "ooDialog.cls"
 
-...
-
-]]>
+/* ... */
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -984,8 +972,7 @@
     <computeroutput>UserControlDialog</computeroutput> and shows the init() method of that subclass. Note the proper way
     that the <computeroutput>PatientDlg</computeroutput> object initializes its superclass.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method activatePatient private unguarded
     expose patientDlg dlgRect pages
@@ -1007,7 +994,6 @@
     self~create(r~left, r~top, r~right, r~bottom)
     ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1469,8 +1455,7 @@
     This example sets up the 5 dialogs to be used as the pages of the property sheet dialog and then instantiates that
     dialog:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   -- Create the 5 dialog pages.
   p1 = .ListViewDlg~new("rc\PropertySheetDemo.rc", IDD_LISTVIEW_DLG)
@@ -1490,7 +1475,6 @@
 
 ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1555,8 +1539,7 @@
   <listitem>
   <para>
     This example sets the dialog icon for a property sheet dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   -- For the application icon of the dialog we will use the ooRexx icon which is
   -- available for general use from oodialog.dll.
@@ -1564,7 +1547,6 @@
   propDlg~appIcon = "IDI_DLG_OOREXX"
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1677,8 +1659,7 @@
   <para>
     This example shows the header attribute of a Wizard dialog being set to an <computeroutput>Image</computeroutput>
     object containing the desired bitmap to be used in the header area of the Wizard:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   -- Create the property sheet using the dialog pages and set its attributes.
   wizDlg = .TicketWizard97~new(pages, "Wizard97", "Let's Go To The Movies")
@@ -1687,7 +1668,6 @@
   wizDlg~watermark = .Image~getImage("rc\ticketWizardRexxLA.bmp")
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1850,8 +1830,7 @@
     This example shows the assignment of a <computeroutput>ResourceImage</computeroutput> object to the <emphasis
     role="italic">resources</emphasis> attribute and specifying the resource ID to use for the appIcon of the property
     sheet dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   -- For the application icon of the dialog we will use the ooRexx icon which is
   -- available for general use from oodialog.dll.
@@ -1860,7 +1839,6 @@
   propDlg~appIcon = IDI_DLG_OOREXX
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1917,12 +1895,10 @@
   <listitem>
   <para>
     This example changes the first page to be shown from the default to page 3:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   propDlg~startPage = 3
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1984,15 +1960,13 @@
     This example creates a Wizard97 property sheet dialog and sets the watermark bitmap to an
     <computeroutput>Image</computeroutput> object. The bitmap will be loaded from the
     <computeroutput>ticketWizardRexxLA.bmp</computeroutput> bitmap file:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   wizDlg = .TicketWizard97~new(pages, "Wizard97", "Let's Go To The Movies")
 
   wizDlg~header = .Image~getImage("rc\ticketWizardTheater.bmp")
   wizDlg~watermark = .Image~getImage("rc\ticketWizardRexxLA.bmp")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3045,8 +3019,7 @@
   <para>
     This example shows a property sheet dialog that is popped up from the parent dialog when a button is clicked:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onPopup unguarded
 
@@ -3065,7 +3038,6 @@
     -- Show the property sheet.
     propDlg~popupAsChild(self)
 
-]]>
 </programlisting>
 
   </para>
@@ -3209,9 +3181,7 @@
     In this example, when one of the pages in a wizard becomes active it sends an empty table to each of the other pages
     in the property sheet combined with the command SELECTED. Each page then adds information to the table passed in
     with the command. The information is specific to the application:
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method setActive unguarded
   expose filmArray movieTheaters selectedMovies movieCombo
   use arg propSheet
@@ -3221,9 +3191,6 @@
   selected = .table~new
   selectedMovies~empty
   propSheet~querySiblings(selected, "SELECTED")
-
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3943,15 +3910,13 @@
   <para>
     This example shows the <xref linkend="mthSetActive"/> event handler in one of the interior page
     dialogs for a wizard property sheet dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method setActive unguarded
   use arg propSheet
 
   propSheet~setWizButtons("BACK NEXT")
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4076,22 +4041,18 @@
   <para>
     The order of <emphasis role="italic">showWizButtons</emphasis> and
  <xref linkend="mthSetWizButtons"/> is important. This works:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
       propSheet~setWizButtons("NEXT")
       propSheet~showWizButtons("NEXT", "BACK NEXT")
 
-]]>
 </programlisting>
     This does not work:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
       propSheet~showWizButtons("NEXT", "BACK NEXT")
       propSheet~setWizButtons("NEXT")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4106,8 +4067,7 @@
   <para>
     This example shows the <xref linkend="mthSetActive"/> event handler for the first page in an Aero
     wizard. It removes the Back button from the page, (since it is impossible to go back from the first page.)
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method setActive
   use arg propSheet
@@ -4117,7 +4077,6 @@
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4545,17 +4504,14 @@
     This example shows an <computeroutput>UserPSPDialog</computeroutput> being instantiated for use as one of the pages
     of a <xref linkend="clsPropertySheetDialog"/> sheet dialog. The size of the page dialog is set using
     the <emphasis role="italic">cx</emphasis> and <emphasis role="italic">cy</emphasis> attributes;
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   p3 = .DaysDlg~new( , , "", "Days" )
   p3~cx = 267
   p3~cy = 143
   p3~headerTitle = "Choose a day to watch the movie(s)."
-  p3~headerSubtitle = "Use the drop down list to switch movies.  Pick the day most suitable for the movie."
+  p3~headerSubtitle = "Use the drop down list to switch movies. "-
+    "Pick the day most suitable for the movie."
   ...
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4620,17 +4576,14 @@
     This example shows an <computeroutput>UserPSPDialog</computeroutput> being instantiated for use as one of the pages
     of a <xref linkend="clsPropertySheetDialog"/> sheet dialog. The size of the page dialog is set using
     the <emphasis role="italic">cx</emphasis> and <emphasis role="italic">cy</emphasis> attributes;
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   p3 = .DaysDlg~new( , , "", "Days" )
   p3~cx = 267
   p3~cy = 143
   p3~headerTitle = "Choose a day to watch the movie(s)."
-  p3~headerSubtitle = "Use the drop down list to switch movies.  Pick the day most suitable for the movie."
+  p3~headerSubtitle = "Use the drop down list to switch movies. " -
+    "Pick the day most suitable for the movie."
   ...
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4875,8 +4828,7 @@
     5. For page 5 the label is changed to <emphasis role="italic">ooRexx Tab Control</emphasis> by setting the <emphasis
     role="italic">pageTitle</emphasis> attribute. Notice the use of the USETITLE keyword in the <emphasis
     role="italic">pageOpts</emphasis> argument to the <emphasis role="italic">new</emphasis> method for page 5:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   -- Create the 5 dialog pages.
   p1 = .ListViewDlg~new("rc\PropertySheetDemo.rc", IDD_LISTVIEW_DLG)
@@ -4887,7 +4839,6 @@
 
   p5~pageTitle = "ooRexx Tab Control"
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4936,8 +4887,7 @@
   <para>
     This example uses the <emphasis role="italic">propSheet</emphasis> attribute to invoke the
  <xref linkend="mthQuerySiblings"/> method of the property sheet dialog that owns the page:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose filmArray movieTheaters selectedMovies movieCombo
@@ -4947,7 +4897,6 @@
 
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5020,8 +4969,7 @@
     images within the DLL. It assigns the resource image to the <emphasis role="italic">resources</emphasis> attribute
     so that it can use the icon images as the icons for the tabs of the pages:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   p1 = .ListViewDlg~new("rc\PropertySheetDemo.rc", IDD_LISTVIEW_DLG)
   p2 = .TreeViewDlg~new("rc\PropertySheetDemo.rc", IDD_TREEVIEW_DLG)
@@ -5042,7 +4990,6 @@
   p4~resources = resourceImage
   p4~tabIcon = IDI_DLG_OOREXX
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5107,8 +5054,7 @@
     This example creates a resource image from the ooDialog.dll file which has 4 icon images within the resource section
     of the DLL. It then assigns an icon from the resource image to the <emphasis role="italic">tabIcon</emphasis>
     attribute of each page dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   p1 = .ListViewDlg~new("rc\PropertySheetDemo.rc", IDD_LISTVIEW_DLG)
   p2 = .TreeViewDlg~new("rc\PropertySheetDemo.rc", IDD_TREEVIEW_DLG)
@@ -5129,7 +5075,6 @@
   p4~resources = resourceImage
   p4~tabIcon = IDI_DLG_OOREXX
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5407,8 +5352,7 @@
   from <emphasis role="italic">applyNoError</emphasis> is always PSNRET_NOERROR. The typical over-ride of the <emphasis
   role="italic">apply</emphasis> method would always look similar to this:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method apply unguarded
   use arg isOkBtn, pageNum, rexxPage, propSheet
@@ -5422,7 +5366,6 @@
 
   return self~applyNoError(propSheet)
 
-]]>
 </programlisting>
 
 </para>
@@ -5600,8 +5543,7 @@
   <para>
     This example checks that the user has entered a last name in the form before leaving a page. If the last name field
     was left blank, the user is not allowed to leave the page:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method killActive unguarded
   expose editLName
@@ -5619,7 +5561,6 @@
 
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5683,8 +5624,7 @@
     role="italic">pageCreate</emphasis> is invoked. It returns <computeroutput>.false</computeroutput> to prevent the
     page from being created. The experimentation showed that if the current tab selection is not set to another page,
     the appearance of the dialog was a little raggedy:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method pageCreate unguarded
   use arg propSheet
@@ -5692,7 +5632,6 @@
   reply .false
   propSheet~setCurSel(3)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5827,9 +5766,7 @@
     This example comes from a movie ticket purchasing wizard. On the last page the application needs to know what movies
     the user is buying tickets for. In the last page, he application invokes <emphasis
     role="italic">querySiblings</emphasis> and all the other pages fill in the details of the tickets being purchased:
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   -- snippet code from the last page in a property sheet dialog
 
   info = .table~new
@@ -5843,21 +5780,27 @@
 
   -- snippet of code from the first page in the property sheet dialog
 
-  when arg2 == "DATA" then do
-    -- arg1 is a table whose indexes are the films.  Each item is a directory,
-    -- and the indexes are theater, date, and time.  The other pages fill in the
-    -- directory.  We just make sure only the selected movies are in the
-    -- table.
-    arg1~empty
-    currentSelectedMovies = self~getSelectedMovies
+  select
 
-    do movie over currentSelectedMovies
-      d = .directory~new
-      arg1[movie] = d
+    /* ... */
+
+    when arg2 == "DATA" then do
+      -- arg1 is a table whose indexes are the films.  Each item is a directory,
+      -- and the indexes are theater, date, and time.  The other pages fill in the
+      -- directory.  We just make sure only the selected movies are in the
+      -- table.
+      arg1~empty
+      currentSelectedMovies = self~getSelectedMovies
+
+      do movie over currentSelectedMovies
+        d = .directory~new
+        arg1[movie] = d
+      end
     end
-  end
 
-]]>
+    /* ... */
+
+  end
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5924,15 +5867,13 @@
   <para>
     In this example the <emphasis role="italic">queryInitialFocus</emphasis> event handler is used to change the initial
     focus from the top check box to the third check box, using the symbolic ID of the third check box:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method queryInitialFocus
   use arg id, propSheet
 
   return IDC_CK_NO_ADMIN
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6047,8 +5988,7 @@
     uses the notification to enable the Next button and to remove the Back and Finish buttons. (The user can not go
     <emphasis role="italic">back</emphasis> from the first page and <emphasis role="italic">finishing</emphasis> is not
     possible at that point.)
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method setActive
   use arg propSheet
@@ -6058,7 +5998,6 @@
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6123,8 +6062,7 @@ Generic form:
   <para>
     This snippet of code shows how the <emphasis role="italic">setSize</emphasis> method can be used to set all the
     pages of a wizard dialog to the proper size:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   -- First we create the dialogs for each page, and set any of the attributes
   -- we need to.  We want each dialog to be the same size.
@@ -6139,7 +6077,6 @@ Generic form:
 
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6352,8 +6289,7 @@ Generic form:
   <para>
     This example shows an over-ride of the translateAccelerator() event handle that prints out the arguments and some
     sample output:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method translateAccelerator
   use arg msg, keyCode, d, propSheet
@@ -6397,7 +6333,6 @@ Alt held: 0 shift held: 0 control held: 0
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6453,8 +6388,7 @@ Alt held: 0 shift held: 0 control held: 0
     of going to page three, the dialog goes back to page one. I.e., the user starts over. There are some say statements
     to print out information on the screen. The <xref linkend="mthIndexToID"/> method is used to test
     that it works. It would have been just as good to simply return the page number (1.)
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method wizBack unguarded
   use arg propSheet
@@ -6471,7 +6405,6 @@ Got return from indexToID() ret: 0x00000000004EAF60
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6536,8 +6469,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
     card number entered (or not entered at all) is not valid. A message box will inform the user of the problem and then
     returns the resource ID of the edit control where the user enters the credit card number. This prevents the wizard
     from finishing and places the focus on the edit control so that the user can correct the number:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method wizFinish unguarded
   use arg propSheet
@@ -6552,7 +6484,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
   if chkCreditCard~checked then do
     ...
     ccNumber = editCCNumber~getText~strip
-    if ccNumber~length <> 12 then do
+    if ccNumber~length &lt;&gt; 12 then do
       -- put up message box informing user
       return IDC_EDIT_CC_NUMBER
     end
@@ -6562,7 +6494,6 @@ Got return from indexToID() ret: 0x00000000004EAF60
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6693,8 +6624,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
     has filled in the last name field. If not, PSNRET_INVALID is returned to prevent the dialog from proceeding and to
     have the focus returned to the page. If the user did fill in the last name and the other checks pass, PSNRET_NOERROR
     is returned:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method validate private unguarded
   use arg isOkButton, propSheet
@@ -6710,7 +6640,6 @@ Got return from indexToID() ret: 0x00000000004EAF60
 
   return self~PSNRET_NOERROR
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6787,8 +6716,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
     This example over-rides the implementation of <emphasis role="italic">validatePage</emphasis> and returns
     <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput> to indicate if the page is valid
     or invalid. The default implementation of <xref linkend="mthKillActive"/> is left alone:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method validatePage private unguarded
   expose editLName
@@ -6806,7 +6734,6 @@ Got return from indexToID() ret: 0x00000000004EAF60
 
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7092,9 +7019,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
     This example creates 5 <computeroutput>RcPSPDialog</computeroutput> objects and then uses them as the 5 pages of a
  <xref linkend="clsPropertySheetDialog"/>:
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   -- Create the 5 dialog pages.
   p1 = .ListViewDlg~new("rc\PropertySheetDemo.rc", IDD_LISTVIEW_DLG)
   p2 = .TreeViewDlg~new("rc\PropertySheetDemo.rc", IDD_TREEVIEW_DLG)
@@ -7103,13 +7028,13 @@ Got return from indexToID() ret: 0x00000000004EAF60
   p5 = .TabDlg~new("rc\PropertySheetDemo.rc", IDD_TAB_DLG)
 
   pages = .array~of(p1, p2, p3, p4, p5)
-  propDlg = .PropertySheetDemoDlg~new(pages, "NOAPPLYNOW", "ooRexx Property Sheet with Controls")
+  propDlg = .PropertySheetDemoDlg~new(pages, "NOAPPLYNOW", -
+    "ooRexx Property Sheet with Controls"                  -
+  )
 
   ...
 
 ::requires "ooDialog.cls"
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7350,8 +7275,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
     This sample code snippet shows the instantiation of 5 <computeroutput>ResPSPDialog</computeroutput> objects. These
     dialogs are then suitable to be used as the pages of a <computeroutput>PropertySheetDialog</computeroutput> object:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   t1 = .ListViewDlg~new("rc\PropertySheetDemo.dll", IDD_LISTVIEW_DLG)
   t2 = .TreeViewDlg~new("rc\PropertySheetDemo.dll", IDD_TREEVIEW_DLG)
@@ -7365,7 +7289,6 @@ Got return from indexToID() ret: 0x00000000004EAF60
 
 ::requires "ooDialog.cls"
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

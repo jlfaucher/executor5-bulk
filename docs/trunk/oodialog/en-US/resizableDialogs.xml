@@ -255,11 +255,9 @@
     sub-area of the <computeroutput>u</computeroutput> area.
   </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 u = .dlgArea~new(0, 0, self~sizeX,self~sizeY)
 b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -829,8 +827,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 <para>
   Here is what our defineDialog method might look like:
 </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* ------------------------------------------------------------------------- */
 ::method defineDialog
 /* ------------------------------------------------------------------------- */
@@ -854,12 +851,13 @@ self~createStaticText(11, s~x, s~y, s~w, s~h, , "Status info appears here")
 
 /* Seven buttons evenly spaced at 10% intervals, 9% high                     */
 do i = 0 to 6
-   self~createPushButton(12+i,b~x,b~y((i * 10)||"%"),b~w,b~h("9%"), ,"Button" i,"Button"||i)
+   self~createPushButton(12+i,b~x,b~y((i * 10)||"%"),b~w,b~h("9%"), -
+     ,"Button" i,"Button"||i                                        -
+   )
 end /* DO */
 
 /* ok button 15 dialog units high at bottom of area b                        */
 self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
-]]>
 </programlisting>
 <para>
   Here is the resultant dialog.
@@ -1302,8 +1300,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   <para>
     This example shows a typical event handling method in a resizable dialog that makes use of the
     <computeroutput>DlgAreaU</computeroutput> class
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineDialog
   expose u
@@ -1321,7 +1318,6 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   u~resize(self, sizeInfo)
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1349,10 +1345,8 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   method and can be any appropriate method name.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 self~connectResize(methodName)
-]]>
 </programlisting>
 
 <para>
@@ -1369,22 +1363,20 @@ u = .dlgAreaU~new(self)
   <link linkend="sctCreateMethods">create</link>/> control method parameters. Although you can use references to
   <xref linkend="clsDlgArea"/> attributes, so
 </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   self~createPushButton(IDC_PB, 5, 100, 45, 15, , "MyButton", "Pressed")
   self~createPushButton(IDC_PB_1, b~x, b~y("10%"), b~w, b~h("9%"), , "Button" 1, "Button"||1)
-]]>
 </programlisting>
   <para>
     work fine, whereas
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* Seven buttons evenly spaced at 10% intervals, 9% high                     */
 do i = 0 to 6
-   self~createPushButton(12+i, b~x, b~y((i * 10)||"%"), b~w, b~h("9%"), , "Button" i, "Button"||i)
+   self~createPushButton(12+i, b~x, b~y((i * 10)||"%"), b~w, b~h("9%"), , -
+     "Button" i, "Button"||i                                              -
+   )
 end /* DO */
-]]>
 </programlisting>
 <para>
   would fail because the <emphasis role="italic">createPushButton</emphasis> method references the variable
@@ -1393,17 +1385,14 @@ end /* DO */
 <para>
   To debug your <computeroutput>DlgAreaU</computeroutput> object call/insert the following after the instantiation:
 </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 if u~lastError \= .nil then call errorDialog u~lastError
-]]>
 </programlisting>
 <para>
   Your event handler code for the RESIZE event must pass on the second argument of the method to the
   <computeroutput>DlgAreaU</computeroutput> object's <emphasis role="italic">resize</emphasis> method.
 </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* ------------------------------------------------------------------------- */
 ::method OnResize
 /* ------------------------------------------------------------------------- */
@@ -1412,7 +1401,6 @@ if u~lastError \= .nil then call errorDialog u~lastError
 
   u~resize(self, sizeInfo)
 
-]]>
 </programlisting>
 <para>
   The <computeroutput>DlgAreaU</computeroutput> object's <emphasis role="italic">resize</emphasis> method will then
@@ -1527,11 +1515,9 @@ if u~lastError \= .nil then call errorDialog u~lastError
   able to correct this in your code by adjusting the <emphasis role="italic">correctionFactor</emphasis> attribute. For
   example:
 </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 u = .DlgAreaU~new(self)
 u~correctionFactor=1.07
-]]>
 </programlisting>
 <para>
   You will have to experiment to find the appropriate setting for this attribute.
@@ -1544,9 +1530,8 @@ u~correctionFactor=1.07
 </section>
 
 <section id="sctDlgAreaUSample"><title>Sample Code</title>
-<programlisting>
-<![CDATA[
-/* DlgAreaDemo.Rex  --  Demonstrate DlgArea & DlgAreaU Classes  --  Feb 2006 */
+<programlisting language="rexx">
+/* DlgAreaDemo.Rex  --  Demonstrate DlgArea &amp; DlgAreaU Classes  --  Feb 2006 */
 
 dlg = .MyDialog~new
 if dlg~initCode == 0 then dlg~execute("ShowTop")
@@ -1605,7 +1590,6 @@ expose u
 use arg sizeEvent, sizeinfo
 u~resize(self, sizeinfo)
 
-]]>
 </programlisting>
 <para>
   This achieves the same dialog as the previous DlgArea <link linkend="exampleDlgArea">example</link>, but now it is
@@ -1846,10 +1830,8 @@ u~resize(self, sizeinfo)
       as the dialog is resized. The MyLeft type of pin can only be used for the right edge of a dialog control. The pin to
       window and pin to edge are ignored with this type of pin, but most methods require the pin to edge argument. Typically
       a line of code for this type of pin would look like this:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   self~controlRight(IDC_ST_PROCESSA, 'MYLEFT', 'LEFT')
-]]>
 </programlisting>
       The <emphasis role="italic">LEFT</emphasis> argument in the above is actually ignored. IDC_ST_PROCESSA is a valid
       symbolic ID in the application.
@@ -1862,11 +1844,9 @@ u~resize(self, sizeinfo)
       height of the control does not change as the dialog is resized. The MyTop type of pin can only be used for the bottom
       edge of a dialog control. The pin to window and pin to edge are ignored with this type of pin, but most methods require
       the pin to edge argument. Typically a line of code for a MyTop pin would look like this:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~controlBottom(IDC_ST_PROCESSB, 'MYTOP', 'TOP')
-]]>
 </programlisting>
       The <emphasis role="italic">TOP</emphasis> argument in the above is actually ignored. IDC_ST_PROCESSB is a valid
       symbolic ID in the application.
@@ -2063,8 +2043,7 @@ u~resize(self, sizeinfo)
   <listitem>
   <para>
     This example sets the maximum size for the resizable dialog based on a proportion of the initial dialog size.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -2072,7 +2051,6 @@ u~resize(self, sizeinfo)
   max = .Size~new(size~width * 2, trunc(size~height * 1.5))
   self~maxSize = max
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2136,8 +2114,7 @@ u~resize(self, sizeinfo)
   <listitem>
   <para>
     This example sets a minimum size for the resizable dialog to be 100 pixels wide by 50 pixels high:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineSizing
 
@@ -2146,7 +2123,6 @@ u~resize(self, sizeinfo)
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2230,12 +2206,10 @@ u~resize(self, sizeinfo)
   <listitem>
   <para>
     This example defines the sizing for the bottom edge of a list-view:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~controlBottom(IDC_LV_MAIN, 'STATIONARY', 'BOTTOM')
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2319,12 +2293,10 @@ u~resize(self, sizeinfo)
   <listitem>
   <para>
     This example defines the sizing for the left edge of a list-view:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~controlLeft(IDC_LV_MAIN, 'STATIONARY', 'LEFT')
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2409,12 +2381,8 @@ u~resize(self, sizeinfo)
   <para>
     This example defines the sizing for the right edge of a list-view. To be sure the code is clear to anyone looking at it,
     the programmer decided to explicitly name the window the right edge is pinned to:
-<programlisting>
-<![CDATA[
-
-  self~controlRight(IDC_LV_MAIN, 'STATIONARY', 'RIGHT', self~IDC_IDC_DEFAULT_PINTO_WINDOW)
-
-]]>
+<programlisting language="rexx">
+self~controlRight(IDC_LV_MAIN, 'STATIONARY', 'RIGHT', self~IDC_IDC_DEFAULT_PINTO_WINDOW)
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2541,16 +2509,14 @@ u~resize(self, sizeinfo)
     This example defines the sizing for all edges of an edit control using the <emphasis
     role="italic">controlSizing</emphasis> method. Note that there are any number of ways the Rexx code could be formatted
     here. The format shown is merely one way, it is not required:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
-  self~controlSizing(IDC_EDIT_NAMES,                                       -
-                     .array~of('STATIONARY', 'LEFT', IDC_ST_NAMES),        -
-                     .array~of('STATIONARY', 'TOP',  IDC_GB_TEST),         -
-                     .array~of('STATIONARY', 'LEFT', IDC_ST_LABELS),       -
-                     .array~of('MYTOP',      'TOP')                        -
+  self~controlSizing(IDC_EDIT_NAMES,                                  -
+                     .array~of('STATIONARY', 'LEFT', IDC_ST_NAMES),   -
+                     .array~of('STATIONARY', 'TOP',  IDC_GB_TEST),    -
+                     .array~of('STATIONARY', 'LEFT', IDC_ST_LABELS),  -
+                     .array~of('MYTOP',      'TOP')                   -
                      )
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2634,12 +2600,10 @@ u~resize(self, sizeinfo)
   <listitem>
   <para>
     This example defines the sizing for the top edge of a list-view:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~controlTop(IDC_LV_MAIN,'STATIONARY', 'TOP')
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3028,8 +2992,7 @@ u~resize(self, sizeinfo)
     edge as they start with. A similar thing with the top and bottom of the controls, they will be pinned to the bottom of a
     list-view. The effect of this, is that the dialog controls using the default sizing will all remain the same size. They
     will not get bigger or smaller:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~defaultSizing(.array~of('STATIONARY', 'LEFT'),                     -
                      .array~of('STATIONARY', 'BOTTOM', IDC_LV_MAIN),      -
@@ -3037,7 +3000,6 @@ u~resize(self, sizeinfo)
                      .array~of('STATIONARY', 'BOTTOM', ICD_LV_MAIN)       -
                     )
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3191,8 +3153,7 @@ u~resize(self, sizeinfo)
   <listitem>
   <para>
     This example shows the complete <emphasis role="italic">defineSizing</emphasis> method from one of the example programs:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineSizing
 
@@ -3211,7 +3172,6 @@ u~resize(self, sizeinfo)
     -- ended.
     return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3317,8 +3277,7 @@ u~resize(self, sizeinfo)
     This example removes the minimum size restriction for a resizable dialog. It does it during the <xref
     linkend="mthDefineSizing"/> method because it is convenient to do it there, not because it is required to be done in
     that method:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineSizing
 
@@ -3326,7 +3285,6 @@ u~resize(self, sizeinfo)
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3406,15 +3364,13 @@ u~resize(self, sizeinfo)
   <listitem>
   <para>
     This example shows part of the <xref linkend="mthDefineSizing"/> method for a dialog that has a tab control with 5 pages:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dlgIDs = .array~of(IDD_LISTVIEW_DLG, IDD_TREEVIEW_DLG, IDD_PROGRESSBAR_DLG, -
                      IDD_TRACKBAR_DLG, IDD_TAB_DLG)
 
   self~pagedTab(IDC_TAB, dlgIDs)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3482,8 +3438,7 @@ u~resize(self, sizeinfo)
     the application. There needs to be a sizing definition for the list-view already in the table to do that, but the sizing
     for the list-view is that of the current default sizing. The <emphasis role="italic">useDefaultSizing</emphasis> method
     provides a convenient way to add the list-view's record:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~useDefaultSizing(IDC_LV_MAIN)
 
@@ -3493,7 +3448,6 @@ u~resize(self, sizeinfo)
                      .array~of('STATIONARY', 'BOTTOM', ICD_LV_MAIN)       -
                     )
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3573,12 +3527,10 @@ u~resize(self, sizeinfo)
   <para>
     This example informs the ooDialog framework that the dialog needs the EXITSIZEMOVE event notification. It explicity
     specifies the name of the event handling method, even though the method name is the same as the default:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~wantSizeEnded('onSizeEnded', .true)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3599,13 +3551,11 @@ u~resize(self, sizeinfo)
   role="italic">required</emphasis> to return a value. Good practice would be to always return a value from an event handler.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSizeEnded unguarded
   use arg
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -3628,8 +3578,7 @@ u~resize(self, sizeinfo)
     <xref linkend="clsTab"/> control. When the resizing of the dialog ends, the dialog used for page 5 needs to do some extra
     processing, which is done in the placeButton() method:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onSizeEnded unguarded
     expose tabContent needCalculation
@@ -3640,7 +3589,6 @@ u~resize(self, sizeinfo)
 
     return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

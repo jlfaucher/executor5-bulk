@@ -318,7 +318,7 @@ and literal. For instance:
 </para>
 <example>
 <title>Describing header fields</title>
-<programlisting>
+<programlisting language="rexx">
 /* set the name of the second field to 'Height' */
 MyCsvStream~headers~field(2)~name='Height'
 
@@ -335,7 +335,7 @@ instance, to use ; as a delimiter and ' as a qualifier do the following:
 </para>
 <example>
 <title>Describing field delimiters</title>
-<programlisting>
+<programlisting language="rexx">
 MyCsvStream = .csvStream~new
 MyCsvStream~delimiter=";"
 MyCsvStream~qualifier="'"
@@ -348,7 +348,7 @@ can specify which character to strip using the attribute stripChar which default
 </para>
 <example>
 <title>Setting the strip option</title>
-<programlisting>
+<programlisting language="rexx">
 MyCsvStream~StripOption = 'T' /* strip trailing blanks */
 </programlisting>
 </example>
@@ -357,7 +357,7 @@ or
 </para>
 <example>
 <title>Removing leading zeros</title>
-<programlisting>
+<programlisting language="rexx">
 MyCsvStream~StripOption = 'L'
 MyCsvStream~stripChar = '0' /* strip Leading zeroes */
 </programlisting>
@@ -449,7 +449,7 @@ See <emphasis>Changing the behaviour of a csvStream object</emphasis> under the 
 <secondary>Example code</secondary></indexterm>
 <example>
 <title>Files without headers</title>
-<programlisting>
+<programlisting language="rexx">
 csv = .csvStream~new('MyData.csv') /* 2nd arg defaults to no headers */
 /* csv~skipHeaders = .false                UnNoOp to return header line */
 
@@ -474,7 +474,7 @@ csv~close
 
 <example>
 <title>Files with headers</title>
-<programlisting>
+<programlisting language="rexx">
 csv = .csvStream~new('headered.csv', .true)
 csv~open          /* Stream class defaults to both ie:readWrite */
 myTable = .table~new
@@ -502,7 +502,7 @@ csv~close
 
 <example>
 <title>Example with error checking</title>
-<programlisting>
+<programlisting language="rexx">
 csv = .csvStream~new('BadData.csv')
 
 csv~open('read')

@@ -58,7 +58,7 @@
   <computeroutput>winSystm.cls</computeroutput> To use this class in a program, place a
   <computeroutput>::requires</computeroutput> statement in the program file:
 </para>
-<programlisting>
+<programlisting language="rexx">
 ::requires "winSystm.cls"
 </programlisting>
 <para>
@@ -258,11 +258,12 @@ The default is &quot;NORMAL&quot;.
 to the Notepad editor within the directory c:\temp:
 <example id="ex.windowprogrammanager-addShortCut">
 <title>WindowsProgramManager class - addShortCut method</title>
-<programlisting>
+<programlisting language="rexx">
 pm = .WindowsProgramManager~new
-    if pm~InitCode \= 0 then exit
-    pm~addShortCut("c:\temp\My Notepad","%SystemRoot%\system32\notepad.exe")
-    ::requires "winsystm.cls"
+if pm~InitCode \= 0 then exit
+pm~addShortCut("c:\temp\My Notepad","%SystemRoot%\system32\notepad.exe")
+
+::requires "winsystm.cls"
 </programlisting>
 </example>
 </para></listitem></varlistentry>
@@ -285,7 +286,7 @@ pm = .WindowsProgramManager~new
 <para>Adds a program group to the Programs group of the desktop. If the group
 already exists, it is opened. The <emphasis role="italic">group</emphasis>
 argument specifies the name of the program group to be added. Example:</para>
-<programlisting>
+<programlisting language="rexx">
 addGroup("Object Rexx Redbook")
 </programlisting>
 
@@ -322,10 +323,11 @@ must not contain any brackets or parenthesis. Otherwise, this method fails.
 group used with either AddGroup or ShowGroup.</para>
 <example id="ex.windowprogrammanager-addItem">
 <title>WindowsProgramManager class - addItem method</title>
-<programlisting>
-AddItem("OODialog Samples", ,
-"rexx oodialog\samples\sample.rex", ,
-"oodialog\samples\oodialog.ico")
+<programlisting language="rexx">
+AddItem("OODialog Samples",           -
+  "rexx oodialog\samples\sample.rex", -
+  "oodialog\samples\oodialog.ico"     -
+)
 </programlisting>
 </example>
 
@@ -421,8 +423,7 @@ versa.</para></note>
 
 <example id="ex.windowprogrammanager-deleteDesktopIcon">
 <title>WindowsProgramManager class - deleteDesktopIcon method</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 pm = .WindowsProgramManager~new
 if pm~InitCode \= 0 then exit
 
@@ -436,7 +437,6 @@ end
 exit
 
 ::requires "winsystm.cls"
-]]>
 </programlisting>
 </example>
 </section>

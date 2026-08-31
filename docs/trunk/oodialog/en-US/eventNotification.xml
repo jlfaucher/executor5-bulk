@@ -198,8 +198,7 @@
   arguments. Therefore, by default, the method is invoked from the message processing loop to run concurrently as a separate
   activity. Because of this, technically, it does not have to be unguarded and does not have to return a value. Nevertheless,
   the example is the <emphasis role="italic">correct</emphasis> way to code the event handler.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   ...
   self~connectButtonEvent(IDC_PB_REFRESH, "CLICKED", updateTime)
@@ -212,7 +211,6 @@
   self~refreshDisplay(now)
   return 0
 
-]]>
 </programlisting>
 
 </para>
@@ -221,8 +219,7 @@
   sand in the universe. Since it is not expected that the calculation will finish in a reasonable amount of time, an
   early reply is used to return a value in a timely manner. The handler also disables the push button so that the user
   can not start a second calculation until the first calculation finishes.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   ...
   self~connectButtonEvent(IDC_PB_CALC_SAND, "CLICKED", onCalculateGrains)
@@ -239,7 +236,6 @@
   self~newPushButton(IDC_PB_CALC_SAND)~enable
   return
 
-]]>
 </programlisting>
 
 </para>
@@ -265,8 +261,7 @@
     the event handler, the event should not be connected.
   </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   expose calendar
@@ -315,7 +310,6 @@
   buffer = .DayStates~makeDayStateBuffer(dayStates)
   return buffer
 
-]]>
 </programlisting>
   </listitem></varlistentry>
   <varlistentry id="exampleEventHandler2"><term><emphasis role="bold">Event Synchronization</emphasis></term>
@@ -327,8 +321,7 @@
     programmer to completely finish the customizations before the month calendar appears on the screen.
   </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -346,7 +339,6 @@
 
   return 0
 
-]]>
 </programlisting>
   <para>
     In the above example, the <emphasis role="italic">connectDateTimePickerEvent</emphasis> method did not exist in
@@ -358,8 +350,7 @@
     concurrently as a separate activity.
   </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -373,15 +364,13 @@
 
   userDidSeeCalendar = .true
 
-]]>
 </programlisting>
   <para>
     However, if the programmer is going to customize the calendar, having the event handler run concurrently is likely to
     have the calendar shown before the customization is finished. So, it makes much more sense to at least use the <emphasis
     role="italic">sync</emphasis> option in this way:
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -397,7 +386,6 @@
   monthCal~setFirstDayOfWeek(3)
   monthCal~addStyle("NOTODAY")
 
-]]>
 </programlisting>
   </listitem></varlistentry>
   <varlistentry id="exampleEventHandler3"><term><emphasis role="bold">Veto Events</emphasis></term>
@@ -421,8 +409,7 @@
     role="italic">onTabChanging</emphasis> method directly, wait for the return value, and pass that value to the operating
     system.
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineDialog
 
@@ -438,29 +425,24 @@
   if dlg~allowChange then return .true
   else return .false
 
-]]>
 </programlisting>
   <para>
     In the above example, since the <emphasis role="italic">allowChange</emphasis> method is returning
     <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput> the event handler could have been
     coded this way:
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onTabChanging unguarded
 
   ...
 
   return dlg~allowChange
-]]>
 </programlisting>
   <para>
     The example used:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   if dlg~allowChange then return .true
   else return .false
-]]>
 </programlisting>
     to emphasize that the event handler needs to return <computeroutput>.true</computeroutput> or
     <computeroutput>.false</computeroutput>.
@@ -483,8 +465,7 @@
     program needs to gather up all the data on the validated page and write it to disk, or send it somewhere. One approach
     would be to validate the page, do an early reply, and then finish up the processing:
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineDialog
 
@@ -505,13 +486,11 @@
   data = dlg~getUserDataDirectory
   self~writeDataToFile(data)
 
-]]>
 </programlisting>
   <para>
     Another approach could be to start a new activity which will run concurrently. It might be coded this way:
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onTabChanging unguarded
   expose tabContent
   use arg idFrom, hwndFrom
@@ -527,7 +506,6 @@
   else do
     return .false
   end
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -899,10 +877,10 @@
   capture the drop down notification. Looking up the numeric values for this notification, the programmer would have found
   that WM_NOTIFY == '0x004E' and that BCN_DROPDOWN == '0xfffffb20'. Assuming the ID for the split button is 1004. The
   programmer would code <emphasis role="italic">addUserMsg</emphasis> like this:
-<programlisting>
-<![CDATA[
-  addUserMsg('onDropDown', '0x004E', '0xFFFFFFFF', 1004, '0xFFFFFFFF', '0xfffffb20', '0xFFFFFFFF', .true)
-]]>
+<programlisting language="rexx">
+addUserMsg('onDropDown', '0x004E', '0xFFFFFFFF', 1004, '0xFFFFFFFF', -
+  '0xfffffb20', '0xFFFFFFFF', .true                                  -
+)
 </programlisting>
 </para>
 </note>
@@ -1028,8 +1006,7 @@
     program that captures the mouse for some reason could add an event handler for the WM_CANCELMODE message and release
     the mouse if the program had currently captured it. This is a hypothetical situation intended to show how to use the
     <emphasis role="italic">addUserMsg</emphasis> method and not necessarily of any practical value.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method init
     expose mouseIsCaptured
@@ -1069,7 +1046,6 @@
 
     return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1088,13 +1064,11 @@
   how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onEvent unguarded
   use arg wParam, lParam
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -1138,8 +1112,7 @@
     returns false, the window remains minimized. In the following example, if the user minimizes the dialog, when the user
     goes to restore the dialog, it will only be restored, randomly, half of the time:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
     ...
 
@@ -1155,7 +1128,6 @@
     if n // 2 == 0 then return .true
     else return .false
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1175,13 +1147,11 @@
   how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onWmCommand unguarded
   use arg wParam, lParam, id, notifyCode, controlObj
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -1300,8 +1270,7 @@
     connect the notification to a Rexx method and how to code the event handler to properly set the checked / unchecked
     appearance of the 2 radio buttons in the group. BN_CLICK notifications are sent using the WM_COMMAND message:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
     expose rb1 rb2 BN_CLICK
     ...
@@ -1342,7 +1311,6 @@
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1362,13 +1330,11 @@
   how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onWmNotify unguarded
   use arg idFrom, hwndFrom, notifyCode, rexxControl
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -1417,8 +1383,7 @@
   <listitem>
   <para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
     ...
@@ -1448,7 +1413,6 @@ notifyCode:  4294966048
 rexxControl: a Button
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1564,13 +1528,11 @@ rexxControl: a Button
   event handler.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onActivate unguarded
   use arg status, hwnd, hFocus, isMinimized
 
   return .false
-]]>
 </programlisting>
 
 <variablelist>
@@ -1667,8 +1629,7 @@ rexxControl: a Button
     focused control is saved. When it is being activated, the handle of the last focused control is passed on the to <xref
     linkend="clsControlDialog"/> that contains the list-view for processing.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onActivate unguarded
   expose listViewPageDialog lastFocused
@@ -1679,7 +1640,6 @@ rexxControl: a Button
   if flag == 'INACTIVE' then lastFocused = hFocused
   else listViewPageDialog~updateListView(lastFocused)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1873,8 +1833,7 @@ rexxControl: a Button
   <listitem>
   <para>
     The following example displays a message whenever the OK button is selected:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class MyDlgClass subclass UserDialog
 
 ::method init
@@ -1884,7 +1843,6 @@ rexxControl: a Button
 ::method onHilite unguarded
   say "The OK button has been selected"
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1902,13 +1860,11 @@ rexxControl: a Button
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onDropDown unguarded
   use arg id, buttonRect, rxButton
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -1969,13 +1925,11 @@ rexxControl: a Button
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onButtonEvent unguarded
   use arg info, hwnd, id, notifyCode, buttonObj
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -2034,8 +1988,7 @@ rexxControl: a Button
     The following example uses one event handler for all the push buttons in the application. It uses the <emphasis
     role="italic">id</emphasis> argument to determine which button was pushed:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onButtonEvent unguarded
   use arg info, handle, id, notifyCode, pushButton
 
@@ -2066,7 +2019,6 @@ rexxControl: a Button
   ...
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2085,13 +2037,11 @@ rexxControl: a Button
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onHotItem unguarded
   use arg id, entering, rxButton
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -2134,8 +2084,7 @@ rexxControl: a Button
     The following example is from a program that has 2 buttons with the HOTITEM event connected to the same event handler.
     Each time the event handler is invoked it prints out some information about the event:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onHover unguarded
   use arg id, entering, rxButton
 
@@ -2153,7 +2102,6 @@ rexxControl: a Button
   onHover() button with id: 1001 is entering
   onHover() button with id: 1001 is leaving
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2329,13 +2277,11 @@ rexxControl: a Button
     linkend="defSymbolicId"/> ID that has been added to the <xref linkend="atrConstDir"/> directory of the MyDlgClass in
     another part of the program:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class MyDlgClass subclass UserDialog
 
 ::method initDialog
   self~connectComboBoxEvent("IDC_CB_PROFESSIONS", "DROPDOWN", "PlaySong")
-]]>
 </programlisting>
 
   </para>
@@ -2364,13 +2310,11 @@ rexxControl: a Button
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onComboBoxEvent unguarded
   use arg info, hwnd, id, notifyCode, comboBox
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -2431,11 +2375,10 @@ rexxControl: a Button
     The following example connects the CLOSEUP event of a combo box. The event handler checks if the item selected was
     Apple, and if it was, the selection is changed to Cherry:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method init
 
-  ,,,
+  ...
 
   self~connectComboBoxEvent(IDC_CB_DROPDOWNLIST, CLOSEUP, onCbCloseUp)
 
@@ -2445,7 +2388,6 @@ rexxControl: a Button
   if comboBox~selected == 'Apple' then comboBox~select('Cherry')
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2553,8 +2495,7 @@ rexxControl: a Button
     This example connects list box command event notifications to the <emphasis role="italic">onEvent</emphasis> method of
     the dialog. Note that the notification code 1 corresponds to the list box SELCHANGE event, 4 is the SETFOCUS, and 5 is
     KILLFOCUS events.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
   ...
@@ -2603,7 +2544,6 @@ Dialog control:       a ListBox
 Current selection is: Los Angles
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2621,13 +2561,11 @@ Current selection is: Los Angles
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onCommandEvent unguarded
   use arg wParam, lParam, id, notifyCode, controlObj
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -2697,8 +2635,7 @@ Current selection is: Los Angles
    and the <emphasis role="italic">connectCommandEvents</emphasis> method is used to connect all notifications to a single
    event handler. That event handler decodes each notification and displays it:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::class 'ComboBoxTypes' subclass RcDialog
 
@@ -2734,24 +2671,35 @@ Current selection is: Los Angles
     say 'cb:  ' cb
 
     select
-      when id == self~CB_SIMPLE then cbName = 'The simple combo box'
-      when id == self~CB_DROPDOWN then cbName = 'The drop down combo box'
+      when id == self~CB_SIMPLE       then cbName = 'The simple combo box'
+      when id == self~CB_DROPDOWN     then cbName = 'The drop down combo box'
       when id == self~CB_DROPDOWNLIST then cbName = 'The drop down list combo box'
       otherwise cbName = 'An error has occurred'
     end
 
     select
-      when code == self~CBN_ERRSPACE     then msg = 'sent a error space notification message.'
-      when code == self~CBN_SELCHANGE    then msg = 'sent a selection change notification message.'
-      when code == self~CBN_DBLCLK       then msg = 'sent a double click notification message.'
-      when code == self~CBN_SETFOCUS     then msg = 'sent a set focus notification message.'
-      when code == self~CBN_KILLFOCUS    then msg = 'sent a kill focus notification message.'
-      when code == self~CBN_EDITCHANGE   then msg = 'sent a edit change notification message.'
-      when code == self~CBN_EDITUPDATE   then msg = 'sent a edit update notification message.'
-      when code == self~CBN_DROPDOWN     then msg = 'sent a drop down notification message.'
-      when code == self~CBN_CLOSEUP      then msg = 'sent a close up notification message.'
-      when code == self~CBN_SELENDOK     then msg = 'sent a selection ended ok notification message.'
-      when code == self~CBN_SELENDCANCEL then msg = 'sent a selection ended cancel notification message.'
+      when code == self~CBN_ERRSPACE     then
+        msg = 'sent a error space notification message.'
+      when code == self~CBN_SELCHANGE    then
+        msg = 'sent a selection change notification message.'
+      when code == self~CBN_DBLCLK       then
+        msg = 'sent a double click notification message.'
+      when code == self~CBN_SETFOCUS     then
+        msg = 'sent a set focus notification message.'
+      when code == self~CBN_KILLFOCUS    then
+        msg = 'sent a kill focus notification message.'
+      when code == self~CBN_EDITCHANGE   then
+        msg = 'sent a edit change notification message.'
+      when code == self~CBN_EDITUPDATE   then
+        msg = 'sent a edit update notification message.'
+      when code == self~CBN_DROPDOWN     then
+        msg = 'sent a drop down notification message.'
+      when code == self~CBN_CLOSEUP      then
+        msg = 'sent a close up notification message.'
+      when code == self~CBN_SELENDOK     then
+        msg = 'sent a selection ended ok notification message.'
+      when code == self~CBN_SELENDCANCEL then
+        msg = 'sent a selection ended cancel notification message.'
       otherwise msg = 'processing the event notification.'
     end
     -- End select
@@ -2798,7 +2746,6 @@ code: 10
 cb:   a ComboBox
 The drop down combo box sent a selection ended cancel notification message.
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2993,20 +2940,18 @@ The drop down combo box sent a selection ended cancel notification message.
     The following example creates a DTP control in the dialog template of a <computeroutput>UserDialog</computeroutput>
     and then connects the drop down and close up events:
   </para>
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method defineDialog
 
-  self~createDateTimePicker(IDC_DTP_REPORT_DATE,  10, 7, 280, 15, "BORDER SHORT SHOWNONE")
+  self~createDateTimePicker(IDC_DTP_REPORT_DATE,  10, 7, 280, 15, -
+    "BORDER SHORT SHOWNONE"                                       -
+  )
 
   self~createPushButton(IDOK, 85, 74, 50, 14, "DEFAULT", "Ok")
   self~createPushButton(IDCANCEL, 140, 74, 50, 14, , "Cancel")
 
   self~connectDateTimePickerEvent(IDC_DTP_REPORT_DATE, "CLOSEUP", onCloseUp)
   self~connectDateTimePickerEvent(IDC_DTP_REPORT_DATE, "DROPDOWN", onDropDown)
-
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -3035,13 +2980,11 @@ The drop down combo box sent a selection ended cancel notification message.
   destroyed, the Rexx <computeroutput>MonthCalendar</computeroutput> is no longer valid.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onCloseUp unguarded
   use arg idFrom, hwndFrom, code, dtpObj
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -3091,8 +3034,7 @@ The drop down combo box sent a selection ended cancel notification message.
     have changed the selected date.  The example checks if a new data has been selected and does something if it has
     been changed:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onCloseUp unguarded
   expose lastChange
@@ -3106,7 +3048,6 @@ The drop down combo box sent a selection ended cancel notification message.
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3128,13 +3069,11 @@ The drop down combo box sent a selection ended cancel notification message.
   date time change event handler is ignored.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onDateTimeChange unguarded
   use arg dateTime, valid, idFrom, hwndFrom, code, dtpObj
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -3201,9 +3140,7 @@ The drop down combo box sent a selection ended cancel notification message.
     The following example updates a static control with the currently selected date and time whenever the user changes
     the date and time:
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method initDialog
   expose dtp staticMsg
 
@@ -3248,7 +3185,6 @@ The drop down combo box sent a selection ended cancel notification message.
 
   return dateTime~civilTime
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3270,13 +3206,11 @@ The drop down combo box sent a selection ended cancel notification message.
   event handler for the drop down event is ignored.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onDropDown unguarded
   use arg idFrom, hwndFrom, code, dtpObj
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -3341,18 +3275,16 @@ The drop down combo box sent a selection ended cancel notification message.
     The following example demonstrates how to change the month calendar style in the drop down event handler. If the
     operating system the program is running on is Vista or later, the whole process is bypassed:
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method initDialog
   dtp = self~newDateTimePicker(IDC_DTP_APPOINTMENT_TIME);
 
   if .OS~isAtLeastVista then do
     dtp~setMonthCalStyle("NOCIRCLE NOTRAILING")
   end
-  else
+  else do
     self~connectDateTimePickerEvent(IDC_DTP_APPOINTMENT_TIME, "DROPDOWN", onDropDown)
-  do
+  end
   ...
 
 ::method onDropDown unguarded
@@ -3365,8 +3297,6 @@ The drop down combo box sent a selection ended cancel notification message.
   mc~replaceStyle('DAYSTATE MULTI WEEKNUMBERS', "NOCIRCLE NOTODAY")
 
   return 0
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3385,13 +3315,11 @@ The drop down combo box sent a selection ended cancel notification message.
   behaviour can not be changed.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onFormat unguarded
   use arg field, dateTime, idFrom, hwndFrom, code, dtpObj
 
   return text
-]]>
 </programlisting>
 
 <variablelist>
@@ -3460,8 +3388,7 @@ The drop down combo box sent a selection ended cancel notification message.
     This is an example FORMAT event handler. It comes from the complete
     <computeroutput>fiscalReports.rex</computeroutput> program:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onFormat unguarded
   expose periods types currentType currentPeriod
@@ -3484,7 +3411,6 @@ The drop down combo box sent a selection ended cancel notification message.
 
   return ret
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3504,13 +3430,11 @@ The drop down combo box sent a selection ended cancel notification message.
   value from the event handler. The interpreter waits for this return. This behavior can not be changed.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onFormatQuery unguarded
   use arg field, size, id, hwnd, code, dtpObj
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -3579,8 +3503,7 @@ The drop down combo box sent a selection ended cancel notification message.
   <para>
     The following example FORMATQUERY event handler comes from that example program:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onFormatQuery unguarded
   expose haveSizes xxSize xxxSize xxxxSize
@@ -3605,7 +3528,6 @@ The drop down combo box sent a selection ended cancel notification message.
   return 0
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3625,13 +3547,11 @@ The drop down combo box sent a selection ended cancel notification message.
   return. This behavior can not be changed.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onKeyDown unguarded
   use arg field, dateTime, vKey, idFrom, hwndFrom, code, dtpObj
 
   return dateTime
-]]>
 </programlisting>
 
 <variablelist>
@@ -3722,8 +3642,7 @@ The drop down combo box sent a selection ended cancel notification message.
     The following example shows the KEYDOWN event handler from the <computeroutput>fiscalReports.rex</computeroutput>
     example program:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onKeyDown unguarded
   use arg field, dt, vKey, idFrom, hwndFrom, code, dtpObj
@@ -3745,7 +3664,6 @@ The drop down combo box sent a selection ended cancel notification message.
 
   return newDT
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3766,13 +3684,11 @@ The drop down combo box sent a selection ended cancel notification message.
   event handler for the kill focus event is ignored.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onKillFocus unguarded
   use arg idFrom, hwndFrom, code, dtpObj
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -3832,13 +3748,11 @@ The drop down combo box sent a selection ended cancel notification message.
   event handler for the set focus event is ignored.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSetFocus unguarded
   use arg idFrom, hwndFrom, code, dtpObj
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -3896,13 +3810,11 @@ The drop down combo box sent a selection ended cancel notification message.
   not be changed.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onUserString unguarded
   use arg dateTime, userStr, idFrom, hwndFrom, code, dtpObj
 
   return newDateTime
-]]>
 </programlisting>
 
 <variablelist>
@@ -3992,8 +3904,7 @@ The drop down combo box sent a selection ended cancel notification message.
     current system date and time, so the program allows the user to type a <emphasis role="italic">r</emphasis> or a
     <emphasis role="italic">c</emphasis> in the DTP to reset its display to the current system date and time:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onUserString unguarded
   expose resetting stInvalid
@@ -4012,7 +3923,6 @@ The drop down combo box sent a selection ended cancel notification message.
 
   return newDT
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4144,13 +4054,11 @@ The drop down combo box sent a selection ended cancel notification message.
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onDraw unguarded
   use arg id, lp, drawObj, itemID, flags, hDC, rcItem, itemData
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -4440,11 +4348,10 @@ The drop down combo box sent a selection ended cancel notification message.
     interesting experiment is to uncomment the say statement in the <emphasis role="italic">drawIt</emphasis> method to see
     when the event handler is executing:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dlg = .OwnerDrawDlg~new
-  if dlg~initCode <> 0 then return 99
+  if dlg~initCode &lt;&gt; 0 then return 99
   dlg~execute("SHOWTOP")
 
 return 0
@@ -4508,7 +4415,6 @@ return 0
 
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4670,8 +4576,7 @@ return 0
     <para>
       The following example verifies the input of the edit control with the symbolic ID of IDC_EDIT_AMOUNT and resets it to 0
       if a nonnumeric value was entered:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class MyDlgClass subclass UserDialog
 
 ::method init
@@ -4680,13 +4585,12 @@ return 0
 
 ::method onChange unguarded
   ec = self~newEdit("IDC_EDIT_AMOUNT")
-  if ec~getText~space(0) \== "" & ec~getText~dataType("N") == 0 then do
+  if ec~getText~space(0) \== "" &amp; ec~getText~dataType("N") == 0 then do
     ec~setModified(.false)
     ec~select
     ec~replaceSelText("0")
   end
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4711,13 +4615,11 @@ return 0
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onEditEvent unguarded
   use arg info, hwnd, id, notifyCode, controlObj
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -4779,8 +4681,7 @@ return 0
     specific to that edit control. The code is somewhat simplistic as it ignores what the notification code is. In a real
     word program the actions taken would depend on what the event was:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onEditEvent unguarded
   use arg info, hwnd, id, notifyCode, editObj
 
@@ -4793,7 +4694,7 @@ return 0
   end
   else if id == .constDir[IDC_EDIT_ZIP] then do
     zip = editObj~getText~strip
-      if \ self~validZipCode(zip) then doe
+      if \ self~validZipCode(zip) then do
         -- Put up message box telling
         -- user what the problem is ...
         editObj~setText("")
@@ -4803,7 +4704,6 @@ return 0
   ...
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4896,9 +4796,7 @@ return 0
   <listitem>
   <para>
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method init
     self~init:super
     ...
@@ -4916,8 +4814,8 @@ return 0
     return 0
 
 /* As the user presses the F1 key at various times when the dialog has the focus
- * the output might be as follows:
- */
+   the output might be as follows:
+
 
 Help request:
   Dialog id 12
@@ -4934,7 +4832,7 @@ Help request:
 Help request:
   Dialog id 80
   Mouse position x: 387 y: 462 help object: a Tab
-]]>
+*/
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4950,13 +4848,11 @@ Help request:
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onHelp unguarded
   use arg id, type, mouseX, mouseY, cntxID, helpObj
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -5025,8 +4921,7 @@ Help request:
     The following example shows a simple event handler that prints out the values of the arguments sent to it. This can be
     useful is understanding how the event handler for the <emphasis role="italic">connectHelp</emphasis> method works:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method init
   expose menubar
@@ -5074,7 +4969,6 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5161,13 +5055,11 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     <xref linkend="mthConnectHelp"/> method should be used for F1. This method is a convenience method and is
     exactly equivalent to:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   ...
   keys = .VK~F2 "-" .VK~F24
   self~connectKeyPress(methodName, keys)
-]]>
 </programlisting>
 
   </para>
@@ -5218,8 +5110,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     <xref linkend="mthConnectKeyPressDialogObject"/> method. It connects all the function keys to the
     same method and then determines what action to take by examining which key was pressed.
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   ::method initDialog
 
     ...
@@ -5250,8 +5141,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     end
 
     return 0
-  ]]>
-  </programlisting>
+    </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -5374,8 +5264,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
       </para>
       <para>
         Some examples may make this more clear:
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
 
   ::method initDialog
 
@@ -5401,8 +5290,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     -- itself. Alt-F4, Ctrl-F4, etc., would not invoke the method.
 
     self~connectKeyPress(onF4, .VK~F4, "NONE")
-  ]]>
-  </programlisting>
+    </programlisting>
 
       </para>
       </listitem></varlistentry>
@@ -5452,19 +5340,16 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
         -9 but still have some keys connected. For instance in the following example the C and D keys would be connected
         and the filter applied. The &quot;"dog&quot;" token would result in -9 being returned:
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
   keys = .VK~C ", dog," .VK~D
   ret = self~connectKeyPress('onAltCD', keys, "ALT AND SHIFT")
   say 'Got a return of:' ret
   say "Have connection to onAltCD?" self~hasKeyPressConnection('onAltCD')
 
-  -- The output would be:
+  /* The output would be:
   Got a return of: -1
   Have connection to onAltCD? 1
-
-]]>
+  */
 </programlisting>
 
       </para>
@@ -5522,8 +5407,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     dialog. F3 looks up info on the product number entered in an edit control.  F4 resets the form by clearing all the
     fields. F5 is used to print out the finished invoice.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
 
   ...
@@ -5557,7 +5441,6 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   self~printInvoice
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5663,8 +5546,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     removed, when she starts a new invoice key press connections are restored.  This cycle could continue though out the
     day without the user ever closing the main dialog.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -5718,7 +5600,6 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   self~connectKeyPress(onF4, 115, "NONE")
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5783,9 +5664,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     reset button is pushed the state of the dialog fields are reset.  The hot keys enabled check box is set to reflect
     whether hot keys are currently enabled or not.
 
-<programlisting>
-
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineDialog
 
@@ -5805,7 +5684,6 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   ...
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5827,13 +5705,11 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   return a value from an event handler.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onKeyPress unguarded
   use arg keyCode, shift, control, alt, extraInfo
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -5964,8 +5840,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     close the entire application. The event handler checks that only the Alt key is down when the F3 key is pressed and
     closes the application if that is true. Otherwise, if only the F3 key is pressed, then the handler closes the dialog:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
   self~connectKeyPress(onQuitKey, .VK~F3)
 
@@ -5981,7 +5856,6 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   -- Only F3 is pressed, close this dialog
   return self~cancel:super
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6119,8 +5993,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   <listitem>
   <para>
     The following example displays the text of the selected list box entry each time the user selects a new item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class MyDlgClass subclass UserDialog
 
 ::method init
@@ -6131,7 +6004,6 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
 
   say "New selection is:" lbox~selected
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6154,13 +6026,11 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onListBoxEvent unguarded
   use arg info, hwnd, id, notifyCode, listBox
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -6220,8 +6090,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     The following example comes from an application that fills a list box with the names of movies. When the user clicks on a
     movie in the list box, the application fills a number of other controls with information specific to the selected movie:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onMovieClick unguarded
    expose movieData
    use arg , , id, nCode, listBox
@@ -6252,7 +6121,6 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
    end
 
    return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6596,8 +6464,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     The following example connects the column-clicked event for the list-view EMPLOYEES with method ColumnAction and
     changes the style of the list-view from REPORT to SMALLICON:
   </para>
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   ::class MyDlgClass subclass UserDialog
 
   ::method init
@@ -6608,11 +6475,10 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     use arg id, column
     lc = self~newListView("EMPLOYEES")
     lc~replaceStyle("REPORT", "SMALLICON EDIT SINGLESEL ASCENDING")
-    if column > 0 then ...
+    if column &gt; 0 then ...
 
     return 0
-  ]]>
-  </programlisting>
+    </programlisting>
   </listitem></varlistentry>
 </variablelist>
 
@@ -6629,13 +6495,11 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onBeginDrag unguarded
   use arg id, item, point, isLMB, listView
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -6722,14 +6586,12 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
       wait for a reply.
     </para>
 
-    <programlisting>
-    <![CDATA[
+    <programlisting language="rexx">
     ::method onBeginEdit unguarded
       use arg id, itemID, editCtrl, listViewCtrl
 
       return zz
-    ]]>
-    </programlisting>
+        </programlisting>
 
     <variablelist>
       <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6790,8 +6652,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
         that editing is allowed for that item. If it is, it returns true to allow the operation. If it is not, it returns
         false to cancel the operation and puts up a message box to inform the user:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onBeginEdit unguarded
   use arg id, itemIndex, editCtrl, listViewCtrl
@@ -6807,7 +6668,6 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
 
   return
 
-]]>
 </programlisting>
       </para>
       </listitem></varlistentry>
@@ -6821,12 +6681,10 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     completely ignored, the interpreter does not wait for this return.
   </para>
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   ::method onBeginEdit unguarded
     use arg id, useless
-  ]]>
-  </programlisting>
+    </programlisting>
 
   <variablelist>
     <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6883,13 +6741,11 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onBeginScroll unguarded
   use arg ctrlID, dx, dy, listView, isBeginScroll
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -6958,9 +6814,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     The following example connects both the BEGINSCROLL and ENDSCROLL events to the same event handling method. The method
     simply prints out the values sent by the operating system:
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method onScroll unguarded
   use arg id, dx, dy, listView, isBeginScroll
 
@@ -6971,7 +6825,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
 
   return 0
 
-/* Output might be for example: */
+/* Output might be for example:
 
 id 200 dx: 5 dy: 0 listView: a ListView beginScroll
 id 200 dx: 5 dy: 0 listView: a ListView endScroll
@@ -6986,7 +6840,7 @@ id 200 dx: -173 dy: 0 listView: a ListView endScroll
 id 200 dx: 0 dy: 1 listView: a ListView beginScroll
 id 200 dx: 0 dy: 1 listView: a ListView endScroll
 
-]]>
+*/
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7006,13 +6860,11 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onCheckboxChanged unguarded
   use arg id, itemIndex, state, listView
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -7065,8 +6917,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
     the item whose check box changed, and the changed state. If the user checks the check box, that entry is added to a mail
     merge being constructed. If the user unchecks the box, the entry is removed from the mail merge.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class MailingListDlg subclass UserDialog
 
 ::method initDialog
@@ -7090,7 +6941,6 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
     self~removeFromMailMerge(mailList, itemIndex)
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7117,13 +6967,11 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   role="italic">columnIndex</emphasis> will be -1. The method will receive four arguments:
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ::method onClick unguarded
     use arg id, itemIndex, columnIndex, keyState, listView
 
     return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -7189,13 +7037,11 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onColumnClick unguarded
   use arg id, col, listView
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -7239,8 +7085,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
     the list-view items on that column in ascending order. Subsequent clicks on the column header reverses the current state.
     If the column is sorted in ascending order, a click sorts it in descending order ...
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method connectEvents private
 
     self~connectButtonEvent(IDC_RB_REPORT, "CLICKED", onReport, .true)
@@ -7277,7 +7122,6 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
 
     listView~sortItems('InternalListViewSort', d)
     return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7308,13 +7152,11 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
     determines how the event handler needs to respond to the notification.
   </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onEndEdit unguarded
   use arg id, itemID, text, listViewCtrl
 
   return trueOrFalse
-]]>
 </programlisting>
 
   <variablelist>
@@ -7369,15 +7211,14 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
       The following example checks the new text entered by the user. The label for the list-view items is displayed as last
       name, comma, first name. If the user's text is not in that format, the new text is rejected by returning false:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onEndEdit unguarded
 use arg id, itemIndex, text, listViewCtrl
 
 if text == .nil then return .false
 
-if text~words == 2 & text~word(1)~right(1) == ',' then do
+if text~words == 2 &amp; text~word(1)~right(1) == ',' then do
   reply .true
 
   rec = listViewCtrl~getItemData(itemIndex)
@@ -7399,7 +7240,6 @@ j = MessageDialog(msg, self~hwnd, title, , "WARNING")
 
 return
 
-]]>
 </programlisting>
     </para>
     </listitem></varlistentry>
@@ -7415,12 +7255,10 @@ return
     entered.
   </para>
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   ::method onEndEdit unguarded
     use arg id, itemIndex, maybeText, listView
-  ]]>
-  </programlisting>
+    </programlisting>
 
   <variablelist>
     <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7489,13 +7327,11 @@ return
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onFocusChanged unguarded
   use arg id, itemIndex, state, listView
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -7563,13 +7399,11 @@ return
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onListViewEvent unguarded
   use arg id, ptr, notifyCode, listView
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -7690,13 +7524,11 @@ return
   method is ignored for this event.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onGetInfoTip unguarded
   use arg id, itemIndex, text, maxLen, listView
 
   return infoText
-]]>
 </programlisting>
 
 <variablelist>
@@ -7763,8 +7595,7 @@ return
     If <emphasis role="italic">useInfoTips</emphasis> is false, no tip is displayed. If true the record information is
     formatted and returned. Note that new line characters are used to break up the information into lines:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onGetInfoTip unguarded
   expose records useInfoTips
@@ -7780,7 +7611,6 @@ return
   end
 
   return text
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7799,13 +7629,11 @@ return
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onKeyDown unguarded
   use arg id, vKey, listView
 
   return zz
-]]>
 </programlisting>
 
 <variablelist>
@@ -7849,14 +7677,13 @@ return
     The following example is from an application that allows the user to delete a list view item by pressing the Del key when
     the item to be deleted is selected. The list view is single selection
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onKeyDown unguarded
   use arg id, vkey, listView
 
   if vKey == .VK~DELETE then do
     selectedIndex = listView~selected
-    if selectedIndex <> -1 then do
+    if selectedIndex &lt;&gt; -1 then do
       listView~delete(selectedIndex)
       if selectedIndex == listView~items then do
         if selectedIndex == 0 then do
@@ -7874,7 +7701,6 @@ return
   end
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7897,13 +7723,11 @@ return
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onKeyDownEx unguarded
   use arg vKey, isShift, isCtrl, isAlt, extraInfo, listViewObj, id
 
   return response
-]]>
 </programlisting>
 
 <variablelist>
@@ -8063,15 +7887,14 @@ return
     item in the last, then the previous item is selected.  If the deleted item is the last item in the list, then nothing is
     selected:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onKeyDownEx unguarded
     use arg vKey, isShift, isCtrl, isAlt, extraInfo, listViewObj, id
 
-    if vKey == .VK~DELETE & isCtrl then do
+    if vKey == .VK~DELETE &amp; isCtrl then do
         selectedIndex = listView~selected
-        if selectedIndex <> -1 then do
+        if selectedIndex &lt;&gt; -1 then do
             listView~delete(selectedIndex)
             if selectedIndex == listView~items then do
                 if selectedIndex == 0 then do
@@ -8089,7 +7912,6 @@ return
     end
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8108,13 +7930,11 @@ return
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSelectChanged unguarded
   use arg id, itemIndex, state, listView
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -8175,13 +7995,11 @@ return
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSelectFocusChanged unguarded
   use arg id, itemIndex, listView
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -8377,8 +8195,7 @@ return
   <para>
     The following example updates the text of a static control whenever the user selects a new date in the calendar.
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -8391,7 +8208,6 @@ return
   dateText~setText(self~formatDate(startDate))
   return 0
 
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -8400,13 +8216,11 @@ return
 <section id="evtMonthCalendarGETDAYSTATE" xreflabel="GETDAYSTATE"><title>GetDayState Event Handler</title>
 <indexterm><primary>MonthCalendar class</primary><secondary>events</secondary><tertiary>GETDAYSTATE</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onGetDayState unguarded
   use arg startDate, count, id, hwnd
 
   return dayStateBuffer
-]]>
 </programlisting>
 
 <para>
@@ -8481,8 +8295,7 @@ return
     The following example is used in a application that displays the 1st and the 15th of each month in bold. The start
     date can be ignored in this case because the day state value is the same for any month.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 
@@ -8500,7 +8313,6 @@ return
   buffer = .DayStates~makeDayStateBuffer(dayStates)
   return buffer
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8512,13 +8324,11 @@ return
 <section id="evtMonthCalendarRELEASED" xreflabel=""><title>Released Event Handler</title>
 <indexterm><primary>MonthCalendar class</primary><secondary>events</secondary><tertiary>RELEASED</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onReleased unguarded
   use arg id, hwnd
 
   return 0
-]]>
 </programlisting>
 
 <para>
@@ -8562,13 +8372,11 @@ return
 <section id="evtMonthCalendarSELCHANGED" xreflabel="SELCHANGED"><title>SelChanged Event Handler</title>
 <indexterm><primary>MonthCalendar class</primary><secondary>events</secondary><tertiary>SELCHANGED</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSelChanged unguarded
   use arg selStart, selEnd, id, hwnd
 
   return 0
-]]>
 </programlisting>
 
 <para>
@@ -8637,13 +8445,11 @@ return
 <section id="evtMonthCalendarSELECT" xreflabel="SELECT"><title>Select Event Handler</title>
 <indexterm><primary>MonthCalendar class</primary><secondary>events</secondary><tertiary>SELECT</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSelect unguarded
   use arg selStart, selEnd, id, hwnd
 
   return 0
-]]>
 </programlisting>
 
 <para>
@@ -8705,13 +8511,11 @@ return
 <section id="evtMonthCalendarVIEWCHANGE" xreflabel="VIEWCHANGE"><title>ViewChange Event Handler</title>
 <indexterm><primary>MonthCalendar class</primary><secondary>events</secondary><tertiary>VIEWCHANGE</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onViewChange unguarded
   use arg oldView, newView, id, hwnd
 
   return 0
-]]>
 </programlisting>
 
 <para>
@@ -8838,8 +8642,7 @@ return
   <listitem>
   <para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class MyDlgClass subclass UserDialog
 
 ::method init
@@ -8857,7 +8660,6 @@ return
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8873,13 +8675,11 @@ return
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onMove unguarded
   use arg wParam, lParam
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -8917,8 +8717,7 @@ return
   <para>
     A complete working example to play with:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* Simple connectMove() example */
 
   dlg = .MoveDlg~new
@@ -8949,14 +8748,13 @@ return
 
   -- If x is greater than 400, the move us back
   -- to an x position of 50
-  if x > 400 then do
+  if x &gt; 400 then do
     p = .Point~new(50, y)
     self~moveTo(p)
     j = SysSleep(.01)
   end
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9137,8 +8935,7 @@ return
   <para>
     The following example connects the double-click of the left mouse button on dialog control DLGITEM1 with method
     onDblClk:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class MyDlgClass subclass UserDialog
 
 ::method init
@@ -9150,7 +8947,6 @@ return
   say "Control" id " has been double-clicked! Its window handle is:" hwnd
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9174,13 +8970,11 @@ return
   role="italic">connectNotifyEvent</emphasis> method determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onNotifyEvent unguarded
   use arg id, ptr, notifyCode, controlObj
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -9314,8 +9108,7 @@ return
   <listitem>
   <para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'MyDlgClass' subclass UserDialog
 
 ::method initDialog
@@ -9332,7 +9125,6 @@ return
   say "  Bottom:" rect~bottom
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9349,13 +9141,11 @@ return
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onPosChanged unguarded
   use arg wParam, lParam
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -9554,13 +9344,11 @@ return
   If this event notification is connected, the event handler must respond and return a value to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onAutoBreak unguarded
   use arg id, bandIndex, wID, style, reBar, itemData, msgID
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -9632,8 +9420,7 @@ return
   <para>
     The following example connects several rebar events in the <emphasis role="italic">initDialog</emphasis> method:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
 
   self~connectReBarEvent(IDC_RBAR, "RELEASEDCAPTURE", onRelease, sync)
@@ -9642,7 +9429,6 @@ return
 
   rb = self~newReBar(IDC_RBAR)
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9662,13 +9448,11 @@ return
   The event handler must always return a value for this notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onNcHitTest unguarded
   use arg id, bandIndex, pos, hit, rebar
 
   return 'CAPTION'
-]]>
 </programlisting>
 
 <variablelist>
@@ -9730,8 +9514,7 @@ return
     The following example prints out the values sent by the rebar control for the notification and if the <emphasis
     role="italic">hit</emphasis> argument is SIZE returns a non-zero value:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onNcHitTest unguarded
   use arg id, bandIndex, pos, ht, reBar
   say 'onNcHitTest() id:' id 'bandIndex:' bandIndex 'pos:' pos 'ht:' ht 'reBar:' reBar
@@ -9750,7 +9533,6 @@ onNcHitTest() id: 1003 bandIndex: 0 pos: a Point (222, 16) ht: CLIENT reBar: a R
 onNcHitTest() id: 1003 bandIndex: 4 pos: a Point (220, 16) ht: CAPTION reBar: a ReBar
 onNcHitTest() id: 1003 bandIndex: 4 pos: a Point (219, 16) ht: CAPTION reBar: a ReBar
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9768,13 +9550,11 @@ onNcHitTest() id: 1003 bandIndex: 4 pos: a Point (219, 16) ht: CAPTION reBar: a 
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onReleasedCapture unguarded
   use arg id, rebar
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -9809,8 +9589,7 @@ onNcHitTest() id: 1003 bandIndex: 4 pos: a Point (219, 16) ht: CAPTION reBar: a 
   <para>
     The following example prints out the values of the arguments sent by the rebar control for the released capture event:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onRelease unguarded
   use arg id, reBar
   say 'onRelease() id:' id 'reBar:' reBar
@@ -9822,7 +9601,6 @@ onRelease() id: 1003 reBar: a ReBar
 onRelease() id: 1003 reBar: a ReBar
 onRelease() id: 1003 reBar: a ReBar
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9948,8 +9726,7 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   dlg = .ResizingDialog~new
   dlg~createCenter(100, 60, "Resize Me", "THICKFRAME")
   dlg~execute("SHOWTOP")
@@ -9972,7 +9749,6 @@ onRelease() id: 1003 reBar: a ReBar
   say "New width=" w ", new height=" h
 
   return 0
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -9987,13 +9763,11 @@ onRelease() id: 1003 reBar: a ReBar
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onResize unguarded
   use arg wParam, lParam
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -10034,8 +9808,7 @@ onRelease() id: 1003 reBar: a ReBar
     linkend="sctAppearanceBehaviorMethods"/> section. A complete working example is presented there that uses a number of the
     dialog methods:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method defineDialog
   expose wasMinimized
 
@@ -10064,7 +9837,6 @@ onRelease() id: 1003 reBar: a ReBar
   end
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -10177,8 +9949,7 @@ onRelease() id: 1003 reBar: a ReBar
   <para>
     A complete implementation can be found in the <computeroutput>dlgAreaUDemoThree.rex</computeroutput> example program.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method init
   ...
 
@@ -10189,25 +9960,23 @@ onRelease() id: 1003 reBar: a ReBar
 
   select
     when direction == 'TOP' then do
-      if rect~bottom - rect~top < 300 then do
+      if rect~bottom - rect~top &lt; 300 then do
         rect~top = rect~bottom - 300
         return .true
       end
     end
     when direction == 'BOTTOM' then do
-      if rect~bottom - rect~top < 300 then do
+      if rect~bottom - rect~top &lt; 300 then do
         rect~bottom = rect~top + 300
         return .true
       end
     end
-    ...
+    /* ... */
     otherwise
       nop
   end
 
   return .false
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -10224,13 +9993,11 @@ onRelease() id: 1003 reBar: a ReBar
   change. The Rexx event hander must reply to this notification, this can not be changed.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onResize unguarded
   use arg wParam, lParam
 
   return .false
-]]>
 </programlisting>
 
 <variablelist>
@@ -10335,8 +10102,7 @@ onRelease() id: 1003 reBar: a ReBar
     This example shows an event handler that prevents the dialog from being sized smaller than a minimum size, but puts no
     restriction on the maximum size.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onResizing unguarded
   expose minWidth minHeight
@@ -10344,25 +10110,25 @@ onRelease() id: 1003 reBar: a ReBar
 
   select
     when direction == 'TOP' then do
-      if minHeight > r~bottom - r~top then do
+      if minHeight &gt; r~bottom - r~top then do
         r~top = r~bottom - minHeight
         return .true
       end
     end
     when direction == 'BOTTOM' then do
-      if minHeight > r~bottom - r~top then do
+      if minHeight &gt; r~bottom - r~top then do
         r~bottom = r~top + minHeight
         return .true
       end
     end
     when direction == 'LEFT' then do
-      if minWidth > r~right - r~left then do
+      if minWidth &gt; r~right - r~left then do
         r~left = r~right - minWidth
         return .true
       end
     end
     when direction == 'RIGHT' then do
-      if minWidth > r~right - r~left then do
+      if minWidth &gt; r~right - r~left then do
         r~right = r~left + minWidth
         return .true
       end
@@ -10370,12 +10136,12 @@ onRelease() id: 1003 reBar: a ReBar
     when direction == 'BOTTOMLEFT' then do
       didChange = .false
 
-      if minHeight > r~bottom - r~top then do
+      if minHeight &gt; r~bottom - r~top then do
         r~bottom = r~top + minHeight
         didChange = .true
       end
 
-      if minWidth > r~right - r~left then do
+      if minWidth &gt; r~right - r~left then do
         r~left = r~right - minWidth
         didChange = .true
       end
@@ -10385,12 +10151,12 @@ onRelease() id: 1003 reBar: a ReBar
     when direction == 'BOTTOMRIGHT' then do
       didChange = .false
 
-      if minHeight > r~bottom - r~top then do
+      if minHeight &gt; r~bottom - r~top then do
         r~bottom = r~top + minHeight
         didChange = .true
       end
 
-      if minWidth > r~right - r~left then do
+      if minWidth &gt; r~right - r~left then do
         r~right = r~left + minWidth
         didChange = .true
       end
@@ -10400,12 +10166,12 @@ onRelease() id: 1003 reBar: a ReBar
     when direction == 'TOPLEFT' then do
       didChange = .false
 
-      if minHeight > r~bottom - r~top then do
+      if minHeight &gt; r~bottom - r~top then do
         r~top = r~bottom - minHeight
         didChange = .true
       end
 
-      if minWidth > r~right - r~left then do
+      if minWidth &gt; r~right - r~left then do
         r~left = r~right - minWidth
         didChange = .true
       end
@@ -10415,12 +10181,12 @@ onRelease() id: 1003 reBar: a ReBar
     when direction == 'TOPRIGHT' then do
       didChange = .false
 
-      if minHeight > r~bottom - r~top then do
+      if minHeight &gt; r~bottom - r~top then do
         r~top = r~bottom - minHeight
         didChange = .true
       end
 
-      if minWidth > r~right - r~left then do
+      if minWidth &gt; r~right - r~left then do
         r~right = r~left + minWidth
         didChange = .true
       end
@@ -10433,7 +10199,6 @@ onRelease() id: 1003 reBar: a ReBar
   -- End select
   return .false
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -10693,14 +10458,12 @@ onRelease() id: 1003 reBar: a ReBar
     In the following example, scroll bar with symbolic ID IDC_SB is connected to three methods. The range is initialized
     to 1 as the minimum and 20 as the maximum. The current position is set to 6:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class MyDialog subclass UserDialog
-  ...
+/* ... */
 ::method initDialog
 
   self~connectEachSBEvent(IDC_SB,"Increase", "Decrease", "Drag", 1, 20, 6)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -10902,8 +10665,7 @@ onRelease() id: 1003 reBar: a ReBar
     <computeroutput>ScrollBar</computeroutput> class provides <xref linkend="sctSBEventCode"/>, one of which is the
     THUMBPOSITION constant, whose value is the value of the POSITION event code.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'SimpleDialog' subclass UserDialog
 
 ::method initDialog
@@ -10927,7 +10689,6 @@ onRelease() id: 1003 reBar: a ReBar
   say "  This event:   " eventCode
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -10946,13 +10707,11 @@ onRelease() id: 1003 reBar: a ReBar
   needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onScroll unguarded
   use arg posInfo, hwnd, scrollBar
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -11009,15 +10768,13 @@ onRelease() id: 1003 reBar: a ReBar
     determine the new position of the scroll bar. To use this method, pass the <emphasis role="italic">posInfo</emphasis>
     argument to the method:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onScroll unguarded
   use arg posInfo, hwnd, scrollBar
 
   -- Set the scroll bar to the new position and have it redraw itself.
   newPos = scrollBar~determinePosition(posInfo)
   scrollBar~setPos(newPos, .true)
-]]>
 </programlisting>
   </para>
   <para>
@@ -11032,11 +10789,10 @@ onRelease() id: 1003 reBar: a ReBar
     role="italic">determinePosition</emphasis> method is used to find the new positiona and the scroll bar is updated with
     the new postion:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'FileReader' subclass UserDialog
 
-...
+/* ... */
 
 ::method initDialog
 
@@ -11050,7 +10806,6 @@ onRelease() id: 1003 reBar: a ReBar
   scrollBar~setPos(newPos, .true)
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11140,8 +10895,7 @@ onRelease() id: 1003 reBar: a ReBar
     class. It turns off forcing the dialog controls to redraw in the <computeroutput>DlgAreaU</computeroutput> object,
     and only has the controls redraw once when the sizing is finished.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method init
     expose sizing
@@ -11182,7 +10936,6 @@ onRelease() id: 1003 reBar: a ReBar
     end
 
     return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11199,13 +10952,11 @@ onRelease() id: 1003 reBar: a ReBar
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSizeMoveEnded unguarded
   use arg
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -11229,8 +10980,7 @@ onRelease() id: 1003 reBar: a ReBar
     To do this it sets a flag when the user starts to resize the dialog and then waits for the size move ended event to know
     that the user has finished:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onResize unguarded
   expose u sizing minMaximized lastSizeInfo
   use arg sizingType, sizeinfo
@@ -11274,7 +11024,6 @@ onRelease() id: 1003 reBar: a ReBar
   -- We are not resizing anymore.
   sizing = .false
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11410,8 +11159,7 @@ onRelease() id: 1003 reBar: a ReBar
     number field advances the display to the next employee.  A double click on either the employee name or employee job
     duties allows those fields to be edited.
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
 
   self~connectStaticEvent(IDC_ST_EMPNO, "CLICK", empLookup)
@@ -11421,15 +11169,13 @@ onRelease() id: 1003 reBar: a ReBar
 
   first = self~initDatabase
   self~setStats(first)
-]]>
 </programlisting>
   <para>
     In this example, (a continuation of the above example,) the control ID determines if the user has double clicked on
     the employee job duties field, or the employee name field. The first 2 and the fourth args are not needed or used so they
     are just discarded. The last arg, the Rexx static control object is passed on the userUpdate() method:
   </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method editStats unguarded
   use arg , , id, , staticCtrl
 
@@ -11438,7 +11184,6 @@ onRelease() id: 1003 reBar: a ReBar
   if self~userUpdate(id, staticCtrl, rec) then self~setStats(rec)
 
   return 0
-]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
@@ -11458,13 +11203,11 @@ onRelease() id: 1003 reBar: a ReBar
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onStaticEvent unguarded
   use arg info, hwnd, id, notifyCode, staticObj
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -11524,8 +11267,7 @@ onRelease() id: 1003 reBar: a ReBar
     static control, the application switches to the next application mode and the image on the control switches to the icon
     that represents the current mode of the application:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method defineDialog
   expose someIcon questionIcon isQuestion
 
@@ -11543,7 +11285,6 @@ onRelease() id: 1003 reBar: a ReBar
 
   self~swapIcons(static)
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11705,14 +11446,12 @@ onRelease() id: 1003 reBar: a ReBar
     The following example shows the programmer connecting left and right mouse clicks, along with a simple mode change to the
     status bar in the application:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
 
   self~connectStatusBarEvent(IDC_STATUSBAR, "RCLICK", onRightClick)
   self~connectStatusBarEvent(IDC_STATUSBAR, "CLICK", onClick)
   self~connectStatusBarEvent(IDC_STATUSBAR, "SIMPLEMODECHANGE", onModeChange)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11735,13 +11474,11 @@ onRelease() id: 1003 reBar: a ReBar
   The event handler must always reply either true or false to respond to these notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onStatusBarClick unguarded
   use arg id, nCode, index, pt, statusBar
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -11802,8 +11539,7 @@ onRelease() id: 1003 reBar: a ReBar
     simple status bar mode and normal by right clicking on section 4. Note that when the status bar is in simple mode, the
     user can click anywhere to take the status bar out of simple mode:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onRightClick unguarded
   use arg id, nCode, index, pt, sb
 
@@ -11815,7 +11551,6 @@ onRelease() id: 1003 reBar: a ReBar
   end
 
   return .true
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -11834,13 +11569,11 @@ onRelease() id: 1003 reBar: a ReBar
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onModeChange unguarded
   use arg id, code, sb
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -11886,8 +11619,7 @@ onRelease() id: 1003 reBar: a ReBar
     which method is used, the application switches mode by invoking the <xref linkend="mthSimple"/> method of the
     status bar. Therefore all the work of switching modes is done in th simple mode change event handler:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onModeChange unguarded
   use arg id, code, sb
 
@@ -11902,7 +11634,6 @@ onRelease() id: 1003 reBar: a ReBar
       self~useWizrds = .false
   end
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -12036,13 +11767,11 @@ onRelease() id: 1003 reBar: a ReBar
     The following example invokes the method <emphasis role="italic">onSelChange</emphasis> whenever another tab is
     selected in the tab control:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class MyDlgClass subclass UserDialog
 
 ::method init
   self~connectTabEvent(IDC_TAB, "SELCHANGE")
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -12059,13 +11788,11 @@ onRelease() id: 1003 reBar: a ReBar
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onKeyDown unguarded
   use arg id, vKey, tabControl
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -12107,8 +11834,7 @@ onRelease() id: 1003 reBar: a ReBar
     The following example lets the user navigate through the tabs by typing N for next tab, P for previous tab, HOME for the
     first tab and END for the last tab:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onKeyDown unguarded
   use arg id, vKey, tabControl
 
@@ -12124,7 +11850,6 @@ onRelease() id: 1003 reBar: a ReBar
   -- End select
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -12143,13 +11868,11 @@ onRelease() id: 1003 reBar: a ReBar
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSelChange unguarded
   use arg id, hwndFrom, tabControl
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -12191,18 +11914,16 @@ onRelease() id: 1003 reBar: a ReBar
     The following example comes from a program that sometimes allows hexadecimal numbers to be used and at other times does
     not. When the user changes the tab to the one with index 3, and if hexadecimal numbers are currently allowed, the
     hexadecimal entry field is enabled, otherwise it is disabled:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSelChange unguarded
   use arg id, hwndFrom, tabControl
 
   edit = self~newEdit(IDC_EDIT_HEX)
 
-  if tabControl~selectedIndex == 3 & self~allowHexadecimal then edit~enable
+  if tabControl~selectedIndex == 3 &amp; self~allowHexadecimal then edit~enable
   else edit~disable
 
   return 0
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -12222,13 +11943,11 @@ onRelease() id: 1003 reBar: a ReBar
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSelChanging unguarded
   use arg id, hwndFrom, tabControl
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -12280,8 +11999,7 @@ onRelease() id: 1003 reBar: a ReBar
 
     A message dialog might be put saying something like: <emphasis role="italic">Your work telephone number is required.
     Please enter a valid telephone number before changing to a new page.</emphasis>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
 
   self~connectTabEvent(IDC_TAB, "SELCHANGING", .true)
@@ -12297,7 +12015,6 @@ onRelease() id: 1003 reBar: a ReBar
   end
 
   return .true
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -12690,13 +12407,11 @@ onRelease() id: 1003 reBar: a ReBar
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onToolBarEvent unguarded
   use arg id, notifyCode, toolBar
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -12767,13 +12482,11 @@ onRelease() id: 1003 reBar: a ReBar
   The event handler must always reply either true or false to respond to these notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onToolBarClick unguarded
   use arg id, nCode, buttonID, pt, toolBar
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -12833,17 +12546,15 @@ onRelease() id: 1003 reBar: a ReBar
     perform an extended action of the buttons purpose. For instance, one button is a File Open button. A regular click opens
     a file in the default encoding, a right click allows the user to specify the encoding  to open the file:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onRightClick unguarded
   use arg id, nCode, buttonID, pt, toolBar
 
-  if buttonID <> 0 then do
+  if buttonID &lt;&gt; 0 then do
     self~buttonExtendedAction(buttonID, toolBar)
   end
 
   return .true
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -12999,13 +12710,11 @@ onRelease() id: 1003 reBar: a ReBar
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onLinkClick unguarded
   use arg rxToolID, rxToolTip
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -13055,13 +12764,11 @@ onRelease() id: 1003 reBar: a ReBar
   passed back to the ToolTip.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onNeedText unguarded
   use arg toolID, toolTip, info
 
   return .true
-]]>
 </programlisting>
 
 <variablelist>
@@ -13205,8 +12912,7 @@ onRelease() id: 1003 reBar: a ReBar
     The following example shows a simple NEEDTEXT event handler that sets the tool tip text when the mouse hovers over a push
     button. True is returned to indicate that the ToolTip should store the text for that tool and need not ask for it again:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onNeedText unguarded
     use arg id, toolTip, info
@@ -13214,7 +12920,6 @@ onRelease() id: 1003 reBar: a ReBar
     info~text = 'Press Test to execute the regression test suite ...'
     return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -13233,13 +12938,11 @@ onRelease() id: 1003 reBar: a ReBar
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onPop unguarded
   use arg rxToolID, rxToolTip
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -13278,13 +12981,11 @@ onRelease() id: 1003 reBar: a ReBar
 <section id="evtToolTipSHOW" xreflabel="SHOW"><title>Show Event Handler</title>
 <indexterm><primary>ToolTip class</primary><secondary>events</secondary><tertiary>SHOW</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onShow unguarded
   use arg rxToolID, rxToolTip
 
   return trueOrFalse
-]]>
 </programlisting>
 
 <para>
@@ -13347,8 +13048,7 @@ onRelease() id: 1003 reBar: a ReBar
     position the ToolTip should be shown at, and uses <emphasis role="italic">setWindowPos</emphasis> to position the window
     at the point calculated. Finally, true is returned, so the ToolTip knows not to position itself at its default position:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onShow unguarded
   expose r1 r2 r3 r4
@@ -13368,7 +13068,6 @@ onRelease() id: 1003 reBar: a ReBar
 
   return .true
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -13525,8 +13224,7 @@ onRelease() id: 1003 reBar: a ReBar
     role="italic">posSet</emphasis>, which extracts the new trackbar position from the notification arguments and
     displays it together with the event type for POSITION, which should be 4:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class ExampleDialog subclass UserDialog
 
 ::method initDialog
@@ -13553,7 +13251,6 @@ TrackBar new position:           29
 Verify event code (should be 4): 4
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -13569,13 +13266,11 @@ Verify event code (should be 4): 4
   determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onPage unguarded
   use arg posInfo, hwnd, trackBar
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -13623,8 +13318,7 @@ Verify event code (should be 4): 4
     The <xref linkend="clsTrackBar"/> class provides some <link linkend="sctConstantsClsTrackBar">constant</link> values as a
     convenience to help decode the numeric move event code:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onMove unguarded
   use arg posInfo, hwnd, trackBar
 
@@ -13639,8 +13333,7 @@ Verify event code (should be 4): 4
   else if code == trackBar~PAGEUP then do
     ...
   end
-  --- and so on ...
-]]>
+  -- and so on ...
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -13649,8 +13342,7 @@ Verify event code (should be 4): 4
   <para>
     The following example sets a static text label to the new position of a trackbar each time a move event occurs.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
     ::method onEndTrack unguarded
     expose tbLabels
     use arg eventInfo, hwndTrackBar, trackBar
@@ -13660,7 +13352,6 @@ Verify event code (should be 4): 4
     id = trackBar~id
     tbLabels[id]~setText(trackBar~pos)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -13928,8 +13619,7 @@ Verify event code (should be 4): 4
   <para>
     The following example connects the selection-changed event for the tree-view with the symbolic ID of IDC_TV_FILES with
     the method newTreeSelection in the Rexx dialog. The event handling method displays the text of the new selection:
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   ::class 'FileDlg' subclass UserDialog
 
   ::method init
@@ -13941,8 +13631,7 @@ Verify event code (should be 4): 4
     say "The label of the new selection is:" text
 
     return 0
-  ]]>
-  </programlisting>
+    </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -13974,13 +13663,11 @@ Verify event code (should be 4): 4
     determines how the event handler needs to respond to the notification.
   </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onBeginDrag unguarded
   use arg id, hItem, pos, treeView, itemData
 
   return 0
-]]>
 </programlisting>
 
     <variablelist>
@@ -14042,12 +13729,10 @@ Verify event code (should be 4): 4
     completely ignored, the interpreter does not wait for this return.
   </para>
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   ::method onBeginDrag unguarded
     use arg id, hItem, where, treeView
-  ]]>
-  </programlisting>
+    </programlisting>
 
   <variablelist>
     <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -14096,16 +13781,13 @@ Verify event code (should be 4): 4
     <listitem>
 
 <programlisting>
-<![CDATA[
-
 ::method onBeginDrag unguarded
   use arg id, item, where, treeView
   say "Item with handle" item "is in drag-and-drop mode"
   parse var where x y
-  say "The drag operation started at point ("x","y")"
+  say "The drag operation started at point ("||x","y")"
 
   return 0
-]]>
 </programlisting>
 
     </listitem></varlistentry>
@@ -14151,14 +13833,12 @@ Verify event code (should be 4): 4
       method determines how the event handler needs to respond to the notification.
     </para>
 
-    <programlisting>
-    <![CDATA[
+    <programlisting language="rexx">
     ::method onBeginEdit unguarded
       use arg id, hItem, editCtrl, treeViewCtrl, itemData
 
       return zz
-    ]]>
-    </programlisting>
+        </programlisting>
 
     <variablelist>
       <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -14234,8 +13914,7 @@ Verify event code (should be 4): 4
         example, just to make it clear that the argument sent to the event handler is the item data object. In this
         particular program the item data object is a record object:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onBeginEdit unguarded
   use arg id, hItem, editCtrl, treeViewCtrl, itemData
@@ -14251,7 +13930,6 @@ Verify event code (should be 4): 4
 
   return
 
-]]>
 </programlisting>
       </para>
       </listitem></varlistentry>
@@ -14265,12 +13943,10 @@ Verify event code (should be 4): 4
     completely ignored, the interpreter does not wait for this return.
   </para>
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   ::method onBeginEdit unguarded
     use arg id, hItem, treeView
-  ]]>
-  </programlisting>
+    </programlisting>
 
   <variablelist>
     <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -14357,14 +14033,12 @@ Verify event code (should be 4): 4
       method determines how the event handler needs to respond to the notification.
     </para>
 
-    <programlisting>
-    <![CDATA[
+    <programlisting language="rexx">
     ::method onDelete unguarded
       use arg, id, hItem, rxTv, itemData
 
       return 0
-    ]]>
-    </programlisting>
+        </programlisting>
 
     <variablelist>
       <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -14419,12 +14093,10 @@ Verify event code (should be 4): 4
     completely ignored, the interpreter does not wait for this return.
   </para>
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   ::method onDelete unguarded
     use arg id, useLess, rxTv
-  ]]>
-  </programlisting>
+    </programlisting>
 
   <variablelist>
     <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -14493,14 +14165,12 @@ Verify event code (should be 4): 4
       method determines how the event handler needs to respond to the notification.
     </para>
 
-    <programlisting>
-    <![CDATA[
+    <programlisting language="rexx">
     ::method onEndEdit unguarded
       use arg id, hItem, text, treeViewCtrl, itemData
 
       return trueOrFalse
-    ]]>
-    </programlisting>
+        </programlisting>
 
     <variablelist>
       <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -14562,9 +14232,7 @@ Verify event code (should be 4): 4
         The following example checks the new text entered by the user. The label for each tree-view item is a part number.
         If the user's text is not a valid part number, the new text is rejected by returning false:
 
-<programlisting>
-<![CDATA[
-
+<programlisting language="rexx">
 ::method onEndEdit unguarded
   use arg id, hItem, text, treeViewCtrl, itemData
 
@@ -14583,15 +14251,13 @@ Verify event code (should be 4): 4
 
   reply .false
 
-  msg = text "is not a valid part number." || .endOfLine~copies(2 || -
+  msg = text "is not a valid part number." || .endOfLine~copies(2) || -
         "The change is rejected."
 
   title = "Label Editing Error"
   j = MessageDialog(msg, self~hwnd, title, , "WARNING")
 
   return
-
-]]>
 </programlisting>
       </para>
       </listitem></varlistentry>
@@ -14607,12 +14273,10 @@ Verify event code (should be 4): 4
     entered.
   </para>
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   ::method onEndEdit unguarded
     use arg id, hItem, maybeText
-  ]]>
-  </programlisting>
+    </programlisting>
 
   <variablelist>
     <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -14674,13 +14338,11 @@ Verify event code (should be 4): 4
   method determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onExpanded unguarded
   use arg id, hItem, what, extra, treeView, notifyCode
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -14757,8 +14419,7 @@ Verify event code (should be 4): 4
   <para>
     The following example displays the expanded or collapsed action that has just happened:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onExpanded unguarded
   use arg id, item, what, extra, treeView, notifyCode
@@ -14772,7 +14433,6 @@ Verify event code (should be 4): 4
   The item with handle 0x00000000001AD3E0 has been COLLAPSED
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -14792,13 +14452,11 @@ Verify event code (should be 4): 4
   method determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onExpanding unguarded
   use arg id, hItem, what, extra, treeView, notifyCode
 
   return trueOrFalse
-]]>
 </programlisting>
 
 <variablelist>
@@ -14881,8 +14539,7 @@ Verify event code (should be 4): 4
   <para>
     The following example allows the expansion or collapse to continue and simply prints out what is about to happen:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onExpanding unguarded
   use arg id, item, what, extra, rxTv, notifyCode
@@ -14896,7 +14553,6 @@ Verify event code (should be 4): 4
     Item with handle 0x00000000001AD680 is going to be EXPANDED
   */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -14914,13 +14570,11 @@ Verify event code (should be 4): 4
   method is ignored for this event. The event handler must always return a value.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onGetInfoTip unguarded
   use arg id, hItem, text, maxLen, itemData, rxTv
 
   return infoText
-]]>
 </programlisting>
 
 <variablelist>
@@ -14992,8 +14646,7 @@ Verify event code (should be 4): 4
     In the following example, the item data associated with the tree-view item that the info tip is for, is inspected to see
     if it is the string: '...'  If it is, then a info tip is displayed, otherwise no tip is displayed.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onGetInfoTip unguarded
     expose tv
@@ -15001,7 +14654,6 @@ Verify event code (should be 4): 4
 
     if itemData == '...' then return 'There are too many books to list'
     else return ''
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -15023,13 +14675,11 @@ Verify event code (should be 4): 4
   method determines how the event handler needs to respond to the notification.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onKeyDown unguarded
   use arg id, vKey, rxTv
 
   return 0
-]]>
 </programlisting>
 
 <variablelist>
@@ -15082,8 +14732,7 @@ Verify event code (should be 4): 4
   <para>
     The following example simply displays on the screen the key typed by the user:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onKeyDown unguarded
   use arg id, vkey
@@ -15091,7 +14740,6 @@ Verify event code (should be 4): 4
 
   return 0
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -15108,13 +14756,11 @@ Verify event code (should be 4): 4
   different set of arguments than that provided when the KEYDOWN keyword is used.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onKeyDownEx unguarded
   use arg vKey, isShift, isCtrl, isAlt, extraInfo, treeViewObj
 
   return response
-]]>
 </programlisting>
 
 <variablelist>
@@ -15270,8 +14916,7 @@ Verify event code (should be 4): 4
   <para>
     The following example allows the user to type Ctrl-Ins (control insert) to add a new item to the tree view:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method onKeyDownEx unguarded
     use arg vKey, isShift, isCtrl, isAlt, extraInfo, treeViewObj
@@ -15284,7 +14929,6 @@ Verify event code (should be 4): 4
     end
 
     return .true
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -15317,14 +14961,12 @@ Verify event code (should be 4): 4
       the actual value of the reply is disregarded.
     </para>
 
-    <programlisting>
-    <![CDATA[
+    <programlisting language="rexx">
     ::method onSelChanged unguarded
       use arg id, hItemOld, userOld, hItemNew, userNew, action, rxTv, nCode
 
       return 0
-    ]]>
-    </programlisting>
+        </programlisting>
 
     <variablelist>
       <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -15435,12 +15077,10 @@ Verify event code (should be 4): 4
     completely ignored, the interpreter does not wait for this return.
   </para>
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   ::method onSelChanged unguarded
     use arg id, useLess, rxTv, nCode
-  ]]>
-  </programlisting>
+    </programlisting>
 
   <variablelist>
     <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -15523,13 +15163,11 @@ Verify event code (should be 4): 4
     application the opportunity to cancel the selection change
   </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSelChanging unguarded
   use arg id, hItemOld, userOld, hItemNew, userNew, action, rxTv, nCode
 
   return trueOrFalse
-]]>
 </programlisting>
 
     <variablelist>
@@ -15646,11 +15284,9 @@ Verify event code (should be 4): 4
     completely ignored, the interpreter does not wait for this return.
   </para>
 
-  <programlisting>
-  <![CDATA[
+  <programlisting language="rexx">
   ::method onSelChanging unguarded
-    use arg id lParam, rxTv, nCode
-  ]]>
+    use arg id, lParam, rxTv, nCode
   </programlisting>
 
   <variablelist>
@@ -15831,13 +15467,11 @@ Verify event code (should be 4): 4
   the <emphasis role="italic">deltaPosReply</emphasis> method to return a value from the event handler.
 </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onDeltaPos unguarded
   use arg pos, delta, id, hwnd, rxUpd
 
   return buffer
-]]>
 </programlisting>
 
 <variablelist>
@@ -15900,8 +15534,7 @@ Verify event code (should be 4): 4
     the code below, if <emphasis role="italic">change</emphasis> remains <computeroutput>.false</computeroutput>, then
     the values of <emphasis role="italic">cancel</emphasis> and <emphasis role="italic">delta</emphasis> do not matter.
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method initDialog
 ...
@@ -15914,15 +15547,14 @@ Verify event code (should be 4): 4
   change = .false
   cancel = .false
 
-  if ((pos + delta) // 2) <> 0 then do
+  if ((pos + delta) // 2) &lt;&gt; 0 then do
     change = .true
-    if delta > 0 then delta += 1
+    if delta &gt; 0 then delta += 1
     else delta -= 1
   end
 
   return .UpDown~deltaPosReply(change, cancel, delta)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -15968,15 +15600,13 @@ Verify event code (should be 4): 4
 </para>
 <para>
   <emphasis role="bold">Example:</emphasis>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
 
   ...
 
   self~connectListViewEvent(ID_LV_ICON, "BEGINDRAG", "defListDragHandler")
   -- The ooDialog framework now automatically handles Drag and drop operations.
-]]>
 </programlisting>
 </para>
 </section>
@@ -16017,15 +15647,13 @@ Verify event code (should be 4): 4
 </para>
 <para>
   <emphasis role="bold">Example:</emphasis>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method initDialog
 
   ...
 
   self~connectTreeViewEvent("IDC_TREE","BEGINDRAG", "defTreeDragHandler")
   -- Drag and drop operations are not automatically handled.
-]]>
 </programlisting>
 </para>
 </section>

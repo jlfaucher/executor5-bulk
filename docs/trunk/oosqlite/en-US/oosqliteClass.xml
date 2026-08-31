@@ -222,8 +222,7 @@
     role="italic">left</emphasis> method on the returned value without having to check that the return is the
     <computeroutput>.nil</computeroutput> object. Note that invoking the <emphasis role="italic">left</emphasis> method on
     the <computeroutput>.nil</computeroutput> object will raise a syntax condition:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   .ooSQLite~null = 'empty'
 
@@ -232,14 +231,17 @@
   sql = 'SELECT * FROM foods ORDER BY name;'
   stmt = .ooSQLiteStmt~new(dbConn, sql)
 
-  say stmt~columnName(1)~left(25) || stmt~columnName(2)~left(25) || stmt~columnName(3)~left(25)
+  say stmt~columnName(1)~left(25) || -
+      stmt~columnName(2)~left(25) || -
+      stmt~columnName(3)~left(25)
   say '='~copies(80)
 
   do while stmt~step == stmt~ROW
-    say stmt~columnText(1)~left(25) || stmt~columnText(2)~left(25) || stmt~columnText(3)~left(25)
+    say stmt~columnText(1)~left(25) || -
+        stmt~columnText(2)~left(25) || -
+        stmt~columnText(3)~left(25)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -345,8 +347,7 @@
     This example changes the default format for a result set to be an array of records where each record in the array is
     an array of the column values. The first item in the array is an array of the column names, and the records are the
     second through nth items, where n is the number of records:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 -- Set the result set format to an array of arrays:
 .ooSQLite~recordFormat = .ooSQLite~OO_ARRAY_OF_ARRAYS
 
@@ -356,7 +357,6 @@ dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
 sql = 'SELECT * FROM foods ORDER BY name;'
 resultSet = dbConn~exec(sql, .true)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -425,8 +425,7 @@ resultSet = dbConn~exec(sql, .true)
   <listitem>
   <para>
     This example shows how to iterate over the compile-time options:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 do i = 1
   option = .ooSQLite~compileOptionGet(i)
   if option = "NULL"
@@ -480,7 +479,6 @@ Compile option: TEMP_STORE=1
 Compile option: THREADSAFE=1
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -541,8 +539,7 @@ Compile option: THREADSAFE=1
   <listitem>
   <para>
     This example checks several random compile-time options and displays if they were defined at compile time.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 names = -
  "DEFAULT_AUTOVACUUM", "THREADSAFE", "TEMP_STORE", -
  "4_BYTE_ALIGNED_MALLOC", "CURDIR", "SQLITE_THREADSAFE"
@@ -558,7 +555,6 @@ Option 4_BYTE_ALIGNED_MALLOC : 0
 Option CURDIR : 0
 Option SQLITE_THREADSAFE : 1
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -623,8 +619,7 @@ Option SQLITE_THREADSAFE : 1
   <listitem>
   <para>
     This example show some possible output of using this method:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   text = 'SELECT * from foods'
   say 'Is "'text'" a complete SQL statement?' .ooSQLite~complete(text)
@@ -641,7 +636,6 @@ Is "SELECT * from foods;" a complete SQL statement? 1
 Value of NOMEM constant: 7
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -716,8 +710,7 @@ Value of NOMEM constant: 7
   <para>
     This example shows how the <emphasis role="italic">enquote</emphasis> method can be used to create SQL INSERT
     statements that are not prone to SQL Injection flaws:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   r1 = .array~new(4)
   r1[1] = "Tom"
@@ -738,11 +731,9 @@ INSERT INTO my_table (fName, lName, phone, gender) VALUES('Tom', 'Hanks', NULL, 
 INSERT INTO my_table (fName, lName, phone, gender) VALUES('Mike', NULL, '555-9988', NULL);
 
 */
-]]>
 </programlisting>
     This example shows a conversion for a single string that has an apostrophe within it:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 str = "It's a happy day!"
 say .ooSQLite~Enquote(str)
@@ -752,7 +743,6 @@ say .ooSQLite~Enquote(str)
 'It''s a happy day!'
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -816,8 +806,7 @@ say .ooSQLite~Enquote(str)
     This example is a small snippet of code to print out the description of the first 27 result codes. Inspection of the
     <computeroutput>ooSQLite.cls</computeroutput> file shows us that the first 27 result code constants are in numerically
     consecutive order:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   first = .ooSQLite~OK
   last  = .ooSQLite~NOTADB
@@ -859,7 +848,6 @@ file is encrypted or is not a database
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -913,8 +901,7 @@ file is encrypted or is not a database
   <para>
     This example checks that <computeroutput>ooSQLite.cls</computeroutput> is loading the correct library and aborts if
     it is not:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   if .ooSQLite~libVersion() \== .ooSQLiteConstants~VERSION then do
     say 'The ooSQLite class file and library file do NOT match.'
@@ -923,7 +910,6 @@ file is encrypted or is not a database
     return 99
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1032,8 +1018,7 @@ file is encrypted or is not a database
   <listitem>
   <para>
     This example shows the effect of using / not using the <emphasis role="italic">reset</emphasis> argument:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   say
   say 'Memory high water:        ' .ooSQLite~memoryHighWater
@@ -1052,7 +1037,6 @@ Memory high water:         91712
 -- Note that the return when the reset is done is the current high wated mark, not the
 -- value after the reset.
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1210,8 +1194,7 @@ Memory high water:         91712
   <para>
     This example queries the current soft heap limit, sets the limit, and queries it again. It also displays the current
     memory usage.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   say 'Current soft heap limit:' .ooSQLite~softHeapLimit64(-1)
   say 'Setting soft heap limit:' .ooSQLite~softHeapLimit64(64000000)
@@ -1228,7 +1211,6 @@ Current memory used:     0
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1284,14 +1266,12 @@ Current memory used:     0
   <listitem>
   <para>
     This example displays the source ID for the currently running database engine:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 say "Source ID:" .ooSQLite~sourceID
 
 /*  Output might be:
 Source ID: 2022-12-28 14:03:47 df5c253c0b3dd24916e4ec7cf77d3db5294cc9fd45ae7b9c5e82ad8197f38a24
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1343,8 +1323,7 @@ Source ID: 2022-12-28 14:03:47 df5c253c0b3dd24916e4ec7cf77d3db5294cc9fd45ae7b9c5
   <listitem>
   <para>
     This example shows the equivalence of the two <computeroutput>ooSQLite</computeroutput> class methods:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 say "Return from libVersion method:" .ooSQLite~libVersion
 say "Constant string value:        " .ooSQLite~sqlite3Version
 
@@ -1352,7 +1331,6 @@ say "Constant string value:        " .ooSQLite~sqlite3Version
 Return from libVersion method: 3.40.1
 Constant string value:         3.40.1
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1444,8 +1422,7 @@ Constant string value:         3.40.1
   <listitem>
   <para>
     This example prints out all the status parameters:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   a = .array~of(                                    -
                 .ooSQLite~STATUS_MEMORY_USED          ,-
@@ -1495,7 +1472,6 @@ STATUS_MALLOC_COUNT      : current: 95         high water: 105
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1548,8 +1524,7 @@ STATUS_MALLOC_COUNT      : current: 95         high water: 105
   <listitem>
   <para>
     This example shows the return from <emphasis role="italic">threadSafe</emphasis>:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   say 'Thread safe value:' .ooSQLite~threadSafe
 
@@ -1558,7 +1533,6 @@ STATUS_MALLOC_COUNT      : current: 95         high water: 105
 Thread safe value: 1
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1668,8 +1642,7 @@ Thread safe value: 1
   <listitem>
   <para>
     This example prints out the full format version string:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   say 'ooSQLite version (full):'; say
   say .ooSQLite~version('F')
@@ -1690,7 +1663,6 @@ SQLite:   SQLite Library Version 3.40.1
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

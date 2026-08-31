@@ -73,12 +73,10 @@ C API to perform the action.</para>
 <para>Returns zero on success (all access rights available) or -1 on an error.</para>
 <example id="sysgetaccess">
 <title>SysGetAccess</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* do others have write permission on the file? */
 
 retc = SysAccess("/home/dashley/temp.txt", 2)
-]]>
 </programlisting>
 </example>
 </section>
@@ -113,13 +111,11 @@ This parameter must be a decimal number.
 <para>Returns zero on success (all access rights available) or -1 on an error.</para>
 <example id="syschmod">
 <title>SysChmod</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* set the mode bits on a file */
 
 retc = SysChmod("/home/dashley/temp.txt", "rwxrwxr-x")
 retc = SysChmod("/home/dashley/temp.txt", "rwSrwsr-x")
-]]>
 </programlisting>
 </example>
 </section>
@@ -155,12 +151,10 @@ to be successful.</para>
 <para>Returns zero on success and -1 on an error.</para>
 <example id="syschown">
 <title>SysChown</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* change the ownership attributes of a file */
 
 call SysChown "/home/username/myfile", 501, 530
-]]>
 </programlisting>
 </example>
 </section>
@@ -188,12 +182,10 @@ C API to perform the action.</para>
 <para>Returns zero on success and -1 on an error.</para>
 <example id="syschroot">
 <title>SysChroot</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* change the ownership attributes of a file */
 
 call SysChroot "/home/username/"
-]]>
 </programlisting>
 </example>
 </section>
@@ -221,12 +213,10 @@ C API to perform the action.</para>
 <para>Returns zero on success and -1 on an error.</para>
 <example id="sysclose">
 <title>SysClose</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* close filehandle 0 */
 
 call SysClose 0
-]]>
 </programlisting>
 </example>
 </section>
@@ -257,12 +247,10 @@ C API to perform the action.</para>
 <para>Returns zero on success (all access rights available) or -1 on an error.</para>
 <example id="syseuidaccess">
 <title>SysEuidaccess</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* do others have write permission on the file? */
 
 retc = SysEuidaccess("/home/dashley/temp.txt", 2)
-]]>
 </programlisting>
 </example>
 </section>
@@ -295,15 +283,13 @@ C APIs to perform the action.</para>
 <para>Returns an ooRexx array.</para>
 <example id="sysgetdirlist">
 <title>SysGetdirlist</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* get the subdirectory entries */
 
 arr = SysGetdirlist("./")
 do entry over arr
    say entry
    end
-]]>
 </programlisting>
 </example>
 </section>
@@ -337,12 +323,10 @@ C API to perform the action.</para>
 <para>Returns zero on success and -1 on an error.</para>
 <example id="syslchown">
 <title>SysLchown</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* change the ownership attributes of a symbolic link */
 
 call SysLchown "/home/username/myfile", 501, 530
-]]>
 </programlisting>
 </example>
 </section>
@@ -373,12 +357,10 @@ C API to perform the action.</para>
 <para>Returns zero on success and -1 on an error.</para>
 <example id="syslink">
 <title>SysLink</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* create a new link */
 
 call SysLink "/pub", "/home/username/myownpublink"
-]]>
 </programlisting>
 </example>
 </section>
@@ -414,11 +396,10 @@ C API to perform the action.</para>
 <para>Returns zero on success and -1 on an error.</para>
 <example id="sysmkdir">
 <title>SysMkdir</title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 /* create a new subdir */
 
 retc = SysMkdirUnix("./pub", b2d("111111101"))
-]]>
 </programlisting>
 </example>
 </section>
@@ -451,11 +432,10 @@ C API to perform the action.</para>
 <para>Returns zero on success and -1 on an error.</para>
 <example id="sysRmdir">
 <title>SysRmdir</title>
-<programlisting><![CDATA[
+<programlisting language="rexx">
 /* remove a subdir */
 
 retc = SysRmdirUnix("./pub")
-]]>
 </programlisting>
 </example>
 </section>
@@ -524,16 +504,14 @@ shell command "ls -l".
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
 <example id="sysStat">
 <title>SysStat</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* the following examples came from a Linux laptop running Fedora 12 */
 
-SysStat("/home/dashley/temp.txt", "n")  -->  1
-SysStat("/home/dashley/temp.txt", "u")  -->  500
-SysStat("/home/dashley/temp.txt", "g")  -->  500
-SysStat("/home/dashley/temp.txt", "s")  -->  427
-SysStat("/home/dashley/temp.txt", "a")  -->  2009-12-02 13:22:16
-]]>
+SysStat("/home/dashley/temp.txt", "n")  --&gt;  1
+SysStat("/home/dashley/temp.txt", "u")  --&gt;  500
+SysStat("/home/dashley/temp.txt", "g")  --&gt;  500
+SysStat("/home/dashley/temp.txt", "s")  --&gt;  427
+SysStat("/home/dashley/temp.txt", "a")  --&gt;  2009-12-02 13:22:16
 </programlisting>
 </example>
 </section>
@@ -564,12 +542,10 @@ C API to perform the action.</para>
 <para>Returns zero on success and -1 on an error.</para>
 <example id="sysSymlink">
 <title>SysSymlink</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* create a new symlink */
 
 call SysSymlink "/pub", "/home/username/myownpublink"
-]]>
 </programlisting>
 </example>
 </section>
@@ -598,12 +574,10 @@ C API to perform the action.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <example id="sysUmask">
 <title>SysUmask</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* set the umask */
 
 call SysUmask 2
-]]>
 </programlisting>
 </example>
 </section>
@@ -650,17 +624,15 @@ Allowed values are:
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
 <example id="sysUname">
 <title>SysUname</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* the following examples came from a Linux laptop running Fedora 12 */
 
-SysUname()      -->  Linux
-SysUname("s")   -->  Linux
-SysUname("n")   -->  bugs.ibm.com
-SysUname("r")   -->  2.6.31.6-166.fc12.i686
-SysUname("v")   -->  #1 SMP Wed Dec 9 11:14:59 EST 2009
-SysUname("m")   -->  i686
-]]>
+SysUname()      --&gt;  Linux
+SysUname("s")   --&gt;  Linux
+SysUname("n")   --&gt;  bugs.ibm.com
+SysUname("r")   --&gt;  2.6.31.6-166.fc12.i686
+SysUname("v")   --&gt;  #1 SMP Wed Dec 9 11:14:59 EST 2009
+SysUname("m")   --&gt;  i686
 </programlisting>
 </example>
 </section>
@@ -688,12 +660,10 @@ C API to perform the action.</para>
 <para>Returns zero on success and -1 on an error.</para>
 <example id="sysUnlink">
 <title>SysUnlink</title>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 /* remove a link */
 
 call SysUnLink "/home/username/myownpublink"
-]]>
 </programlisting>
 </example>
 </section>

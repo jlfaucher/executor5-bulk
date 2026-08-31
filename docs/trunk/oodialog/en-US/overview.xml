@@ -156,8 +156,7 @@
   maximum of 16 characters, which are only characters that represent hexadecimal numbers. I.e., &quot;0&quot; through
   &quot;F&quot;. The following is meant to clarify this:
 </para>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 -- Acceptable:
 "0xffff"
 "0XFFFF"
@@ -171,7 +170,6 @@
 "000012ab"             -- second character must be x
 "0x0123456789ABCDEF1"  -- 17 characters
 "00x0"                 -- second character must be x, not 0
-]]>
 </programlisting>
 </section>
 
@@ -277,10 +275,8 @@
   <emphasis role="italic">There is a horizontal and a vertical dialog base unit to convert width and height of dialog
   boxes and controls from dialog units to pixels and vice versa. The value of these base units depend on the screen
   resolution and the active system font; they are stored in attributes of the UserDialog class.</emphasis>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 xPixels = xDialogUnits * self~FactorX
-]]>
 </programlisting>
   <emphasis role="bold">Note</emphasis> that in the above line of code <computeroutput>xPixels</computeroutput> will be
   <xref linkend="ovvInaccurate"/>.
@@ -1232,8 +1228,7 @@ xPixels = xDialogUnits * self~FactorX
     Of course, symbolic IDs can also be added directly in the program as the following code snippet shows:
   </para>
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method init
   forward class (super) continue
@@ -1260,7 +1255,6 @@ xPixels = xDialogUnits * self~FactorX
   if oorexxCB~checked then
     say "You picked the right interpreter."
 
-]]>
 </programlisting>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Classes Requiring the Global .constDir for Symbolic IDs:</emphasis></term>

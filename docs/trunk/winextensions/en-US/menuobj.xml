@@ -56,7 +56,7 @@
 <para>
   Use of the MenuObjects requires that the following directive appear in the Rexx program.
 </para>
-<programlisting>
+<programlisting language="rexx">
 ::requires 'winSystm.cls'
 </programlisting>
 <para><emphasis role="bold">Methods the MenuObject Class Defines</emphasis>
@@ -245,11 +245,11 @@ submenu at the specified <emphasis role="italic">position</emphasis>,
 starting with 0. If no submenu
 exists at this position, the .Nil object is returned.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
-<programlisting>
+<programlisting language="rexx">
 sub = menu~submenu(5)
-    if sub \= .Nil then do
-         say "Items:" sub~items
-    end
+if sub \= .Nil then do
+   say "Items:" sub~items
+end
 </programlisting>
 </section>
 
@@ -291,9 +291,9 @@ does not include an accelerator, the comparison excludes the accelerators
 of the menu items. If no menu item is found that matches the specified label,
 0 is returned.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
-<programlisting>
+<programlisting language="rexx">
 f = menu~findItem("&amp;Tools" || "9"x || "Ctrl+T")
-    if f \= 0 then menu~processItem(f)
+if f \= 0 then menu~processItem(f)
 </programlisting>
 </section>
 

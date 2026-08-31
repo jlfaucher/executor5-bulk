@@ -292,8 +292,7 @@
     class will return a formatted error message string for any HRESULT code in either decimal or hexadecimal. The <emphasis
     role="italic">errMsg</emphasis> message works for system error codes also. For example:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   hResult = 2147500068
   sysErr  = 2
 
@@ -316,7 +315,6 @@ Error code 2 (0x00000002): The system cannot find the file specified.
 HRESULT success code:
 Error code 0 (0x00000000): The operation completed successfully.
 */
-]]>
 </programlisting>
 
     Note that the error message itself comes from Microsoft, ooDialog simply reports it and is not responsible for the
@@ -917,8 +915,7 @@ Error code 0 (0x00000000): The operation completed successfully.
   <listitem>
   <para>
     This example instantiates a new <computeroutput>BrowseForFolder</computeroutput> object with a title, banner, and hint:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   -- Set title, banner, and a hint for the dialog.
   title  = 'Browse For a Printer'
@@ -926,7 +923,6 @@ Error code 0 (0x00000000): The operation completed successfully.
   hint   = 'This is only a demonstration, no printing will be done.'
 
   bff = .BrowseForFolder~new(title, banner, hint)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -984,13 +980,11 @@ Error code 0 (0x00000000): The operation completed successfully.
   <listitem>
   <para>
     This example example configures a browse for folder object to not display a banner:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   bff = .BrowseForFolder~new('Choose the Backup Folder')
   bff~banner = .nil
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1044,13 +1038,11 @@ Error code 0 (0x00000000): The operation completed successfully.
   <listitem>
   <para>
     This example instantiates a browse for folder dialog and then sets a custom title for the dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   bff = .BrowseForFolder~new
   bff~dlgTitle ='Choose the Backup Folder'
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1106,13 +1098,11 @@ Error code 0 (0x00000000): The operation completed successfully.
   <listitem>
   <para>
     This example instantiates a browse for folder object and then sets the hint to text that informs the user what to do:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   bff = .BrowseForFolder~new
   bff~hint ='Choose the folder to place your back up files in.'
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1184,8 +1174,7 @@ Error code 0 (0x00000000): The operation completed successfully.
     Note that this example does run correctly. But, if it were to turn out that the leaving() method was not running on the
     same thread as the define() method had run on, then COM and the item ID list would not be released correctly. It was only
     after some testing that it was determined that the program ran correctly:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineDialog
   expose bff pidl
@@ -1252,15 +1241,13 @@ leaving() thread ID 4032
 
 */
 
-]]>
 </programlisting>
   </para>
   <para>
     The recommendation is to simply instantiate a browse for folder object, use it, and dispose of it. The above example
     could have just as easily, and perhaps more easily, been written this way:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineDialog
 
@@ -1321,7 +1308,6 @@ leaving() thread ID 3580
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1487,8 +1473,7 @@ leaving() thread ID 3580
   <para>
     This example comes from a demonstration program showing how to browse for printers. After instantiating the browse for
     folder object, it sets the dialog options to a non-default value, a value appropriate for printer browsing:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   title  = 'Browse For a Printer'
   banner = 'Select the printer to use for this test.'
@@ -1500,7 +1485,6 @@ leaving() thread ID 3580
   bff~root = 'CSIDL_PRINTERS'
 
   bff~options = 'BROWSEFORPRINTER NONEWFOLDERBUTTON'
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1561,15 +1545,13 @@ leaving() thread ID 3580
   <para>
     This example shows the first steps in configuring a <emphasis role="italic">browse for printers</emphasis> dialog that is
     displayed from a dialog. The dialog is set as the owner of the browse for printers dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   bff = .BrowseForFolder~new(title, banner, hint)
   bff~owner = self
   bff~root = 'CSIDL_PRINTERS'
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1630,8 +1612,7 @@ leaving() thread ID 3580
   <para>
     This example comes from a demonstration program showing how to browse for printers. After instantiating the browse for
     folder object, it sets the root attribute to the printers folder:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   title  = 'Browse For a Printer'
   banner = 'Select the printer to use for this test.'
@@ -1643,7 +1624,6 @@ leaving() thread ID 3580
   bff~root = 'CSIDL_PRINTERS'
 
   bff~options = 'BROWSEFORPRINTER NONEWFOLDERBUTTON'
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1700,8 +1680,7 @@ leaving() thread ID 3580
   <para>
     This example configures the browse for folder dialog to open with the <computeroutput>C:\Program Files\Microsoft
     Games</computeroutput> directory selected:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   bff = .BrowseForFolder~new
 
@@ -1711,7 +1690,6 @@ leaving() thread ID 3580
 
   folder = bff~getFolder
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1768,8 +1746,7 @@ leaving() thread ID 3580
   <para>
     This example instantiates a browse for folder object and configures it to display the full path to the selected folder as
     the hint by setting the <emphasis role="italic">usePathForHint</emphasis> attribute to true:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   bff = .BrowseForFolder~new
 
@@ -1778,7 +1755,6 @@ leaving() thread ID 3580
 
   folder = bff~getFolder
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1855,8 +1831,7 @@ leaving() thread ID 3580
   <listitem>
   <para>
     This example gets an item ID list that the user selects and then prints its display name:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   bff = .BrowseForFolder~new
   bff~root = 'CSIDL_DRIVES'
@@ -1871,7 +1846,6 @@ leaving() thread ID 3580
 $Recycle.Bin
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1941,8 +1915,7 @@ $Recycle.Bin
     This example instantiates the <computeroutput>BrowseForFolder</computeroutput> object, configures it, and shows it. On
     return it checks if the user canceled the dialog or not. Since the programmer is done with the object, the <emphasis
     role="italic">reuse</emphasis> argument is omitted:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   bff = .BrowseForFolder~new
   bff~usePathForHint = .true
@@ -1954,7 +1927,6 @@ $Recycle.Bin
   if folder \== .nil then say 'The user picked:' folder
   else say 'The user canceled'
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2048,8 +2020,7 @@ $Recycle.Bin
     <emphasis role="italic">reuse</emphasis> arg is not used, and the ooDialog framework takes care of releasing the COM
     library. However, if the user cancels the first showing of the dialog, the application handles releasing COM before it
     returns:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   title = 'Acme Widgets - A1 Accounting Program'
   banner = 'The A1 Accounting Program needs to know the top-level' || -
@@ -2092,7 +2063,6 @@ $Recycle.Bin
 
 ::requires 'ooDialog.cls'
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2176,8 +2146,7 @@ $Recycle.Bin
     same thread as the define() method had run on, then COM and the item ID list would not be released correctly. It was only
     after some testing that it was determined that the program ran correctly:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineDialog
   expose bff pidl
@@ -2244,7 +2213,6 @@ leaving() thread ID 4032
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2326,8 +2294,7 @@ leaving() thread ID 4032
     Note that this example does run correctly. But, if it were to turn out that the leaving() method was not running on the
     same thread as the define() method had run on, then COM and the item ID list would not be released correctly. It was only
     after some testing that it was determined that the program ran correctly:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method defineDialog
   expose bff pidl
@@ -2394,7 +2361,6 @@ leaving() thread ID 4032
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2467,8 +2433,7 @@ leaving() thread ID 4032
     the <emphasis role="italic">getItemIDList</emphasis> method. Because of this the example uses <xref
     linkend="mthReleaseCOMBff"/> to properly release the COM library when the example ends:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   bff = .BrowseForFolder~new
   bff~options = '';
@@ -2501,7 +2466,6 @@ leaving() thread ID 4032
   return 0
 
   ::requires 'ooDialog.cls'
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2574,8 +2538,7 @@ leaving() thread ID 4032
   role="bold">must</emphasis> add it to the common item dialog's inheritance chain before instantiating a <xref
   linkend="clsOpenFileDialog"/> or <xref linkend="clsSaveFileDialog"/> object as shown in this code snippet:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
   sfd = .SaveFileDialog~new
@@ -2584,7 +2547,6 @@ leaving() thread ID 4032
   ret = sfd~startVisualGroup(IDC_GB_RADIOS, 'Save file with extension:')
   ret = sfd~addRadioButtonList(IDC_RBL_RADIOS)
   ...
-]]>
 </programlisting>
 
 </para>
@@ -2815,8 +2777,7 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example adds a checked check box to the save file dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
@@ -2826,7 +2787,6 @@ leaving() thread ID 4032
   ret = sfd~startVisualGroup(IDC_GB_FORMAT, 'Save file format:')
   ret = sfd~addCheckBox(IDC_CKL_UNICODE, 'Unicode', .true)
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2885,8 +2845,7 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example adds a combo box to a save file dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
   sfd = .SaveFileDialog~new
@@ -2894,7 +2853,6 @@ leaving() thread ID 4032
   -- Customize the dialog
   ret = sfd~addComboBox(IDC_CB)
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2968,8 +2926,7 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example uses the <emphasis role="italic">addControlItem</emphasis> method to add 3 menu items to a menu:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
   sfd = .SaveFileDialog~new
@@ -2981,7 +2938,6 @@ leaving() thread ID 4032
   ret = sfd~addControlItem(IDC_MENU, 'Write to console', IDC_MENU_CONSOLE)
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3048,8 +3004,7 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This first example adds an empty edit box with a label, <emphasis role="italic">Some text please:</emphasis>, next to it:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
   sfd = .SaveFileDialog~new
@@ -3061,12 +3016,10 @@ leaving() thread ID 4032
   ret = sfd~endVisualGroup()
   ret = sfd~addSeparator(IDC_SEPARATOR1)
 
-]]>
 </programlisting>
     This second example adds an edit box with a label, <emphasis role="italic">Some text please:</emphasis>, next to it. The
     edit box will contain the string <emphasis role="italic">Useful text only</emphasis>:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
   sfd = .SaveFileDialog~new
@@ -3078,7 +3031,6 @@ leaving() thread ID 4032
   ret = sfd~endVisualGroup()
   ret = sfd~addSeparator(IDC_SEPARATOR1)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3144,8 +3096,7 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example uses the <emphasis role="italic">addMenu</emphasis> method to add a menu to the dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
   sfd = .SaveFileDialog~new
@@ -3156,7 +3107,6 @@ leaving() thread ID 4032
   ret = sfd~addControlItem(IDC_MENU, 'Use text', IDC_MENU_TXT)
   ret = sfd~addControlItem(IDC_MENU, 'Write to console', IDC_MENU_CONSOLE)
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3221,8 +3171,7 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example adds a push button to a save file dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
   sfd = .SaveFileDialog~new
@@ -3231,7 +3180,6 @@ leaving() thread ID 4032
   ...
   sfd~addPushButton(IDC_PB_DONE, 'Done Now')
   sfd~makeProminent(IDC_PB_DONE)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3292,8 +3240,7 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example adds a radio button group with 3 radio buttons and a label:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
   sfd = .SaveFileDialog~new
@@ -3306,7 +3253,6 @@ leaving() thread ID 4032
   ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.rxg', IDC_RB_RXG)
   ret = sfd~endVisualGroup()
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3365,8 +3311,7 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example adds a separator control to separate the edit control from the menu below it:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
   sfd = .SaveFileDialog~new
@@ -3380,7 +3325,6 @@ leaving() thread ID 4032
 
   ret = sfd~addMenu(IDC_MENU, "Pick from this Menu")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3445,8 +3389,7 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example adds a static text control to the dialog right below a separator:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
   sfd = .SaveFileDialog~new
@@ -3456,7 +3399,6 @@ leaving() thread ID 4032
   ret = sfd~addSeparator(IDC_SEPARATOR2)
   ret = sfd~addText(IDC_TEXT, "No files are selected")
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3569,8 +3511,7 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example enables a drop-down list on the Save button of the Save file dialog. It then adds 3 items to the list:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
   sfd = .SaveFileDialog~new
@@ -3582,7 +3523,6 @@ leaving() thread ID 4032
   ret = sfd~addControlItem(IDC_DROP, 'Prompt on overwrite', IDC_DROP_PROMPT)
   ret = sfd~addControlItem(IDC_DROP, 'Never overwrite', IDC_DROP_NOOVERWRITE)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3634,8 +3574,7 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example starts a visual group, adds a radio button list with 3 radio buttons, and then ends the visual group:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
   sfd = .SaveFileDialog~new
@@ -3649,7 +3588,6 @@ leaving() thread ID 4032
   ret = sfd~endVisualGroup()
   ...
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3797,15 +3735,14 @@ leaving() thread ID 4032
     This example shows a <xref linkend="mthOnFileOk"/> event handler that first checks if the
     <computeroutput>.rex</computeroutput> radio button has not been hidden or disabled. If so, it then checks if that radio
     button is the selected radio button in a radio button list:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'CDEvents' subclass CommonDialogEvents
 
 ::method onFileOk unguarded
   use arg cfd, hwnd
 
   state = cfd~getControlItemState(IDC_RBL_RADIOS, IDC_RB_REX)
-  if state == 'EnabledVisible' & state \== .nil then do
+  if state == 'EnabledVisible' &amp; state \== .nil then do
     -- See if .rex is selected
     if cfd~getSelectedControlItem(IDC_RBL_RADIOS) == .constDir[IDC_RB_REX] then do
       -- Do something ...
@@ -3816,7 +3753,6 @@ leaving() thread ID 4032
   end
 
   return self~S_OK
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3950,8 +3886,7 @@ leaving() thread ID 4032
   <para>
     This example if from an application that saves a comment with each file when it is saved. When the save file dialog is
     ended, the application checks that the comment is not blank:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'CDEvents' subclass CommonDialogEvents
 
 ::method onFileOk unguarded
@@ -3968,7 +3903,6 @@ leaving() thread ID 4032
   end
 
   return self~S_OK
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4031,15 +3965,14 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example gets the selected radio button in a radio button list to test if the selection is the .rex radio button:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'CDEvents' subclass CommonDialogEvents
 
 ::method onFileOk unguarded
   use arg cfd, hwnd
 
   state = cfd~getControlItemState(IDC_RBL_RADIOS, IDC_RB_REX)
-  if state == 'EnabledVisible' & state \== .nil then do
+  if state == 'EnabledVisible' &amp; state \== .nil then do
     -- See if .rex is selected
     if cfd~getSelectedControlItem(IDC_RBL_RADIOS) == .constDir[IDC_RB_REX] then do
       -- Do something ...
@@ -4050,7 +3983,6 @@ leaving() thread ID 4032
   end
 
   return self~S_OK
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4169,19 +4101,29 @@ leaving() thread ID 4032
     This example adds a push button and then a bunch of other controls. As a last step it uses the <emphasis
     role="italic">makeProminent</emphasis> method on the push button. This places the push button next to the Save button
     rather than at the beginning of the controls:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
   sfd = .SaveFileDialog~new
 
   -- Customize the dialog
   sfd~addPushButton(IDC_PB_DONE, 'Done Now')
-  ret = sfd~startVisualGroup(IDC_GB_RADIOS, 'Save file with extension:'); say 'startVisualGroup:' .DlgUtil~errMsg(ret)
-  ret = sfd~addRadioButtonList(IDC_RBL_RADIOS); say 'addRadioButtonList:' .DlgUtil~errMsg(ret)
-  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.rex', IDC_RB_REX); say 'addControlItem:' .DlgUtil~errMsg(ret)
-  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.txt', IDC_RB_TXT); say 'addControlItem:' .DlgUtil~errMsg(ret)
-  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.rxg', IDC_RB_RXG); say 'addControlItem:' .DlgUtil~errMsg(ret)
+
+  ret = sfd~startVisualGroup(IDC_GB_RADIOS, 'Save file with extension:')
+  say 'startVisualGroup:' .DlgUtil~errMsg(ret)
+
+  ret = sfd~addRadioButtonList(IDC_RBL_RADIOS)
+  say 'addRadioButtonList:' .DlgUtil~errMsg(ret)
+
+  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.rex', IDC_RB_REX)
+  say 'addControlItem:' .DlgUtil~errMsg(ret)
+
+  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.txt', IDC_RB_TXT)
+  say 'addControlItem:' .DlgUtil~errMsg(ret)
+
+  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.rxg', IDC_RB_RXG)
+  say 'addControlItem:' .DlgUtil~errMsg(ret)
+
   ret = sfd~endVisualGroup(); say 'endVisualGroup:' .DlgUtil~errMsg(ret)
   ...
   -- Set the initial state
@@ -4189,8 +4131,6 @@ leaving() thread ID 4032
   ret = sfd~setSelectedControlItem(IDC_RBL_RADIOS, IDC_RB_REX)
 
   sfd~makeProminent(IDC_PB_DONE)
-
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4312,13 +4252,11 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example removes all the menu items from a menu by removing them one by one:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ret = cfd~removeControlItem(IDC_MENU, IDC_MENU_REX)
   ret = cfd~removeControlItem(IDC_MENU, IDC_MENU_TXT)
   ret = cfd~removeControlItem(IDC_MENU, IDC_MENU_CONSOLE)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4484,11 +4422,9 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example hides and disables one of the menu items in a menu:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ret = cfd~setControlItemState(IDC_MENU, IDC_MENU_REX, 'INACTIVE')
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4554,12 +4490,10 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example changes the labels of 3 menu items in a menu:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ret = cfd~setControlItemText(IDC_MENU, IDC_MENU_REX, 'Pick Rexx')
   ret = cfd~setControlItemText(IDC_MENU, IDC_MENU_TXT, 'Pick Text')
   ret = cfd~setControlItemText(IDC_MENU, IDC_MENU_CONSOLE, 'Pick The Console')
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4625,11 +4559,9 @@ leaving() thread ID 4032
   <para>
     This example changes the labels of a push button and a static text control to reflect a change in the function of saving
     a file:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ret = cfd~setControlLabel(IDC_PB_DONE, 'Save / Backup')
   ret = cfd~setControlLabel(IDC_TEXT, 'When Saving a file a backup file will be created')
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4730,10 +4662,8 @@ leaving() thread ID 4032
   <para>
     This example disables an extra push button that was added to the dialog when the function of the push button is not
     available:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ret = cfd~setControlState(IDC_PB_DONE, 'VISIBLE')
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4794,11 +4724,9 @@ leaving() thread ID 4032
     This example comes from an application that creates a back up file each time the user saves a file. The Save File dialog
     automatically determines a back up file name, but the user is allowed to change the name. The application puts the
     suggested back up name in an edit box, which the user can edit if desired:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   buName = self~calcBackupName()
   cfd~setEditBoxText(IDC_EDIT_BU_NAME, buName)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4867,8 +4795,7 @@ leaving() thread ID 4032
   <para>
     This example adds a radio button group to a Save File dialog and then sets the middle radion button as the selected
     item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
   sfd = .SaveFileDialog~new
@@ -4882,7 +4809,6 @@ leaving() thread ID 4032
   ret = sfd~endVisualGroup()
 
   ret = sfd~setSelectedControlItem(IDC_RBL_RADIOS, IDC_RB_REX)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4954,8 +4880,7 @@ leaving() thread ID 4032
     This example starts a visual group that consists of a radio button group. One main reason for starting a visual group,
     rather than just adding the radion button group, is that the visual group makes it easy to add a label for the radio
     button group:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
   sfd = .SaveFileDialog~new
@@ -4969,7 +4894,6 @@ leaving() thread ID 4032
   ret = sfd~endVisualGroup()
 
   ret = sfd~setSelectedControlItem(IDC_RBL_RADIOS, IDC_RB_REX)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5442,8 +5366,7 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example shows the default options in effect for a <computeroutput>OpenFileDialog</computeroutput>;
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   fod = .OpenFileDialog~new
 
   say 'options:' fod~options
@@ -5451,12 +5374,10 @@ leaving() thread ID 4032
 /* Output will be:
 options: FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
 */
-]]>
 </programlisting>
     This example shows how to add additional options to the current options in effect:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
   fod = .OpenFileDialog~new
 
@@ -5466,7 +5387,6 @@ options: FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
 /* Output will be:
 options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5537,14 +5457,12 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <listitem>
   <para>
     This example adds the Fonts folder to the dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   fod = .OpenFileDialog~new
 
   fod~options = 'NOCHANGEDIR PATHMUSTEXIST ALLNONSTORAGEITEMS'
 
   ret = fod~addPlace('CSIDL_FONTS')
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5610,8 +5528,7 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
     changed. Before the common file dialog is opened a folder changing notification is sent. The example uses an event
     handler method for that event and the first time it receives the notification sets the label of the cancel button to
     <emphasis role="italic">Abort</emphasis>.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   fileOpen = .OpenFileDialog~new
 
   events = .CDEvents~new
@@ -5642,7 +5559,6 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   end
 
   return self~S_OK
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5769,8 +5685,7 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
     role="italic">close</emphasis> method is started executing on another thread. This method then sleeps for a short bit,
     invokes some methods on the open file dialog, and then invokes the <emphasis role="italic">close</emphasis> method of the
     open file dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   closer = .Closer~new
 
   ofd = .OpenFileDialog~new
@@ -5785,7 +5700,7 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   closer~start('close')
 
   ret = ofd~show()
-  say 'show() ret: ' ret 'ret -> errMsg:' .DlgUtil~errMsg(ret)
+  say 'show() ret: ' ret 'ret -&gt; errMsg:' .DlgUtil~errMsg(ret)
   say 'getFileName:' ofd~getFileName .DlgUtil~errMsg(.systemErrorCode)
   say 'getResult:  ' ofd~getResult .DlgUtil~errMsg(.systemErrorCode)
   ofd~release
@@ -5822,12 +5737,11 @@ current file selection:  The NIL object Error code 2147500037 (0x80004005): Unsp
 current folder           C:\Program Files Error code 0 (0x00000000): The operation completed successfully.
 
 
-show() ret:  2147500036 ret -> errMsg: Error code 2147500036 (0x80004004): Operation aborted
+show() ret:  2147500036 ret -&gt; errMsg: Error code 2147500036 (0x80004004): Operation aborted
 getFileName: The NIL object Error code 2147500037 (0x80004005): Unspecified error
 getResult:   The NIL object Error code 2147549183 (0x8000ffff): Catastrophic failure
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5898,13 +5812,12 @@ getResult:   The NIL object Error code 2147549183 (0x8000ffff): Catastrophic fai
   <para>
     This example comes from a business application for a company that does not allow its employees to open files marked as
     reserved. The files are marked by the IT department by putting <emphasis role="italic">resv</emphasis> in the file name:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onFileOk unguarded
     use arg ofd, hwnd
 
     fileName = ofd~getCurrentSelection
-    if fileName~caselessPos('resv') <> 0 then do
+    if fileName~caselessPos('resv') &lt;&gt; 0 then do
         msg = '"Reserved" files can not be opened.  Please select another file.'
         title = 'File Open Error'
         r = MessageDialog(msg, hwnd, title, 'OK', 'WARNING')
@@ -5912,7 +5825,6 @@ getResult:   The NIL object Error code 2147549183 (0x8000ffff): Catastrophic fai
     end
 
     return self~S_OK
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -5969,8 +5881,7 @@ getResult:   The NIL object Error code 2147549183 (0x8000ffff): Catastrophic fai
     role="italic">getFileName</emphasis> returned the text in the edit box which does not match what the user actually
     selected as shown by <emphasis role="italic">getResult</emphasis>. The user selected a file by double clicking on it,
     which bypasses the edit box altogether:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ret = ofd~show()
 
   say 'getFileName:        ' fod~getFileName
@@ -6000,7 +5911,6 @@ getResult:           C:\Users\Public\Pictures\Sample Pictures\Jellyfish.jpg
   rc: Error code 0 (0x00000000): The operation completed successfully.
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6102,8 +6012,7 @@ getResult:           C:\Users\Public\Pictures\Sample Pictures\Jellyfish.jpg
   <listitem>
   <para>
     This example code gets the file name of the item chosen by the user and the folder the item is in:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ret = fod~show()
   if ret == fod~S_OK then do
@@ -6125,7 +6034,6 @@ getResult:           ooRexxTry.rex
 getFolder:           C:\Rexx\ooRexx
   rc: Error code 0 (0x00000000): The operation completed successfully.
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6196,8 +6104,7 @@ getFolder:           C:\Rexx\ooRexx
   <para>
     This example shows how to use the <emphasis role="italic">sigdn</emphasis> argument to return just the file name of the
     item chosen by the user rather than the complete file path name:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   ret = fod~show()
   if ret == fod~S_OK then do
@@ -6219,7 +6126,6 @@ getResult:           ooRexxTry.rex
 getFolder:           C:\Rexx\ooRexx
   rc: Error code 0 (0x00000000): The operation completed successfully.
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6293,8 +6199,7 @@ getFolder:           C:\Rexx\ooRexx
     This is a contrived example that gives the user only 15 seconds to pick a file. If the user does not pick a file within
     that time period, the open file dialog is closed. The open file dialog object is passed to a second thread, making it
     necessary to initialize, and release, the COM library on that thread
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   closer = .Closer~new
 
@@ -6343,7 +6248,6 @@ j = SysSleep(timeOut)
 ret = ofd~close('0x80004004')
 
 ofd~releaseCom
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6472,8 +6376,7 @@ ofd~releaseCom
     user selects a file and the timeout happens at the same instant, both threads could receive true from <emphasis
     role="italic">isReleased</emphasis> method, because neither thread has yet invoked <emphasis
     role="italic">release</emphasis>.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   closer = .Closer~new
 
   ofd = .OpenFileDialog~new
@@ -6533,7 +6436,6 @@ end
 
 ofd~releaseCom
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6682,9 +6584,7 @@ ofd~releaseCom
   <para>
     This example changes the labels of both the Ok and the Cancel buttons. The Cancel button is changed to <emphasis
     role="italic">Abort</emphasis>.
-<programlisting> <![CDATA[
-
-
+<programlisting language="rexx">
   fileOpen = .OpenFileDialog~new
 
   events = .CDEvents~new
@@ -6713,7 +6613,6 @@ ofd~releaseCom
   end
 
   return self~S_OK
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6784,8 +6683,7 @@ ofd~releaseCom
   <para>
     This example has several GUID strings used for different types of the common item dialog used in an accounting program.
     The GUID strings have been generated and then assigned to constant values in the program:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'EasyAccounts' subclass RcDialog
 
 -- Do not copy these GUIDs into your own code.  Always generate your own GUID.
@@ -6796,12 +6694,11 @@ ofd~releaseCom
 ::constant GUID_SAVE_DEFAULT  'fe2c5305-d7f9-43cd-9d7b-9c3d4d1b79be'
 ::constant GUID_OPEN_FOLDER   'ce5ad183-b42f-4f37-a5d6-78d1cffea2e6'
 
-...
-
+/* ... */
+::method m
 
   ofd = .OpenFileDialog~new
   ret = ofd~setClientGuid(self~GUID_OPEN)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6867,12 +6764,14 @@ ofd~releaseCom
     This example sets the default extension to <emphasis role="italic">.cls</emphasis>. Notice that the <emphasis
     role="italic">dot</emphasis> is left off of the string passed to the method, <emphasis role="italic">cls</emphasis> not
     <emphasis role="italic">.cls</emphasis>:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   sfd = .SaveFileDialog~new
   ret = sfd~setClientGuid(self~GUID_SAVE_DEFAULT)
 
-  filter = .array~of('Rexx Program File', '*.rex', 'Rexx Class File', '*.cls', 'Text File', '*.txt')
+  filter = .array~of('Rexx Program File', '*.rex', -
+    'Rexx Class File', '*.cls',                    -
+    'Text File', '*.txt'                           -
+  )
   sfd~setFileTypes(filter)
 
   sfd~setFileTypeIndex(2)
@@ -6883,7 +6782,6 @@ ofd~releaseCom
   -- Show the dialog and get the response
   ret = sfd~show(self)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -6956,8 +6854,7 @@ ofd~releaseCom
     folder to the ooRexx installation directory, (unless the ooRexx directory can't be found.) The first time the application
     uses the open file dialog, it will open with the ooRexx installation directory as the initial directory. After that the
     dialog will open with the last visited directory as the initial directory:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   guid = '95e626ab-a59d-4779-b7ac-15d49a900ee7'
 
   ofd = .OpenFileDialog~new
@@ -6967,7 +6864,6 @@ ofd~releaseCom
   if initFolder == '' then initFolder = 'C:\Program Files'
   ofd~setDefaultFolder(initFolder)
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7078,8 +6974,7 @@ ofd~releaseCom
   <para>
     This example uses the <emphasis role="italic">setFileNameLabel</emphasis> argument to change the default lable for the
     file name edit box:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ofd = .OpenFileDialog~new
   ret = ofd~setClientGuid(self~GUID_OPEN_CUSTOM)
 
@@ -7095,7 +6990,6 @@ ofd~releaseCom
   -- Okay, we are all set, show the dialog and get the response from the user:
   ret = ofd~show(self)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7158,12 +7052,14 @@ ofd~releaseCom
     This example uses the <emphasis role="italic">setFileTypeIndex</emphasis> method to set the selected file type to the
     second file type in the file types array. Note that each file type in the array is a pair, that is the first file type is
     the <emphasis role="italic">Rexx Program File</emphasis> / <emphasis role="italic">*.rex</emphasis> pair:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   sfd = .SaveFileDialog~new
   ret = sfd~setClientGuid(self~GUID_SAVE_DEFAULT)
 
-  filter = .array~of('Rexx Program File', '*.rex', 'Rexx Class File', '*.cls', 'Text File', '*.txt')
+  filter = .array~of('Rexx Program File', '*.rex', -
+    'Rexx Class File', '*.cls',                    -
+    'Text File', '*.txt'                           -
+  )
   sfd~setFileTypes(filter)
 
   sfd~setFileTypeIndex(2)
@@ -7173,7 +7069,6 @@ ofd~releaseCom
 
   -- Show the dialog and get the response
   ret = sfd~show(self)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7240,12 +7135,14 @@ ofd~releaseCom
     dialog. Note that each file type in the array is a pair, that is the first file type is the <emphasis role="italic">Rexx
     Program File</emphasis> / <emphasis role="italic">*.rex</emphasis> pair, the second file type is the <emphasis
     role="italic">Rexx Class File</emphasis> / <emphasis role="italic">*.cls</emphasis> pair, etc.:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   sfd = .SaveFileDialog~new
   ret = sfd~setClientGuid(self~GUID_SAVE_DEFAULT)
 
-  filter = .array~of('Rexx Program File', '*.rex', 'Rexx Class File', '*.cls', 'Text File', '*.txt')
+  filter = .array~of('Rexx Program File', '*.rex', -
+    'Rexx Class File', '*.cls',                    -
+    'Text File', '*.txt'                           -
+  )
   sfd~setFileTypes(filter)
 
   sfd~setFileTypeIndex(2)
@@ -7255,7 +7152,6 @@ ofd~releaseCom
 
   -- Show the dialog and get the response from the user
   ret = sfd~show(self)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7402,8 +7298,7 @@ ofd~releaseCom
     Usually this is the last directory the user had selected. In this example the <emphasis
     role="italic">setFolder</emphasis> method over-rides thats behaviour and forces the dialog to open with the specified
     directory selected:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSaveFile private
   expose rexx_home
 
@@ -7415,7 +7310,6 @@ ofd~releaseCom
   -- Show the dialog and get the response
   selection = ofd~show(self)
   return selection
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7475,8 +7369,7 @@ ofd~releaseCom
   <para>
     This example uses the <emphasis role="italic">setOkButtonLabel</emphasis> to change the label of the Ok button to
     <emphasis role="italic">Finished</emphasis>:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ofd = .OpenFileDialog~new
   ret = ofd~setClientGuid(self~GUID_OPEN_CUSTOM)
 
@@ -7486,7 +7379,6 @@ ofd~releaseCom
   ofd~setFileNameLabel('Type in, or select an existing, file to open here:')
   ofd~setOkButtonLabel('Finished')
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7546,8 +7438,7 @@ ofd~releaseCom
   <para>
     This example uses the <emphasis role="italic">setTitle</emphasis> method to change the title of the open file dialog to
     <emphasis role="italic">The ooRexx Project's Open File Dialog</emphasis>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ofd = .OpenFileDialog~new
   ret = ofd~setClientGuid(self~GUID_OPEN_CUSTOM)
 
@@ -7556,7 +7447,6 @@ ofd~releaseCom
   ofd~setTitle("The ooRexx Project's Open File Dialog")
   ofd~setFileNameLabel('Type in, or select an existing, file to open here:')
   ofd~setOkButtonLabel('Finished')
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7622,15 +7512,13 @@ ofd~releaseCom
   <para>
     This code snippet is executed from within a method of an ooDialog dialog subclass. It sets the subclass object as the
     owner of the open file dialog.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ret = ofd~show(self)
 
   if ret == ofd~canceled then text = 'The user canceled the open'
   else text = 'Open file:' ofd~getResult
 
   ofd~release
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7870,13 +7758,11 @@ ofd~releaseCom
   <para>
     This example instantiates a common dialog events object and attaches it to the open file dialog through the <xref
     linkend="mthAdvise"/> method:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ofd = .OpenFileDialog~new
   ev = .CDEvents~new
   ofd~advise(ev)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7886,13 +7772,11 @@ ofd~releaseCom
 <section id="mthOnButtonClicked" xreflabel="onButtonClicked"><title>onButtonClicked</title>
 <indexterm><primary>onButtonClicked</primary></indexterm>
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onButtonClicked</secondary></indexterm>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onButtonClicked unguarded
     use arg cfd, hwnd, id
 
     return self~S_OK
-]]>
 </programlisting>
 
 <para>
@@ -7943,8 +7827,7 @@ ofd~releaseCom
     This example comes from an application that has a lot of customizations allowing the user to enter a lot of metadata
     that is saved by the application along with saving a file. The user clicks a push button to have the application verify
     that all the required metadata has been entered ...
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'CDEvents' subclass CommonDialogEvents
 
 ::method onButtonClicked unguarded
@@ -7961,7 +7844,6 @@ ofd~releaseCom
     end
   end
   return self~S_OK
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -7971,13 +7853,11 @@ ofd~releaseCom
 <section id="mthOnCheckButtonToggled" xreflabel="onCheckButtonToggled"><title>onCheckButtonToggled</title>
 <indexterm><primary>onCheckButtonToggled</primary></indexterm>
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onCheckButtonToggled</secondary></indexterm>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onCheckButtonToggled unguarded
   use arg cfd, hwnd, id, checked
 
   return self~S_OK
-]]>
 </programlisting>
 
 <para>
@@ -8034,13 +7914,11 @@ ofd~releaseCom
 <section id="mthOnControlActivating" xreflabel="onControlActivating"><title>onControlActivating</title>
 <indexterm><primary>onControlActivating</primary></indexterm>
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onControlActivating</secondary></indexterm>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onControlActivating unguarded
   use arg cfd, hwnd, id
 
   return self~S_OK
-]]>
 </programlisting>
 
 <para>
@@ -8099,13 +7977,11 @@ ofd~releaseCom
 <section id="mthOnFileOk" xreflabel="onFileOk"><title>onFileOk</title>
 <indexterm><primary>onFileOk</primary></indexterm>
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onFileOk</secondary></indexterm>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onFileOk unguarded
   use arg cfd, hwnd
 
   return self~S_OK
-]]>
 </programlisting>
 
 <para>
@@ -8164,13 +8040,12 @@ ofd~releaseCom
     This example comes from a business application that does not allow the user to save or open files that are marked as
     <emphasis role="italic">reserved</emphasis>. Reserved files are marked by the administrator by placing the string
     <emphasis role="italic">resv</emphasis> in the file name:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onFileOk unguarded
     use arg ofd, hwnd
 
     fileName = ofd~getCurrentSelection
-    if fileName~caselessPos('resv') <> 0 then do
+    if fileName~caselessPos('resv') &lt;&gt; 0 then do
         msg = '"Reserved" files can not be opened.  Please select another file.'
         title = 'File Open Error'
         r = MessageDialog(msg, hwnd, title, 'OK', 'WARNING')
@@ -8178,7 +8053,6 @@ ofd~releaseCom
     end
 
     return self~S_OK
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8188,13 +8062,11 @@ ofd~releaseCom
 <section id="mthOnFolderChange" xreflabel="onFolderChange"><title>onFolderChange</title>
 <indexterm><primary>onFolderChange</primary></indexterm>
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onFolderChange</secondary></indexterm>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onFolderChange unguarded
   use arg cfd, hwnd
 
   return self~S_OK
-]]>
 </programlisting>
 
 <para>
@@ -8243,8 +8115,7 @@ ofd~releaseCom
   <listitem>
   <para>
     This example ...
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .constDir[IDC_TEXT_DIR]   = 300
   .constDir[IDC_TEXT_LABEL] = 305
 
@@ -8258,7 +8129,10 @@ ofd~releaseCom
   ret = fileOpen~addText(IDC_TEXT_DIR, "")
   ret = fileOpen~endVisualGroup()
 
-  filter = .array~of('Rexx Program', '*.rex', 'Text Document', '*.txt', 'Hidden Console Rexx Program', '*.rxg')
+  filter = .array~of('Rexx Program', '*.rex', -
+    'Text Document', '*.txt',                 -
+    'Hidden Console Rexx Program', '*.rxg'    -
+  )
   fileOpen~setFileTypes(filter)
   fileOpen~setFileTypeIndex(1)
 
@@ -8279,7 +8153,6 @@ ofd~releaseCom
   folder = fileOpen~getFolder
   fileOpen~setControlLabel(IDC_TEXT_DIR, folder)
   return self~S_OK
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8289,13 +8162,11 @@ ofd~releaseCom
 <section id="mthOnFolderChanging" xreflabel="onFolderChanging"><title>onFolderChanging</title>
 <indexterm><primary>onFolderChanging</primary></indexterm>
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onFolderChanging</secondary></indexterm>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onFolderChanging unguarded
   use arg cfd, hwnd, folder
 
   return self~S_OK
-]]>
 </programlisting>
 
 <para>
@@ -8360,8 +8231,7 @@ ofd~releaseCom
     This is a contrived example used to show the basics of the <emphasis role="italic">onFolderChanging</emphasis> event
     handler. The user is prevented from navigating to any folder that contains <emphasis role="italic">rexx</emphasis> in
     the folder name:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
   fileOpen = .OpenFileDialog~new
 
@@ -8383,15 +8253,15 @@ ofd~releaseCom
 ::method onFolderChanging unguarded
   use arg fileOpen, hwnd, folder
 
-  if folder~caselessPos('Rexx') <> 0 then do
-      msg = 'Navigating to a "Rexx" folder is not allowed.  Please select another folder.'
+  if folder~caselessPos('Rexx') &lt;&gt; 0 then do
+      msg = 'Navigating to a "Rexx" folder is not allowed.' -
+        ' Please select another folder.'
       title = 'Folder Navigation Error'
       r = MessageDialog(msg, hwnd, title, 'OK', 'WARNING')
       return self~S_FALSE
   end
 
   return self~S_OK
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8401,13 +8271,11 @@ ofd~releaseCom
 <section id="mthOnHelp" xreflabel="onHelp"><title>onHelp</title>
 <indexterm><primary>onHelp</primary></indexterm>
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onHelp</secondary></indexterm>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onHelp unguarded
   use arg cfd, hwnd
 
   return self~S_OK
-]]>
 </programlisting>
 
 <para>
@@ -8419,13 +8287,11 @@ ofd~releaseCom
 <section id="mthOnItemSelected" xreflabel="onItemSelected"><title>onItemSelected</title>
 <indexterm><primary>onItemSelected</primary></indexterm>
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onItemSelected</secondary></indexterm>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onItemSelected unguarded
   use arg cfd, hwnd, itemID, containerID
 
   return self~S_OK
-]]>
 </programlisting>
 
 <para>
@@ -8490,8 +8356,7 @@ ofd~releaseCom
   <listitem>
   <para>
     This example checks the appropriate radio button when the user selects a menu item:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'CDEvents' subclass CommonDialogEvents
 
 ::method onItemSelected
@@ -8517,7 +8382,6 @@ ofd~releaseCom
   end
 
   return self~S_OK
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8527,13 +8391,11 @@ ofd~releaseCom
 <section id="mthOnOverwrite" xreflabel="onOverwrite"><title>onOverwrite</title>
 <indexterm><primary>onOverwrite</primary></indexterm>
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onOverwrite</secondary></indexterm>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onOverwrite unguarded
   use arg cfd, hwnd, fileName
 
   return self~E_NOTIMPL
-]]>
 </programlisting>
 
 <para>
@@ -8594,7 +8456,7 @@ ofd~releaseCom
   <para>
     This example comes from a business application where IT marks certain files that can not be overwritten. However, when
     the user tries to overwrite a restricted file, it is possible to overwrite the file by entering the proper key code:
-<programlisting> <![CDATA[ ::class 'CDEvents' subclass CommonDialogEvents
+<programlisting language="rexx">  ::class 'CDEvents' subclass CommonDialogEvents
 
 ::method onOverwrite unguarded
   use arg cfd, hwnd, file
@@ -8602,7 +8464,7 @@ ofd~releaseCom
   magicText = cfd~getEditBoxText(IDC_EDIT)
   fileName  = fileSpec('N', file)
 
-  if fileName~caselessPos('reserv') <> 0 then do
+  if fileName~caselessPos('reserv') &lt;&gt; 0 then do
     title = 'IT File Overwrite Manager'
 
     if magicText == self~magicKey then do
@@ -8624,7 +8486,6 @@ ofd~releaseCom
   end
   return self~FDESVR_ACCEPT
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8634,13 +8495,11 @@ ofd~releaseCom
 <section id="mthOnSelectionChange" xreflabel="onSelectionChange"><title>onSelectionChange</title>
 <indexterm><primary>onSelectionChange</primary></indexterm>
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onSelectionChange</secondary></indexterm>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSelectionChange unguarded
   use arg cfd, hwnd
 
   return self~S_OK
-]]>
 </programlisting>
 
 <para>
@@ -8691,14 +8550,12 @@ ofd~releaseCom
   <para>
     This example shows a simple event handler that can be used to test when the dialog sends the selection change
     notification:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onSelectionChange unguarded
   use arg fileOpen, hwnd
   say 'Got onSelectionChange() notification. Selection is:' fileOpen~getCurrentSelection
 
   return self~S_OK
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -8708,13 +8565,11 @@ ofd~releaseCom
 <section id="mthOnShareViolation" xreflabel="onShareViolation"><title>onShareViolation</title>
 <indexterm><primary>onShareViolation</primary></indexterm>
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onShareViolation</secondary></indexterm>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onShareViolation unguarded
   use arg cfd, hwnd, fileName
 
   return self~E_NOTIMPL
-]]>
 </programlisting>
 
 <para>
@@ -8778,13 +8633,11 @@ ofd~releaseCom
 <section id="mthOnTypeChange" xreflabel="onTypeChange"><title>onTypeChange</title>
 <indexterm><primary>onTypeChange</primary></indexterm>
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onTypeChange</secondary></indexterm>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method onTypeChange unguarded
   use arg cfd, hwnd
 
   return self~S_OK
-]]>
 </programlisting>
 
 <para>
@@ -8836,8 +8689,7 @@ ofd~releaseCom
   <para>
     This example changes the label of the Cancel button in a file open dialog. That label can only be changed after the
     dialog is shown and typically a programmer would prefer to do it before the dialog is visible:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   fileOpen = .OpenFileDialog~new
 
   events = .CDEvents~new
@@ -8845,7 +8697,10 @@ ofd~releaseCom
 
   fileOpen~setOkButtonLabel('Open This File')
 
-  filter = .array~of('Rexx Program', '*.rex', 'Text Document', '*.txt', 'Hidden Console Rexx Program', '*.rxg')
+  filter = .array~of('Rexx Program', '*.rex', -
+    'Text Document', '*.txt',                 -
+    'Hidden Console Rexx Program', '*.rxg'    -
+  )
   fileOpen~setFileTypes(filter)
   fileOpen~setFileTypeIndex(1)
 
@@ -8875,7 +8730,6 @@ ofd~releaseCom
 
   return self~S_OK
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9086,12 +8940,10 @@ ofd~releaseCom
   <para>
     This example instantiates a new open file dialog and checks for error. Typically the author does not perform this error
     check, but that is not to suggest it shouldn't be done:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ofd = .OpenFileDialog~new
-  if ofd~isReleased | .SystemErrorCode <> ofd~S_OK then return 99
+  if ofd~isReleased | .SystemErrorCode &lt;&gt; ofd~S_OK then return 99
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9155,8 +9007,7 @@ ofd~releaseCom
   <para>
     This example initiates an open file dialog and enables the multi-file selection capability. The dialog is shown and the
     user's response is formatted into a text message which is used to display the results
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   ofd = .OpenFileDialog~new
   ret = ofd~setClientGuid(self~GUID_OPEN_MULTI)
 
@@ -9186,7 +9037,6 @@ ofd~releaseCom
       end
   end
   ofd~release
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9397,12 +9247,10 @@ ofd~releaseCom
   <para>
     This example instantiates a new save file dialog and checks for error. Typically the author does not perform this error
     check, but that is not to suggest it shouldn't be done:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   sfd = .SaveFileDialog~new
-  if sfd~isReleased | .SystemErrorCode <> sfd~S_OK then return 99
+  if sfd~isReleased | .SystemErrorCode &lt;&gt; sfd~S_OK then return 99
   ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9469,8 +9317,7 @@ ofd~releaseCom
   <para>
     This example opens a save file dialog and sets the initial save as name to <computeroutput>ooDialog.cls</computeroutput>
     in the ooRexx installation directory:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method saveToDefaultFile unguarded private
     expose rexx_home
 
@@ -9479,7 +9326,6 @@ ofd~releaseCom
 
     ret = sfd~setSaveAsItem(rexx_home'\ooDialog.cls')
     ...
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9598,8 +9444,7 @@ ofd~releaseCom
   <para>
     This example shows the basics of using a shell item filter. The <xref linkend="mthIncludeItem"/> documentation shows the
     basics of implementing an <emphasis role="italic">includeItem</emphasis> event handler:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   sfd = .SaveFileDialog~new
   filterObj = .SIFilter~new
   sfd~setFilter(filterObj)
@@ -9607,7 +9452,6 @@ ofd~releaseCom
   ...
 
 ::class 'SIFilter' subclass ShellItemFilter
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9617,13 +9461,11 @@ ofd~releaseCom
 <section id="mthIncludeItem" xreflabel="includeItem"><title>includeItem</title>
 <indexterm><primary>includeItem</primary></indexterm>
 <indexterm><primary>ShellItemFilter class</primary><secondary>includeItem</secondary></indexterm>
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method includeItem unguarded
   use arg cfd, dlgHwnd, filePathName
 
   return self~S_OK
-]]>
 </programlisting>
 
 <para>
@@ -9688,15 +9530,13 @@ ofd~releaseCom
     This example shows an over-ride of the <emphasis role="italic">includeItem</emphasis> method used to filter out file
     names that are not to be used as a save file. If any file has the string <emphasis role="italic">reserved</emphasis>,
     case insensitive, in its name, it is not shown in the save file dialog's view:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::method includeItem
     use arg sfd, hwnd, item
 
-    if item~caselessPos('reserved') <> 0 then return self~S_FALSE
+    if item~caselessPos('reserved') &lt;&gt; 0 then return self~S_FALSE
 
     return self~S_OK
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9854,8 +9694,7 @@ ofd~releaseCom
   <listitem>
   <para>
     This example puts up the Browse For Folder dialog and gets the user's selection:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   folder = .SimpleFolderBrowse~getFolder
 
@@ -9867,7 +9706,6 @@ ofd~releaseCom
   -- End select
 
   say text
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -9984,8 +9822,7 @@ ofd~releaseCom
   <listitem>
   <para>
     This example puts up the Browse For Folder dialog and gets the user's selection:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   folder = SimpleFolderBrowse()
 
@@ -9997,7 +9834,6 @@ ofd~releaseCom
   -- End select
 
   say text
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

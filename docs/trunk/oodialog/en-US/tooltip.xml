@@ -638,8 +638,7 @@
   <para>
     This example creates a ToolTip and then adds a tool to it. The tool is defined using a push button dialog control and
     the text for the tool is specified at the time the tool is added:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   pbTest = self~newPushButton(IDC_PB_TEST)
   count  = 0
@@ -648,7 +647,6 @@
   ttTest = self~createToolTip(IDC_TT_TEST)
   ttTest~addTool(pbTest, "Push the Test button to start the regression testing.")
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -713,8 +711,7 @@
   <listitem>
   <para>
     This example creates a ToolTip and then adds a tool that will supply customized tool tips for a tree-view:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   tv = self~newTreeView(IDC_TREE)
   rect = tv~clientRect
@@ -724,7 +721,6 @@
   toolInfo = .ToolInfo~new(tv, ID_TREE_TOOL, '', 'TRANSPARENT', rect)
   tt~addToolEx(toolInfo)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -893,8 +889,7 @@
   <para>
     This example was created solely as a demonstration of how ToolTips work, it has no real practical value. It displays
     ToolTips as the mouse moves over a dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   tt = self~createToolTip(IDC_TT_MAIN)
 
@@ -918,7 +913,6 @@
   ret = tt~addToolRect(self, IDTOOL_DLG_RECT4, clRect4, text4, 'TRANSPARENT')
 
   self~connectToolTipEvent(IDC_TT_MAIN, 'SHOW', onShow)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1065,8 +1059,7 @@
   <listitem>
   <para>
     This example shows a tool being added to a ToolTip and then at some later point in the application being deleted.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   pbTest = self~newPushButton(IDC_PB_TEST)
   count  = 0
@@ -1080,7 +1073,6 @@
   ttTest~delTool(pbTest)
 
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1139,8 +1131,7 @@
   <listitem>
   <para>
     This example <emphasis role="italic">enumerates</emphasis> the tools in a ToolTip:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   do i = 1 to toolTip~getToolCount
     toolInfo = toolTip~enumTools(i)
@@ -1153,7 +1144,6 @@
     say 'Tool info  resource:' toolInfo~resource
     say
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1495,8 +1485,7 @@
   <listitem>
   <para>
     This example example prints to the screen the text for a tool tip where the tool is a rectangular area in a dialog:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
       say 'Text for the tool tip:' tt~getText(self, IDTOOL_DLG_RECT1)
 
@@ -1505,7 +1494,6 @@
 Text for the tool tip: Over main dialog, top left quadrant
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1755,8 +1743,7 @@ Text for the tool tip: Over main dialog, top left quadrant
   <listitem>
   <para>
     This example prints out information for each tool in the ToolTip:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   do i = 1 to tt~getToolCount
     toolInfo = tt~enumTools(i)
@@ -1769,7 +1756,6 @@ Text for the tool tip: Over main dialog, top left quadrant
     say 'Tool info  resource:' toolInfo~resource
     say
   end
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1944,8 +1930,7 @@ Generic form:
   <listitem>
   <para>
     This example gets the current cursor position and then hit tests that position for a push button tool:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   mouse = .Mouse~new(self)
   pos = mouse~getCursorPos
@@ -1982,7 +1967,6 @@ Tool info  userData: The NIL object
 Tool info  resource: The NIL object
 
 */
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2183,8 +2167,7 @@ Tool info  resource: The NIL object
   <para>
     Note that the third optional argument is an array with no values at index 1 and index 2. The <emphasis
     role="italic">onShowToolTip</emphasis> value at index 3 is the alternative method name to invoke for the SHOW event:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   tv = self~newTreeView(IDC_TREE)
   rect = tv~clientRect
@@ -2198,7 +2181,6 @@ Tool info  resource: The NIL object
 
   tt~manageAtypicalTool(tv, .array~of('RELAY', 'NEEDTEXT', 'SHOW'), .array~of( , , 'onShowToolTip'))
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2509,13 +2491,11 @@ Tool info  resource: The NIL object
   <listitem>
   <para>
     This example sets the margins for a ToolTip to 2 pixels on the sides and 4 pixels on the top and bottom:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   margins = .Rect~new(2, 4, 2, 4)
   toolTip~setMargins(margins)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2583,8 +2563,7 @@ Tool info  resource: The NIL object
     This example creates a tool for a push button with a relatively long string for the tool's text. It then gets the size
     for a portion of the text in pixels and sets the max tip width to the width of the portion. This causes the ToolTip to
     create a multi-line display window:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   tt = self~createToolTip(IDC_TT_MAIN)
 
@@ -2594,7 +2573,6 @@ Tool info  resource: The NIL object
   s = self~getTextSizePX("Push the 'Test' button")
   tt~setMaxTipWidth(s~width)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2819,15 +2797,13 @@ Tool info  resource: The NIL object
   <listitem>
   <para>
     This example creates a balloon ToolTip with a title and an icon;
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   icon = .Image~getImage("musicNote.ico", .Image~toID(IMAGE_ICON), .size~new(16, 16))
 
   tt = self~createToolTip(IDC_TT_BALLOON, 'BALLOON CLOSE')
   tt~setTitle("Important Message", icon)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -2893,8 +2869,7 @@ Tool info  resource: The NIL object
   <listitem>
   <para>
     This example modifies the text, bounding rectangle, and flags of a tool:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   toolInfo = ttEsc~getToolInfo(self~newPushButton(IDCANCEL))
 
@@ -2904,7 +2879,6 @@ Tool info  resource: The NIL object
 
   ttEsc~setToolInfo(toolInfo)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3192,14 +3166,12 @@ Generic form:
   <listitem>
   <para>
     This example updates the text for a tool:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   toolInfo = .ToolInfo~forID(self~newPushButton(IDCANCEL))
   toolInfo~text  = "Only push the cancel button if you want, or need, to end the dialog"
 
   toolTip~updateTipText(toolInfo)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3348,8 +3320,7 @@ Generic form:
   <para>
     This example comes from an application that has a number of rectangular tools in a dialog.  An arbitrary point is hit
     tested and if the hit succeeds, the filled in tool information is printed to the screen:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   hitTool = .ToolInfo~forHitTest(self)
 
@@ -3391,7 +3362,6 @@ NO hit
 
 */
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3464,15 +3434,14 @@ NO hit
   <para>
     This example instantiates a new <computeroutput>ToolInfo</computeroutput> object using the <emphasis
     role="italic">forID</emphasis> method and then uses the object to change the ToolTip text for a push button tool:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   toolInfo = .ToolInfo~forID(self~newPushButton(IDC_PB_TEST))
-  toolInfo~text = "Push the 'Test' button when you are ready to begin the test suite for the final release."
+  toolInfo~text = "Push the 'Test' button when you are ready" -
+    "to begin the test suite for the final release."
 
   toolTip~setMaxTipWidth(140)
   toolTip~updateTipText(toolInfo)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -3656,8 +3625,7 @@ NO hit
     <computeroutput>ToolInfo</computeroutput> object for an implementation of custom ToolTips for a <xref
     linkend="clsTreeView"/>:
 
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   tv = self~newTreeView(IDC_TREE)
   ret = tv~setItemHeight(20)
@@ -3673,7 +3641,6 @@ NO hit
   self~populateTree(tv)
   tt~manageAtypicalTool(tv, .array~of('RELAY', 'NEEDTEXT', 'SHOW'))
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>

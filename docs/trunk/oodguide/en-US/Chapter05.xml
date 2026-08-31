@@ -97,10 +97,12 @@
       ooRexx, the initiation statements can be quite happily moved into a class method. Thus the
         <computeroutput>ProductView</computeroutput> class has a method called
         <computeroutput>newInstance</computeroutput> which, with comments and "say" instructions removed, is
-      as follows:<programlisting><![CDATA[  ::METHOD newInstance CLASS PUBLIC UNGUARDED
+      as follows:<programlisting languege="rexx">  ::CLASS ProductView
+    -- ...
+  ::METHOD newInstance CLASS PUBLIC UNGUARDED
     .Application~setDefaults("O", "ProductView.h", .false)
     dlg = .ProductView~new("res\ProductView.dll", IDD_PRODUCT_VIEW)
-    dlg~activate]]></programlisting>The <computeroutput>newInstance</computeroutput> method is
+    dlg~activate</programlisting>The <computeroutput>newInstance</computeroutput> method is
       invoked from <computeroutput>Startup.rex</computeroutput> by the statement
         <computeroutput>.ProductView~newInstance</computeroutput>. So all knowledge about initiating
       a dialog is moved inside that dialog's class, and from now on this approach will be used. <indexterm>
@@ -206,7 +208,7 @@ Visual Studio 10.0\VC\include</computeroutput>
         from dialog creation for <computeroutput>CustomerView</computeroutput> (an
           <computeroutput>RcDialog</computeroutput> subclass) and ProductView (a
           <computeroutput>ResDialog</computeroutput> subclass) are as follows:
-          <programlisting><![CDATA[CustomerView                                ProductView
+          <programlisting>CustomerView                                ProductView
 
 StartCustomerView Routine-01: Start.         .ProductView-newInstance-01: Start.
 CustomerView-init-01.                        ProductView-init-01.
@@ -214,7 +216,7 @@ CustomerView-createMenuBar-01.
 StartCustomerView Routine-02: dlg~activate.  .ProductView-newInstance-02: dlg~Activate.
 CustomerView-activate-01.                    ProductView-activate-01.
 CustomerView-initDialog-01.                  ProductView-initDialog-01
-]]></programlisting>There are two visible differences. First, as discussed above, instead of
+</programlisting>There are two visible differences. First, as discussed above, instead of
         creating the <computeroutput>ProductView</computeroutput> instance in a routine, as was the
           case for CustomerView, the startup file invokes a class method - <computeroutput>newInstance</computeroutput>
           - which does much the same as CustomerView's routine.</para>
@@ -312,8 +314,7 @@ CustomerView-initDialog-01.                  ProductView-initDialog-01
                 method by invoking the mixin's <computeroutput>initDecimalOnly</computeroutput>
                 method on the control instance. In <computeroutput>ProductView</computeroutput> this
                 is done for the product price control by this statement:
-<programlisting><![CDATA[prodControls[ecProdPrice]~initDecimalOnly(2,.false)]]>
-</programlisting>
+<programlisting language="rexx">prodControls[ecProdPrice]~initDecimalOnly(2,.false)</programlisting>
                 The first parameter defines the allowable number of decimal places,
                 the second whether or not a sign is
                 allowed. As in <computeroutput>CustomerView</computeroutput> the controls are
@@ -329,16 +330,14 @@ CustomerView-initDialog-01.                  ProductView-initDialog-01
                 sends an event to the dialog when each character is entered). In
                 <computeroutput>ProductView</computeroutput>, this is done in the
               <computeroutput>initDialog</computeroutput> method as follows:</para>
-<programlisting><![CDATA[    prodControls[ecProdPrice]~connectCharEvent(onChar)]]>
-</programlisting>
+<programlisting language="rexx">    prodControls[ecProdPrice]~connectCharEvent(onChar)</programlisting>
             </listitem>
             <listitem>
               <para>Provide the event handler method. The event handler method <computeroutput>onChar</computeroutput>
                 in <computeroutput>ProductView</computeroutput> is as follows:
-<programlisting><![CDATA[    ::METHOD onChar UNGUARDED
+<programlisting language="rexx">    ::METHOD onChar UNGUARDED
       -- called for each character entered in the price or UOM fields.
-      forward to (arg(6))]]>
-</programlisting>The sixth argument to the event handler is the control object
+      forward to (arg(6))</programlisting>The sixth argument to the event handler is the control object
                 where the character event occurred, and the event must be forwarded to that object -
                 that is, to the eventful edit control. The event is then handled by the mixin class,
                 where the numeric-only editing is done.</para>
@@ -436,10 +435,10 @@ CustomerView-initDialog-01.                  ProductView-initDialog-01
               referenced in the *.rc file, and hence is referenced in the *.dll file. What now needs
               to happen is to associate the image with the static control that will contain it. This
               is done in the dialog's <computeroutput>initDialog</computeroutput> method as
-              follows:<programlisting><![CDATA[
+              follows:<programlisting language="rexx">
         resImage = .ResourceImage~new( "", self)
         image = resImage~getImage(IDB_PROD_ICON)
-        stImage = self~newStatic(IDC_PRODABT_ICON_PLACE)~setImage(image)]]></programlisting>
+        stImage = self~newStatic(IDC_PRODABT_ICON_PLACE)~setImage(image)</programlisting>
               The first statement creates an instance of ooDialog's
               <computeroutput>ResourceImage</computeroutput> class.
               The second statement uses the ResourceImages's <computeroutput>getImage</computeroutput>

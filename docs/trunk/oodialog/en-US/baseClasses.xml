@@ -329,8 +329,7 @@
     This example is from a <computeroutput>ResDialog</computeroutput> program. Since the resource editor used to create the
     resource only DLL for the program only supported rebars in a very limited way, the programmer elected to create the rebar
     by using the <computeroutput>CreateWindows</computeroutput> mixin class:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'RebarDlg' subclass ResDialog inherit CreateWindows
 
 ::method initDialog
@@ -338,7 +337,6 @@
     ...
 
   rb = self~createReBarWindow(IDC_RBAR, 'VARHEIGHT BANDBORDERS CCS_NODIVIDER')
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -476,8 +474,7 @@
     This example is from a <computeroutput>ResDialog</computeroutput> program. Since the resource editor used to create the
     resource only DLL for the program did not support status bars, the programmer elected to create the status bar by using
     the <computeroutput>CreateWindows</computeroutput> mixin class:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'StatusBarDlg' subclass ResDialog inherit CreateWindows
 
 ::method initDialog
@@ -485,7 +482,6 @@
     ...
 
   statusBar = self~createStatusBarWindow(IDC_STATUSBAR, 'BORDER SIZEGRIP')
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -623,8 +619,7 @@
     This example is from a <computeroutput>ResDialog</computeroutput> program. Since the resource editor used to create the
     resource only DLL for the program did not support status bars, the programmer elected to create the status bar by using
     the <computeroutput>CreateWindows</computeroutput> mixin class:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 ::class 'RebarDlg' subclass ResDialog inherit CreateWindows
 
 ::method initDialog
@@ -632,7 +627,6 @@
     ...
 
   statusBar = self~createStatusBarWindow(IDC_STATUSBAR, 'BORDER SIZEGRIP')
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -844,7 +838,7 @@
       The dialog subclass where the programmer wants to use custom draw must inherit the
       <computeroutput>CustomDraw</computeroutput> mixin class.
 
-<programlisting>
+<programlisting language="rexx">
 ::class 'CustomDrawDlg' subclass RcDialog inherit CustomDraw
 </programlisting>
     </para>
@@ -861,7 +855,7 @@
       Before any other use of custom draw, the <computeroutput>CustomDraw</computeroutput> class must be initialized. This is
       done through the <xref linkend="mthCustomDraw"/> method. This can be done wherever it seems convenient, but typically
       it would be done before the dialog control is populated with its items.
-<programlisting>
+<programlisting language="rexx">
 ::method init
     expose textRed textBlack
 
@@ -878,7 +872,7 @@
       Once the <computeroutput>CustomDraw</computeroutput> class is initialized, the next step is to register the dialog
       controls that will use custom draw. Each individual control must be registered using the <xref
       linkend="mthCustomDrawControl"/> method.
-<programlisting>
+<programlisting language="rexx">
 ::method init
     ...
 
@@ -1221,8 +1215,7 @@
   <listitem>
   <para>
     This example initializes the custom draw interface and then registers a list-view control to use custom draw.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
 ::method init
     expose textRed textBlack
@@ -1232,7 +1225,6 @@
     self~customDraw
     self~customDrawControl(IDC_LV_CUSTOM, 'ListView', onCustomDraw)
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1329,13 +1321,11 @@
   <listitem>
   <para>
     This example initializes the custom draw interface and then registers two controls to use custom draw:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   self~customDraw
   self~customDrawControl(IDC_LV_A, 'ListView', onCustomDrawA)
   self~customDrawControl(IDC_LV_B, 'ListView', onCustomDrawB)
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -1428,15 +1418,13 @@
   <para>
     This example specifies the custom draw colors for a list-view item. The item will be drawn with dark blue text on a
     light blue background.
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   if list~isChecked(item) then do
       lvcds~clrText   = self~RGB( 17,   5, 250)
       lvcds~clrTextBk = self~RGB(115, 245, 186)
   end
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
@@ -4874,10 +4862,8 @@ PlainBaseDialog::<xref linkend="mthValidate"/>
   <para>
     Getting the <computeroutput>constDir</computeroutput> is public. In practical use, it is more common to get the
     value of an index of the <emphasis role="italic">constDir</emphasis>:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
   id = self~constDir[IDC_RB_MINIMUM]
-]]>
 </programlisting>
 
   </para>
@@ -4991,8 +4977,7 @@ PlainBaseDialog::<xref linkend="mthValidate"/>
     object is instantiated, one of the symbol files is passed to the <emphasis role="italic">new</emphasis> method and
     is parsed automatically by the ooDialog framework. The other symbol files are then read and added to the constant
     directory:
-<programlisting>
-<![CDATA[
+<programlisting language="rexx">
 
   dlg = .CueDialog~new("cueEdit.rc", IDD_CUE_DLG, , 'cueEdit.h')
 
@@ -5000,7 +4985,6 @@ PlainBaseDialog::<xref linkend="mthValidate"/>
   dlg~parseIncludeFile('debugDialogs.h')
   dlg~parseIncludeFile('databaseDialogs.h')
 
-]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
