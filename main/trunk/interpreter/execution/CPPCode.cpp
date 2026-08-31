@@ -704,6 +704,12 @@ PCPPM CPPCode::exportedMethods[] =
     CPPM(RexxObject::concatRexx),
     CPPM(RexxObject::concatBlank),
 
+    // Temporary, for analysis
+    CPPM(RexxObject::objectSizeRexx),
+    CPPM(RexxObject::objectHeaderSizeRexx),
+    CPPM(RexxObject::objectDataSizeRexx),
+    CPPM(RexxObject::objectVariablesRexx),
+
     CPPM(RexxObject::newRexx),
 
     CPPM(RexxClass::inheritInstanceMethodsRexx),

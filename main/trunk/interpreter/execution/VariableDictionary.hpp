@@ -206,6 +206,7 @@ class VariableDictionary : public RexxInternalObject
 
     uint32_t getIdntfr();
     inline unsigned short getReserveCount() { return reserveCount; } // for concurrency trace
+    inline RexxClass *getScope() { return scope; } // temporary, for analysis
 
     inline bool isScope(RexxClass *otherScope) { return scope == otherScope; }
     inline VariableDictionary *getNextDictionary() { return nextDictionary; }

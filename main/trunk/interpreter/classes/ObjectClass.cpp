@@ -3111,6 +3111,42 @@ void *RexxNilObject::operator new(size_t size)
 
 
 /**
+ * Temporary, internal object sizes, for analysis
+ */
+RexxInteger *RexxObject::objectSizeRexx() { return new_integer(getObjectSize()); }
+RexxInteger *RexxObject::RexxObject::objectHeaderSizeRexx() { return new_integer(getObjectHeaderSize()); }
+RexxInteger *RexxObject::objectDataSizeRexx() { return new_integer(getObjectDataSize()); }
+
+/**
+ * Temporary, object variables, for analysis
+ */
+StringTable *RexxObject::objectVariablesRexx()
+{
+    Protected<StringTable> result = new_string_table();
+    VariableDictionary *dictionary = objectVariables;
+    while (dictionary != OREF_NULL)
+    {
+        RexxClass *scope = dictionary->getScope();
+        RexxString *scopeId = scope->getId();
+        for (VariableDictionary::VariableIterator iterator = dictionary->iterator(); iterator.isAvailable(); iterator.next())
+        {
+            RexxString *name = iterator.name();
+            RexxObject *value = iterator.value();
+            if (name != OREF_NULL && value != OREF_NULL)
+            {
+                Protected<RexxString> scopedName = scopeId->concatWith(name, ':');
+                result->put(value, scopedName);
+            }
+        }
+        // step to the next dictionary in the chain
+        dictionary = dictionary->getNextDictionary();
+    }
+    return result;
+
+}
+
+
+/**
  * This is the default table of methods that implement
  * the operators.  The order of this table must match
  * the order of the OPERATOR_* definitions in the TokenSubclass

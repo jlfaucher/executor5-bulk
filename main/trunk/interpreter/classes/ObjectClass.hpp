@@ -66,6 +66,7 @@ class SecurityManager;
 class BaseExecutable;
 class Activity;
 class PointerTable;
+class StringTable; // temporary
 
 
 typedef size_t HashCode;               // a hash code value
@@ -538,6 +539,12 @@ class RexxObject : public RexxInternalObject
     RexxObject  *notEqual(RexxObject *other);
     RexxObject  *strictEqual(RexxObject *);
     RexxObject  *strictNotEqual(RexxObject *other);
+
+    // Temporary, for analysis
+    RexxInteger *objectSizeRexx();
+    RexxInteger *objectHeaderSizeRexx();
+    RexxInteger *objectDataSizeRexx();
+    StringTable *objectVariablesRexx();
 
     RexxInteger *identityHashRexx();
 

@@ -22,7 +22,120 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 Aug 31
+
+Temporary:
+    Add .object~objectSize
+    Add .object~objectHeaderSize
+    Add .object~objectDataSize (= .object~objectSize - objectHeaderSize)
+
+    These methods will be used to analyze the size of the Unicode objects.
+    Careful! The sizes can differ from one call to another.
+    Assumption: the size depends on the reused area after a GC.
+    Pragmatic test: run the test several times, retain the stable size.
+
+Temporary:
+
+    Add .object~objectVariables
+
+    Returns a StringTable of the object's variables, where the variable names are
+    prefixed by the scope's name.
+
+Examples:
+
+    Must assign the values to variables, because when getting the sizes directly,
+    the sizes can differ from one call to another.
+    Even when assigning the values to variables, the sizes can differ from one
+    assignment to another.
+    Is it because the allocated object reuses an older area that is greater?
+
+    string = ""
+    string~length=                                      -- 0
+    string~objectSize=                                  -- 80
+    string~objectHeaderSize=                            -- 32
+    string~objectDataSize=                              -- 48
+
+    string = "👨‍👩‍👧🇩🇪🏳️‍🌈👩‍🔬"
+    string~length=                                      -- 51
+    string~objectSize=                                  -- 128
+    string~objectHeaderSize=                            -- 32
+    string~objectDataSize=                              -- 96
+
+    string = "x"~copies(1000000)
+    string~length=                                      -- 1000000
+    string~objectSize=                                  -- 1000080
+    string~objectHeaderSize=                            -- 32
+    string~objectDataSize=                              -- 1000048
+
+    array = .array~new
+    array~size=                                         -- 0
+    array~objectSize=                                   -- 224
+    indexer~objectHeaderSize=                           -- 32
+    array~objectDataSize=                               -- 192
+
+    array = (1, 2, 3, 4, 5, 6, 7, 8, 9)
+    array~size=                                         -- 0
+    array~objectSize=                                   -- 224
+    indexer~objectHeaderSize=                           -- 32
+    array~objectDataSize=                               -- 192
+
+    array = .array~new(1000, 1000)~~fill(0)
+    array~size=                                         -- 1000000
+    array~objectSize=                                   -- 8388576
+    indexer~objectHeaderSize=                           -- 32
+    array~objectDataSize=                               -- 8388544
+
+    string = "👨‍👩‍👧🇩🇪🏳️‍🌈👩‍🔬"
+    indexer = .RexxUnicodeStringIndexer~new(string)
+    indexer~objectSize=                                         -- 48
+    indexer~objectHeaderSize=                                   -- 32
+    indexer~objectDataSize=                                     -- 16
+    indexer~objectVariables=
+        a StringTable (17 items)
+        'RexxUnicodeStringIndexer:CODEPOINTCOUNT'             :  14
+        'RexxUnicodeStringIndexer:CODEPOINTINDEXES'           : [ 1, 5, 8, 12, 15, 19, 23, 27, 31, 34, 37, 41, 45, 48]
+        'RexxUnicodeStringIndexer:CODEPOINTSTORAGELIMIT'      :  999999999999999999
+        'RexxUnicodeStringIndexer:ENDCODEPOINTINDEXES'        : (The NIL object)
+        'RexxUnicodeStringIndexer:ENDCODEPOINTSTORAGESIZE'    :  0
+        'RexxUnicodeStringIndexer:ENDERRORS'                  : (The NIL object)
+        'RexxUnicodeStringIndexer:ENDERRORSTORAGESIZE'        :  0
+        'RexxUnicodeStringIndexer:ENDGRAPHEMEINDEXES'         : (The NIL object)
+        'RexxUnicodeStringIndexer:ENDGRAPHEMESTORAGESIZE'     :  0
+        'RexxUnicodeStringIndexer:ERRORCOUNT'                 :  0
+        'RexxUnicodeStringIndexer:ERRORS'                     : (an Array no shape, 0 items)
+        'RexxUnicodeStringIndexer:ERRORSTORAGELIMIT'          :  999999999999999999
+        'RexxUnicodeStringIndexer:GRAPHEMECOUNT'              :  4
+        'RexxUnicodeStringIndexer:GRAPHEMEINDEXES'            : [ 1, 19, 27, 41]
+        'RexxUnicodeStringIndexer:GRAPHEMESTORAGELIMIT'       :  999999999999999999
+        'RexxUnicodeStringIndexer:LASTGRAPHEMESUCCESSORINDEX' :  52
+        'RexxUnicodeStringIndexer:STRING'                     : '👨‍👩‍👧🇩🇪🏳️‍🌈👩‍🔬'
+
+    .RexxUnicodeGraphemeSupplier~new("👨‍👩‍👧🇩🇪🏳️‍🌈👩‍🔬", "b", "u")~objectVariables=
+        a StringTable (13 items)
+        'GraphemeSupplierHelper:DEFAULTINDEXTYPE'        : 'b'
+        'GraphemeSupplierHelper:DEFAULTITEMTYPE'         : 'u'
+        'RexxUnicodeGraphemeSupplier:ERROR'              : ''
+        'RexxUnicodeGraphemeSupplier:GRAPHEME'           : '👨‍👩‍👧'
+        'RexxUnicodeGraphemeSupplier:GRAPHEMEBREAKSTATE' :  11
+        'RexxUnicodeGraphemeSupplier:GRAPHEMEINDEXB'     :  1
+        'RexxUnicodeGraphemeSupplier:INDEXB'             :  23
+        'RexxUnicodeGraphemeSupplier:INDEXG'             :  1
+        'RexxUnicodeGraphemeSupplier:ISFIRSTSTEP'        :  0
+        'RexxUnicodeGraphemeSupplier:PENDINGERROR'       : ''
+        'RexxUnicodeGraphemeSupplier:PENDINGINDEXB'      :  19
+        'RexxUnicodeGraphemeSupplier:PREVIOUSCODEPOINT'  :  127465
+        'RexxUnicodeGraphemeSupplier:STRING'             : '👨‍👩‍👧🇩🇪🏳️‍🌈👩‍🔬'
+
+    .RexxUnicode~objectVariables=
+        a StringTable (2 items)
+        'ICU4ooRexxInterface:ICU4OOREXXISREGISTERED' :  1
+        'ICU4ooRexxInterface:ICU4OOREXXPACKAGE'      : (a Package)
+
+
+===============================================================================
 2026 Aug 30
+
+[Unicode]
 
 Modify the implementation of .RexxUnicodeServices~utf8StringInfo:
 Use a static inlined codepoint iterator, and a static inlined grapheme iterator.

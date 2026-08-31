@@ -572,6 +572,12 @@ StartClassDefinition(Object);
         AddPrivateMethod("SetMethod", RexxObject::setMethod, 3);
         AddPrivateMethod("UnsetMethod", RexxObject::unsetMethod, 1);
 
+        // Temporary, for analysis
+        AddMethod("ObjectSize", RexxObject::objectSizeRexx, 0);
+        AddMethod("ObjectHeaderSize", RexxObject::objectHeaderSizeRexx, 0);
+        AddMethod("ObjectDataSize", RexxObject::objectDataSizeRexx, 0);
+        AddMethod("objectVariables", RexxObject::objectVariablesRexx, 0);
+
     CompleteMethodDefinitions();
 
 EndClassDefinition(Object);
