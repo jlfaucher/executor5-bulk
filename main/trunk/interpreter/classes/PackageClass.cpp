@@ -2501,6 +2501,7 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
                             case nostringFlag:   packageSettings.enableNostringSyntax(); break;
                             case notreadyFlag:   packageSettings.enableNotreadySyntax(); break;
                             case novalueFlag:    packageSettings.enableNovalueSyntax(); break;
+                            default:             break;
                         }
                     }
                     else
@@ -2513,7 +2514,8 @@ RexxObject    *PackageClass::options(RexxString *optionName, RexxString *newValu
                             case nostringFlag:   packageSettings.disableNostringSyntax(); break;
                             case notreadyFlag:   packageSettings.disableNotreadySyntax(); break;
                             case novalueFlag:    packageSettings.disableNovalueSyntax(); break;
-                        }
+                            default:             break;
+                       }
                     }
                 }
                 else    // raise exception
@@ -2714,6 +2716,7 @@ RexxObject    *PackageClass::clzOptions(RexxString *optionName, RexxString *newV
             overrideCount = numberArgument(strNewValue, 2);
         }
         break;
+    default: break;
     }
     return currentValue;
 }
