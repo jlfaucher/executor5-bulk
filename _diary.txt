@@ -22,6 +22,28 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 Sept 01
+
+[Unicode]
+
+Test the performance impact of making these MutableBuffer methods inline
+(code moved from MutableBufferClass.cpp to MutableBufferClass.hpp):
+    inline void ensureCapacity(size_t addedLength)
+    inline void append(const char *d, size_t l)
+    inline void append(const char *d, size_t l)
+    inline void append(char c)
+These methods are already inline:
+    BufferClass: inline void copyData(size_t offset, const char *string, size_t l) { memmove(this->getData() + offset, string, l); }
+    MutableBuffer: inline void copyData(size_t offset, const char *string, size_t l) { data->copyData(offset, string, l); }
+So the whole sequence append -> ensureCapacity -> copyData could be inlined by
+the compiler.
+
+Benchmark:
+Search for "After the inlining of MutableBuffer::append on 2026.09.01"
+No improvement, not retained.
+
+
+===============================================================================
 2026 Aug 31
 
 [Unicode]
@@ -244,6 +266,10 @@ Benchmark on MacBookPro M1 32GB:
         real    0m16.921s
         user    0m16.804s
         sys     0m0.098s
+    After the inlining of MutableBuffer::append on 2026.09.01, no improvement:
+        real    0m17.015s   0m17.002s   0m17.054s
+        user    0m16.918s   0m16.897s   0m16.958s
+        sys     0m0.086s    0m0.092s    0m0.085s
 
     -- No performance improvement when the substitutions are mainly Unicode names
     string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n"
@@ -262,6 +288,8 @@ Benchmark on MacBookPro M1 32GB:
     do 100000; ustring = .RexxUnicode~stringUnescape(string); end       -- Duration: 0.139293, 0.122272, 0.148886, 0.137343, 0.139994. Average = 0.1375576
     do 100000; ustring = .RexxUnicode~stringUnescape(string); end       -- Duration: 0.118803, 0.131541, 0.125234, 0.120463, 0.139671. Average = 0.1271424 when not appending to the buffer
     do 100000; ustring = .RexxUnicode~stringUnescape(string); end       -- Duration: 0.124736, 0.129402, 0.125312, 0.122572, 0.136474. Average = 0.1276992 when preallocating the buffer with string length
+    -- After the inlining of MutableBuffer::append on 2026.09.01, no improvement:
+    do 100000; ustring = .RexxUnicode~stringUnescape(string); end       -- Duration: 0.133355, 0.120744, 0.117728, 0.129309, 0.130916. Average = 0.1264104
 
     -- 10 000 iterations, 8.12 times faster (8.00 with direct call of utf8StringUnescape)
     string = .RexxUnicode~stringEscape(xrange("00"x, "FF"x))            -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'
@@ -272,6 +300,8 @@ Benchmark on MacBookPro M1 32GB:
     do 10000; ustring = .RexxUnicode~stringUnescape(string); end        -- Duration: 0.050614, 0.064815, 0.053925, 0.054046, 0.064102. Average = 0.0575004
     do 10000; ustring = .RexxUnicode~stringUnescape(string); end        -- Duration: 0.038062, 0.043275, 0.039218, 0.049132, 0.042803. Average = 0.042498 when not appending to the buffer
     do 10000; ustring = .RexxUnicode~stringUnescape(string); end        -- Duration: 0.055565, 0.051351, 0.043594, 0.069116, 0.059300. Average = 0.0557852 when preallocating the buffer with string length
+    -- After the inlining of MutableBuffer::append on 2026.09.01, no improvement:
+    do 10000; ustring = .RexxUnicode~stringUnescape(string); end        -- Duration: 0.052282, 0.056901, 0.070346, 0.058152, 0.063941. Average = 0.0603244
 
 
 ===============================================================================
