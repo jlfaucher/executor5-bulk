@@ -738,6 +738,8 @@ static inline utf8proc_ssize_t utf8proc_iterate_extended(
 }
 
 
+// Designed and implemented by Claude Sonnet 5
+// https://claude.ai/share/1de7ad5b-866b-4ba9-8de3-53dbe89be558
 /**
  * utf8proc_iterate_extended_backward — backward counterpart to utf8proc_iterate_extended,
  * with exact error-code/message parity with a full forward pass.
@@ -901,6 +903,10 @@ static inline utf8proc_ssize_t utf8proc_iterate_extended_backward(
 /* utf8proc_grapheme_break_backward                                           */
 /*                                                                            */
 /******************************************************************************/
+
+// Initial ooRexx implementation by Claude Sonnet 5.
+// Ported from ooRexx to C++ by Claude Sonnet 5.
+// https://claude.ai/share/58606628-2fd2-44e8-9da9-fcd14b9c6325
 
 /*
 Position convention:
