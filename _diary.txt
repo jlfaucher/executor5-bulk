@@ -24,6 +24,16 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 ===============================================================================
 2026 Aug 31
 
+[Unicode]
+
+Add a generic parameter `action` to the codepoint iterator and the grapheme iterator
+with the help of Claude Sonnet 5
+https://claude.ai/share/a34dc653-d600-4f7f-8330-0a411964136d
+
+
+===============================================================================
+2026 Aug 31
+
 Temporary:
     Add .object~objectSize
     Add .object~objectHeaderSize
@@ -162,6 +172,8 @@ Benchmark
     .RexxUnicodeServices~utf8StringInfo(string, , >c, >e)   -- Duration: 0.037272, 0.038396, 0.038900, 0.037714, 0.028434. Average = 0.0361432
     .RexxUnicodeServices~utf8StringInfo1(string, , >c, >e)  -- Duration: 0.020711, 0.028494, 0.024489, 0.022970, 0.021133. Average = 0.0235594
     -- ratio = 1.53 times faster
+    -- 2026.09.01 Generic iterators with an empty action
+    .RexxUnicodeServices~utf8StringInfo(string, , >c, >e)   -- Duration: 0.028806, 0.021499, 0.027610, 0.021564, 0.025835. Average = 0.0250628
 
     -- 300 millions bytes, 100 millions codepoints, 2 graphemes
     ZWJ = .RexxUnicode~U2C("U+200D")
@@ -180,6 +192,8 @@ Benchmark
     -- Durations after declaring the two iterators `static inline` and defining decoding without error messages: GOOD!
     .RexxUnicodeServices~utf8StringInfo1(ZWJ~copies(100000000) || KA, , >c, >e)     -- Duration: 0.714958, 0.672227, 0.819921, 0.726988, 0.710795. Average = 0.7289778
     -- ratio = 1.21 times faster
+    -- 2026.09.01 Generic iterators with an empty action
+    .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, , >c, >e)      -- Duration: 0.674952, 0.725734, 0.714724, 0.671916, 0.719850. Average = 0.7014352
 
     -- 100 millions bytes, 100 millions codepoints, 100 millions graphemes
     KA = .RexxUnicode~U2C("U+0915")
@@ -191,6 +205,8 @@ Benchmark
     .RexxUnicodeServices~utf8StringInfo1("A"~copies(100000000) || KA, , >c, >e)     -- Duration: 0.396618, 0.403906, 0.408597, 0.392821, 0.394776. Average = 0.3993436
     .RexxUnicodeServices~utf8StringInfo1("A"~copies(100000000) || KA, , >c, >e)     -- Duration: 0.353569, 0.338855, 0.330014, 0.332901, 0.315172. Average = 0.3341022
     -- ratio = 1.25 times faster
+    -- 2026.09.01 Generic iterators with an empty action
+    .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, , >c, >e)      -- Duration: 0.343011, 0.351241, 0.369860, 0.341259, 0.341556. Average = 0.3493854
 
 Conclusion:
 Declaring the helpers `static inline` has a real performance benefit.
