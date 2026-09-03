@@ -11,31 +11,41 @@ ooRexxShellFiles = diary_examples \
                    rxunicode_examples
 
 # ooRexx scripts in the current directory
-scriptsFiles = charWidth_stringWidth_test \
-               controlBoundary_test \
-               eastAsianWidthIsAmbiguous_test \
+scriptsFiles1= eastAsianWidthIsAmbiguous_test \
                enums_test \
                incorrect_character \
                RexxUnicode_test \
                RexxUnicodeServices_test \
-               width_printable_test \
                ../../main/trunk/interpreter/classes/support/Unicode/unicode-width/tests/tests
 
+# ooRexx scripts in the current directory, results impacted by ICU4C version
+scriptsFiles2= charWidth_stringWidth_test \
+               controlBoundary_test \
+               width_printable_test
+
 help:
+	@echo
 	@echo "make all"
 	@echo "make html"
+	@echo "make clean"
+	@echo
 	@echo "---------- ooRexxShellFiles"
 	@for f in $(ooRexxShellFiles); do echo "make" $$f; done
-	@echo "---------- scriptsFiles"
-	@for f in $(scriptsFiles); do echo "make" $$f; done
+	@echo
+	@echo "---------- scriptsFiles1"
+	@for f in $(scriptsFiles1); do echo "make" $$f; done
+	@echo
+	@echo "---------- scriptsFiles2, results impacted by ICU4C version"
+	@for f in $(scriptsFiles2); do echo "make" $$f; done
+	@echo
 	@echo "---------- html (needs asciinema and aha)"
 	@for f in $(ooRexxShellFiles); do echo "make" $$f-out.html; done
-	@echo "----------"
-	@echo "make clean"
+	@echo
 
 all:
 	@for f in $(ooRexxShellFiles); do make $$f; done
-	@for f in $(scriptsFiles); do make $$f; done
+	@for f in $(scriptsFiles1); do make $$f; done
+	@for f in $(scriptsFiles2); do make $$f; done
 	@echo
 	@echo "To be launched separately: make html (needs asciinema and aha)"
 
@@ -44,12 +54,18 @@ all:
 html:
 	@for f in $(ooRexxShellFiles); do make $$f-out.html; done
 
+ooRexxShellFiles: $(ooRexxShellFiles)
+
 $(ooRexxShellFiles):
 	rm -f $@-out.txt
 	bash -i -c '( cat $@.oorexxshell ; echo RC = 0 ) | oorexxshell test regression > $@-out.txt 2>&1'
 	diff -q $@-out-ref.txt $@-out.txt
 
-$(scriptsFiles):
+scriptsFiles1: $(scriptsFiles1)
+
+scriptsFiles2: $(scriptsFiles2)
+
+$(scriptsFiles1) $(scriptsFiles2):
 	rm -f $@-out.txt
 	bash -i -c 'rexx $@.rex  --testRegression > $@-out.txt 2>&1'
 	diff -q $@-out-ref.txt $@-out.txt
@@ -64,7 +80,8 @@ $(scriptsFiles):
 clean:
 	@for f in $(ooRexxShellFiles); do rm -f $$f-out.txt; done
 	@#for f in $(ooRexxShellFiles); do rm -f $$f-out.html; done
-	@for f in $(scriptsFiles); do rm -f $$f-out.txt; done
+	@for f in $(scriptsFiles1); do rm -f $$f-out.txt; done
+	@for f in $(scriptsFiles2); do rm -f $$f-out.txt; done
 
 
 # bash -i -c 'command" is a trick to bypass the SIP hell:

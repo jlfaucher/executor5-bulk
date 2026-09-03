@@ -11,15 +11,17 @@ ooRexxShellFiles = diary_examples \
                    rxunicode_examples
 
 # ooRexx scripts in the current directory
-scriptsFiles = charWidth_stringWidth_test \
-               controlBoundary_test \
-               eastAsianWidthIsAmbiguous_test \
+scriptsFiles1= eastAsianWidthIsAmbiguous_test \
                enums_test \
                incorrect_character \
                RexxUnicode_test \
                RexxUnicodeServices_test \
-               width_printable_test \
                ..\..\main\trunk\interpreter\classes\support\Unicode\unicode-width\tests\tests
+
+# ooRexx scripts in the current directory, results impacted by ICU4C version
+scriptsFiles2= charWidth_stringWidth_test \
+               controlBoundary_test \
+               width_printable_test
 
 NMAKE = nmake /c /f Makefile
 
@@ -35,27 +37,39 @@ DIFF = diff --ignore-space-change
 
 help:
 	@echo nmake all
+	@echo nmake clean
+	@echo.
 	@echo ---------- ooRexxShellFiles
 	@-for %%f in ($(ooRexxShellFiles)) do @echo nmake %%f
-	@echo ---------- scriptsFiles
-	@-for %%f in ($(scriptsFiles)) do @echo nmake %%f
-	@echo ----------
-	@echo nmake clean
+	@echo.
+	@echo ---------- scriptsFiles1
+	@-for %%f in ($(scriptsFiles1)) do @echo nmake %%f
+	@echo.
+	@echo ---------- scriptsFiles2, results impacted by ICU4C version
+	@-for %%f in ($(scriptsFiles2)) do @echo nmake %%f
 
 all:
 	@-for %%f in ($(ooRexxShellFiles)) do @$(NMAKE) %%f
-	@-for %%f in ($(scriptsFiles)) do @$(NMAKE) %%f
+	@-for %%f in ($(scriptsFiles1)) do @$(NMAKE) %%f
+	@-for %%f in ($(scriptsFiles2)) do @$(NMAKE) %%f
+
+ooRexxShellFiles: $(ooRexxShellFiles)
 
 $(ooRexxShellFiles):
 	del /F $@-out.txt > nul
 	( type $@.oorexxshell & echo RC = 0 ) | oorexxshell test regression > $@-out.txt 2>&1
 	$(DIFF) $@-out-ref.txt $@-out.txt > nul
 
-$(scriptsFiles):
+scriptsFiles1: $(scriptsFiles1)
+
+scriptsFiles2: $(scriptsFiles2)
+
+$(scriptsFiles1) $(scriptsFiles2):
 	del /F $@-out.txt > nul
 	rexx $@.rex --testRegression > $@-out.txt 2>&1
 	$(DIFF) $@-out-ref.txt $@-out.txt > nul
 
 clean:
 	@-for %%f in ($(ooRexxShellFiles)) do @del -f %%f-out.txt
-	@-for %%f in ($(scriptsFiles)) do @del -f %%f-out.txt
+	@-for %%f in ($(scriptsFiles1)) do @del -f %%f-out.txt
+	@-for %%f in ($(scriptsFiles2)) do @del -f %%f-out.txt
