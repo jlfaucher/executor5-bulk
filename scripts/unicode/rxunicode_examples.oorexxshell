@@ -40,32 +40,69 @@ demo on
 -- .RexxUnicodeServices~codepointCombiningClass
 --------------------------------------------------------------------------------
 
-.RexxUnicode~codepointCombiningClass("031B"~x2d, >code, >label)=; code=; label=     --  216; 'ATAR'; 'Attached_Above_Right'
-.RexxUnicode~codepointCombiningClass("FFFFFF"~x2d, >code, >label)=; code=; label=   --  0; 'NR'; 'Not_Reordered'
-.RexxUnicode~codepointCombiningClass(-1, >code, >label)=; code=; label=             --  0; 'NR'; 'Not_Reordered'
+.RexxUnicodeServices~codepointCombiningClass("031B"~x2d, >code, >label)=; code=; label=     --  216; 'ATAR'; 'Attached_Above_Right'
+.RexxUnicodeServices~codepointCombiningClass("FFFFFF"~x2d, >code, >label)=; code=; label=   --  0; 'NR'; 'Not_Reordered'
+.RexxUnicodeServices~codepointCombiningClass(-1, >code, >label)=; code=; label=             --  0; 'NR'; 'Not_Reordered'
 
 
 --------------------------------------------------------------------------------
 -- .RexxUnicodeServices~codepointDecompositionType
 --------------------------------------------------------------------------------
 
-.RexxUnicode~codepointDecompositionType("0000"~x2d, >code, >label)=; code=; label=      --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
-.RexxUnicode~codepointDecompositionType("00A8"~x2d, >code, >label)=; code=; label=      --  16; 'Compat'; 'Unspecified compatibility character'
-.RexxUnicode~codepointDecompositionType("00BC"~x2d, >code, >label)=; code=; label=      --  15; 'Fraction'; 'Vulgar fraction form'
-.RexxUnicode~codepointDecompositionType("FFFFFF"~x2d, >code, >label)=; code=; label=    --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
-.RexxUnicode~codepointDecompositionType(-1, >code, >label)=; code=; label=              --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
+.RexxUnicodeServices~codepointDecompositionType("0000"~x2d, >code, >label)=; code=; label=      --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
+.RexxUnicodeServices~codepointDecompositionType("00A8"~x2d, >code, >label)=; code=; label=      --  16; 'Compat'; 'Unspecified compatibility character'
+.RexxUnicodeServices~codepointDecompositionType("00BC"~x2d, >code, >label)=; code=; label=      --  15; 'Fraction'; 'Vulgar fraction form'
+.RexxUnicodeServices~codepointDecompositionType("FFFFFF"~x2d, >code, >label)=; code=; label=    --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
+.RexxUnicodeServices~codepointDecompositionType(-1, >code, >label)=; code=; label=              --  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'
 
 
 --------------------------------------------------------------------------------
 -- .RexxUnicodeServices~codepointIndicConjunctBreak
 --------------------------------------------------------------------------------
 
-.RexxUnicode~codepointIndicConjunctBreak("0000"~x2d, >code, >label)=; code=; label=     --  0; 'None'; 'None'
-.RexxUnicode~codepointIndicConjunctBreak("0300"~x2d, >code, >label)=; code=; label=     --  3; 'Extend'; 'Extend'
-.RexxUnicode~codepointIndicConjunctBreak("0915"~x2d, >code, >label)=; code=; label=     --  2; 'Consonant'; 'Consonant'
-.RexxUnicode~codepointIndicConjunctBreak("094D"~x2d, >code, >label)=; code=; label=     --  1; 'Linker'; 'Linker'
-.RexxUnicode~codepointIndicConjunctBreak("FFFFFF"~x2d, >code, >label)=; code=; label=   --  0; 'None'; 'None'
-.RexxUnicode~codepointIndicConjunctBreak(-1, >code, >label)=; code=; label=             --  0; 'None'; 'None'
+.RexxUnicodeServices~codepointIndicConjunctBreak("0000"~x2d, >code, >label)=; code=; label=     --  0; 'None'; 'None'
+.RexxUnicodeServices~codepointIndicConjunctBreak("0300"~x2d, >code, >label)=; code=; label=     --  3; 'Extend'; 'Extend'
+.RexxUnicodeServices~codepointIndicConjunctBreak("0915"~x2d, >code, >label)=; code=; label=     --  2; 'Consonant'; 'Consonant'
+.RexxUnicodeServices~codepointIndicConjunctBreak("094D"~x2d, >code, >label)=; code=; label=     --  1; 'Linker'; 'Linker'
+.RexxUnicodeServices~codepointIndicConjunctBreak("FFFFFF"~x2d, >code, >label)=; code=; label=   --  0; 'None'; 'None'
+.RexxUnicodeServices~codepointIndicConjunctBreak(-1, >code, >label)=; code=; label=             --  0; 'None'; 'None'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeServices~codepointIsPrintable
+--------------------------------------------------------------------------------
+
+.RexxUnicodeServices~codepointIsPrintable(0)=             -- 0
+.RexxUnicodeServices~codepointIsPrintable(65)=            -- 1
+.RexxUnicodeServices~codepointIsPrintable("D800"~x2d)=    -- 0
+
+
+-- The special value -1 is not printable
+.RexxUnicodeServices~codepointIsPrintable(-1)=            -- 0
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeServices~codepointPrintableString
+--------------------------------------------------------------------------------
+
+.RexxUnicodeServices~codepointPrintableString(0)=           -- '\u0000'
+.RexxUnicodeServices~codepointPrintableString(65)=          -- 'A'
+.RexxUnicodeServices~codepointPrintableString("D800"~x2d)=  -- '\uD800'
+
+
+-- Since the special value -1 is not printable, it is represented using Unicode escape notation.
+.RexxUnicodeServices~codepointPrintableString(-1)=          -- '\UFFFFFFFF'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeServices~codepointUnicodeEscapeNotation
+--------------------------------------------------------------------------------
+
+.RexxUnicodeServices~codepointUnicodeEscapeNotation("D800"~x2d)=    -- '\uD800'
+.RexxUnicodeServices~codepointUnicodeEscapeNotation("1F385"~x2d)=   -- '\U0001F385'
+.RexxUnicodeServices~codepointUnicodeEscapeNotation(-1)=            -- '\UFFFFFFFF'
+
+.RexxUnicodeServices~codepointUnicodeEscapeNotation("D800"~x2d, .MutableBuffer~new)=    -- M'\uD800'
 
 
 --------------------------------------------------------------------------------
@@ -296,6 +333,36 @@ indexB -= abs(size); indexB=                                                    
 
 
 --------------------------------------------------------------------------------
+--  .RexxUnicodeServices~utf8StringEscape
+--------------------------------------------------------------------------------
+
+.RexxUnicodeServices~utf8StringEscape(xrange("00"x, "FF"x))=          -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'
+
+.RexxUnicodeServices~utf8StringEscape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF'
+
+
+string = "👨‍👩‍👧" || "F4 91"x
+.RexxUnicodeServices~utf8StringEscape(string)=          -- '👨\u200D👩\u200D👧\xF4\x91'
+.RexxUnicodeServices~utf8StringEscape(string, "g")=     -- '👨‍👩‍👧\xF4\x91'
+
+
+.RexxUnicodeServices~utf8StringEscape(.RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}"))=    -- '\xED\xA0\x80'
+/*
+A lead surrogate is invalid in a UTF-8 string (would be valid in a WTF-8 string).
+(<?> \x{EDA080} U+D800 Cs Surrogate "<lead surrogate-D800>")
+A codepoint supplier returns 3 codepoints for U+D800:
+    1 : 'U+FFFD'
+    2 : 'U+FFFD'
+    3 : 'U+FFFD'
+Codepoint byte sequence as hexadecimal digits (option "h):
+    1 : '\xED'
+    2 : '\xA0'
+    3 : '\x80'
+Escaping U+D800 is '\xED\xA0\x80' because \x{EDA080} can't be UTF-8 decoded as U+D800.
+*/
+
+
+--------------------------------------------------------------------------------
 --  .RexxUnicodeServices~utf8StringInfo
 --------------------------------------------------------------------------------
 
@@ -328,6 +395,47 @@ ZWJ = .RexxUnicode~U2C("U+200D")
 KA = .RexxUnicode~U2C("U+0915")
 .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.1332700
 g=; c=; e=                                                                      --  2; 100000001; 0
+
+
+--------------------------------------------------------------------------------
+--  .RexxUnicodeServices~utf8StringUnescape
+--------------------------------------------------------------------------------
+
+-- YES! Must be called from .RexxUnicode
+-- because .RexxUnicodeServices~utf8StringUnescape is PRIVATE.
+
+-- The public method .RexxUnicode~utf8StringUnescape forwards to the private
+-- native method .RexxUnicodeServices~utf8StringUnescape.
+
+.RexxUnicode~utf8StringUnescape("\\")=            -- '\'
+.RexxUnicode~utf8StringUnescape("a\\")=           -- 'a\'
+.RexxUnicode~utf8StringUnescape("\\b")=           -- '\b'
+.RexxUnicode~utf8StringUnescape("a\\b")=          -- 'a\b'
+
+.RexxUnicode~utf8StringUnescape("\\", .MutableBuffer~new)=            -- M'\'
+.RexxUnicode~utf8StringUnescape("a\\", .MutableBuffer~new)=           -- M'a\'
+.RexxUnicode~utf8StringUnescape("\\b", .MutableBuffer~new)=           -- M'\b'
+.RexxUnicode~utf8StringUnescape("a\\b", .MutableBuffer~new)=          -- M'a\b'
+
+.RexxUnicode~utf8StringUnescape("\a")~c2x=    -- 07
+.RexxUnicode~utf8StringUnescape("\b")~c2x=    -- 08
+.RexxUnicode~utf8StringUnescape("\f")~c2x=    -- '0C'
+.RexxUnicode~utf8StringUnescape("\n")~c2x=    -- '0A'
+.RexxUnicode~utf8StringUnescape("\r")~c2x=    -- '0D'
+.RexxUnicode~utf8StringUnescape("\t")~c2x=    -- 09
+.RexxUnicode~utf8StringUnescape("\v")~c2x=    -- '0B'
+
+.RexxUnicode~utf8StringUnescape("\N{OCR DASH}")=                  -- '⑈'
+.RexxUnicode~utf8StringUnescape("\N{MICR ON US SYMBOL}")=         -- '⑈'
+.RexxUnicode~utf8StringUnescape("\N{<control-0000>}")=            -- '[00]'
+.RexxUnicode~utf8StringUnescape("\N{<lead surrogate-D800>}")~c2x= -- 'EDA080' (use ~c2x to not display an invalid byte sequence)
+
+.RexxUnicode~utf8StringUnescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
+
+-- Spaces between consecutive \u{...} sequences are significant.
+-- Spaces between consecutive U+... sequences are not significant.
+.RexxUnicode~utf8StringUnescape(" \u{0041} \u{0042} ")=     -- ' A B '
+.RexxUnicode~U2C(               "  U+0041   U+0042  ")=     -- 'AB'
 
 
 --------------------------------------------------------------------------------
@@ -618,44 +726,6 @@ tstring=; .RexxUnicode~C2U(tstring)=
 
 
 --------------------------------------------------------------------------------
--- .RexxUnicode~codepointIsPrintable
---------------------------------------------------------------------------------
-
-.RexxUnicode~codepointIsPrintable(0)=             -- 0
-.RexxUnicode~codepointIsPrintable(65)=            -- 1
-.RexxUnicode~codepointIsPrintable("D800"~x2d)=    -- 0
-
-
--- The special value -1 is not printable
-.RexxUnicode~codepointIsPrintable(-1)=            -- 0
-
-
---------------------------------------------------------------------------------
--- .RexxUnicode~codepointPrintableString
---------------------------------------------------------------------------------
-
-.RexxUnicode~codepointPrintableString(0)=           -- '\u0000'
-.RexxUnicode~codepointPrintableString(65)=          -- 'A'
-.RexxUnicode~codepointPrintableString("D800"~x2d)=  -- '\uD800'
-
-
--- Since the special value -1 is not printable, it is represented using Unicode escape notation.
-.RexxUnicode~codepointPrintableString(-1)=          -- '\UFFFFFFFF'
-
-
---------------------------------------------------------------------------------
--- .RexxUnicode~codepointUnicodeEscapeNotation
---------------------------------------------------------------------------------
-
-.RexxUnicode~codepointUnicodeEscapeNotation("D800"~x2d)=    -- '\uD800'
-.RexxUnicode~codepointUnicodeEscapeNotation("1F385"~x2d)=   -- '\U0001F385'
-.RexxUnicode~codepointUnicodeEscapeNotation(-1)=            -- '\UFFFFFFFF'
-
-
-.RexxUnicode~codepointUnicodeEscapeNotation("D800"~x2d, .MutableBuffer~new)=    -- M'\uD800'
-
-
---------------------------------------------------------------------------------
 -- .RexxUnicode~codepointUTF8Encoding
 --------------------------------------------------------------------------------
 
@@ -803,6 +873,7 @@ string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")
 
 --------------------------------------------------------------------------------
 -- .RexxUnicode~stringUnescape
+-- Now implemented by the native method .RexxUnicodeServices~utf8StringUnescape
 --------------------------------------------------------------------------------
 
 .RexxUnicode~stringUnescape("\\")=            -- '\'

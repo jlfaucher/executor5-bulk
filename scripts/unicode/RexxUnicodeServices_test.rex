@@ -11,8 +11,9 @@ Native methods of RexxUnicodeServices
 
     MutableBuffer *utf8EncodeCodepoint(RexxInteger *rexxCodepoint, MutableBuffer *destination, VariableReference *refSizeB);
 
+    RexxObject *utf8StringEscape(RexxString *string, RexxString *escapeBy, MutableBuffer *destination);
     RexxInteger *utf8StringInfo(RexxString *string, VariableReference *refGraphemeCount, VariableReference *refCodepointCount, VariableReference *refErrorCount, RexxInteger *rexxStopAtFirstError);
-    /* Private */ RexxObject *utf8StringUnescape(RexxString *string, MutableBuffer *destination);
+    RexxObject *utf8StringUnescape(RexxString *string, MutableBuffer *destination); // PRIVATE
     RexxInteger *utf8StringWidth(RexxString *string, RexxInteger *indexB, RexxInteger *eastAsianContext);
 
     RexxString *utf8Transform(RexxObject **arguments, size_t argCount);
@@ -39,6 +40,10 @@ Native methods of RexxUnicodeServices
     RexxInteger *codepointToLower(RexxInteger *rexxCodepoint);
     RexxInteger *codepointToUpper(RexxInteger *rexxCodepoint);
     RexxInteger *codepointToTitle(RexxInteger *rexxCodepoint);
+
+    RexxObject *codepointPrintableString(RexxInteger *rexxCodepoint, MutableBuffer *destination);
+    RexxInteger *codepointIsPrintable(RexxInteger *rexxCodepoint);
+    RexxObject *codepointUnicodeEscapeNotation(RexxInteger *rexxCodepoint, MutableBuffer *destination);
 
     // Helper for diagnostics
     RexxObject *sizeofUnicodeWidthTables();

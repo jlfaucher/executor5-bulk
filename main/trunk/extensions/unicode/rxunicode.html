@@ -844,13 +844,68 @@ title="Unicode Character Database - Derivation of Indic_Conjunct_Break">https://
 <pre><code>.RexxUnicodeServices~codepointIsLower( codepoint )</code></pre>
 <p>Returns <code>.true</code> if the codepoint corresponds to a
 lowercase character and <code>.false</code> otherwise.</p>
+<p><a id="RexxUnicodeServices_codepointIsPrintable"></a></p>
+<h4 id="codepointisprintable">1.1.13.   codepointIsPrintable</h4>
+<pre><code>.RexxUnicodeServices~codepointIsPrintable( codepoint )</code></pre>
+<p>Returns <code>.true</code> if the codepoint is printable.</p>
+<p>Rules:</p>
+<ul>
+<li>Codepoints having a display width of 0 are considered
+non-printable.</li>
+<li><code>Mc</code>, <code>Me</code> and <code>Mn</code> codepoints are
+considered printable, even though they have a display width of 0,
+because some fonts provide visible glyphs for them.</li>
+<li>Unassigned (<code>Cn</code>) and private-use (<code>Co</code>)
+codepoints are considered non-printable, even though they have a display
+width of 1.</li>
+<li>Other codepoints are considered printable.</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIsPrintable</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">             </span><span class="rx-lncm">-- 0</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIsPrintable</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">65</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- 1</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIsPrintable</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 0</span></code>
+<code lineno="4">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- The special value -1 is not printable</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIsPrintable</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- 0</span></code>
+<code lineno="3">
+</code></pre>
+</div>
 <p><a id="codepointIsUpper"></a></p>
-<h4 id="codepointisupper">1.1.13.   codepointIsUpper</h4>
+<h4 id="codepointisupper">1.1.14.   codepointIsUpper</h4>
 <pre><code>.RexxUnicodeServices~codepointIsUpper( codepoint )</code></pre>
 <p>Returns <code>.true</code> if the codepoint corresponds to an
 uppercase character and <code>.false</code> otherwise.</p>
+<p><a id="RexxUnicodeServices_codepointPrintableString"></a></p>
+<h4
+id="codepointprintablestring">1.1.15.   codepointPrintableString</h4>
+<pre><code>.RexxUnicodeServices~codepointPrintableString( codepoint, buffer = .nil )</code></pre>
+<p>Returns a printable string representation for the given
+codepoint.</p>
+<p>Printable codepoints are returned as their UTF-8 character
+representation; non-printable codepoints are returned as a Unicode
+escape notation.</p>
+<p>If a buffer is passed as an argument, the resulting string is
+appended to the buffer, and the buffer is returned.</p>
+<p><strong>Examples:</strong></p>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '\u0000'</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">65</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- 'A'</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">  </span><span class="rx-lncm">-- '\uD800'</span></code>
+<code lineno="4">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Since the special value -1 is not printable, it is represented using Unicode escape notation.</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '\UFFFFFFFF'</span></code>
+<code lineno="3">
+</code></pre>
+</div>
 <p><a id="codepointToLower"></a></p>
-<h4 id="codepointtolower">1.1.14.   codepointToLower</h4>
+<h4 id="codepointtolower">1.1.16.   codepointToLower</h4>
 <pre><code>.RexxUnicodeServices~codepointToLower( codepoint )</code></pre>
 <p>Returns the codepoint of the corresponding lowercase character.<br />
 If <code>codepoint</code> has no lowercase mapping, returns
@@ -858,7 +913,7 @@ If <code>codepoint</code> has no lowercase mapping, returns
 <p>This method uses the simple case mappings defined in
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
 <p><a id="codepointToTitle"></a></p>
-<h4 id="codepointtotitle">1.1.15.   codepointToTitle</h4>
+<h4 id="codepointtotitle">1.1.17.   codepointToTitle</h4>
 <pre><code>.RexxUnicodeServices~codepointToTitle( codepoint )</code></pre>
 <p>Returns the codepoint of the corresponding titlecase character.<br />
 If <code>codepoint</code> has no titlecase mapping, returns
@@ -866,15 +921,53 @@ If <code>codepoint</code> has no titlecase mapping, returns
 <p>This method uses the simple case mappings defined in
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
 <p><a id="codepointToUpper"></a></p>
-<h4 id="codepointtoupper">1.1.16.   codepointToUpper</h4>
+<h4 id="codepointtoupper">1.1.18.   codepointToUpper</h4>
 <pre><code>.RexxUnicodeServices~codepointToUpper( codepoint )</code></pre>
 <p>Returns the codepoint of the corresponding uppercase character.<br />
 If <code>codepoint</code> has no uppercase mapping, returns
 <code>codepoint</code>.</p>
 <p>This method uses the simple case mappings defined in
 <code>UnicodeData.txt</code> and always returns a single codepoint.</p>
+<p><a id="codepointUnicodeEscapeNotation"></a></p>
+<h4
+id="codepointunicodeescapenotation">1.1.19.   codepointUnicodeEscapeNotation</h4>
+<pre><code>.RexxUnicodeServices~codepointUnicodeEscapeNotation( codepoint, buffer = .nil )</code></pre>
+<p>Returns the Unicode escape notation <code>\uXXXX</code> or
+<code>\UXXXXXXXX</code> for the given codepoint.</p>
+<p>If a buffer is passed as an argument, the resulting string is
+appended to the buffer, and the buffer is returned.</p>
+<p><strong>Examples:</strong></p>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUnicodeEscapeNotation</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '\uD800'</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUnicodeEscapeNotation</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">1F385</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- '\U0001F385'</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUnicodeEscapeNotation</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- '\UFFFFFFFF'</span></code>
+<code lineno="4">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUnicodeEscapeNotation</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- M'\uD800'</span></code>
+<code lineno="2">
+</code></pre>
+</div>
+<p><a id="RexxUnicode_codepointUTF8Encoding"></a></p>
+<h4 id="codepointutf8encoding">1.1.20.   codepointUTF8Encoding</h4>
+<pre><code>.RexxUnicodeServices~codepointUTF8Encoding( codepoint, buffer = .nil )</code></pre>
+<p>Returns the UTF-8 encoding for the given codepoint.</p>
+<p>If a buffer is passed as an argument, the resulting string is
+appended to the buffer, and the buffer is returned.</p>
+<p><strong>Examples:</strong></p>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUTF8Encoding</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- 00</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUTF8Encoding</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">65</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- 41</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUTF8Encoding</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2448</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- 'E29188'</span></code>
+<code lineno="4"></code>
+<code lineno="5"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUTF8Encoding</span><span class="rx-spe">(</span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">maxCodepoint</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- 'F48FBFBF'</span></code>
+<code lineno="6"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUTF8Encoding</span><span class="rx-spe">(</span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">maxCodepoint</span><span class="rx-ws"> </span><span class="rx-op">+</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">  </span><span class="rx-lncm">-- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).</span></code>
+<code lineno="7">
+</code></pre>
+</div>
 <p><a id="graphemeBreak"></a></p>
-<h4 id="graphemebreak">1.1.17.   graphemeBreak</h4>
+<h4 id="graphemebreak">1.1.21.   graphemeBreak</h4>
 <pre><code>.RexxUnicodeServices~graphemeBreak( codepoint1, codepoint2, &gt;refState )
 
 .RexxUnicodeServices~graphemeBreak(
@@ -900,7 +993,7 @@ title="Standard Annex #29 Unicode Text Segmentation - Grapheme Cluster Boundarie
 </code></pre>
 </div>
 <p><a id="graphemeBreakBackward"></a></p>
-<h4 id="graphemebreakbackward">1.1.18.   graphemeBreakBackward</h4>
+<h4 id="graphemebreakbackward">1.1.22.   graphemeBreakBackward</h4>
 <pre><code>.RexxUnicodeServices~graphemeBreakBackward( string, indexB, codepoint1, codepoint2 )
 
 .RexxUnicodeServices~graphemeBreakBackward(
@@ -1131,15 +1224,15 @@ stops at the previous block's terminator, so <code>M</code> blocks of
 length <code>k</code> cost <code>O(M·k)</code> = <code>O(n)</code>, not
 <code>O(n²)</code>.</p>
 <p><a id="RexxUnicodeServices_new"></a></p>
-<h4 id="new">1.1.19.   new</h4>
+<h4 id="new">1.1.23.   new</h4>
 <p>This method raises an error because <code>RexxUnicodeServices</code>
 has no instance.</p>
 <p><a id="systemIsLittleEndian"></a></p>
-<h4 id="systemislittleendian">1.1.20.   systemIsLittleEndian</h4>
+<h4 id="systemislittleendian">1.1.24.   systemIsLittleEndian</h4>
 <pre><code>.RexxUnicodeServices~systemIsLittleEndian</code></pre>
 <p>Returns <code>.true</code> if the system is little-endian.</p>
 <p><a id="unicodeVersion"></a></p>
-<h4 id="unicodeversion">1.1.21.   unicodeVersion</h4>
+<h4 id="unicodeversion">1.1.25.   unicodeVersion</h4>
 <pre><code>.RexxUnicodeServices~unicodeVersion</code></pre>
 <p>Returns the Unicode version supported by the <code>utf8proc</code>
 library.</p>
@@ -1150,7 +1243,7 @@ library.</p>
 </code></pre>
 </div>
 <p><a id="utf8DecodeCodepoint"></a></p>
-<h4 id="utf8decodecodepoint">1.1.22.   utf8DecodeCodepoint</h4>
+<h4 id="utf8decodecodepoint">1.1.26.   utf8DecodeCodepoint</h4>
 <pre><code>.RexxUnicodeServices~utf8DecodeCodepoint( string, indexB = 1, [&gt;refSizeB], [&gt;refErrorCode], [&gt;refErrorMsg] )
 
 .RexxUnicodeServices~utf8DecodeCodepoint(
@@ -1220,7 +1313,7 @@ detailed description of the error.</p>
 </div>
 <p><a id="utf8DecodePreviousCodepoint"></a></p>
 <h4
-id="utf8decodepreviouscodepoint">1.1.23.   utf8DecodePreviousCodepoint</h4>
+id="utf8decodepreviouscodepoint">1.1.27.   utf8DecodePreviousCodepoint</h4>
 <pre><code>.RexxUnicodeServices~utf8DecodePreviousCodepoint( string, indexB = string~length + 1, [&gt;refSizeB], [&gt;refErrorCode], [&gt;refErrorMsg] )
 
 
@@ -1341,7 +1434,7 @@ detailed description of the error.</p>
 </code></pre>
 </div>
 <p><a id="utf8EncodeCodepoint"></a></p>
-<h4 id="utf8encodecodepoint">1.1.24.   utf8EncodeCodepoint</h4>
+<h4 id="utf8encodecodepoint">1.1.28.   utf8EncodeCodepoint</h4>
 <pre><code>.RexxUnicodeServices~utf8EncodeCodepoint( codepoint, destination, [&gt;refSizeB] )
 
 .RexxUnicodeServices~utf8EncodeCodepoint(
@@ -1377,7 +1470,7 @@ byte sequence (0..4).</p>
 </code></pre>
 </div>
 <p><a id="utf8procVersion"></a></p>
-<h4 id="utf8procversion">1.1.25.   utf8procVersion</h4>
+<h4 id="utf8procversion">1.1.29.   utf8procVersion</h4>
 <pre><code>.RexxUnicodeServices~utf8procVersion</code></pre>
 <p>Returns the version of the <code>utf8proc</code> library.</p>
 <p><strong>Example:</strong></p>
@@ -1386,8 +1479,66 @@ byte sequence (0..4).</p>
 <code lineno="2">
 </code></pre>
 </div>
+<p><a id="RexxUnicodeServices_utf8StringEscape"></a></p>
+<h4 id="utf8stringescape">1.1.30.   utf8StringEscape</h4>
+<pre><code>.RexxUnicodeServices~utf8StringEscape( string, escapeBy = &quot;c&quot;, buffer = .nil )</code></pre>
+<p>Possible values for the <code>escapeBy</code> parameter are
+<code>"codepoint"</code> (default) and <code>"grapheme"</code>.<br />
+You only need to specify the first letter; any following characters are
+ignored.</p>
+<p>When <code>escapeBy</code> is <code>"codepoint"</code>, returns a
+string in which non-printable codepoints and invalid byte sequences are
+replaced with escape sequences.</p>
+<ul>
+<li>Invalid byte sequences are represented as escaped hexadecimal byte
+sequences: <code>\xXX</code> or <code>\x{XX..XX}</code>.</li>
+<li>Non-printable codepoints are represented using the standard escape
+sequences (<code>\a</code>, <code>\b</code>, <code>\t</code>,
+<code>\n</code>, <code>\v</code>, <code>\f</code>, <code>\r</code>) when
+applicable;<br />
+otherwise, Unicode escape notation (<code>\uXXXX</code> or
+<code>\UXXXXXXXX</code>) is used.</li>
+</ul>
+<p>When <code>escapeBy</code> is <code>"grapheme"</code>, returns a
+string in which invalid byte sequences are replaced with escape
+sequences.</p>
+<p>If a buffer is passed as an argument, the resulting string is
+appended to the buffer, and the buffer is returned.</p>
+<p><strong>Examples:</strong></p>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringEscape</span><span class="rx-spe">(</span><span class="rx-const rx-bif-func">xrange</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">00</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">FF</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&amp;''()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'</span></code>
+<code lineno="2"></code>
+<code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringEscape</span><span class="rx-spe">(</span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+10FFF</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- '\U00010FFF'</span></code>
+<code lineno="4">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">👨‍👩‍👧</span><span class="rx-str rx-cquo">"</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">F4 91</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringEscape</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '👨\u200D👩\u200D👧\xF4\x91'</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringEscape</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">g</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- '👨‍👩‍👧\xF4\x91'</span></code>
+<code lineno="4">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringEscape</span><span class="rx-spe">(</span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;lead surrogate-D800&gt;}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '\xED\xA0\x80'</span></code>
+<code lineno="2"><span class="rx-cm">/*</span></code>
+<code lineno="3"><span class="rx-cm">A lead surrogate is invalid in a UTF-8 string (would be valid in a WTF-8 string).</span></code>
+<code lineno="4"><span class="rx-cm">(&lt;?&gt; \x{EDA080} U+D800 Cs Surrogate "&lt;lead surrogate-D800&gt;")</span></code>
+<code lineno="5"><span class="rx-cm">A codepoint supplier returns 3 codepoints for U+D800:</span></code>
+<code lineno="6"><span class="rx-cm">    1 : 'U+FFFD'</span></code>
+<code lineno="7"><span class="rx-cm">    2 : 'U+FFFD'</span></code>
+<code lineno="8"><span class="rx-cm">    3 : 'U+FFFD'</span></code>
+<code lineno="9"><span class="rx-cm">Codepoint byte sequence as hexadecimal digits (option "h):</span></code>
+<code lineno="10"><span class="rx-cm">    1 : '\xED'</span></code>
+<code lineno="11"><span class="rx-cm">    2 : '\xA0'</span></code>
+<code lineno="12"><span class="rx-cm">    3 : '\x80'</span></code>
+<code lineno="13"><span class="rx-cm">Escaping U+D800 is '\xED\xA0\x80' because \x{EDA080} can't be UTF-8 decoded as U+D800.</span></code>
+<code lineno="14"><span class="rx-cm">*/</span></code>
+<code lineno="15">
+</code></pre>
+</div>
 <p><a id="utf8StringInfo"></a></p>
-<h4 id="utf8stringinfo">1.1.26.   utf8StringInfo</h4>
+<h4 id="utf8stringinfo">1.1.31.   utf8StringInfo</h4>
 <pre><code>.RexxUnicodeServices~utf8StringInfo( string, [&gt;refGraphemeCount], [&gt;refCodepointCount], [&gt;refErrorCount], stopAtFirstError = .false )
 
 .RexxUnicodeServices~utf8StringInfo(
@@ -1458,8 +1609,94 @@ error).</p>
 <code lineno="38">
 </code></pre>
 </div>
+<p><a id="RexxUnicodeServices_utf8StringUnescape"></a></p>
+<h4 id="utf8stringunescape">1.1.32.   utf8StringUnescape</h4>
+<pre><code>.RexxUnicodeServices~utf8StringUnescape( string, buffer = .nil )</code></pre>
+<p>Returns a string in which escape sequences are replaced with their
+corresponding values.</p>
+<p>If a buffer is passed as an argument, the resulting string is
+appended to the buffer, and the buffer is returned.</p>
+<p>Escape sequences are normally handled in string literals at parse
+time. This method handles them at run time instead.</p>
+<p><strong>Implementation note</strong></p>
+<p>This method is private because it must be called from the
+<code>RexxUnicode</code> class, which supports these messages sent by
+the native implementation:</p>
+<ul>
+<li><code>codepointFromName</code> (helper implemented by
+<code>RexxUnicode</code> to retrieve a Unicode character by name).</li>
+<li><code>ICU4ooRexxIsRegistered</code>.</li>
+</ul>
+<p><strong>Supported escape sequences</strong></p>
+<pre><code>\\                  &quot;\&quot;
+\&#39;                  single quote
+\&quot;                  double quote
+\0                  &quot;00&quot;x   NUL
+\a                  &quot;07&quot;x   audible bell (BEL)
+\b                  &quot;08&quot;x   backspace (BS)
+\f                  &quot;0C&quot;x   form feed (FF)
+\n                  &quot;0A&quot;x   line feed (LF)
+\r                  &quot;0D&quot;x   carriage return (CR)
+\t                  &quot;09&quot;x   horizontal tab (HT)
+\v                  &quot;0B&quot;x   vertical tab (VT)
+
+\N{Unicode name}    Character name in the Unicode database
+\u{X..X}            Unicode scalar value, 1 to 8 hex digits
+\uXXXX              Unicode scalar value, exactly 4 hex digits
+\UXXXXXXXX          Unicode scalar value, exactly 8 hex digits
+\x{X..X}            Arbitrary number of hex digits (whitespace allowed)
+\xXX                One byte, exactly 2 hex digits</code></pre>
+<p><strong>Examples</strong></p>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- '\'</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a\\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- 'a\'</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\\b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '\b'</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a\\b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- 'a\b'</span></code>
+<code lineno="5">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- M'\'</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a\\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- M'a\'</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\\b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- M'\b'</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a\\b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- M'a\b'</span></code>
+<code lineno="5">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\a</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 07</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 08</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\f</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '0C'</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\n</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '0A'</span></code>
+<code lineno="5"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\r</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '0D'</span></code>
+<code lineno="6"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\t</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 09</span></code>
+<code lineno="7"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\v</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '0B'</span></code>
+<code lineno="8">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{OCR DASH}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                  </span><span class="rx-lncm">-- '⑈'</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{MICR ON US SYMBOL}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- '⑈'</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;control-0000&gt;}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- '[00]'</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;lead surrogate-D800&gt;}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws"> </span><span class="rx-lncm">-- 'EDA080' (use ~c2x to not display an invalid byte sequence)</span></code>
+<code lineno="5">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- '𝓐B𝓒𝓓𝓔'</span></code>
+<code lineno="2">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Spaces between consecutive \u{...} sequences are significant.</span></code>
+<code lineno="2"><span class="rx-lncm">-- Spaces between consecutive U+... sequences are not significant.</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"> \u{0041} \u{0042} </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- ' A B '</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-ws">               </span><span class="rx-str rx-oquo">"</span><span class="rx-str">  U+0041   U+0042  </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 'AB'</span></code>
+<code lineno="5">
+</code></pre>
+</div>
 <p><a id="utf8StringWidth"></a></p>
-<h4 id="utf8stringwidth">1.1.27.   utf8StringWidth</h4>
+<h4 id="utf8stringwidth">1.1.33.   utf8StringWidth</h4>
 <pre><code>.RexxUnicodeServices~utf8StringWidth( string, indexB = string~length + 1, eastAsianContext = .false )
 
 .RexxUnicodeServices~utf8StringWidth(
@@ -1499,7 +1736,7 @@ title="Rust Crate unicode_width"><code>unicode_width</code></a>.</p>
 </code></pre>
 </div>
 <p><a id="utf8Transform"></a></p>
-<h4 id="utf8transform">1.1.28.   utf8Transform</h4>
+<h4 id="utf8transform">1.1.34.   utf8Transform</h4>
 <pre><code>.RexxUnicodeServices~utf8Transform( string, casefold = .false, lump= .false, nlf = 0, normalization = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false )
 
 .RexxUnicodeServices~utf8Transform(
@@ -1514,10 +1751,10 @@ title="Rust Crate unicode_width"><code>unicode_width</code></a>.</p>
     stripNA = .false        -- Strips unassigned codepoints
     )</code></pre>
 <p>Returns the transformed string.</p>
-<h5 id="casefold-argument">1.1.28.1.   'caseFold' argument</h5>
+<h5 id="casefold-argument">1.1.34.1.   'caseFold' argument</h5>
 <p>Performs unicode case folding, to be able to do a case-insensitive
 string comparison.</p>
-<h5 id="lump-argument">1.1.28.2.   'lump' argument</h5>
+<h5 id="lump-argument">1.1.34.2.   'lump' argument</h5>
 <p>Maps certain characters to a common representative (i.e., several
 distinct characters produce the same output character).<br />
 All the concerned characters become the same character, but still remain
@@ -1557,7 +1794,7 @@ U+005F  _   &lt;-- all connector characters (general category Pc),
 U+0060  `   &lt;-- modifier letter grave accent U+02CB
 U+007C  |   &lt;-- divides U+2223
 U+007E  ~   &lt;-- tilde operator U+223C</code></pre>
-<h5 id="nlf-argument">1.1.28.3.   'nlf' argument</h5>
+<h5 id="nlf-argument">1.1.34.3.   'nlf' argument</h5>
 <p><a
 href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213"
 title="Newline Guidelines">https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213</a></p>
@@ -1580,7 +1817,7 @@ converted to the Unicode Line Separator (LS) codepoint.</p>
 Converts LF, CRLF, CR and NEL into PS.<br />
 NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are
 converted to the Unicode Paragraph Separator (PS) codepoint.</p>
-<h5 id="normalization-argument">1.1.28.4.   'normalization'
+<h5 id="normalization-argument">1.1.34.4.   'normalization'
 argument</h5>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).</span></code>
@@ -1594,18 +1831,18 @@ argument</h5>
 </div>
 <p>If <code>normalization</code> is not <code>0</code>, apply the
 requested normalization.</p>
-<h5 id="stripcc-argument">1.1.28.5.   'stripCC' argument</h5>
+<h5 id="stripcc-argument">1.1.34.5.   'stripCC' argument</h5>
 <p>Strips and/or converts control characters.</p>
 <p>NLF-sequences are transformed into space, except if one of the
 NLF2LS/PS/LF options is given. HorizontalTab (HT) and FormFeed (FF) are
 treated as a NLF-sequence in this case.</p>
 <p>All other control characters are simply removed.</p>
-<h5 id="stripignorable-argument">1.1.28.6.   'stripIgnorable'
+<h5 id="stripignorable-argument">1.1.34.6.   'stripIgnorable'
 argument</h5>
 <p>Strips the characters whose property
 <code>Default_Ignorable_Code_Point</code> is true, such as
 <code>SOFT-HYPHEN</code> or <code>ZERO-WIDTH-SPACE</code>.</p>
-<h5 id="stripmark-argument">1.1.28.7.   'stripMark' argument</h5>
+<h5 id="stripmark-argument">1.1.34.7.   'stripMark' argument</h5>
 <p>Strips all character markings.</p>
 <p>This includes non-spacing, spacing and enclosing (i.e. accents)
 categories:</p>
@@ -1615,14 +1852,14 @@ categories:</p>
 <li><code>Mn</code> Nonspacing Mark</li>
 </ul>
 <p>This option works only with a normalization applied.</p>
-<h5 id="stripna-argument">1.1.28.8.   'stripNA' argument</h5>
+<h5 id="stripna-argument">1.1.34.8.   'stripNA' argument</h5>
 <p>Strips the characters whose category is <code>Cn</code>
 Unassigned.</p>
-<h5 id="examples-of-transformations">1.1.28.9.   Examples of
+<h5 id="examples-of-transformations">1.1.34.9.   Examples of
 transformations</h5>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;control-0007&gt;}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n</span><span class="rx-str rx-cquo">"</span></code>
-<code lineno="2"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">)</span></code>
+<code lineno="2"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">utf8StringUnescape</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">)</span></code>
 <code lineno="3"></code>
 <code lineno="4"><span class="rx-env">.RexxUnicodeCodepointSupplier</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="5"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
@@ -1835,10 +2072,16 @@ href="#codepointIgnorable"><code>codepointIgnorable</code></a></li>
 <li><a
 href="#codepointIndicConjunctBreak"><code>codepointIndicConjunctBreak</code></a></li>
 <li><a href="#codepointIsLower"><code>codepointIsLower</code></a></li>
+<li><a
+href="#RexxUnicodeServices_codepointIsPrintable">codepointIsPrintable</a></li>
 <li><a href="#codepointIsUpper"><code>codepointIsUpper</code></a></li>
+<li><a
+href="#RexxUnicodeServices_codepointPrintableString">codepointPrintableString</a></li>
 <li><a href="#codepointToLower"><code>codepointToLower</code></a></li>
 <li><a href="#codepointToTitle"><code>codepointToTitle</code></a></li>
 <li><a href="#codepointToUpper"><code>codepointToUpper</code></a></li>
+<li><a
+href="#RexxUnicodeServices_codepointUTF8Encoding">codepointUTF8Encoding</a></li>
 <li><a href="#graphemeBreak"><code>graphemeBreak</code></a></li>
 <li><a
 href="#graphemeBreakBackward"><code>graphemeBreakBackward</code></a></li>
@@ -1852,7 +2095,11 @@ href="#utf8DecodePreviousCodepoint"><code>utf8DecodePreviousCodepoint</code></a>
 <li><a
 href="#utf8EncodeCodepoint"><code>utf8EncodeCodepoint</code></a></li>
 <li><a href="#utf8procVersion"><code>utf8procVersion</code></a></li>
+<li><a
+href="#RexxUnicodeServices_utf8StringEscape">utf8StringEscape</a></li>
 <li><a href="#utf8StringInfo"><code>utf8StringInfo</code></a></li>
+<li><a
+href="#RexxUnicodeServices_utf8StringUnescape"><code>utf8StringUnescape</code></a></li>
 <li><a href="#utf8Transform"><code>utf8Transform</code></a></li>
 </ul>
 <h3 id="constants">2.3.   Constants</h3>
@@ -2100,101 +2347,8 @@ error.</p>
 <code lineno="3">
 </code></pre>
 </div>
-<p><a id="codepointIsPrintable"></a></p>
-<h4 id="codepointisprintable">2.4.9.   codepointIsPrintable</h4>
-<pre><code>.RexxUnicode~codepointIsPrintable( codepoint )</code></pre>
-<p>Returns <code>.true</code> if the codepoint is printable.</p>
-<p>Rules:</p>
-<ul>
-<li>Codepoints having a display width of 0 are considered
-non-printable.</li>
-<li><code>Mc</code>, <code>Me</code> and <code>Mn</code> codepoints are
-considered printable, even though they have a display width of 0,
-because some fonts provide visible glyphs for them.</li>
-<li>Unassigned (<code>Cn</code>) and private-use (<code>Co</code>)
-codepoints are considered non-printable, even though they have a display
-width of 1.</li>
-<li>Other codepoints are considered printable.</li>
-</ul>
-<p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIsPrintable</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">             </span><span class="rx-lncm">-- 0</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIsPrintable</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">65</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- 1</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIsPrintable</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 0</span></code>
-<code lineno="4">
-</code></pre>
-</div>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-lncm">-- The special value -1 is not printable</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIsPrintable</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- 0</span></code>
-<code lineno="3">
-</code></pre>
-</div>
-<p><a id="codepointPrintableString"></a></p>
-<h4
-id="codepointprintablestring">2.4.10.   codepointPrintableString</h4>
-<pre><code>.RexxUnicode~codepointPrintableString( codepoint, buffer = .nil )</code></pre>
-<p>Returns a printable string representation for the given
-codepoint.</p>
-<p>Printable codepoints are returned as their UTF-8 character
-representation; non-printable codepoints are returned as a Unicode
-escape notation.</p>
-<p>If a buffer is passed as an argument, the resulting string is
-appended to the buffer, and the buffer is returned.</p>
-<p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '\u0000'</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">65</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- 'A'</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">  </span><span class="rx-lncm">-- '\uD800'</span></code>
-<code lineno="4">
-</code></pre>
-</div>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-lncm">-- Since the special value -1 is not printable, it is represented using Unicode escape notation.</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '\UFFFFFFFF'</span></code>
-<code lineno="3">
-</code></pre>
-</div>
-<p><a id="codepointUnicodeEscapeNotation"></a></p>
-<h4
-id="codepointunicodeescapenotation">2.4.11.   codepointUnicodeEscapeNotation</h4>
-<pre><code>.RexxUnicode~codepointUnicodeEscapeNotation( codepoint, buffer = .nil )</code></pre>
-<p>Returns the Unicode escape notation <code>\uXXXX</code> or
-<code>\UXXXXXXXX</code> for the given codepoint.</p>
-<p>If a buffer is passed as an argument, the resulting string is
-appended to the buffer, and the buffer is returned.</p>
-<p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUnicodeEscapeNotation</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '\uD800'</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUnicodeEscapeNotation</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">1F385</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- '\U0001F385'</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUnicodeEscapeNotation</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- '\UFFFFFFFF'</span></code>
-<code lineno="4">
-</code></pre>
-</div>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUnicodeEscapeNotation</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- M'\uD800'</span></code>
-<code lineno="2">
-</code></pre>
-</div>
-<p><a id="codepointUTF8Encoding"></a></p>
-<h4 id="codepointutf8encoding">2.4.12.   codepointUTF8Encoding</h4>
-<pre><code>.RexxUnicode~codepointUTF8Encoding( codepoint, buffer = .nil )</code></pre>
-<p>Returns the UTF-8 encoding for the given codepoint.</p>
-<p>If a buffer is passed as an argument, the resulting string is
-appended to the buffer, and the buffer is returned.</p>
-<p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUTF8Encoding</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- 00</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUTF8Encoding</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">65</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- 41</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUTF8Encoding</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2448</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- 'E29188'</span></code>
-<code lineno="4"></code>
-<code lineno="5"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUTF8Encoding</span><span class="rx-spe">(</span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">maxCodepoint</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- 'F48FBFBF'</span></code>
-<code lineno="6"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUTF8Encoding</span><span class="rx-spe">(</span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">maxCodepoint</span><span class="rx-ws"> </span><span class="rx-op">+</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">  </span><span class="rx-lncm">-- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).</span></code>
-<code lineno="7">
-</code></pre>
-</div>
 <p><a id="D2U"></a></p>
-<h4 id="d2u">2.4.13.   D2U</h4>
+<h4 id="d2u">2.4.9.   D2U</h4>
 <pre><code>.RexxUnicode~D2U( codepoint, buffer = .nil )</code></pre>
 <p>Returns a <code>U+XXXX</code> string (4 to 6 hex digits) representing
 the codepoint passed as a decimal value.</p>
@@ -2219,7 +2373,7 @@ title="Typographic Conventions - Code Points">https://www.unicode.org/versions/U
 </code></pre>
 </div>
 <p><a id="h_UAX44_LM2"></a></p>
-<h4 id="h_uax44_lm2">2.4.14.   h_UAX44_LM2</h4>
+<h4 id="h_uax44_lm2">2.4.10.   h_UAX44_LM2</h4>
 <pre><code>.RexxUnicode~h_UAX44_LM2( name )</code></pre>
 <p><code>h_UAX44_LM2</code> delegates either to <code>ICU4ooRexx</code>,
 if registered, or to <code>.RexxUnicode~UAX44_LM2</code> (slower, but
@@ -2237,7 +2391,7 @@ always available).</p>
 </code></pre>
 </div>
 <p><a id="info"></a></p>
-<h4 id="info">2.4.15.   info</h4>
+<h4 id="info">2.4.11.   info</h4>
 <pre><code>.RexxUnicode~info</code></pre>
 <p>Returns a <code>StringTable</code> containing information about the
 Unicode environment.</p>
@@ -2256,65 +2410,14 @@ Unicode environment.</p>
 </code></pre>
 </div>
 <p><a id="stringEscape"></a></p>
-<h4 id="stringescape">2.4.16.   stringEscape</h4>
+<h4 id="stringescape">2.4.12.   stringEscape</h4>
 <pre><code>.RexxUnicode~stringEscape( string, escapeBy = &quot;c&quot;, buffer = .nil )</code></pre>
-<p>Possible values for the <code>escapeBy</code> parameter are
-<code>"codepoint"</code> (default) and <code>"grapheme"</code>.<br />
-You only need to specify the first letter; any following characters are
-ignored.</p>
-<p>When <code>escapeBy</code> is <code>"codepoint"</code>, returns a
-string in which non-printable codepoints and invalid byte sequences are
-replaced with escape sequences.</p>
-<ul>
-<li>Invalid byte sequences are represented as escaped hexadecimal byte
-sequences: <code>\xXX</code> or <code>\x{XX..XX}</code>.</li>
-<li>Non-printable codepoints are represented using the standard escape
-sequences (<code>\a</code>, <code>\b</code>, <code>\t</code>,
-<code>\n</code>, <code>\v</code>, <code>\f</code>, <code>\r</code>) when
-applicable;<br />
-otherwise, Unicode escape notation (<code>\uXXXX</code> or
-<code>\UXXXXXXXX</code>) is used.</li>
-</ul>
-<p>When <code>escapeBy</code> is <code>"grapheme"</code>, returns a
-string in which invalid byte sequences are replaced with escape
-sequences.</p>
-<p>If a buffer is passed as an argument, the resulting string is
-appended to the buffer, and the buffer is returned.</p>
-<p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringEscape</span><span class="rx-spe">(</span><span class="rx-const rx-bif-func">xrange</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">00</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">FF</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&amp;''()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'</span></code>
-<code lineno="2"></code>
-<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringEscape</span><span class="rx-spe">(</span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">U+10FFF</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- '\U00010FFF'</span></code>
-<code lineno="4">
-</code></pre>
-</div>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">👨‍👩‍👧</span><span class="rx-str rx-cquo">"</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">F4 91</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringEscape</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '👨\u200D👩\u200D👧\xF4\x91'</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringEscape</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">g</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- '👨‍👩‍👧\xF4\x91'</span></code>
-<code lineno="4">
-</code></pre>
-</div>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringEscape</span><span class="rx-spe">(</span><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;lead surrogate-D800&gt;}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '\xED\xA0\x80'</span></code>
-<code lineno="2"><span class="rx-cm">/*</span></code>
-<code lineno="3"><span class="rx-cm">A lead surrogate is invalid in a UTF-8 string (would be valid in a WTF-8 string).</span></code>
-<code lineno="4"><span class="rx-cm">(&lt;?&gt; \x{EDA080} U+D800 Cs Surrogate "&lt;lead surrogate-D800&gt;")</span></code>
-<code lineno="5"><span class="rx-cm">A codepoint supplier returns 3 codepoints for U+D800:</span></code>
-<code lineno="6"><span class="rx-cm">    1 : 'U+FFFD'</span></code>
-<code lineno="7"><span class="rx-cm">    2 : 'U+FFFD'</span></code>
-<code lineno="8"><span class="rx-cm">    3 : 'U+FFFD'</span></code>
-<code lineno="9"><span class="rx-cm">Codepoint byte sequence as hexadecimal digits (option "h):</span></code>
-<code lineno="10"><span class="rx-cm">    1 : '\xED'</span></code>
-<code lineno="11"><span class="rx-cm">    2 : '\xA0'</span></code>
-<code lineno="12"><span class="rx-cm">    3 : '\x80'</span></code>
-<code lineno="13"><span class="rx-cm">Escaping U+D800 is '\xED\xA0\x80' because \x{EDA080} can't be UTF-8 decoded as U+D800.</span></code>
-<code lineno="14"><span class="rx-cm">*/</span></code>
-<code lineno="15">
-</code></pre>
-</div>
+<p>This method forwards to the native method <a
+href="#RexxUnicodeServices_utf8StringEscape"><code>.RexxUnicodeServices~utf8StringEscape</code></a>.</p>
+<p>This method is kept for compatibility with older versions of
+<code>rxunicode.cls</code>.</p>
 <p><a id="RexxUnicode_stringInfo"></a></p>
-<h4 id="stringinfo">2.4.17.   stringInfo</h4>
+<h4 id="stringinfo">2.4.13.   stringInfo</h4>
 <pre><code>.RexxUnicode~stringInfo( string, [&gt;indexer] )</code></pre>
 <p>Returns a string providing information about the given UTF-8
 string:</p>
@@ -2355,7 +2458,7 @@ string:</p>
 </code></pre>
 </div>
 <p><a id="stringIsASCII"></a></p>
-<h4 id="stringisascii">2.4.18.   stringIsASCII</h4>
+<h4 id="stringisascii">2.4.14.   stringIsASCII</h4>
 <pre><code>.RexxUnicode~stringIsASCII( string )</code></pre>
 <p>Returns <code>.true</code> if the given string contains only
 characters &lt;= "7F"x</p>
@@ -2371,7 +2474,7 @@ characters &lt;= "7F"x</p>
 </code></pre>
 </div>
 <p><a id="stringToNFC"></a></p>
-<h4 id="stringtonfc">2.4.19.   stringToNFC</h4>
+<h4 id="stringtonfc">2.4.15.   stringToNFC</h4>
 <pre><code>.RexxUnicode~stringToNFC( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable = .false, stripMark = .false, stripNA = .false )</code></pre>
 <p>Returns the input string normalized to NFC, with optional
 transformations applied.</p>
@@ -2385,7 +2488,7 @@ method for a description of the optional transformation parameters.</p>
 </code></pre>
 </div>
 <p><a id="stringToNFD"></a></p>
-<h4 id="stringtonfd">2.4.20.   stringToNFD</h4>
+<h4 id="stringtonfd">2.4.16.   stringToNFD</h4>
 <pre><code>.RexxUnicode~stringToNFD( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable = .false, stripMark = .false, stripNA = .false )</code></pre>
 <p>Returns the input string normalized to NFD, with optional
 transformations applied.</p>
@@ -2399,7 +2502,7 @@ method for a description of the optional transformation parameters.</p>
 </code></pre>
 </div>
 <p><a id="stringToNFKC"></a></p>
-<h4 id="stringtonfkc">2.4.21.   stringToNFKC</h4>
+<h4 id="stringtonfkc">2.4.17.   stringToNFKC</h4>
 <pre><code>.RexxUnicode~stringToNFKC( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable = .false, stripMark = .false, stripNA = .false )</code></pre>
 <p>Returns the input string normalized to NFKC, with optional
 transformations applied.</p>
@@ -2413,7 +2516,7 @@ method for a description of the optional transformation parameters.</p>
 </code></pre>
 </div>
 <p><a id="stringToNFKC_CF"></a></p>
-<h4 id="stringtonfkc_cf">2.4.22.   stringToNFKC_CF</h4>
+<h4 id="stringtonfkc_cf">2.4.18.   stringToNFKC_CF</h4>
 <pre><code>.RexxUnicode~stringToNFKC_CF( string, lump= .false, nlf = 0, stripCC = .false, stripMark = .false, stripNA = .false )</code></pre>
 <p>Returns the input string normalized to NFKC_CF, with optional
 transformations applied.</p>
@@ -2442,7 +2545,7 @@ method for a description of the optional transformation parameters.</p>
 </code></pre>
 </div>
 <p><a id="stringToNFKD"></a></p>
-<h4 id="stringtonfkd">2.4.23.   stringToNFKD</h4>
+<h4 id="stringtonfkd">2.4.19.   stringToNFKD</h4>
 <pre><code>.RexxUnicode~stringToNFKD( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false )</code></pre>
 <p>Returns the input string normalized to NFKD, with optional
 transformations applied.</p>
@@ -2455,85 +2558,15 @@ method for a description of the optional transformation parameters.</p>
 <code lineno="3">
 </code></pre>
 </div>
-<p><a id="stringUnescape"></a></p>
-<h4 id="stringunescape">2.4.24.   stringUnescape</h4>
+<p><a id="RexxUnicode_stringUnescape"></a></p>
+<h4 id="stringunescape">2.4.20.   stringUnescape</h4>
 <pre><code>.RexxUnicode~stringUnescape( string, buffer = .nil )</code></pre>
-<p>Returns a string in which escape sequences are replaced with their
-corresponding values.</p>
-<p>If a buffer is passed as an argument, the resulting string is
-appended to the buffer, and the buffer is returned.</p>
-<p>Escape sequences are normally handled in string literals at parse
-time. This method handles them at run time instead.</p>
-<p><strong>Supported escape sequences</strong></p>
-<pre><code>\\                  &quot;\&quot;
-\&#39;                  single quote
-\&quot;                  double quote
-\0                  &quot;00&quot;x   NUL
-\a                  &quot;07&quot;x   audible bell (BEL)
-\b                  &quot;08&quot;x   backspace (BS)
-\f                  &quot;0C&quot;x   form feed (FF)
-\n                  &quot;0A&quot;x   line feed (LF)
-\r                  &quot;0D&quot;x   carriage return (CR)
-\t                  &quot;09&quot;x   horizontal tab (HT)
-\v                  &quot;0B&quot;x   vertical tab (VT)
-
-\N{Unicode name}    Character name in the Unicode database
-\u{X..X}            Unicode scalar value, 1 to 8 hex digits
-\uXXXX              Unicode scalar value, exactly 4 hex digits
-\UXXXXXXXX          Unicode scalar value, exactly 8 hex digits
-\x{X..X}            Arbitrary number of hex digits (whitespace allowed)
-\xXX                One byte, exactly 2 hex digits</code></pre>
-<p><strong>Examples</strong></p>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- '\'</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a\\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- 'a\'</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\\b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '\b'</span></code>
-<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a\\b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- 'a\b'</span></code>
-<code lineno="5">
-</code></pre>
-</div>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- M'\'</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a\\</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- M'a\'</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\\b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- M'\b'</span></code>
-<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a\\b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-env">.MutableBuffer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- M'a\b'</span></code>
-<code lineno="5">
-</code></pre>
-</div>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\a</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 07</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 08</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\f</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '0C'</span></code>
-<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\n</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '0A'</span></code>
-<code lineno="5"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\r</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '0D'</span></code>
-<code lineno="6"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\t</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 09</span></code>
-<code lineno="7"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\v</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '0B'</span></code>
-<code lineno="8">
-</code></pre>
-</div>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{OCR DASH}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">                  </span><span class="rx-lncm">-- '⑈'</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{MICR ON US SYMBOL}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- '⑈'</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;control-0000&gt;}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- '[00]'</span></code>
-<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;lead surrogate-D800&gt;}</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws"> </span><span class="rx-lncm">-- 'EDA080' (use ~c2x to not display an invalid byte sequence)</span></code>
-<code lineno="5">
-</code></pre>
-</div>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- '𝓐B𝓒𝓓𝓔'</span></code>
-<code lineno="2">
-</code></pre>
-</div>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-lncm">-- Spaces between consecutive \u{...} sequences are significant.</span></code>
-<code lineno="2"><span class="rx-lncm">-- Spaces between consecutive U+... sequences are not significant.</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringUnescape</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"> \u{0041} \u{0042} </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- ' A B '</span></code>
-<code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">U2C</span><span class="rx-spe">(</span><span class="rx-ws">           </span><span class="rx-str rx-oquo">"</span><span class="rx-str">  U+0041   U+0042  </span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 'AB'</span></code>
-<code lineno="5">
-</code></pre>
-</div>
+<p>This method forwards to the private native method <a
+href="#RexxUnicodeServices_utf8StringUnescape"><code>.RexxUnicodeServices~utf8StringUnescape</code></a>.</p>
+<p>This method is kept for compatibility with older versions of
+<code>rxunicode.cls</code>.</p>
 <p><a id="U2C"></a></p>
-<h4 id="u2c">2.4.25.   U2C</h4>
+<h4 id="u2c">2.4.21.   U2C</h4>
 <pre><code>.RexxUnicode~U2C( UPlusCodepoints, buffer = .nil )</code></pre>
 <p>Encodes an ASCII string of the form
 <code>"U+XXXX.. U+XXXX.. ..."</code> into a UTF-8 string.</p>
@@ -2575,7 +2608,7 @@ discarded.</p>
 </code></pre>
 </div>
 <p><a id="U2D"></a></p>
-<h4 id="u2d">2.4.26.   U2D</h4>
+<h4 id="u2d">2.4.22.   U2D</h4>
 <pre><code>.RexxUnicode~U2D( UPlusCodepoint, start = 1, raiseError =.false, [&gt;refLength] )</code></pre>
 <p>Converts <code>"U+XXXX.."</code> to a decimal value.</p>
 <p>If <code>refLength</code> is provided by the caller, extra characters
@@ -2599,7 +2632,7 @@ Otherwise, returns -1 or, if requested, raises an error.</p>
 </code></pre>
 </div>
 <p><a id="UAX44_LM2"></a></p>
-<h4 id="uax44_lm2">2.4.27.   UAX44_LM2</h4>
+<h4 id="uax44_lm2">2.4.23.   UAX44_LM2</h4>
 <pre><code>.RexxUnicode~UAX44_LM2( string )</code></pre>
 <p>Returns a string ready for comparison using the <a
 href="https://unicode.org/reports/tr44/#UAX44-LM2"
@@ -2619,7 +2652,7 @@ the hyphen in <code>U+1180</code> HANGUL JUNGSEONG O-E are removed.</p>
 </code></pre>
 </div>
 <p><a id="UAX44_LM3"></a></p>
-<h4 id="uax44_lm3">2.4.28.   UAX44_LM3</h4>
+<h4 id="uax44_lm3">2.4.24.   UAX44_LM3</h4>
 <pre><code>.RexxUnicode~UAX44_LM3( string )</code></pre>
 <p>Returns a string ready for comparison using the <a
 href="https://unicode.org/reports/tr44/#UAX44-LM3"
@@ -2640,6 +2673,11 @@ prefix string "is" are removed.</p>
 <code lineno="3">
 </code></pre>
 </div>
+<p><a id="RexxUnicode_utf8StringUnescape"></a></p>
+<h4 id="utf8stringunescape-1">2.4.25.   utf8StringUnescape</h4>
+<pre><code>.RexxUnicode~utf8StringUnescape( string, buffer = .nil )</code></pre>
+<p>This method forwards to the private native method <a
+href="#RexxUnicodeServices_utf8StringUnescape"><code>.RexxUnicodeServices~utf8StringUnescape</code></a>.</p>
 <h3 id="instance-methods-1">2.5.   Instance methods</h3>
 <p>The <code>RexxUnicode</code> class defines no instance methods of its
 own.</p>

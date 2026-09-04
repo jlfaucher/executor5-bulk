@@ -58,8 +58,9 @@ Native methods of RexxUnicodeServices
 
     MutableBuffer *utf8EncodeCodepoint(RexxInteger *rexxCodepoint, MutableBuffer *destination, VariableReference *refSizeB);
 
+    RexxObject *utf8StringEscape(RexxString *string, RexxString *escapeBy, MutableBuffer *destination);
     RexxInteger *utf8StringInfo(RexxString *string, VariableReference *refGraphemeCount, VariableReference *refCodepointCount, VariableReference *refErrorCount, RexxInteger *rexxStopAtFirstError);
-    /* Private */ RexxObject *utf8StringUnescape(RexxString *string, MutableBuffer *destination);
+    RexxObject *utf8StringUnescape(RexxString *string, MutableBuffer *destination); // PRIVATE
     RexxInteger *utf8StringWidth(RexxString *string, RexxInteger *indexB, RexxInteger *eastAsianContext);
 
     RexxString *utf8Transform(RexxObject **arguments, size_t argCount);
@@ -86,6 +87,10 @@ Native methods of RexxUnicodeServices
     RexxInteger *codepointToLower(RexxInteger *rexxCodepoint);
     RexxInteger *codepointToUpper(RexxInteger *rexxCodepoint);
     RexxInteger *codepointToTitle(RexxInteger *rexxCodepoint);
+
+    RexxObject *codepointPrintableString(RexxInteger *rexxCodepoint, MutableBuffer *destination);
+    RexxInteger *codepointIsPrintable(RexxInteger *rexxCodepoint);
+    RexxObject *codepointUnicodeEscapeNotation(RexxInteger *rexxCodepoint, MutableBuffer *destination);
 
     // Helper for diagnostics
     RexxObject *sizeofUnicodeWidthTables();
@@ -214,7 +219,8 @@ Additional codepoint services
     return buffer~string
 
 
-::method codepointUnicodeEscapeNotation class
+-- Will be removed after validation of the native method .RexxUnicodeServices~codepointUnicodeEscapeNotation.
+::method codepointUnicodeEscapeNotationRexx class
     use strict arg codepoint, buffer=.nil
     self~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
     if .nil == buffer then do
@@ -228,7 +234,8 @@ Additional codepoint services
     return buffer
 
 
-::method codepointIsPrintable class
+-- Will be removed after validation of the native method .RexxUnicodeServices~codepointIsPrintable.
+::method codepointIsPrintableRexx class
     use strict arg codepoint
     self~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
 
@@ -321,12 +328,13 @@ Additional codepoint services
     return .true
 
 
+-- Will be removed after validation of the native method .RexxUnicodeServices~codepointPrintableString.
 /*
 Returns a printable string representation of this codepoint.
 Printable codepoints are returned as their UTF-8 character representation;
 non-printable codepoints are returned as a Unicode escape notation.
 */
-::method codepointPrintableString class
+::method codepointPrintableStringRexx class
     use strict arg codepoint, buffer=.nil
     self~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
     returnBuffer = .nil <> buffer
@@ -722,7 +730,20 @@ How other languages are supporting escape characters for Unicode:
 
 -- Escape characters are normally handled in string literals at parse time.
 -- This method handles them at run time instead.
--- Will be removed after validation of utf8StringUnescape
+-- Keep this PUBLIC method!
+-- It calls the PRIVATE method .RexxUnicodeServices~utf8StringUnescape from the right context.
+::method utf8StringUnescape class
+    forward class (super) -- inherited private native method
+
+
+-- Escape characters are normally handled in string literals at parse time.
+-- This method handles them at run time instead.
+-- This method is kept for compatibility with older versions of `rxunicode.cls`.
+::method stringUnescape class
+    forward class (super) message "utf8StringUnescape" -- inherited private native method
+
+
+-- Will be removed after validation of the native method utf8StringUnescape.
 ::method stringUnescapeRexx class
     use strict arg string, buffer=.nil
     string = requestBaseString(string, "string")
@@ -890,11 +911,11 @@ How other languages are supporting escape characters for Unicode:
     encoding_1_4_hexdigits_error:       raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character || hexdigits "at position" slashPos)
 
 
-::method stringUnescape class
-    forward message "utf8StringUnescape" -- inherited private method
-
-
 ::method stringEscape class
+    forward message "utf8StringEscape" -- inherited native method
+
+
+::method stringEscapeRexx class
     use strict arg string, escapeBy="c", buffer=.nil
     string = requestBaseString(string, "string")
 

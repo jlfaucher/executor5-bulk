@@ -198,6 +198,208 @@ static inline int formatString(char *buffer, size_t size, const char *format, ..
 
 /******************************************************************************/
 /*                                                                            */
+/* Codepoint Helpers                                                          */
+/*                                                                            */
+/******************************************************************************/
+
+static const char HEX_DIGITS[] = "0123456789ABCDEF";
+
+/*
+ * codepoint2hex (c2x)
+ * This function is used to convert a codepoint UTF-8 byte sequence,
+ * which is at most 4 bytes.
+ * Appends the hex representation of `length` bytes from `bytes` to `buffer`,
+ * two hex digits per byte, uppercase, no separators.
+ * length is <= 4.
+ *
+ * Returns the number of hex digits appended (always 2 * length).
+ */
+static inline size_t codepoint2hex(const utf8proc_uint8_t *bytes, size_t length, MutableBuffer *buffer)
+{
+    const size_t maxLength = 4;
+    char buf[2 * maxLength];
+    if (length > maxLength)
+    {
+        Protected<RexxString> rexxArgName = new_string("'length' of codepoint2hex");
+        Protected<RexxInteger> rexxMaxLength = new_integer(maxLength);
+        Protected<RexxInteger> rexxLength = new_integer(length);
+        reportException(Error_Invalid_argument_toobig, rexxArgName, rexxMaxLength, rexxLength);
+        return 0;
+    }
+    for (size_t i = 0; i < length; i++)
+    {
+        unsigned char b = (unsigned char)bytes[i];
+        buf[2 * i] = HEX_DIGITS[(b >> 4) & 0x0F];
+        buf[2 * i + 1] = HEX_DIGITS[b & 0x0F];
+    }
+    buffer->append(buf, 2 * length);
+    return 2 * length;
+}
+
+
+/*
+ * codepoint2hex (d2x)
+ * Appends the hexadecimal representation of `codepoint` to `buffer`,
+ * as the rightmost `n` hex digits of its 32-bit two's-complement form
+ * (i.e. truncated on the left if `n` is small, sign-extended via the
+ * natural two's-complement bits if `n` is larger).
+ *
+ * `n` is either 4 or 8. Any other value raises an error.
+ *
+ * Returns the number of hex digits appended.
+ */
+static inline size_t codepoint2hex(utf8proc_int32_t codepoint, size_t n, MutableBuffer *buffer)
+{
+    uint32_t value = (uint32_t)codepoint;
+    char digits[8];
+
+    if (n == 4)
+    {
+        digits[0] = HEX_DIGITS[(value >> 12) & 0xF];
+        digits[1] = HEX_DIGITS[(value >>  8) & 0xF];
+        digits[2] = HEX_DIGITS[(value >>  4) & 0xF];
+        digits[3] = HEX_DIGITS[value & 0xF];
+
+        buffer->append(digits, 4);
+        return 4;
+    }
+
+    if (n == 8)
+    {
+        digits[0] = HEX_DIGITS[(value >> 28) & 0xF];
+        digits[1] = HEX_DIGITS[(value >> 24) & 0xF];
+        digits[2] = HEX_DIGITS[(value >> 20) & 0xF];
+        digits[3] = HEX_DIGITS[(value >> 16) & 0xF];
+        digits[4] = HEX_DIGITS[(value >> 12) & 0xF];
+        digits[5] = HEX_DIGITS[(value >>  8) & 0xF];
+        digits[6] = HEX_DIGITS[(value >>  4) & 0xF];
+        digits[7] = HEX_DIGITS[value & 0xF];
+
+        buffer->append(digits, 8);
+        return 8;
+    }
+
+    Protected<RexxString> rexxArgName = new_string("'n' of codepoint2hex");
+    Protected<RexxString> rexxAllowedValues = new_string("4 or 8");
+    Protected<RexxInteger> rexxValue = new_integer(n);
+    reportException(Error_Invalid_argument_list, rexxArgName, rexxAllowedValues, rexxValue);
+    return 0;
+}
+
+
+/**
+ * codepointUnicodeEscapeNotation
+ * Appends the Unicode escape notation of `codepoint` to `buffer`:
+ * either \uXXXX or \UXXXXXXXX.
+ * `codepoint` can be negative.
+ * The special value -1 is represented by \UFFFFFFFF.
+ *
+ * Returns the number of characters appended.
+ */
+static inline size_t codepointUnicodeEscapeNotation(utf8proc_int32_t codepoint, MutableBuffer *buffer)
+{
+    if (codepoint < -0xFFFF)
+    {
+        buffer->append("\\U");
+        codepoint2hex(codepoint, 8, buffer);
+        return 10;
+    }
+    else if (codepoint < -1)
+    {
+        buffer->append("\\u");
+        codepoint2hex(codepoint, 4, buffer);
+        return 6;
+    }
+    else if (codepoint == -1)
+    {
+        // Special value used in case of error
+        buffer->append("\\UFFFFFFFF");
+        return 10;
+    }
+    else if (codepoint <= 0xFFFF)
+    {
+        buffer->append("\\u");
+        codepoint2hex(codepoint, 4, buffer);
+        return 6;
+    }
+    else
+    {
+        buffer->append("\\U");
+        codepoint2hex(codepoint, 8, buffer);
+        return 10;
+    }
+}
+
+
+/**
+ * Returns true if the codepoint is printable.
+ *
+ * Categories having codepoints of width 0 that are considered not printable:
+ *     Cc  Control
+ *     Cf  Format
+ *     Cs  Surrogate
+ *     Zl  Line_Separator          (to avoid line breaks in single-line output)
+ *     Zp  Paragraph_Separator     (to avoid line breaks in single-line output)
+ *
+ * Categories containing codepoints of width 0 that are nevertheless considered
+ * printable because some fonts provide visible glyphs for them:
+ *     Mc  Spacing_Mark
+ *     Me  Enclosing_Mark
+ *     Mn  Nonspacing_Mark
+ */
+static inline bool codepointIsPrintable(utf8proc_int32_t codepoint)
+{
+    if (codepoint < 0) return false;
+    const utf8proc_property_t *property = utf8proc_get_property(codepoint);
+
+    // Mc, Me and Mn codepoints are considered printable,
+    // even though they have a display width of 0.
+    // Some fonts provide visible glyphs for them.
+    utf8proc_propval_t category = property->category;
+    if (category == UTF8PROC_CATEGORY_MC) return true;
+    if (category == UTF8PROC_CATEGORY_ME) return true;
+    if (category == UTF8PROC_CATEGORY_MN) return true;
+
+    // Codepoints having a display width of 0 are considered non-printable
+    if (property->charwidth == 0) return false;
+
+    // Unassigned (Cn) and private-use (Co) codepoints are considered non-printable,
+    // even though they have a display width of 1.
+    if (category == UTF8PROC_CATEGORY_CN) return false;
+    if (category == UTF8PROC_CATEGORY_CO) return false;
+
+    // Other codepoints are considered printable.
+    return true;
+}
+
+
+/**
+ * Appends a printable string representation of this codepoint to `buffer`.
+ * Printable codepoints are appended as their UTF-8 representation;
+ * non-printable codepoints are appended as a Unicode escape sequence.
+ *
+ * Returns the number of characters appended.
+*/
+static inline size_t codepointPrintableString(utf8proc_int32_t codepoint, MutableBuffer *buffer)
+{
+    size_t size = 0;
+    if (codepointIsPrintable(codepoint))
+    {
+        char buf[4];
+        size = utf8proc_encode_char(codepoint, (utf8proc_uint8_t *)buf);
+        buffer->append(buf, size);
+    }
+    else
+    {
+        // I think it's better to use the \u or \U notation, instead of the \x{ notation
+        size = codepointUnicodeEscapeNotation(codepoint, buffer);
+    }
+    return size;
+}
+
+
+/******************************************************************************/
+/*                                                                            */
 /* Optimized x2d x2c Helpers                                                  */
 /*                                                                            */
 /******************************************************************************/
@@ -236,7 +438,7 @@ static inline utf8proc_int32_t hex2int(const char *firstHexDigit, size_t length,
     return value;
 }
 
-// x2x
+// x2c
 // Whitespaces may separate hex digits into groups.
 // Only the first group may have an odd number of digits; every other
 // group must have an even number of digits. No leading/trailing blank.
@@ -308,7 +510,7 @@ static inline bool hex2bytes(const char *firstHexDigit, size_t length, MutableBu
 
 /******************************************************************************/
 /*                                                                            */
-/* ooRexx Helpers                                                             */
+/* ooRexx Helpers for arguments                                               */
 /*                                                                            */
 /******************************************************************************/
 
@@ -368,6 +570,36 @@ static inline void requiredBaseString(RexxString *string, const char *argumentNa
     errmsg = errmsg->concatWithCstring(" class: expected String, found ");
     errmsg = errmsg->concat(stringClass->getId());
     reportException(Error_Invalid_argument_user_defined, errmsg);
+}
+
+
+/*
+Returns the integer value of rexxCodepoint.
+The range U+0000..U+10FFFF is allowed.
+The range U+D800..U+DFFF is allowed (surrogates).
+If minusOneAllowed is true then -1 is allowed (special value used in case of error).
+
+Precondition: rexxCodepoint is not NULL
+*/
+static inline utf8proc_int32_t getCodepoint(RexxInteger *rexxCodepoint, bool checkRange=true, bool minusOneAllowed=false, const char *argName="Code point")
+{
+    RexxInteger *integer = rexxCodepoint->requestInteger();
+    if (integer != TheNilObject)
+    {
+        wholenumber_t value = integer->getValue();
+        if (!checkRange) return (utf8proc_int32_t)value;
+        if (value == -1 && minusOneAllowed) return (utf8proc_int32_t)value;
+        if (0 <= value && value <= 0x10FFFF) return (utf8proc_int32_t)value;
+    }
+
+    Protected<MutableBuffer> errorMessage = new MutableBuffer;
+    errorMessage->append(argName);
+    errorMessage->append(" must be in the range 0 to 1114111 (U+10FFFF); found ");
+    errorMessage->append('"');
+    errorMessage->append(rexxCodepoint->makeString());
+    errorMessage->append('"');
+    reportException(Error_Invalid_argument_user_defined, errorMessage);
+    return -1;
 }
 
 
@@ -1662,7 +1894,7 @@ MutableBuffer *RexxUnicodeServicesClass::utf8EncodeCodepoint(RexxInteger *rexxCo
 {
     // Check arguments
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false); // yes, no range checking, utf8proc_encode_char will return size == 0 if codepoint is invalid
     classArgument(destination, TheMutableBufferClass, "destination");
     if (refSizeB != OREF_NULL) classArgument(refSizeB, TheVariableReferenceClass, "refSizeB");
 
@@ -1682,6 +1914,392 @@ MutableBuffer *RexxUnicodeServicesClass::utf8EncodeCodepoint(RexxInteger *rexxCo
     return destination;
 }
 
+
+RexxObject *RexxUnicodeServicesClass::codepointUnicodeEscapeNotation(RexxInteger *rexxCodepoint, MutableBuffer *destination)
+{
+    requiredArgument(rexxCodepoint, "codepoint");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
+    if (destination == TheNilObject) destination = OREF_NULL;
+    if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
+
+    Protected<MutableBuffer> buffer = destination;
+    if (buffer == OREF_NULL) buffer = new MutableBuffer();
+
+    ::codepointUnicodeEscapeNotation(codepoint, buffer);
+
+    if (destination != OREF_NULL) return destination; // The user passed a buffer, returns this buffer
+    return buffer->makeString(); // The user did not pass a buffer, returns a string
+}
+
+
+RexxInteger *RexxUnicodeServicesClass::codepointIsPrintable(RexxInteger *rexxCodepoint)
+{
+    requiredArgument(rexxCodepoint, "codepoint");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
+
+    bool printable = ::codepointIsPrintable(codepoint);
+
+    return printable ? TheTrueObject : TheFalseObject;
+
+}
+
+
+RexxObject *RexxUnicodeServicesClass::codepointPrintableString(RexxInteger *rexxCodepoint, MutableBuffer *destination)
+{
+    requiredArgument(rexxCodepoint, "codepoint");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
+    if (destination == TheNilObject) destination = OREF_NULL;
+    if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
+
+    Protected<MutableBuffer> buffer = destination;
+    if (buffer == OREF_NULL) buffer = new MutableBuffer();
+
+    ::codepointPrintableString(codepoint, buffer);
+
+    if (destination != OREF_NULL) return destination; // The user passed a buffer, returns this buffer
+    return buffer->makeString(); // The user did not pass a buffer, returns a string
+}
+
+
+#define USE_GENERIC_ITERATORS 1
+
+#if USE_GENERIC_ITERATORS == 0
+static inline const utf8proc_uint8_t *utf8StringEscapeCodepointIterator(const utf8proc_uint8_t *str, utf8proc_ssize_t length, size_t &codepointCount, size_t &errorCount, bool stopAtFirstError, MutableBuffer *buffer)
+{
+    codepointCount = 0;
+    errorCount = 0;
+
+    const utf8proc_uint8_t *firstInvalidByteSequence = NULL;
+
+    for (;;)
+    {
+        utf8proc_int32_t codepoint;
+        utf8proc_ssize_t sizeB = utf8proc_iterate_extended(str, length, &codepoint);
+        if (sizeB == 0) break;
+        if (sizeB < 0)
+        {
+            // Here, codepoint == -1
+            errorCount += 1;
+
+            if (firstInvalidByteSequence == NULL) firstInvalidByteSequence = str;
+            if (stopAtFirstError) break;
+
+            codepointCount += 1;
+            sizeB = -sizeB;
+            // action(true, str, sizeB, codepoint);
+            if (sizeB > 1) buffer->append("\\x{");
+            else buffer->append("\\x");
+            codepoint2hex(str, sizeB, buffer);
+            if (sizeB > 1) buffer->append("}");
+        }
+        else
+        {
+            codepointCount += 1;
+            // action(false, str, sizeB, codepoint);
+            switch (codepoint)
+            {
+                case 7:  buffer->append("\\a"); break;
+                case 8:  buffer->append("\\b"); break;
+                case 9:  buffer->append("\\t"); break;
+                case 10: buffer->append("\\n"); break;
+                case 11: buffer->append("\\v"); break;
+                case 12: buffer->append("\\f"); break;
+                case 13: buffer->append("\\r"); break;
+                case 92: buffer->append("\\\\"); break;
+                default: codepointPrintableString(codepoint, buffer);
+            }
+        }
+        str += sizeB;
+        length -= sizeB;
+    }
+
+    return firstInvalidByteSequence;
+}
+
+
+static inline const utf8proc_uint8_t *utf8StringEscapeGraphemeIterator(const utf8proc_uint8_t *str, utf8proc_ssize_t length, size_t &graphemeCount, size_t &codepointCount, size_t &errorCount, bool stopAtFirstError, MutableBuffer *buffer)
+{
+    graphemeCount = 0;
+    codepointCount = 0;
+    errorCount = 0;
+
+    utf8proc_int32_t previousCodepoint = -1;
+    const utf8proc_property_t *previousCodepointProperty = NULL;
+
+    utf8proc_int32_t codepoint = -1;
+    const utf8proc_property_t *codepointProperty = NULL;
+
+    utf8proc_int32_t graphemeBreakState = 0;
+
+    const utf8proc_uint8_t *firstInvalidByteSequence = NULL;
+
+    // Start of the currently pending (not yet flushed) grapheme.
+    const utf8proc_uint8_t *gStart = str;
+
+    for (;;)
+    {
+        utf8proc_ssize_t sizeB = utf8proc_iterate_extended(str, length, &codepoint);
+        if (sizeB == 0) break;
+        if (sizeB < 0)
+        {
+            // Here, codepoint == -1, so previousCodepoint will become -1
+            codepointProperty = NULL;
+            errorCount += 1;
+
+            if (firstInvalidByteSequence == NULL) firstInvalidByteSequence = str;
+
+            if (stopAtFirstError)
+            {
+                // Flush whatever normal grapheme was already pending
+                // (its start was already counted in a prior iteration);
+                // the error itself was never counted, so don't flush it.
+
+                // if (str != gStart) action(false, gStart, str - gStart);
+                if (str != gStart) buffer->append((const char *)gStart, str - gStart);
+                break;
+            }
+
+            // Close whatever grapheme was pending...
+            // if (str != gStart) action(false, gStart, str - gStart);
+            if (str != gStart) buffer->append((const char *)gStart, str - gStart);
+
+            codepointCount += 1;
+            graphemeCount += 1;
+            graphemeBreakState = 0;
+            sizeB = -sizeB;
+
+            // ...then the error itself is always an isolated, single-item grapheme: flush it immediately.
+            // action(true, str, sizeB);
+            if (sizeB > 1) buffer->append("\\x{");
+            else buffer->append("\\x");
+            codepoint2hex(str, sizeB, buffer);
+            if (sizeB > 1) buffer->append("}");
+
+            gStart = str + sizeB;
+        }
+        else
+        {
+            // optim 2: if codepoint == previousCodepoint then no need to retrieve the property record of codepoint.
+            if (codepoint != previousCodepoint) codepointProperty = utf8proc_get_property(codepoint); // must get it now, will be assigned to previousCodepointProperty
+
+            codepointCount += 1;
+            bool startsNewGrapheme = false;
+            if (previousCodepoint < 0)
+            {
+                // First codepoint or error recovery
+                graphemeCount += 1;
+                startsNewGrapheme = true;
+            }
+            else
+            {
+                // optim 1: reuse the property record of previousCodepoint instead of retrieving 2 property records at each iteration.
+
+                // Here, previousCodepoint is >= 0, so previousCodepointProperty has already the right value
+                utf8proc_bool graphemeBreak = grapheme_break_extended(  previousCodepointProperty->boundclass,
+                                                                        codepointProperty->boundclass,
+                                                                        previousCodepointProperty->indic_conjunct_break,
+                                                                        codepointProperty->indic_conjunct_break,
+                                                                        &graphemeBreakState);
+
+                //utf8proc_bool graphemeBreak = utf8proc_grapheme_break_stateful(previousCodepoint, codepoint, &graphemeBreakState);
+                if (graphemeBreak)
+                {
+                    graphemeCount += 1;
+                    startsNewGrapheme = true;
+                }
+            }
+
+            if (startsNewGrapheme && str != gStart)
+            {
+                // The grapheme that was accumulating in [gStart, str) just closed, because `str` starts a new one.
+                // action(false, gStart, str - gStart);
+                buffer->append((const char *)gStart, str - gStart);
+
+                gStart = str;
+            }
+        }
+        previousCodepoint = codepoint;
+        previousCodepointProperty = codepointProperty;
+        str += sizeB;
+        length -= sizeB;
+    }
+
+    // Flush the last pending grapheme, if any.
+    // if (str != gStart) action(false, gStart, str - gStart);
+    if (str != gStart) buffer->append((const char *)gStart, str - gStart);
+
+    return firstInvalidByteSequence;
+}
+
+
+/**
+ * When escapeBy is "[c]odepoint", returns a string in which non-printable codepoints
+ * and invalid byte sequences are replaced with escape sequences.
+ * When escapeBy is "[g]rapheme", returns a string in which invalid byte sequences
+ * are replaced with escape sequences.
+ * If a buffer is passed as an argument, the resulting string is appended to the buffer,
+ * and the buffer is returned.
+ */
+RexxObject *RexxUnicodeServicesClass::utf8StringEscape(RexxString *string, RexxString *escapeBy, MutableBuffer *destination)
+{
+    // Check arguments
+    requiredArgument(string, "string");
+    requiredBaseString(string, "string");
+    if (escapeBy != OREF_NULL) requiredBaseString(escapeBy, "escapeBy");
+    if (destination == TheNilObject) destination = OREF_NULL;
+    if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
+
+    const char *start = string->getStringData();
+    size_t length = string->getLength();
+    const char *end = start + length;
+
+    Protected<MutableBuffer> buffer = destination;
+    if (buffer == OREF_NULL) buffer = new MutableBuffer(length, length);
+
+    char by = 'c';
+    if (escapeBy != OREF_NULL && escapeBy->getLength() >= 1) by = escapeBy->getStringData()[0];
+    switch (by)
+    {
+        case 'c':
+        case 'C':
+            {
+                size_t codepointCount;
+                size_t errorCount;
+                utf8StringEscapeCodepointIterator((const utf8proc_uint8_t *)start, length, codepointCount, errorCount, /*stopAtFirstError:*/ false, buffer);
+            }
+            break;
+
+        case 'g':
+        case 'G':
+            {
+                size_t graphemeCount;
+                size_t codepointCount;
+                size_t errorCount;
+                utf8StringEscapeGraphemeIterator((const utf8proc_uint8_t *)start, length, graphemeCount, codepointCount, errorCount, /*stopAtFirstError:*/ false, buffer);
+            }
+            break;
+
+        default:
+            {
+                // raise syntax 88.900 array ("Expected argument \"escapeBy\" to caselessly start with 'C' or 'G'; found" quoted(escapeBy))
+                Protected<MutableBuffer> errorMessage = new MutableBuffer;
+                errorMessage->append("Expected argument \"escapeBy\" to caselessly start with 'C' or 'G'; found ");
+                errorMessage->append('"');
+                errorMessage->append(escapeBy);
+                errorMessage->append('"');
+                reportException(Error_Invalid_argument_user_defined, errorMessage);
+            }
+    }
+
+    if (destination != OREF_NULL) return destination; // The user passed a buffer, returns this buffer
+    return buffer->makeString(); // The user did not pass a buffer, returns a string
+}
+
+#else // USE_GENERIC_ITERATORS == 1
+
+/**
+ * When escapeBy is "[c]odepoint", returns a string in which non-printable codepoints
+ * and invalid byte sequences are replaced with escape sequences.
+ * When escapeBy is "[g]rapheme", returns a string in which invalid byte sequences
+ * are replaced with escape sequences.
+ * If a buffer is passed as an argument, the resulting string is appended to the buffer,
+ * and the buffer is returned.
+ */
+RexxObject *RexxUnicodeServicesClass::utf8StringEscape(RexxString *string, RexxString *escapeBy, MutableBuffer *destination)
+{
+    // Check arguments
+    requiredArgument(string, "string");
+    requiredBaseString(string, "string");
+    if (escapeBy != OREF_NULL) requiredBaseString(escapeBy, "escapeBy");
+    if (destination == TheNilObject) destination = OREF_NULL;
+    if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
+
+    const char *start = string->getStringData();
+    size_t length = string->getLength();
+    const char *end = start + length;
+
+    Protected<MutableBuffer> buffer = destination;
+    if (buffer == OREF_NULL) buffer = new MutableBuffer(length, length);
+
+    char by = 'c';
+    if (escapeBy != OREF_NULL && escapeBy->getLength() >= 1) by = escapeBy->getStringData()[0];
+    switch (by)
+    {
+        case 'c':
+        case 'C':
+            {
+                size_t codepointCount;
+                size_t errorCount;
+                auto codepointAction = [&](bool error, const utf8proc_uint8_t *str, utf8proc_ssize_t sizeB, utf8proc_int32_t codepoint)
+                {
+                    if (error)
+                    {
+                        if (sizeB > 1) buffer->append("\\x{");
+                        else buffer->append("\\x");
+                        codepoint2hex(str, sizeB, buffer);
+                        if (sizeB > 1) buffer->append("}");
+                    }
+                    else
+                    {
+                        switch (codepoint)
+                        {
+                            case 7:  buffer->append("\\a"); break;
+                            case 8:  buffer->append("\\b"); break;
+                            case 9:  buffer->append("\\t"); break;
+                            case 10: buffer->append("\\n"); break;
+                            case 11: buffer->append("\\v"); break;
+                            case 12: buffer->append("\\f"); break;
+                            case 13: buffer->append("\\r"); break;
+                            case 92: buffer->append("\\\\"); break;
+                            default: ::codepointPrintableString(codepoint, buffer);
+                        }
+                    }
+                };
+                utf8StringCodepointIterator((const utf8proc_uint8_t *)start, length, codepointCount, errorCount, /*stopAtFirstError:*/ false, codepointAction);
+            }
+            break;
+
+        case 'g':
+        case 'G':
+            {
+                size_t graphemeCount;
+                size_t codepointCount;
+                size_t errorCount;
+                auto graphemeAction = [&](bool error, const utf8proc_uint8_t *str, utf8proc_ssize_t sizeB)
+                {
+                    if (error)
+                    {
+                        if (sizeB > 1) buffer->append("\\x{");
+                        else buffer->append("\\x");
+                        codepoint2hex(str, sizeB, buffer);
+                        if (sizeB > 1) buffer->append("}");
+                    }
+                    else
+                    {
+                        buffer->append((const char *)str, sizeB);
+                    }
+                };
+                utf8StringGraphemeIterator((const utf8proc_uint8_t *)start, length, graphemeCount, codepointCount, errorCount, /*stopAtFirstError:*/ false, graphemeAction);
+            }
+            break;
+
+        default:
+            {
+                // raise syntax 88.900 array ("Expected argument \"escapeBy\" to caselessly start with 'C' or 'G'; found" quoted(escapeBy))
+                Protected<MutableBuffer> errorMessage = new MutableBuffer;
+                errorMessage->append("Expected argument \"escapeBy\" to caselessly start with 'C' or 'G'; found ");
+                errorMessage->append('"');
+                errorMessage->append(escapeBy);
+                errorMessage->append('"');
+                reportException(Error_Invalid_argument_user_defined, errorMessage);
+            }
+    }
+
+    if (destination != OREF_NULL) return destination; // The user passed a buffer, returns this buffer
+    return buffer->makeString(); // The user did not pass a buffer, returns a string
+}
+
+#endif
 
 /**
  * Performs a full scan of a UTF-8 string.
@@ -1711,7 +2329,7 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
     if (refErrorCount != OREF_NULL) classArgument(refErrorCount, TheVariableReferenceClass, "refErrorCount");
 
     bool stopAtFirstError = false;
-    if (rexxStopAtFirstError != OREF_NULL) stopAtFirstError = (bool)integerRange(rexxStopAtFirstError, 0, 1, Error_Logical_value_user_defined, "Value of argument stopAtFirstError must be 0 or 1");
+    if (rexxStopAtFirstError != OREF_NULL) stopAtFirstError = (bool)integerRange(rexxStopAtFirstError, 0, 1, Error_Logical_value_user_defined, "Value of argument \"stopAtFirstError\" must be 0 or 1");
 
     const utf8proc_uint8_t *start = (const utf8proc_uint8_t *) string->getStringData();
     utf8proc_ssize_t remainingLength = string->getLength();
@@ -1771,6 +2389,7 @@ RexxObject *RexxUnicodeServicesClass::utf8StringUnescape(RexxString *string, Mut
     // Check arguments
     requiredArgument(string, "string");
     requiredBaseString(string, "string");
+    if (destination == TheNilObject) destination = OREF_NULL;
     if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
 
     const char *start = string->getStringData();
@@ -2010,10 +2629,10 @@ RexxObject *RexxUnicodeServicesClass::utf8StringUnescape(RexxString *string, Mut
 RexxInteger *RexxUnicodeServicesClass::graphemeBreak(RexxInteger *rexxCodepoint1, RexxInteger *rexxCodepoint2, VariableReference *refState)
 {
     requiredArgument(rexxCodepoint1, "codepoint1");
-    utf8proc_int32_t codepoint1 = (utf8proc_int32_t)integer(rexxCodepoint1, "codepoint1 must be an integer");
+    utf8proc_int32_t codepoint1 = getCodepoint(rexxCodepoint1, /*checkRange:*/ true, /*minusOneAllowed:*/ false, "Code point 1");
 
     requiredArgument(rexxCodepoint2, "codepoint2");
-    utf8proc_int32_t codepoint2 = (utf8proc_int32_t)integer(rexxCodepoint2, "codepoint2 must be an integer");
+    utf8proc_int32_t codepoint2 = getCodepoint(rexxCodepoint2, /*checkRange:*/ true, /*minusOneAllowed:*/ false, "Code point 2");
 
     classArgument(refState, TheVariableReferenceClass, "refState");
     utf8proc_int32_t state = (utf8proc_int32_t)integerRange(refState->getValue(), 0, SSIZE_MAX, Error_Invalid_argument_user_defined, "GraphemeBreak:The state must be a non negative integer");
@@ -2053,10 +2672,10 @@ RexxInteger *RexxUnicodeServicesClass::graphemeBreakBackward(RexxString *string,
     if (index > string->getLength() + 1) reportException(Error_Incorrect_method_position, index); // length+1 is accepted, but not beyond
 
     requiredArgument(rexxCodepoint1, "codepoint1");
-    utf8proc_int32_t codepoint1 = (utf8proc_int32_t)integer(rexxCodepoint1, "codepoint1 must be an integer");
+    utf8proc_int32_t codepoint1 = getCodepoint(rexxCodepoint1, /*checkRange:*/ true, /*minusOneAllowed:*/ false, "Code point 1");
 
     requiredArgument(rexxCodepoint2, "codepoint2");
-    utf8proc_int32_t codepoint2 = (utf8proc_int32_t)integer(rexxCodepoint2, "codepoint2 must be an integer");
+    utf8proc_int32_t codepoint2 = getCodepoint(rexxCodepoint2, /*checkRange:*/ true, /*minusOneAllowed:*/ false, "Code point 2");
 
     const utf8proc_uint8_t *str = (const utf8proc_uint8_t *) string->getStringData();
     const utf8proc_uint8_t *str_start  = str;
@@ -2119,7 +2738,7 @@ const char *General_Category[] =
 RexxInteger *RexxUnicodeServicesClass::codepointCategory(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     if (refCode != OREF_NULL) classArgument(refCode, TheVariableReferenceClass, "refCode");
     if (refLabel != OREF_NULL) classArgument(refLabel, TheVariableReferenceClass, "refLabel");
 
@@ -2426,7 +3045,7 @@ const char *Canonical_Combining_Class[] =
 RexxInteger *RexxUnicodeServicesClass::codepointCombiningClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     if (refCode != OREF_NULL) classArgument(refCode, TheVariableReferenceClass, "refCode");
     if (refLabel != OREF_NULL) classArgument(refLabel, TheVariableReferenceClass, "refLabel");
 
@@ -2500,7 +3119,7 @@ const char *Bidirectional_Character_Types[]=
 RexxInteger *RexxUnicodeServicesClass::codepointBidiClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     if (refCode != OREF_NULL) classArgument(refCode, TheVariableReferenceClass, "refCode");
     if (refLabel != OREF_NULL) classArgument(refLabel, TheVariableReferenceClass, "refLabel");
 
@@ -2535,7 +3154,7 @@ RexxInteger *RexxUnicodeServicesClass::codepointBidiClass(RexxInteger *rexxCodep
 RexxInteger *RexxUnicodeServicesClass::codepointBidiMirrored(RexxInteger *rexxCodepoint)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     const utf8proc_property_t *property = utf8proc_get_property(codepoint);
     return property->bidi_mirrored ? TheTrueObject : TheFalseObject;
 }
@@ -2568,7 +3187,7 @@ const char *Compatibility_Formatting_Tags[]=
 RexxInteger *RexxUnicodeServicesClass::codepointDecompositionType(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     if (refCode != OREF_NULL) classArgument(refCode, TheVariableReferenceClass, "refCode");
     if (refLabel != OREF_NULL) classArgument(refLabel, TheVariableReferenceClass, "refLabel");
 
@@ -2615,7 +3234,7 @@ const char *Indic_Conjunct_Break[]=
 RexxInteger *RexxUnicodeServicesClass::codepointIndicConjunctBreak(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     if (refCode != OREF_NULL) classArgument(refCode, TheVariableReferenceClass, "refCode");
     if (refLabel != OREF_NULL) classArgument(refLabel, TheVariableReferenceClass, "refLabel");
 
@@ -2648,7 +3267,7 @@ RexxInteger *RexxUnicodeServicesClass::codepointIndicConjunctBreak(RexxInteger *
 RexxInteger *RexxUnicodeServicesClass::codepointIgnorable(RexxInteger *rexxCodepoint)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     const utf8proc_property_t *property = utf8proc_get_property(codepoint);
     return property->ignorable ? TheTrueObject : TheFalseObject;
 }
@@ -2657,7 +3276,7 @@ RexxInteger *RexxUnicodeServicesClass::codepointIgnorable(RexxInteger *rexxCodep
 RexxInteger *RexxUnicodeServicesClass::codepointControlBoundary(RexxInteger *rexxCodepoint)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     const utf8proc_property_t *property = utf8proc_get_property(codepoint);
     return property->control_boundary ? TheTrueObject : TheFalseObject;
 }
@@ -2666,7 +3285,7 @@ RexxInteger *RexxUnicodeServicesClass::codepointControlBoundary(RexxInteger *rex
 RexxInteger *RexxUnicodeServicesClass::codepointCharWidth(RexxInteger *rexxCodepoint)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     const utf8proc_property_t *property = utf8proc_get_property(codepoint);
     return new_integer(property->charwidth);
 }
@@ -2702,7 +3321,7 @@ const char *East_Asian_Width[]=
 RexxInteger *RexxUnicodeServicesClass::codepointEastAsianWidthIsAmbiguous(RexxInteger *rexxCodepoint)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     const utf8proc_property_t *property = utf8proc_get_property(codepoint);
     return property->ambiguous_width ? TheTrueObject : TheFalseObject;
 }
@@ -2747,7 +3366,7 @@ const char *Grapheme_Cluster_Break[]=
 RexxInteger *RexxUnicodeServicesClass::codepointBoundClass(RexxInteger *rexxCodepoint, VariableReference *refCode, VariableReference *refLabel)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     if (refCode != OREF_NULL) classArgument(refCode, TheVariableReferenceClass, "refCode");
     if (refLabel != OREF_NULL) classArgument(refLabel, TheVariableReferenceClass, "refLabel");
 
@@ -2780,7 +3399,7 @@ RexxInteger *RexxUnicodeServicesClass::codepointBoundClass(RexxInteger *rexxCode
 RexxInteger *RexxUnicodeServicesClass::codepointToLower(RexxInteger *rexxCodepoint)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     return new_integer(utf8proc_tolower(codepoint));
 }
 
@@ -2788,7 +3407,7 @@ RexxInteger *RexxUnicodeServicesClass::codepointToLower(RexxInteger *rexxCodepoi
 RexxInteger *RexxUnicodeServicesClass::codepointToUpper(RexxInteger *rexxCodepoint)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     return new_integer(utf8proc_toupper(codepoint));
 }
 
@@ -2796,7 +3415,7 @@ RexxInteger *RexxUnicodeServicesClass::codepointToUpper(RexxInteger *rexxCodepoi
 RexxInteger *RexxUnicodeServicesClass::codepointToTitle(RexxInteger *rexxCodepoint)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     return new_integer(utf8proc_totitle(codepoint));
 }
 
@@ -2804,7 +3423,7 @@ RexxInteger *RexxUnicodeServicesClass::codepointToTitle(RexxInteger *rexxCodepoi
 RexxInteger *RexxUnicodeServicesClass::codepointIsLower(RexxInteger *rexxCodepoint)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     return utf8proc_islower(codepoint) ? TheTrueObject : TheFalseObject;
 
 }
@@ -2813,7 +3432,7 @@ RexxInteger *RexxUnicodeServicesClass::codepointIsLower(RexxInteger *rexxCodepoi
 RexxInteger *RexxUnicodeServicesClass::codepointIsUpper(RexxInteger *rexxCodepoint)
 {
     requiredArgument(rexxCodepoint, "codepoint");
-    utf8proc_int32_t codepoint = (utf8proc_int32_t)integer(rexxCodepoint, "codepoint must be an integer");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
     return utf8proc_isupper(codepoint) ? TheTrueObject : TheFalseObject;
 
 }

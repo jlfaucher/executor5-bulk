@@ -38,12 +38,11 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for oorexxshell_queries_std.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for pipeline/pipe_std.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for Rexx.Parser.cls
-</span><span style="font-weight:bold;color:green;">loadPackage OK for Unicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
-</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 12 Aug 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S27f3Qbc482a880
+</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 3 Sep 2026
+</span><span style="font-weight:bold;color:green;">Input queue name: Sd037Qbc489f300
 </span>
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">Examples in rxunicode.md
@@ -111,15 +110,15 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~cod
 </span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~codepointCombiningClass
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCombiningClass(&quot;031B&quot;~x2d, &gt;code, &gt;label)=; code=; label=     </span><span style="font-weight:bold;color:blue;">--  216; 'ATAR'; 'Attached_Above_Right'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointCombiningClass(&quot;031B&quot;~x2d, &gt;code, &gt;label)=; code=; label=     </span><span style="font-weight:bold;color:blue;">--  216; 'ATAR'; 'Attached_Above_Right'</span>
  216
 'ATAR'
 'Attached_Above_Right'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCombiningClass(&quot;FFFFFF&quot;~x2d, &gt;code, &gt;label)=; code=; label=   </span><span style="font-weight:bold;color:blue;">--  0; 'NR'; 'Not_Reordered'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointCombiningClass(&quot;FFFFFF&quot;~x2d, &gt;code, &gt;label)=; code=; label=   </span><span style="font-weight:bold;color:blue;">--  0; 'NR'; 'Not_Reordered'</span>
  0
 'NR'
 'Not_Reordered'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCombiningClass(-1, &gt;code, &gt;label)=; code=; label=             </span><span style="font-weight:bold;color:blue;">--  0; 'NR'; 'Not_Reordered'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointCombiningClass(-1, &gt;code, &gt;label)=; code=; label=             </span><span style="font-weight:bold;color:blue;">--  0; 'NR'; 'Not_Reordered'</span>
  0
 'NR'
 'Not_Reordered'
@@ -129,23 +128,23 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCo
 </span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~codepointDecompositionType
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointDecompositionType(&quot;0000&quot;~x2d, &gt;code, &gt;label)=; code=; label=      </span><span style="font-weight:bold;color:blue;">--  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointDecompositionType(&quot;0000&quot;~x2d, &gt;code, &gt;label)=; code=; label=      </span><span style="font-weight:bold;color:blue;">--  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'</span>
  0
 'None'
 'Code point not explicitly listed for Decomposition_Type'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointDecompositionType(&quot;00A8&quot;~x2d, &gt;code, &gt;label)=; code=; label=      </span><span style="font-weight:bold;color:blue;">--  16; 'Compat'; 'Unspecified compatibility character'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointDecompositionType(&quot;00A8&quot;~x2d, &gt;code, &gt;label)=; code=; label=      </span><span style="font-weight:bold;color:blue;">--  16; 'Compat'; 'Unspecified compatibility character'</span>
  16
 'Compat'
 'Unspecified compatibility character'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointDecompositionType(&quot;00BC&quot;~x2d, &gt;code, &gt;label)=; code=; label=      </span><span style="font-weight:bold;color:blue;">--  15; 'Fraction'; 'Vulgar fraction form'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointDecompositionType(&quot;00BC&quot;~x2d, &gt;code, &gt;label)=; code=; label=      </span><span style="font-weight:bold;color:blue;">--  15; 'Fraction'; 'Vulgar fraction form'</span>
  15
 'Fraction'
 'Vulgar fraction form'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointDecompositionType(&quot;FFFFFF&quot;~x2d, &gt;code, &gt;label)=; code=; label=    </span><span style="font-weight:bold;color:blue;">--  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointDecompositionType(&quot;FFFFFF&quot;~x2d, &gt;code, &gt;label)=; code=; label=    </span><span style="font-weight:bold;color:blue;">--  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'</span>
  0
 'None'
 'Code point not explicitly listed for Decomposition_Type'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointDecompositionType(-1, &gt;code, &gt;label)=; code=; label=              </span><span style="font-weight:bold;color:blue;">--  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointDecompositionType(-1, &gt;code, &gt;label)=; code=; label=              </span><span style="font-weight:bold;color:blue;">--  0; 'None'; 'Code point not explicitly listed for Decomposition_Type'</span>
  0
 'None'
 'Code point not explicitly listed for Decomposition_Type'
@@ -155,30 +154,79 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointDe
 </span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~codepointIndicConjunctBreak
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIndicConjunctBreak(&quot;0000&quot;~x2d, &gt;code, &gt;label)=; code=; label=     </span><span style="font-weight:bold;color:blue;">--  0; 'None'; 'None'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointIndicConjunctBreak(&quot;0000&quot;~x2d, &gt;code, &gt;label)=; code=; label=     </span><span style="font-weight:bold;color:blue;">--  0; 'None'; 'None'</span>
  0
 'None'
 'None'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIndicConjunctBreak(&quot;0300&quot;~x2d, &gt;code, &gt;label)=; code=; label=     </span><span style="font-weight:bold;color:blue;">--  3; 'Extend'; 'Extend'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointIndicConjunctBreak(&quot;0300&quot;~x2d, &gt;code, &gt;label)=; code=; label=     </span><span style="font-weight:bold;color:blue;">--  3; 'Extend'; 'Extend'</span>
  3
 'Extend'
 'Extend'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIndicConjunctBreak(&quot;0915&quot;~x2d, &gt;code, &gt;label)=; code=; label=     </span><span style="font-weight:bold;color:blue;">--  2; 'Consonant'; 'Consonant'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointIndicConjunctBreak(&quot;0915&quot;~x2d, &gt;code, &gt;label)=; code=; label=     </span><span style="font-weight:bold;color:blue;">--  2; 'Consonant'; 'Consonant'</span>
  2
 'Consonant'
 'Consonant'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIndicConjunctBreak(&quot;094D&quot;~x2d, &gt;code, &gt;label)=; code=; label=     </span><span style="font-weight:bold;color:blue;">--  1; 'Linker'; 'Linker'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointIndicConjunctBreak(&quot;094D&quot;~x2d, &gt;code, &gt;label)=; code=; label=     </span><span style="font-weight:bold;color:blue;">--  1; 'Linker'; 'Linker'</span>
  1
 'Linker'
 'Linker'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIndicConjunctBreak(&quot;FFFFFF&quot;~x2d, &gt;code, &gt;label)=; code=; label=   </span><span style="font-weight:bold;color:blue;">--  0; 'None'; 'None'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointIndicConjunctBreak(&quot;FFFFFF&quot;~x2d, &gt;code, &gt;label)=; code=; label=   </span><span style="font-weight:bold;color:blue;">--  0; 'None'; 'None'</span>
  0
 'None'
 'None'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIndicConjunctBreak(-1, &gt;code, &gt;label)=; code=; label=             </span><span style="font-weight:bold;color:blue;">--  0; 'None'; 'None'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointIndicConjunctBreak(-1, &gt;code, &gt;label)=; code=; label=             </span><span style="font-weight:bold;color:blue;">--  0; 'None'; 'None'</span>
  0
 'None'
 'None'
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~codepointIsPrintable
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointIsPrintable(0)=             </span><span style="font-weight:bold;color:blue;">-- 0</span>
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointIsPrintable(65)=            </span><span style="font-weight:bold;color:blue;">-- 1</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointIsPrintable(&quot;D800&quot;~x2d)=    </span><span style="font-weight:bold;color:blue;">-- 0</span>
+ 0
+
+
+<span style="font-weight:bold;color:blue;">-- The special value -1 is not printable
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointIsPrintable(-1)=            </span><span style="font-weight:bold;color:blue;">-- 0</span>
+ 0
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~codepointPrintableString
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointPrintableString(0)=           </span><span style="font-weight:bold;color:blue;">-- '\u0000'</span>
+'\u0000'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointPrintableString(65)=          </span><span style="font-weight:bold;color:blue;">-- 'A'</span>
+'A'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointPrintableString(&quot;D800&quot;~x2d)=  </span><span style="font-weight:bold;color:blue;">-- '\uD800'</span>
+'\uD800'
+
+
+<span style="font-weight:bold;color:blue;">-- Since the special value -1 is not printable, it is represented using Unicode escape notation.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointPrintableString(-1)=          </span><span style="font-weight:bold;color:blue;">-- '\UFFFFFFFF'</span>
+'\UFFFFFFFF'
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~codepointUnicodeEscapeNotation
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointUnicodeEscapeNotation(&quot;D800&quot;~x2d)=    </span><span style="font-weight:bold;color:blue;">-- '\uD800'</span>
+'\uD800'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointUnicodeEscapeNotation(&quot;1F385&quot;~x2d)=   </span><span style="font-weight:bold;color:blue;">-- '\U0001F385'</span>
+'\U0001F385'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointUnicodeEscapeNotation(-1)=            </span><span style="font-weight:bold;color:blue;">-- '\UFFFFFFFF'</span>
+'\UFFFFFFFF'
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointUnicodeEscapeNotation(&quot;D800&quot;~x2d, .MutableBuffer~new)=    </span><span style="font-weight:bold;color:blue;">-- M'\uD800'</span>
+M'\uD800'
 
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
@@ -514,6 +562,41 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf
 
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">--  .RexxUnicodeServices~utf8StringEscape
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(xrange(&quot;00&quot;x, &quot;FF&quot;x))=          </span><span style="font-weight:bold;color:blue;">-- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !&quot;#$%&amp;''()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'</span>
+'\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !&quot;#$%&amp;''()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(.RexxUnicode~U2C(&quot;U+10FFF&quot;))=   </span><span style="font-weight:bold;color:blue;">-- '\U00010FFF'</span>
+'\U00010FFF'
+
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;👨‍👩‍👧&quot; || &quot;F4 91&quot;x</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(string)=          </span><span style="font-weight:bold;color:blue;">-- '👨\u200D👩\u200D👧\xF4\x91'</span>
+'👨\u200D👩\u200D👧\xF4\x91'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(string, &quot;g&quot;)=     </span><span style="font-weight:bold;color:blue;">-- '👨‍👩‍👧\xF4\x91'</span>
+'👨‍👩‍👧\xF4\x91'
+
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(.RexxUnicode~stringUnescape(&quot;\N{&lt;lead surrogate-D800&gt;}&quot;))=    </span><span style="font-weight:bold;color:blue;">-- '\xED\xA0\x80'</span>
+'\xED\xA0\x80'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">A lead surrogate is invalid in a UTF-8 string (would be valid in a WTF-8 string).
+</span><span style="font-weight:bold;color:blue;">(&lt;?&gt; \x{EDA080} U+D800 Cs Surrogate &quot;&lt;lead surrogate-D800&gt;&quot;)
+</span><span style="font-weight:bold;color:blue;">A codepoint supplier returns 3 codepoints for U+D800:
+</span><span style="font-weight:bold;color:blue;">    1 : 'U+FFFD'
+</span><span style="font-weight:bold;color:blue;">    2 : 'U+FFFD'
+</span><span style="font-weight:bold;color:blue;">    3 : 'U+FFFD'
+</span><span style="font-weight:bold;color:blue;">Codepoint byte sequence as hexadecimal digits (option &quot;h):
+</span><span style="font-weight:bold;color:blue;">    1 : '\xED'
+</span><span style="font-weight:bold;color:blue;">    2 : '\xA0'
+</span><span style="font-weight:bold;color:blue;">    3 : '\x80'
+</span><span style="font-weight:bold;color:blue;">Escaping U+D800 is '\xED\xA0\x80' because \x{EDA080} can't be UTF-8 decoded as U+D800.
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span><span style="font-weight:bold;color:blue;">--  .RexxUnicodeServices~utf8StringInfo
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span>
@@ -585,6 +668,69 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">g=; c=; e=              
  2
  100000001
  0
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">--  .RexxUnicodeServices~utf8StringUnescape
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+<span style="font-weight:bold;color:blue;">-- YES! Must be called from .RexxUnicode
+</span><span style="font-weight:bold;color:blue;">-- because .RexxUnicodeServices~utf8StringUnescape is PRIVATE.
+</span>
+<span style="font-weight:bold;color:blue;">-- The public method .RexxUnicode~utf8StringUnescape forwards to the private
+</span><span style="font-weight:bold;color:blue;">-- native method .RexxUnicodeServices~utf8StringUnescape.
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\\&quot;)=            </span><span style="font-weight:bold;color:blue;">-- '\'</span>
+'\'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;a\\&quot;)=           </span><span style="font-weight:bold;color:blue;">-- 'a\'</span>
+'a\'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\\b&quot;)=           </span><span style="font-weight:bold;color:blue;">-- '\b'</span>
+'\b'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;a\\b&quot;)=          </span><span style="font-weight:bold;color:blue;">-- 'a\b'</span>
+'a\b'
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\\&quot;, .MutableBuffer~new)=            </span><span style="font-weight:bold;color:blue;">-- M'\'</span>
+M'\'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;a\\&quot;, .MutableBuffer~new)=           </span><span style="font-weight:bold;color:blue;">-- M'a\'</span>
+M'a\'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\\b&quot;, .MutableBuffer~new)=           </span><span style="font-weight:bold;color:blue;">-- M'\b'</span>
+M'\b'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;a\\b&quot;, .MutableBuffer~new)=          </span><span style="font-weight:bold;color:blue;">-- M'a\b'</span>
+M'a\b'
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\a&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 07</span>
+ 07
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\b&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 08</span>
+ 08
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\f&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0C'</span>
+'0C'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\n&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0A'</span>
+'0A'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\r&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0D'</span>
+'0D'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\t&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 09</span>
+ 09
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\v&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0B'</span>
+'0B'
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\N{OCR DASH}&quot;)=                  </span><span style="font-weight:bold;color:blue;">-- '⑈'</span>
+'⑈'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\N{MICR ON US SYMBOL}&quot;)=         </span><span style="font-weight:bold;color:blue;">-- '⑈'</span>
+'⑈'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\N{&lt;control-0000&gt;}&quot;)=            </span><span style="font-weight:bold;color:blue;">-- '[00]'</span>
+'[00]'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\N{&lt;lead surrogate-D800&gt;}&quot;)~c2x= </span><span style="font-weight:bold;color:blue;">-- 'EDA080' (use ~c2x to not display an invalid byte sequence)</span>
+'EDA080'
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94&quot;)=     </span><span style="font-weight:bold;color:blue;">-- '𝓐B𝓒𝓓𝓔'</span>
+'𝓐B𝓒𝓓𝓔'
+
+<span style="font-weight:bold;color:blue;">-- Spaces between consecutive \u{...} sequences are significant.
+</span><span style="font-weight:bold;color:blue;">-- Spaces between consecutive U+... sequences are not significant.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot; \u{0041} \u{0042} &quot;)=     </span><span style="font-weight:bold;color:blue;">-- ' A B '</span>
+' A B '
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~U2C(               &quot;  U+0041   U+0042  &quot;)=     </span><span style="font-weight:bold;color:blue;">-- 'AB'</span>
+'AB'
 
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
@@ -983,56 +1129,6 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointEx
 
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
-</span><span style="font-weight:bold;color:blue;">-- .RexxUnicode~codepointIsPrintable
-</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
-</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIsPrintable(0)=             </span><span style="font-weight:bold;color:blue;">-- 0</span>
- 0
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIsPrintable(65)=            </span><span style="font-weight:bold;color:blue;">-- 1</span>
- 1
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIsPrintable(&quot;D800&quot;~x2d)=    </span><span style="font-weight:bold;color:blue;">-- 0</span>
- 0
-
-
-<span style="font-weight:bold;color:blue;">-- The special value -1 is not printable
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIsPrintable(-1)=            </span><span style="font-weight:bold;color:blue;">-- 0</span>
- 0
-
-
-<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
-</span><span style="font-weight:bold;color:blue;">-- .RexxUnicode~codepointPrintableString
-</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
-</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointPrintableString(0)=           </span><span style="font-weight:bold;color:blue;">-- '\u0000'</span>
-'\u0000'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointPrintableString(65)=          </span><span style="font-weight:bold;color:blue;">-- 'A'</span>
-'A'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointPrintableString(&quot;D800&quot;~x2d)=  </span><span style="font-weight:bold;color:blue;">-- '\uD800'</span>
-'\uD800'
-
-
-<span style="font-weight:bold;color:blue;">-- Since the special value -1 is not printable, it is represented using Unicode escape notation.
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointPrintableString(-1)=          </span><span style="font-weight:bold;color:blue;">-- '\UFFFFFFFF'</span>
-'\UFFFFFFFF'
-
-
-<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
-</span><span style="font-weight:bold;color:blue;">-- .RexxUnicode~codepointUnicodeEscapeNotation
-</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
-</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUnicodeEscapeNotation(&quot;D800&quot;~x2d)=    </span><span style="font-weight:bold;color:blue;">-- '\uD800'</span>
-'\uD800'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUnicodeEscapeNotation(&quot;1F385&quot;~x2d)=   </span><span style="font-weight:bold;color:blue;">-- '\U0001F385'</span>
-'\U0001F385'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUnicodeEscapeNotation(-1)=            </span><span style="font-weight:bold;color:blue;">-- '\UFFFFFFFF'</span>
-'\UFFFFFFFF'
-
-
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUnicodeEscapeNotation(&quot;D800&quot;~x2d, .MutableBuffer~new)=    </span><span style="font-weight:bold;color:blue;">-- M'\uD800'</span>
-M'\uD800'
-
-
-<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span><span style="font-weight:bold;color:blue;">-- .RexxUnicode~codepointUTF8Encoding
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span>
@@ -1227,6 +1323,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~C2X(result)
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span><span style="font-weight:bold;color:blue;">-- .RexxUnicode~stringUnescape
+</span><span style="font-weight:bold;color:blue;">-- Now implemented by the native method .RexxUnicodeServices~utf8StringUnescape
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringUnescape(&quot;\\&quot;)=            </span><span style="font-weight:bold;color:blue;">-- '\'</span>

@@ -22,6 +22,53 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 Sept 03
+
+[Unicode]
+
+Add the native method .RexxUnicodeServices~codepointUnicodeEscapeNotation( codepoint, [buffer]) )
+The old ooRexx implementation is still temporarily available as .RexxUnicode~codepointUnicodeEscapeNotationRexx.
+
+Add the native method .RexxUnicodeServices~codepointIsPrintable( codepoint )
+The old ooRexx implementation is still temporarily available as .RexxUnicode~codepointIsPrintableRexx.
+
+Add the native method .RexxUnicodeServices~codepointPrintableString( codepoint, [buffer]));
+The old ooRexx implementation is still temporarily available as .RexxUnicode~codepointPrintableStringRexx.
+
+Add the native method .RexxUnicodeServices~utf8StringEscape( string, [buffer])
+This method is called by .RexxUnicode~stringEscape, which is kept for compatibility.
+The old ooRexx implementation is still temporarily available as .RexxUnicode~stringEscapeRexx.
+
+Todo: remove the old ooRexx implementations.
+
+Benchmark
+
+    Two native implementations of stringEscape are tested:
+    - with specialized iterators (no generic action)
+    - with generic iterators (and generic action)
+    Both implementations are temporarily retained in the source code, controlled by USE_GENERIC_ITERATORS.
+    Todo: remove the non-generic implementation.
+
+    -- Escape a 2,560,000-character string
+    string = xrange("00"x, "FF"x)~copies(1e4)
+    -- ooRexx implementation (non-native):
+    estring = .RexxUnicode~stringEscapeRexx(string) -- Duration: 21.337301, 20.888391, 20.976594, 20.875476, 20.873964. Average = 20.9903452
+    -- The native implementation with specialized iterators (no generic action) is 509.63 times faster:
+    estring = .RexxUnicode~stringEscape(string)     -- Duration: 0.039442, 0.042432, 0.040525, 0.039255, 0.044283. Average = 0.0411874
+    -- The native implementation with generic iterators (and generic action) is 519.89 times faster:
+    estring = .RexxUnicode~stringEscape(string)     -- Duration: 0.034874, 0.041153, 0.050543, 0.037778, 0.037524. Average = 0.0403744
+
+    -- Escape a 256-character string 10,000 times
+    string = xrange("00"x, "FF"x)
+    -- ooRexx implementation (non-native):
+    do 1e4; estring = .RexxUnicode~stringEscapeRexx(string); end    -- Duration: 20.686988, 20.707170, 20.914814, 20.681143, 20.610066. Average = 20.7200362
+    -- The native implementation with specialized iterators (no generic action) is 296.76 times faster:
+    do 1e4; estring = .RexxUnicode~stringEscape(string); end        -- Duration: 0.070716, 0.057667, 0.074098, 0.061820, 0.084807. Average = 0.0698216
+    -- The native implementation with generic iterators (and generic action) is 284.06 times faster:
+    do 1e4; estring = .RexxUnicode~stringEscape(string); end        -- Duration: 0.079288, 0.081046, 0.068392, 0.068696, 0.067288. Average = 0.072942
+
+
+===============================================================================
 2026 Sept 01
 
 [Unicode]
@@ -292,7 +339,7 @@ Benchmark on MacBookPro M1 32GB:
     do 100000; ustring = .RexxUnicode~stringUnescape(string); end       -- Duration: 0.133355, 0.120744, 0.117728, 0.129309, 0.130916. Average = 0.1264104
 
     -- 10 000 iterations, 8.12 times faster (8.00 with direct call of utf8StringUnescape)
-    string = .RexxUnicode~stringEscape(xrange("00"x, "FF"x))            -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8A}\x{8B}\x{8C}\x{8D}\x{8E}\x{8F}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9A}\x{9B}\x{9C}\x{9D}\x{9E}\x{9F}\x{A0}\x{A1}\x{A2}\x{A3}\x{A4}\x{A5}\x{A6}\x{A7}\x{A8}\x{A9}\x{AA}\x{AB}\x{AC}\x{AD}\x{AE}\x{AF}\x{B0}\x{B1}\x{B2}\x{B3}\x{B4}\x{B5}\x{B6}\x{B7}\x{B8}\x{B9}\x{BA}\x{BB}\x{BC}\x{BD}\x{BE}\x{BF}\x{C0}\x{C1}\x{C2}\x{C3}\x{C4}\x{C5}\x{C6}\x{C7}\x{C8}\x{C9}\x{CA}\x{CB}\x{CC}\x{CD}\x{CE}\x{CF}\x{D0}\x{D1}\x{D2}\x{D3}\x{D4}\x{D5}\x{D6}\x{D7}\x{D8}\x{D9}\x{DA}\x{DB}\x{DC}\x{DD}\x{DE}\x{DF}\x{E0}\x{E1}\x{E2}\x{E3}\x{E4}\x{E5}\x{E6}\x{E7}\x{E8}\x{E9}\x{EA}\x{EB}\x{EC}\x{ED}\x{EE}\x{EF}\x{F0}\x{F1}\x{F2}\x{F3}\x{F4}\x{F5}\x{F6}\x{F7}\x{F8}\x{F9}\x{FA}\x{FB}\x{FC}\x{FD}\x{FE}\x{FF}'
+    string = .RexxUnicode~stringEscape(xrange("00"x, "FF"x))            -- '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8A\x8B\x8C\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9C\x9D\x9E\x9F\xA0\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF'
     do 10000; ustring = .RexxUnicode~utf8StringUnescape(string); end    -- Duration: 0.260237, 0.265792, 0.255820, 0.264146, 0.259022. Average = 0.2610034
     do 10000; ustring = .RexxUnicode~stringUnescape(string); end        -- Duration: 0.253131, 0.263919, 0.253934, 0.252294, 0.262376. Average = 0.2571308
     do 10000; ustring = .RexxUnicode~stringUnescapeRexx(string); end    -- Duration: 2.080179, 2.057582, 2.081659, 2.120388, 2.103751. Average = 2.0887118
@@ -864,6 +911,7 @@ average         2,336          11,091           2,023           2,741           
 
 
 Conclusion: Implem 5 gives the best durations.
+Todo: remove the other implementations from the source code.
 
 
 ===============================================================================
