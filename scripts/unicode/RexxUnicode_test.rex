@@ -296,24 +296,24 @@ Demo helper
     say
 
     indexer = .RexxUnicodeStringIndexer~new(string)
-    say "codepointIndexes:" indexer~codepointIndexes~toString(, " ")
-    say "graphemeIndexes:" indexer~graphemeIndexes~toString(, " ")
+    say "startCodepointIndexes:" indexer~startCodepointIndexes~toString(, " ")
+    say "startGraphemeIndexes:" indexer~startGraphemeIndexes~toString(, " ")
 
-    if indexer~errors~items \== 0 then do
+    if indexer~startErrorMessages~items \== 0 then do
         say "errors"
-        do i=1 to indexer~errors~items
-            say i~right(3) ":" indexer~errors[i]
+        do i=1 to indexer~startErrorMessages~items
+            say i~right(3) ":" indexer~startErrorMessages[i]
         end
     end
 
     say "codepoints"
-    do i=1 to indexer~codepointIndexes~items
+    do i=1 to indexer~startCodepointIndexes~items
         codepoint = indexer~codepointAtIndexC(i)
         say i~right(3) ":" .RexxUnicodeCharacter~new(codepoint)
     end
 
     say "graphemes"
-    do i=1 to indexer~graphemeIndexes~items
+    do i=1 to indexer~startGraphemeIndexes~items
         grapheme = indexer~graphemeAtIndexG(i)
         isMalformed = indexer~graphemeIndexB(i) < 0
         character = isMalformed~?("EFBFBD"x, grapheme) -- Use the replacement character if malformed

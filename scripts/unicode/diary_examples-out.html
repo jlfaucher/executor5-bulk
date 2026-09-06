@@ -42,7 +42,7 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 3 Sep 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: ScffbQbc489f300
+</span><span style="font-weight:bold;color:green;">Input queue name: S83a5Qbc489f480
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
@@ -2625,45 +2625,45 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~cod
 </span><span style="font-weight:bold;color:blue;">.RexxUnicodeStringIndexer:
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">    Update .RexxUnicodeStringIndexer~init
-</span><span style="font-weight:bold;color:blue;">        Storage limits can be specified when creating the indexer; the default is no limit:
-</span><span style="font-weight:bold;color:blue;">            - codepointStorageLimit
-</span><span style="font-weight:bold;color:blue;">            - graphemeStorageLimit
-</span><span style="font-weight:bold;color:blue;">            - errorStorageLimit
+</span><span style="font-weight:bold;color:blue;">        Start storage limits can be specified when creating the indexer; the default is no limit:
+</span><span style="font-weight:bold;color:blue;">            - startCodepointStorageLimit
+</span><span style="font-weight:bold;color:blue;">            - startGraphemeStorageLimit
+</span><span style="font-weight:bold;color:blue;">            - startErrorStorageLimit
 </span><span style="font-weight:bold;color:blue;">
-</span><span style="font-weight:bold;color:blue;">        End storage sizes can be specified when creating the indexer; the default is 0.
-</span><span style="font-weight:bold;color:blue;">            - endCodepointStorageSize
-</span><span style="font-weight:bold;color:blue;">            - endGraphemeStorageSize
-</span><span style="font-weight:bold;color:blue;">            - endErrorStorageSize
+</span><span style="font-weight:bold;color:blue;">        End storage limits can be specified when creating the indexer; the default is 0.
+</span><span style="font-weight:bold;color:blue;">            - endCodepointStorageLimit
+</span><span style="font-weight:bold;color:blue;">            - endGraphemeStorageLimit
+</span><span style="font-weight:bold;color:blue;">            - endErrorStorageLimit
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">        .RexxUnicodeStringIndexer~init(
 </span><span style="font-weight:bold;color:blue;">            string,
 </span><span style="font-weight:bold;color:blue;">
-</span><span style="font-weight:bold;color:blue;">            -- Storage limits
-</span><span style="font-weight:bold;color:blue;">            codepointStorageLimit = (.RexxInfo~internalMaxNumber),
-</span><span style="font-weight:bold;color:blue;">            graphemeStorageLimit = (.RexxInfo~internalMaxNumber),
-</span><span style="font-weight:bold;color:blue;">            errorStorageLimit = (.RexxInfo~internalMaxNumber)
+</span><span style="font-weight:bold;color:blue;">            -- Start storage limits
+</span><span style="font-weight:bold;color:blue;">            startCodepointStorageLimit = (.RexxInfo~internalMaxNumber),
+</span><span style="font-weight:bold;color:blue;">            startGraphemeStorageLimit = (.RexxInfo~internalMaxNumber),
+</span><span style="font-weight:bold;color:blue;">            startErrorStorageLimit = (.RexxInfo~internalMaxNumber)
 </span><span style="font-weight:bold;color:blue;">
-</span><span style="font-weight:bold;color:blue;">            -- End storage sizes
-</span><span style="font-weight:bold;color:blue;">            endCodepointStorageSize = 0,
-</span><span style="font-weight:bold;color:blue;">            endGraphemeStorageSize = 0,
-</span><span style="font-weight:bold;color:blue;">            endErrorStorageSize = 0
+</span><span style="font-weight:bold;color:blue;">            -- End storage limits
+</span><span style="font-weight:bold;color:blue;">            endCodepointStorageLimit = 0,
+</span><span style="font-weight:bold;color:blue;">            endGraphemeStorageLimit = 0,
+</span><span style="font-weight:bold;color:blue;">            endErrorStorageLimit = 0
 </span><span style="font-weight:bold;color:blue;">            )
 </span><span style="font-weight:bold;color:blue;">
-</span><span style="font-weight:bold;color:blue;">    Add ::attribute codepointStorageLimit get
-</span><span style="font-weight:bold;color:blue;">    Add ::attribute graphemeStorageLimit get
-</span><span style="font-weight:bold;color:blue;">    Add ::attribute errorStorageLimit get
+</span><span style="font-weight:bold;color:blue;">    Add ::method startCodepointStorageCount
+</span><span style="font-weight:bold;color:blue;">    Add ::method startGraphemeStorageCount
+</span><span style="font-weight:bold;color:blue;">    Add ::method startErrorStorageCount
 </span><span style="font-weight:bold;color:blue;">
-</span><span style="font-weight:bold;color:blue;">    Add ::attribute codepointCount get    -- count after full scan, not impacted by codepointStorageLimit
-</span><span style="font-weight:bold;color:blue;">    Add ::attribute graphemeCount get     -- count after full scan, not impacted by graphemeStorageLimit
-</span><span style="font-weight:bold;color:blue;">    Add ::attribute errorCount get        -- count after full scan, not impacted by errorStorageLimit
+</span><span style="font-weight:bold;color:blue;">    Add ::attribute codepointCount get    -- count after full scan, not impacted by startCodepointStorageLimit
+</span><span style="font-weight:bold;color:blue;">    Add ::attribute graphemeCount get     -- count after full scan, not impacted by startGraphemeStorageLimit
+</span><span style="font-weight:bold;color:blue;">    Add ::attribute errorCount get        -- count after full scan, not impacted by startErrorStorageLimit
 </span><span style="font-weight:bold;color:blue;">
-</span><span style="font-weight:bold;color:blue;">    Add ::attribute endCodepointStorageSize get
-</span><span style="font-weight:bold;color:blue;">    Add ::attribute endGraphemeStorageSize get
-</span><span style="font-weight:bold;color:blue;">    Add ::attribute endErrorStorageSize get
+</span><span style="font-weight:bold;color:blue;">    Add ::method endCodepointStorageCount
+</span><span style="font-weight:bold;color:blue;">    Add ::method endGraphemeStorageCount
+</span><span style="font-weight:bold;color:blue;">    Add ::method endErrorStorageCount
 </span><span style="font-weight:bold;color:blue;">
-</span><span style="font-weight:bold;color:blue;">    Add ::attribute endCodepointIndexes get
-</span><span style="font-weight:bold;color:blue;">    Add ::attribute endGraphemeIndexes get
-</span><span style="font-weight:bold;color:blue;">    Add ::attribute endErrors get
+</span><span style="font-weight:bold;color:blue;">    Add ::method endCodepointIndexes
+</span><span style="font-weight:bold;color:blue;">    Add ::method endGraphemeIndexes
+</span><span style="font-weight:bold;color:blue;">    Add ::method endErrorMessages
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">
 </span><span style="font-weight:bold;color:blue;">Examples
@@ -2673,36 +2673,36 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~cod
 </span><span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts
 </span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, 4, 2, 1)</span>
-<span style="font-weight:bold;color:blue;">-- The specified codepoint storage limit is 4
+<span style="font-weight:bold;color:blue;">-- The specified start codepoint storage limit is 4
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointCount=             </span><span style="font-weight:bold;color:blue;">-- 9</span>
  9
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointStorageLimit=      </span><span style="font-weight:bold;color:blue;">-- 4</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointStorageCount= </span><span style="font-weight:bold;color:blue;">-- 4</span>
  4
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexes=           </span><span style="font-weight:bold;color:blue;">-- [-1,-2,-3,-4]</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=      </span><span style="font-weight:bold;color:blue;">-- [-1,-2,-3,-4]</span>
 [-1,-2,-3,-4]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointAtIndexC(3)=       </span><span style="font-weight:bold;color:blue;">-- 65533</span>
  65533
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointAtIndexC(5)=       </span><span style="font-weight:bold;color:blue;">-- Code point index 5 is not stored.</span>
 <span style="font-weight:bold;color:red;">Code point index 5 is not stored.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
-</span><span style="font-weight:bold;color:blue;">-- The specified grapheme storage limit is 2
+</span><span style="font-weight:bold;color:blue;">-- The specified start grapheme storage limit is 2
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeCount=              </span><span style="font-weight:bold;color:blue;">-- 9</span>
  9
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeStorageLimit=       </span><span style="font-weight:bold;color:blue;">-- 2</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeStorageCount=  </span><span style="font-weight:bold;color:blue;">-- 2</span>
  2
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexes=            </span><span style="font-weight:bold;color:blue;">-- [-1,-2]</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=       </span><span style="font-weight:bold;color:blue;">-- [-1,-2]</span>
 [-1,-2]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeAtIndexG(2)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 91 (use ~c2x to not display an invalid byte sequence)</span>
  91
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeAtIndexG(3)~c2x=    </span><span style="font-weight:bold;color:blue;">-- Grapheme index 3 is not stored.</span>
 <span style="font-weight:bold;color:red;">Grapheme index 3 is not stored.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
-</span><span style="font-weight:bold;color:blue;">-- The specified error storage limit is 1
+</span><span style="font-weight:bold;color:blue;">-- The specified start error storage limit is 1
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorCount=                 </span><span style="font-weight:bold;color:blue;">-- 7</span>
  7
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorStorageLimit=          </span><span style="font-weight:bold;color:blue;">-- 1</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorStorageCount=     </span><span style="font-weight:bold;color:blue;">-- 1</span>
  1
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errors==</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
 an Array (shape [1], 1 items)
  1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
 <span style="font-weight:bold;color:blue;">/*
@@ -2723,25 +2723,25 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorCount=     
 <span style="font-weight:bold;color:blue;">-- Gets the five last grapheme indexes.
 </span><span style="font-weight:bold;color:blue;">-- In case of error, reports only the first error.
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;F4 91 92 93 FF 41 80 BF 42&quot;x || &quot;Joyeux Noël 👨‍👩‍👧&quot;</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(string, /*codepointStorageLimit:*/ 0, /*graphemeStorageLimit:*/ 0, /*errorStorageLimit:*/ 1, /*endCodepointStorageSize:*/ 0, /*endGraphemeStorageSize:*/ 5)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(string, /*startCodepointStorageLimit:*/ 0, /*startGraphemeStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 1, /*endCodepointStorageLimit:*/ 0, /*endGraphemeStorageLimit:*/ 5)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorCount=                 </span><span style="font-weight:bold;color:blue;">-- 7</span>
  7
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errors~items=               </span><span style="font-weight:bold;color:blue;">-- 1</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages~items=   </span><span style="font-weight:bold;color:blue;">-- 1</span>
  1
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errors[1]=                  </span><span style="font-weight:bold;color:blue;">-- 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages[1]=      </span><span style="font-weight:bold;color:blue;">-- 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'</span>
 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointStorageSize=    </span><span style="font-weight:bold;color:blue;">-- 0</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointStorageCount=   </span><span style="font-weight:bold;color:blue;">-- 0</span>
  0
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=        </span><span style="font-weight:bold;color:blue;">-- (The NIL object)</span>
-(The NIL object)
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endGraphemeStorageSize=     </span><span style="font-weight:bold;color:blue;">-- 5</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=        </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endGraphemeStorageCount=    </span><span style="font-weight:bold;color:blue;">-- 5</span>
  5
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endGraphemeIndexes=         </span><span style="font-weight:bold;color:blue;">-- [ 23, 22, 21, 19, 18]</span>
 [ 23, 22, 21, 19, 18]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorStorageSize=        </span><span style="font-weight:bold;color:blue;">-- 0</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorStorageCount=       </span><span style="font-weight:bold;color:blue;">-- 0</span>
  0
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrors=                  </span><span style="font-weight:bold;color:blue;">-- (The NIL object)</span>
-(The NIL object)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorMessages=           </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
 <span style="font-weight:bold;color:blue;">-- Tedious: Convert endIndexG to indexG
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">do endIndexG=1 to indexer~endGraphemeIndexes~items; indexG = indexer~graphemeCount - endIndexG + 1; say endIndexG &quot;-&gt;&quot; indexG&quot;:&quot; indexer~graphemeAtIndexG(indexG); end</span>
 1 -&gt; 22: 👨‍👩‍👧
@@ -2776,11 +2776,11 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrors=      
 </span><span style="font-weight:bold;color:blue;">-- Test the implementation of codepointAtIndexC after adding support for end storage
 </span><span style="font-weight:bold;color:blue;">------------------------------------------------------------------------------------
 </span>
-<span style="font-weight:bold;color:blue;">-- 0 codepoint, no storage limit, no end storage
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;&quot;)~codepointIndexes=                 </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+<span style="font-weight:bold;color:blue;">-- 0 codepoint, no start storage limit, no end storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;&quot;)~startCodepointIndexes=            </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
 an Array (no shape, 0 items)
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;&quot;)~endCodepointIndexes=              </span><span style="font-weight:bold;color:blue;">-- (The NIL object)</span>
-(The NIL object)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;&quot;)~endCodepointIndexes=              </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;&quot;)~codepointAtIndexC(-2)=            </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: -2 exceeds the code point count 0.</span>
 <span style="font-weight:bold;color:red;">Invalid code point index: -2 exceeds the code point count 0.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
@@ -2797,7 +2797,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:red;">Invalid code point index: 2 exceeds the code point count 0.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
-<span style="font-weight:bold;color:blue;">-- 1 codepoint, no storage limit, no end storage
+<span style="font-weight:bold;color:blue;">-- 1 codepoint, no start storage limit, no end storage
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;a&quot;)~codepointAtIndexC(-2)=           </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: -2 exceeds the code point count 1.</span>
 <span style="font-weight:bold;color:red;">Invalid code point index: -2 exceeds the code point count 1.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
@@ -2812,11 +2812,11 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:red;">Invalid code point index: 2 exceeds the code point count 1.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
-<span style="font-weight:bold;color:blue;">-- 5 codepoints, no storage limit, no end storage
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;)~codepointIndexes=            </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 3, 4, 5]</span>
+<span style="font-weight:bold;color:blue;">-- 5 codepoints, no start storage limit, no end storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;)~startCodepointIndexes=       </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 3, 4, 5]</span>
 [ 1, 2, 3, 4, 5]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;)~endCodepointIndexes=         </span><span style="font-weight:bold;color:blue;">-- (The NIL object)</span>
-(The NIL object)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;)~endCodepointIndexes=         </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;)~codepointAtIndexC(-6)=       </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: -6 exceeds the code point count 5.</span>
 <span style="font-weight:bold;color:red;">Invalid code point index: -6 exceeds the code point count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
@@ -2847,11 +2847,11 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:red;">Invalid code point index: 6 exceeds the code point count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
-<span style="font-weight:bold;color:blue;">-- 5 codepoints, storage limit 2, no end storage
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 2)~codepointIndexes=         </span><span style="font-weight:bold;color:blue;">-- [ 1, 2]</span>
+<span style="font-weight:bold;color:blue;">-- 5 codepoints, start storage limit 2, no end storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 2)~startCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 1, 2]</span>
 [ 1, 2]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 2)~endCodepointIndexes=      </span><span style="font-weight:bold;color:blue;">-- (The NIL object)</span>
-(The NIL object)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 2)~endCodepointIndexes=      </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 2)~codepointAtIndexC(-6)=    </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: -6 exceeds the code point count 5.</span>
 <span style="font-weight:bold;color:red;">Invalid code point index: -6 exceeds the code point count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
@@ -2888,8 +2888,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:red;">Invalid code point index: 6 exceeds the code point count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
-<span style="font-weight:bold;color:blue;">-- 5 codepoints, storage limit 2, end storage size 1
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 2, , , 1)~codepointIndexes=              </span><span style="font-weight:bold;color:blue;">-- [ 1, 2]</span>
+<span style="font-weight:bold;color:blue;">-- 5 codepoints, start storage limit 2, end storage limit 1
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 2, , , 1)~startCodepointIndexes=         </span><span style="font-weight:bold;color:blue;">-- [ 1, 2]</span>
 [ 1, 2]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 2, , , 1)~endCodepointIndexes=           </span><span style="font-weight:bold;color:blue;">-- [ 5]</span>
 [ 5]
@@ -2927,8 +2927,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:red;">Invalid code point index: 6 exceeds the code point count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
-<span style="font-weight:bold;color:blue;">-- 5 codepoints, storage limit 2, end storage size 3
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 2, , , 3)~codepointIndexes=              </span><span style="font-weight:bold;color:blue;">-- [ 1, 2]</span>
+<span style="font-weight:bold;color:blue;">-- 5 codepoints, start storage limit 2, end storage limit 3
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 2, , , 3)~startCodepointIndexes=         </span><span style="font-weight:bold;color:blue;">-- [ 1, 2]</span>
 [ 1, 2]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 2, , , 3)~endCodepointIndexes=           </span><span style="font-weight:bold;color:blue;">-- [ 5, 4, 3]</span>
 [ 5, 4, 3]
@@ -2962,8 +2962,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:red;">Invalid code point index: 6 exceeds the code point count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
-<span style="font-weight:bold;color:blue;">-- 5 codepoints, storage limit 10, end storage size 10
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 10, , , 10)~codepointIndexes=            </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 3, 4, 5]</span>
+<span style="font-weight:bold;color:blue;">-- 5 codepoints, start storage limit 10, end storage limit 10
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 10, , , 10)~startCodepointIndexes=       </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 3, 4, 5]</span>
 [ 1, 2, 3, 4, 5]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 10, , , 10)~endCodepointIndexes=         </span><span style="font-weight:bold;color:blue;">-- [ 5, 4, 3, 2, 1]</span>
 [ 5, 4, 3, 2, 1]
@@ -2997,8 +2997,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:red;">Invalid code point index: 6 exceeds the code point count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
-<span style="font-weight:bold;color:blue;">-- 26 codepoints, storage limit 10, end storage size 10
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcdefghijklmnopqrstuvwxyz&quot;, 10, , , 10)~codepointIndexes=           </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span>
+<span style="font-weight:bold;color:blue;">-- 26 codepoints, start storage limit 10, end storage limit 10
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcdefghijklmnopqrstuvwxyz&quot;, 10, , , 10)~startCodepointIndexes=      </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span>
 [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcdefghijklmnopqrstuvwxyz&quot;, 10, , , 10)~endCodepointIndexes=        </span><span style="font-weight:bold;color:blue;">-- [ 26, 25, 24, 23, 22, 21, 20, 19, 18, 17]</span>
 [ 26, 25, 24, 23, 22, 21, 20, 19, 18, 17]
@@ -3045,11 +3045,11 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 </span><span style="font-weight:bold;color:blue;">-- Test the implementation of graphemeAtIndexG after adding support for end storage
 </span><span style="font-weight:bold;color:blue;">------------------------------------------------------------------------------------
 </span>
-<span style="font-weight:bold;color:blue;">-- 0 grapheme, no storage limit, no end storage
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;&quot;)~graphemeIndexes=                  </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+<span style="font-weight:bold;color:blue;">-- 0 grapheme, no start storage limit, no end storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;&quot;)~startGraphemeIndexes=             </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
 an Array (no shape, 0 items)
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;&quot;)~endGraphemeIndexes=               </span><span style="font-weight:bold;color:blue;">-- (The NIL object)</span>
-(The NIL object)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;&quot;)~endGraphemeIndexes=               </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;&quot;)~graphemeAtIndexG(-2)=             </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: -2 exceeds the grapheme count 0.</span>
 <span style="font-weight:bold;color:red;">Invalid grapheme index: -2 exceeds the grapheme count 0.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
@@ -3066,7 +3066,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:red;">Invalid grapheme index: 2 exceeds the grapheme count 0.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
-<span style="font-weight:bold;color:blue;">-- 1 grapheme, no storage limit, no end storage
+<span style="font-weight:bold;color:blue;">-- 1 grapheme, no start storage limit, no end storage
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;a&quot;)~graphemeAtIndexG(-2)=            </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: -2 exceeds the grapheme count 1.</span>
 <span style="font-weight:bold;color:red;">Invalid grapheme index: -2 exceeds the grapheme count 1.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
@@ -3081,11 +3081,11 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:red;">Invalid grapheme index: 2 exceeds the grapheme count 1.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
-<span style="font-weight:bold;color:blue;">-- 5 graphemes, no storage limit, no end storage
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;)~graphemeIndexes=             </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 3, 4, 5]</span>
+<span style="font-weight:bold;color:blue;">-- 5 graphemes, no start storage limit, no end storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;)~startGraphemeIndexes=        </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 3, 4, 5]</span>
 [ 1, 2, 3, 4, 5]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;)~endGraphemeIndexes=          </span><span style="font-weight:bold;color:blue;">-- (The NIL object)</span>
-(The NIL object)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;)~endGraphemeIndexes=          </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;)~graphemeAtIndexG(-6)=        </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: -6 exceeds the grapheme count 5.</span>
 <span style="font-weight:bold;color:red;">Invalid grapheme index: -6 exceeds the grapheme count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
@@ -3116,11 +3116,11 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:red;">Invalid grapheme index: 6 exceeds the grapheme count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
-<span style="font-weight:bold;color:blue;">-- 5 graphemes, storage limit 2, no end storage
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 2)~graphemeIndexes=        </span><span style="font-weight:bold;color:blue;">-- [ 1, 2]</span>
+<span style="font-weight:bold;color:blue;">-- 5 graphemes, start storage limit 2, no end storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 2)~startGraphemeIndexes=   </span><span style="font-weight:bold;color:blue;">-- [ 1, 2]</span>
 [ 1, 2]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 2)~endGraphemeIndexes=     </span><span style="font-weight:bold;color:blue;">-- (The NIL object)</span>
-(The NIL object)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 2)~endGraphemeIndexes=     </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 2)~graphemeAtIndexG(-6)=   </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: -6 exceeds the grapheme count 5.</span>
 <span style="font-weight:bold;color:red;">Invalid grapheme index: -6 exceeds the grapheme count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
@@ -3157,8 +3157,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:red;">Invalid grapheme index: 6 exceeds the grapheme count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
-<span style="font-weight:bold;color:blue;">-- 5 graphemes, storage limit 2, end storage size 1
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 2, , , 1)~graphemeIndexes=         </span><span style="font-weight:bold;color:blue;">-- [ 1, 2]</span>
+<span style="font-weight:bold;color:blue;">-- 5 graphemes, start storage limit 2, end storage limit 1
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 2, , , 1)~startGraphemeIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 1, 2]</span>
 [ 1, 2]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 2, , , 1)~endGraphemeIndexes=      </span><span style="font-weight:bold;color:blue;">-- [ 5]</span>
 [ 5]
@@ -3196,8 +3196,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:red;">Invalid grapheme index: 6 exceeds the grapheme count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
-<span style="font-weight:bold;color:blue;">-- 5 graphemes, storage limit 2, end storage size 3
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 2, , , 3)~graphemeIndexes=         </span><span style="font-weight:bold;color:blue;">-- [ 1, 2]</span>
+<span style="font-weight:bold;color:blue;">-- 5 graphemes, start storage limit 2, end storage limit 3
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 2, , , 3)~startGraphemeIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 1, 2]</span>
 [ 1, 2]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 2, , , 3)~endGraphemeIndexes=      </span><span style="font-weight:bold;color:blue;">-- [ 5, 4, 3]</span>
 [ 5, 4, 3]
@@ -3231,8 +3231,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:red;">Invalid grapheme index: 6 exceeds the grapheme count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
-<span style="font-weight:bold;color:blue;">-- 5 graphemes, storage limit 10, end storage size 10
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 10, , , 10)~graphemeIndexes=       </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 3, 4, 5]</span>
+<span style="font-weight:bold;color:blue;">-- 5 graphemes, start storage limit 10, end storage limit 10
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 10, , , 10)~startGraphemeIndexes=  </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 3, 4, 5]</span>
 [ 1, 2, 3, 4, 5]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 10, , , 10)~endGraphemeIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 5, 4, 3, 2, 1]</span>
 [ 5, 4, 3, 2, 1]
@@ -3266,8 +3266,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:red;">Invalid grapheme index: 6 exceeds the grapheme count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
-<span style="font-weight:bold;color:blue;">-- 26 graphemes, storage limit 10, end storage size 10
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcdefghijklmnopqrstuvwxyz&quot;, , 10, , , 10)~graphemeIndexes=          </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span>
+<span style="font-weight:bold;color:blue;">-- 26 graphemes, start storage limit 10, end storage limit 10
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcdefghijklmnopqrstuvwxyz&quot;, , 10, , , 10)~startGraphemeIndexes=     </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span>
 [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcdefghijklmnopqrstuvwxyz&quot;, , 10, , , 10)~endGraphemeIndexes=       </span><span style="font-weight:bold;color:blue;">-- [ 26, 25, 24, 23, 22, 21, 20, 19, 18, 17]</span>
 [ 26, 25, 24, 23, 22, 21, 20, 19, 18, 17]
@@ -3691,7 +3691,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(
 </span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x, &gt;indexer)=    </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'</span>
 '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errors==</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
 an Array (shape [4], 4 items)
  1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
  2 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
@@ -4012,11 +4012,11 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~UAX44_LM3(&
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer=                            </span><span style="font-weight:bold;color:blue;">-- (a👨‍👩‍👧b)</span>
 (a👨‍👩‍👧b)
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexes=           </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 6, 9, 13, 16, 20]</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=      </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 6, 9, 13, 16, 20]</span>
 [ 1, 2, 6, 9, 13, 16, 20]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexes=            </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 20]</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=       </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 20]</span>
 [ 1, 2, 20]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errors=                     </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages=         </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
 an Array (no shape, 0 items)
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointAtIndexC(3)=       </span><span style="font-weight:bold;color:blue;">-- 8205</span>
  8205
@@ -4028,11 +4028,11 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeAtIndexG
 <span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts
 </span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x)</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexes=           </span><span style="font-weight:bold;color:blue;">-- [-1,-2,-3,-4,-5, 6,-7,-8, 9]</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=      </span><span style="font-weight:bold;color:blue;">-- [-1,-2,-3,-4,-5, 6,-7,-8, 9]</span>
 [-1,-2,-3,-4,-5, 6,-7,-8, 9]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexes=            </span><span style="font-weight:bold;color:blue;">-- [-1,-2,-3,-4,-5, 6,-7,-8, 9]</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=       </span><span style="font-weight:bold;color:blue;">-- [-1,-2,-3,-4,-5, 6,-7,-8, 9]</span>
 [-1,-2,-3,-4,-5, 6,-7,-8, 9]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errors==</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
 an Array (shape [7], 7 items)
  1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
  2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'

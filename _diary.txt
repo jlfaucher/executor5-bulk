@@ -22,6 +22,62 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 Sept 05
+
+[Unicode]
+
+Harmonize the argument names used by RexxUnicodeStringIndexer~init:
+    codepointStorageLimit -> startCodepointStorageLimit
+    graphemeStorageLimit -> startGraphemeStorageLimit
+    errorStorageLimit -> startErrorStorageLimit
+    endCodepointStorageSize -> endCodepointStorageLimit
+    endGraphemeStorageSize -> endGraphemeStorageLimit
+    errorStorageSize -> endErrorStorageLimit
+
+Apply breaking changes to RexxUnicodeStringIndexer:
+    The storage limits passed when creating an indexer are no longer stored.
+    The following attributes, whose names ended with "Limit" or "Size", have been
+    removed:
+    ::attribute codepointStorageLimit get
+    ::attribute endCodepointStorageSize get
+    ::attribute graphemeStorageLimit get
+    ::attribute endGraphemeStorageSize get
+    ::attribute errorStorageLimit get
+    ::attribute endErrorStorageSize get
+
+    The internal storages are now private objects.
+    The corresponding attributes have been removed:
+    ::attribute codepointIndexes get
+    ::attribute endCodepointIndexes get
+    ::attribute graphemeIndexes get
+    ::attribute endGraphemeIndexes get
+    ::attribute errors get
+    ::attribute endErrors get
+
+An array containing a copy of the corresponding stored objects is returned by these
+methods:
+    ::method startCodepointIndexes
+    ::method endCodepointIndexes
+    ::method startGraphemeIndexes
+    ::method endGraphemeIndexes
+    ::method startErrorMessages
+    ::method endErrorMessages
+Beware of the size of the returned arrays! The internal storage is optimized for
+memory usage, but ooRexx arrays are not. Moreover, a new array is created each
+time these methods are used.
+
+The count of stored objects is returned by these methods:
+    ::method startCodepointStorageCount
+    ::method endCodepointStorageCount
+    ::method startGraphemeStorageCount
+    ::method endGraphemeStorageCount
+    ::method startErrorStorageCount
+    ::method endErrorStorageCount
+You can get the same values with startCodepointIndexes~items and the like, but
+these "Count" methods avoid creating an ooRexx array just to return a count.
+
+
+===============================================================================
 2026 Sept 04
 
 [Unicode]
