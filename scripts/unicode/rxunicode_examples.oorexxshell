@@ -10,6 +10,20 @@ demo on
 
 
 --------------------------------------------------------------------------------
+-- .RexxUnicodeServices~codepointAsciiPrintableString
+--------------------------------------------------------------------------------
+
+.RexxUnicodeServices~codepointAsciiPrintableString(0)=          -- '\u0000'
+.RexxUnicodeServices~codepointAsciiPrintableString(65)=         -- 'A'
+.RexxUnicodeServices~codepointAsciiPrintableString(224)=        -- '\u00E0'
+.RexxUnicodeServices~codepointAsciiPrintableString("D800"~x2d)= -- '\uD800'
+
+
+-- Since the special value -1 is not printable, it is represented using Unicode escape notation.
+.RexxUnicodeServices~codepointAsciiPrintableString(-1)=         -- '\UFFFFFFFF'
+
+
+--------------------------------------------------------------------------------
 -- .RexxUnicodeServices~codepointBidiClass
 --------------------------------------------------------------------------------
 
@@ -82,16 +96,17 @@ demo on
 
 
 --------------------------------------------------------------------------------
--- .RexxUnicodeServices~codepointPrintableString
+-- .RexxUnicodeServices~codepointUtf8PrintableString
 --------------------------------------------------------------------------------
 
-.RexxUnicodeServices~codepointPrintableString(0)=           -- '\u0000'
-.RexxUnicodeServices~codepointPrintableString(65)=          -- 'A'
-.RexxUnicodeServices~codepointPrintableString("D800"~x2d)=  -- '\uD800'
+.RexxUnicodeServices~codepointUtf8PrintableString(0)=           -- '\u0000'
+.RexxUnicodeServices~codepointUtf8PrintableString(65)=          -- 'A'
+.RexxUnicodeServices~codepointUtf8PrintableString(224)=         -- 'à'
+.RexxUnicodeServices~codepointUtf8PrintableString("D800"~x2d)=  -- '\uD800'
 
 
 -- Since the special value -1 is not printable, it is represented using Unicode escape notation.
-.RexxUnicodeServices~codepointPrintableString(-1)=          -- '\UFFFFFFFF'
+.RexxUnicodeServices~codepointUtf8PrintableString(-1)=          -- '\UFFFFFFFF'
 
 
 --------------------------------------------------------------------------------
@@ -341,9 +356,10 @@ indexB -= abs(size); indexB=                                                    
 .RexxUnicodeServices~utf8StringEscape(.RexxUnicode~U2C("U+10FFF"))=   -- '\U00010FFF'
 
 
-string = "👨‍👩‍👧" || "F4 91"x
-.RexxUnicodeServices~utf8StringEscape(string)=          -- '👨\u200D👩\u200D👧\xF4\x91'
-.RexxUnicodeServices~utf8StringEscape(string, "g")=     -- '👨‍👩‍👧\xF4\x91'
+string = "Père Mère Enfant 👨‍👩‍👧" || "F4 91"x
+.RexxUnicodeServices~utf8StringEscape(string, "a")=     -- 'P\u00E8re M\u00E8re Enfant \U0001F468\u200D\U0001F469\u200D\U0001F467\xF4\x91'
+.RexxUnicodeServices~utf8StringEscape(string, "c")=     -- 'Père Mère Enfant 👨\u200D👩\u200D👧\xF4\x91'
+.RexxUnicodeServices~utf8StringEscape(string, "g")=     -- 'Père Mère Enfant 👨‍👩‍👧\xF4\x91'
 
 
 .RexxUnicodeServices~utf8StringEscape(.RexxUnicode~stringUnescape("\N{<lead surrogate-D800>}"))=    -- '\xED\xA0\x80'

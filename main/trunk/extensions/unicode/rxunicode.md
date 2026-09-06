@@ -215,9 +215,41 @@ Method-to-Unicode property mapping (PropertyAliases.txt):
 </table>
 
 
+<a id="RexxUnicodeServices_codepointAsciiPrintableString"></a>
+
+#### 1.1.1.   codepointAsciiPrintableString
+
+    .RexxUnicodeServices~codepointAsciiPrintableString( codepoint, buffer = .nil )
+
+Returns an ASCII printable string representation for the given codepoint.
+
+ASCII printable codepoints are returned as their ASCII representation;  
+all other codepoints are returned as a Unicode escape notation.
+
+If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
+
+See also [.RexxUnicodeServices~codepointUtf8PrintableString](#RexxUnicodeServices_codepointUtf8PrintableString).
+
+**Examples:**
+
+```rexx
+.RexxUnicodeServices~codepointAsciiPrintableString(0)=          -- '\u0000'
+.RexxUnicodeServices~codepointAsciiPrintableString(65)=         -- 'A'
+.RexxUnicodeServices~codepointAsciiPrintableString(224)=        -- '\u00E0'
+.RexxUnicodeServices~codepointAsciiPrintableString("D800"~x2d)= -- '\uD800'
+
+```
+
+```rexx
+-- Since the special value -1 is not printable, it is represented using Unicode escape notation.
+.RexxUnicodeServices~codepointAsciiPrintableString(-1)=         -- '\UFFFFFFFF'
+
+```
+
+
 <a id="RexxUnicodeServices_codepointBidiClass"></a>
 
-#### 1.1.1.   codepointBidiClass
+#### 1.1.2.   codepointBidiClass
 
     .RexxUnicodeServices~codepointBidiClass( codepoint, [>refCode], [>refLabel] )
 
@@ -273,7 +305,7 @@ For portability, use refCode instead.
 
 <a id="RexxUnicodeServices_codepointBidiMirrored"></a>
 
-#### 1.1.2.   codepointBidiMirrored
+#### 1.1.3.   codepointBidiMirrored
 
     .RexxUnicodeServices~codepointBidiMirrored( codepoint )
 
@@ -284,7 +316,7 @@ Returns `.true` if the `Bidi_Mirrored` property value of `codepoint` is `Yes`.
 
 <a id="RexxUnicodeServices_codepointBoundClass"></a>
 
-#### 1.1.3.   codepointBoundClass
+#### 1.1.4.   codepointBoundClass
 
     .RexxUnicodeServices~codepointBoundClass( codepoint, [>refCode], [>refLabel] )
 
@@ -345,7 +377,7 @@ For portability, use refCode instead.
 
 <a id="RexxUnicodeServices_codepointCategory"></a>
 
-#### 1.1.4.   codepointCategory
+#### 1.1.5.   codepointCategory
 
     .RexxUnicodeServices~codepointCategory( codepoint, [>refCode], [>refLabel] )
 
@@ -409,7 +441,7 @@ For portability, use refCode instead.
 
 <a id="RexxUnicodeServices_codepointCharWidth"></a>
 
-#### 1.1.5.   codepointCharWidth
+#### 1.1.6.   codepointCharWidth
 
     .RexxUnicodeServices~codepointCharWidth( codepoint )
 
@@ -425,7 +457,7 @@ See [`.RexxUnicodeServices~utf8StringWidth`](#RexxUnicodeServices_utf8StringWidt
 
 <a id="RexxUnicodeServices_codepointCombiningClass"></a>
 
-#### 1.1.6.   codepointCombiningClass
+#### 1.1.7.   codepointCombiningClass
 
     .RexxUnicodeServices~codepointCombiningClass( codepoint, [>refCode], [>refLabel] )
 
@@ -535,7 +567,7 @@ Some values have neither a `refCode` nor a `refLabel`.
 
 <a id="RexxUnicodeServices_codepointControlBoundary"></a>
 
-#### 1.1.7.   codepointControlBoundary
+#### 1.1.8.   codepointControlBoundary
 
     .RexxUnicodeServices~codepointControlBoundary( codepoint )
 
@@ -552,7 +584,7 @@ Returns `.true` if `codepoint` belongs to the `Zl`, `Zp`, `Cc`, or `Cf` category
 
 <a id="RexxUnicodeServices_codepointDecompositionType"></a>
 
-#### 1.1.8.   codepointDecompositionType
+#### 1.1.9.   codepointDecompositionType
 
     .RexxUnicodeServices~codepointDecompositionType( codepoint, [>refCode], [>refLabel] )
 
@@ -604,7 +636,7 @@ For portability, use refCode instead.
 
 <a id="RexxUnicodeServices_codepointEastAsianWidthIsAmbiguous"></a>
 
-#### 1.1.9.   codepointEastAsianWidthIsAmbiguous
+#### 1.1.10.   codepointEastAsianWidthIsAmbiguous
 
     .RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous( codepoint )
 
@@ -615,7 +647,7 @@ Returns `.true` if the `East_Asian_Width` property value of `codepoint` is `"A"`
 
 <a id="RexxUnicodeServices_codepointIgnorable"></a>
 
-#### 1.1.10.   codepointIgnorable
+#### 1.1.11.   codepointIgnorable
 
     .RexxUnicodeServices~codepointIgnorable( codepoint )
 
@@ -626,7 +658,7 @@ Returns the `Default_Ignorable_Code_Point` property value of `codepoint` (boolea
 
 <a id="RexxUnicodeServices_codepointIndicConjunctBreak"></a>
 
-#### 1.1.11.   codepointIndicConjunctBreak
+#### 1.1.12.   codepointIndicConjunctBreak
 
     .RexxUnicodeServices~codepointIndicConjunctBreak( codepoint, [>refCode], [>refLabel] )
 
@@ -667,7 +699,7 @@ For portability, use refCode instead.
 
 <a id="RexxUnicodeServices_codepointIsLower"></a>
 
-#### 1.1.12.   codepointIsLower
+#### 1.1.13.   codepointIsLower
 
     .RexxUnicodeServices~codepointIsLower( codepoint )
 
@@ -678,13 +710,13 @@ and `.false` otherwise.
 
 <a id="RexxUnicodeServices_codepointIsPrintable"></a>
 
-#### 1.1.13.   codepointIsPrintable
+#### 1.1.14.   codepointIsPrintable
 
     .RexxUnicodeServices~codepointIsPrintable( codepoint )
 
 Returns `.true` if the codepoint is printable.
 
-Rules:
+Rules (where display width is the value returned by [`codepointCharWidth`](#RexxUnicodeServices_codepointCharWidth)):
 
 - Codepoints having a display width of 0 are considered non-printable.
 - `Mc`, `Me` and `Mn` codepoints are considered printable, even though they have
@@ -711,41 +743,12 @@ Rules:
 
 <a id="RexxUnicodeServices_codepointIsUpper"></a>
 
-#### 1.1.14.   codepointIsUpper
+#### 1.1.15.   codepointIsUpper
 
     .RexxUnicodeServices~codepointIsUpper( codepoint )
 
 Returns `.true` if the codepoint corresponds to an uppercase character
 and `.false` otherwise.
-
-
-<a id="RexxUnicodeServices_codepointPrintableString"></a>
-
-#### 1.1.15.   codepointPrintableString
-
-    .RexxUnicodeServices~codepointPrintableString( codepoint, buffer = .nil )
-
-Returns a printable string representation for the given codepoint.
-
-Printable codepoints are returned as their UTF-8 character representation;
-non-printable codepoints are returned as a Unicode escape notation.
-
-If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
-
-**Examples:**
-
-```rexx
-.RexxUnicodeServices~codepointPrintableString(0)=           -- '\u0000'
-.RexxUnicodeServices~codepointPrintableString(65)=          -- 'A'
-.RexxUnicodeServices~codepointPrintableString("D800"~x2d)=  -- '\uD800'
-
-```
-
-```rexx
--- Since the special value -1 is not printable, it is represented using Unicode escape notation.
-.RexxUnicodeServices~codepointPrintableString(-1)=          -- '\UFFFFFFFF'
-
-```
 
 
 <a id="RexxUnicodeServices_codepointToLower"></a>
@@ -812,9 +815,41 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 ```
 
 
+<a id="RexxUnicodeServices_codepointUtf8PrintableString"></a>
+
+#### 1.1.20.   codepointUtf8PrintableString
+
+    .RexxUnicodeServices~codepointUtf8PrintableString( codepoint, buffer = .nil )
+
+Returns a UTF-8 printable string representation for the given codepoint.
+
+Printable codepoints are returned as their UTF-8 character representation;  
+all other codepoints are returned as a Unicode escape notation.
+
+If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
+
+See also [.RexxUnicodeServices~codepointAsciiPrintableString](#RexxUnicodeServices_codepointAsciiPrintableString).
+
+**Examples:**
+
+```rexx
+.RexxUnicodeServices~codepointUtf8PrintableString(0)=           -- '\u0000'
+.RexxUnicodeServices~codepointUtf8PrintableString(65)=          -- 'A'
+.RexxUnicodeServices~codepointUtf8PrintableString(224)=         -- 'à'
+.RexxUnicodeServices~codepointUtf8PrintableString("D800"~x2d)=  -- '\uD800'
+
+```
+
+```rexx
+-- Since the special value -1 is not printable, it is represented using Unicode escape notation.
+.RexxUnicodeServices~codepointUtf8PrintableString(-1)=          -- '\UFFFFFFFF'
+
+```
+
+
 <a id="RexxUnicodeServices_graphemeBreak"></a>
 
-#### 1.1.20.   graphemeBreak
+#### 1.1.21.   graphemeBreak
 
     .RexxUnicodeServices~graphemeBreak( codepoint1, codepoint2, >refState )
 
@@ -844,7 +879,7 @@ state=                                                  -- 1
 
 <a id="RexxUnicodeServices_graphemeBreakBackward"></a>
 
-#### 1.1.21.   graphemeBreakBackward
+#### 1.1.22.   graphemeBreakBackward
 
     .RexxUnicodeServices~graphemeBreakBackward( string, indexB, codepoint1, codepoint2 )
 
@@ -1080,14 +1115,14 @@ block's terminator, so `M` blocks of length `k` cost `O(M·k)` = `O(n)`, not `O(
 
 <a id="RexxUnicodeServices_new"></a>
 
-#### 1.1.22.   new
+#### 1.1.23.   new
 
 This method raises an error because `RexxUnicodeServices` has no instance.
 
 
 <a id="RexxUnicodeServices_systemIsLittleEndian"></a>
 
-#### 1.1.23.   systemIsLittleEndian
+#### 1.1.24.   systemIsLittleEndian
 
     .RexxUnicodeServices~systemIsLittleEndian
 
@@ -1096,7 +1131,7 @@ Returns `.true` if the system is little-endian.
 
 <a id="RexxUnicodeServices_unicodeVersion"></a>
 
-#### 1.1.24.   unicodeVersion
+#### 1.1.25.   unicodeVersion
 
     .RexxUnicodeServices~unicodeVersion
 
@@ -1112,7 +1147,7 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 
 <a id="RexxUnicodeServices_utf8DecodeCodepoint"></a>
 
-#### 1.1.25.   utf8DecodeCodepoint
+#### 1.1.26.   utf8DecodeCodepoint
 
 ```
 .RexxUnicodeServices~utf8DecodeCodepoint( string, indexB = 1, [>refSizeB], [>refErrorCode], [>refErrorMsg] )
@@ -1184,7 +1219,7 @@ to follow the `U+FFFD` Substitution of Maximal Subparts.
 
 <a id="RexxUnicodeServices_utf8DecodePreviousCodepoint"></a>
 
-#### 1.1.26.   utf8DecodePreviousCodepoint
+#### 1.1.27.   utf8DecodePreviousCodepoint
 
 ```
 .RexxUnicodeServices~utf8DecodePreviousCodepoint( string, indexB = string~length + 1, [>refSizeB], [>refErrorCode], [>refErrorMsg] )
@@ -1303,7 +1338,7 @@ indexB -= abs(size); indexB=                                                    
 
 <a id="RexxUnicodeServices_utf8EncodeCodepoint"></a>
 
-#### 1.1.27.   utf8EncodeCodepoint
+#### 1.1.28.   utf8EncodeCodepoint
 
 ```
 .RexxUnicodeServices~utf8EncodeCodepoint( codepoint, destination, [>refSizeB] )
@@ -1347,7 +1382,7 @@ Append the UTF-8 encoding of 1114112 to mb: size = 0 mb = oë€🎅
 
 <a id="RexxUnicodeServices_utf8procVersion"></a>
 
-#### 1.1.28.   utf8procVersion
+#### 1.1.29.   utf8procVersion
 
     .RexxUnicodeServices~utf8procVersion
 
@@ -1363,24 +1398,29 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 
 <a id="RexxUnicodeServices_utf8StringEscape"></a>
 
-#### 1.1.29.   utf8StringEscape
+#### 1.1.30.   utf8StringEscape
 
     .RexxUnicodeServices~utf8StringEscape( string, escapeBy = "c", buffer = .nil )
 
-Possible values for the `escapeBy` parameter are `"codepoint"` (default) and `"grapheme"`.  
+Possible values for the `escapeBy` parameter are `"[A]sciiCodepoint"`, `"[C]odepoint"` (default) and `"[G]rapheme"`.  
 You only need to specify the first letter; any following characters are ignored.
 
-When `escapeBy` is `"codepoint"`, returns a string in which non-printable codepoints
+When `escapeBy` is `"[A]sciiCodepoint"`, returns a string in which non-ASCII codepoints,
+non-printable codepoints and invalid byte sequences are replaced with escape sequences.
+
+When `escapeBy` is `"[C]odepoint"`, returns a string in which non-printable codepoints
 and invalid byte sequences are replaced with escape sequences.
+
+When `escapeBy` is `"[G]rapheme"`, returns a string in which invalid byte sequences
+are replaced with escape sequences.
+
+Common rules:
 
 - Invalid byte sequences are represented as escaped hexadecimal byte sequences:
   `\xXX` or `\x{XX..XX}`.
 - Non-printable codepoints are represented using the standard escape sequences
   (`\a`, `\b`, `\t`, `\n`, `\v`, `\f`, `\r`) when applicable;  
   otherwise, Unicode escape notation (`\uXXXX` or `\UXXXXXXXX`) is used.
-
-When `escapeBy` is `"grapheme"`, returns a string in which invalid byte sequences
-are replaced with escape sequences.
 
 If a buffer is passed as an argument, the resulting string is appended to the buffer,
 and the buffer is returned.
@@ -1395,9 +1435,10 @@ and the buffer is returned.
 ```
 
 ```rexx
-string = "👨‍👩‍👧" || "F4 91"x
-.RexxUnicodeServices~utf8StringEscape(string)=          -- '👨\u200D👩\u200D👧\xF4\x91'
-.RexxUnicodeServices~utf8StringEscape(string, "g")=     -- '👨‍👩‍👧\xF4\x91'
+string = "Père Mère Enfant 👨‍👩‍👧" || "F4 91"x
+.RexxUnicodeServices~utf8StringEscape(string, "a")=     -- 'P\u00E8re M\u00E8re Enfant \U0001F468\u200D\U0001F469\u200D\U0001F467\xF4\x91'
+.RexxUnicodeServices~utf8StringEscape(string, "c")=     -- 'Père Mère Enfant 👨\u200D👩\u200D👧\xF4\x91'
+.RexxUnicodeServices~utf8StringEscape(string, "g")=     -- 'Père Mère Enfant 👨‍👩‍👧\xF4\x91'
 
 ```
 
@@ -1422,7 +1463,7 @@ Escaping U+D800 is '\xED\xA0\x80' because \x{EDA080} can't be UTF-8 decoded as U
 
 <a id="RexxUnicodeServices_utf8StringInfo"></a>
 
-#### 1.1.30.   utf8StringInfo
+#### 1.1.31.   utf8StringInfo
 
 ```
 .RexxUnicodeServices~utf8StringInfo( string, [>refGraphemeCount], [>refCodepointCount], [>refErrorCount], stopAtFirstError = .false )
@@ -1496,7 +1537,7 @@ g=; c=; e=                                                                  --  
 
 <a id="RexxUnicodeServices_utf8StringUnescape"></a>
 
-#### 1.1.31.   utf8StringUnescape
+#### 1.1.32.   utf8StringUnescape
 
     .RexxUnicodeServices~utf8StringUnescape( string, buffer = .nil )
 
@@ -1590,7 +1631,7 @@ which supports these messages sent by the native implementation:
 
 <a id="RexxUnicodeServices_utf8StringWidth"></a>
 
-#### 1.1.32.   utf8StringWidth
+#### 1.1.33.   utf8StringWidth
 
 ```
 .RexxUnicodeServices~utf8StringWidth( string, indexB = string~length + 1, eastAsianContext = .false )
@@ -1637,7 +1678,7 @@ say .RexxUnicode~stringEscape(string, "g"); say " "~copies(width) || "^"
 
 <a id="RexxUnicodeServices_utf8Transform"></a>
 
-#### 1.1.33.   utf8Transform
+#### 1.1.34.   utf8Transform
 
 ```
 .RexxUnicodeServices~utf8Transform( string, casefold = .false, lump= .false, nlf = 0, normalization = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false )
@@ -1657,13 +1698,13 @@ say .RexxUnicode~stringEscape(string, "g"); say " "~copies(width) || "^"
 
 Returns the transformed string.
 
-##### 1.1.33.1.   'caseFold' argument
+##### 1.1.34.1.   'caseFold' argument
 
 Performs unicode case folding, to be able to do a case-insensitive
 string comparison.
 
 
-##### 1.1.33.2.   'lump' argument
+##### 1.1.34.2.   'lump' argument
 
 Maps certain characters to a common representative (i.e., several distinct characters produce the same output character).  
 All the concerned characters become the same character, but still remain distinct characters.
@@ -1705,7 +1746,7 @@ Mapping rules:
     U+007E  ~   <-- tilde operator U+223C
 
 
-##### 1.1.33.3.   'nlf' argument
+##### 1.1.34.3.   'nlf' argument
 
 [https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213][newline_guidelines]
 
@@ -1732,7 +1773,7 @@ NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are converted
 to the Unicode Paragraph Separator (PS) codepoint.
 
 
-##### 1.1.33.4.   'normalization' argument
+##### 1.1.34.4.   'normalization' argument
 
 ```rexx
 -- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).
@@ -1747,7 +1788,7 @@ to the Unicode Paragraph Separator (PS) codepoint.
 If `normalization` is not `0`, apply the requested normalization.
 
 
-##### 1.1.33.5.   'stripCC' argument
+##### 1.1.34.5.   'stripCC' argument
 
 Strips and/or converts control characters.
 
@@ -1758,13 +1799,13 @@ are treated as a NLF-sequence in this case.
 All other control characters are simply removed.
 
 
-##### 1.1.33.6.   'stripIgnorable' argument
+##### 1.1.34.6.   'stripIgnorable' argument
 
 Strips the characters whose property `Default_Ignorable_Code_Point` is true,
 such as `SOFT-HYPHEN` or `ZERO-WIDTH-SPACE`.
 
 
-##### 1.1.33.7.   'stripMark' argument
+##### 1.1.34.7.   'stripMark' argument
 
 Strips all character markings.
 
@@ -1777,12 +1818,12 @@ This includes non-spacing, spacing and enclosing (i.e. accents) categories:
 This option works only with a normalization applied.
 
 
-##### 1.1.33.8.   'stripNA' argument
+##### 1.1.34.8.   'stripNA' argument
 
 Strips the characters whose category is `Cn` Unassigned.
 
 
-##### 1.1.33.9.   Examples of transformations
+##### 1.1.34.9.   Examples of transformations
 
 ```rexx
 string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n"
@@ -1984,6 +2025,7 @@ Inherited methods:
 
 Inherited methods:
 
+- [`codepointAsciiPrintableString`](#RexxUnicodeServices_codepointAsciiPrintableString)
 - [`codepointBidiClass`](#RexxUnicodeServices_codepointBidiClass)
 - [`codepointBidiMirrored`](#RexxUnicodeServices_codepointBidiMirrored)
 - [`codepointBoundClass`](#RexxUnicodeServices_codepointBoundClass)
@@ -1998,11 +2040,11 @@ Inherited methods:
 - [`codepointIsLower`](#RexxUnicodeServices_codepointIsLower)
 - [`codepointIsPrintable`](#RexxUnicodeServices_codepointIsPrintable)
 - [`codepointIsUpper`](#RexxUnicodeServices_codepointIsUpper)
-- [`codepointPrintableString`](#RexxUnicodeServices_codepointPrintableString)
 - [`codepointToLower`](#RexxUnicodeServices_codepointToLower)
 - [`codepointToTitle`](#RexxUnicodeServices_codepointToTitle)
 - [`codepointToUpper`](#RexxUnicodeServices_codepointToUpper)
 - [`codepointUnicodeEscapeNotation`](#RexxUnicodeServices_codepointUnicodeEscapeNotation)
+- [`codepointUtf8PrintableString`](#RexxUnicodeServices_codepointUtf8PrintableString)
 - [`graphemeBreak`](#RexxUnicodeServices_graphemeBreak)
 - [`graphemeBreakBackward`](#RexxUnicodeServices_graphemeBreakBackward)
 - [`systemIsLittleEndian`](#RexxUnicodeServices_systemIsLittleEndian)
@@ -2659,7 +2701,7 @@ b=                                                      -- M'🤶 '
 
 #### 2.4.23.   U2D
 
-    .RexxUnicode~U2D( UPlusCodepoint, start = 1, raiseError =.false, [>refLength] )
+    .RexxUnicode~U2D( UPlusCodepoint, start = 1, raiseError = .false, [>refLength] )
 
 Converts `"U+XXXX.."` to a decimal value.
 

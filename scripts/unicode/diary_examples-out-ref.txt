@@ -5,6 +5,58 @@ ooRexx> tutor off
 
 
 -- ===============================================================================
+-- 2026 Sept 06
+
+/*
+[Unicode]
+
+Rename .RexxUnicodeServices~codepointPrintableString to codepointUtf8PrintableString.
+
+Add .RexxUnicodeServices~codepointAsciiPrintableString( codepoint, buffer = .nil ).
+    ASCII printable codepoints are returned as their ASCII representation;
+    all other codepoints are returned as a Unicode escape notation.
+
+Modify .RexxUnicodeServices~utf8StringEscape to support escapeBy = "[A]sciiCodepoint".
+    When escapeBy is "[A]sciiCodepoint", returns a string in which non-ASCII codepoints,
+    non-printable codepoints and invalid byte sequences are replaced with escape sequences.
+
+
+Examples
+*/
+
+ooRexx> .RexxUnicodeServices~codepointUtf8PrintableString(224)=         -- 'à'
+'à'
+ooRexx> .RexxUnicodeServices~codepointAsciiPrintableString(224)=        -- '\u00E0'
+'\u00E0'
+
+-- "F4 91"x is an invalid byte sequence.
+ooRexx> .RexxUnicodeServices~utf8StringEscape("Père Noël 🎅" "09"x "F4 91"x "Famille 👨‍👩‍👧", "a")=       -- 'P\u00E8re No\u00EBl \U0001F385 \t \xF4\x91 Famille \U0001F468\u200D\U0001F469\u200D\U0001F467'
+'P\u00E8re No\u00EBl \U0001F385 \t \xF4\x91 Famille \U0001F468\u200D\U0001F469\u200D\U0001F467'
+ooRexx> .RexxUnicodeServices~utf8StringEscape("Père Noël 🎅" "09"x "F4 91"x "Famille 👨‍👩‍👧", "c")=       -- 'Père Noël 🎅 \t \xF4\x91 Famille 👨\u200D👩\u200D👧'
+'Père Noël 🎅 \t \xF4\x91 Famille 👨\u200D👩\u200D👧'
+-- [09] is the tab character escaped by ooRexxShell.
+ooRexx> .RexxUnicodeServices~utf8StringEscape("Père Noël 🎅" "09"x "F4 91"x "Famille 👨‍👩‍👧", "g")=       -- 'Père Noël 🎅 [09] \xF4\x91 Famille 👨‍👩‍👧'
+'Père Noël 🎅 [09] \xF4\x91 Famille 👨‍👩‍👧'
+-- Internally, the string contains "09"x.
+ooRexx> say .RexxUnicodeServices~utf8StringEscape("Père Noël 🎅" "09"x "F4 91"x "Famille 👨‍👩‍👧", "g")    -- Père Noël 🎅 	 \xF4\x91 Famille 👨‍👩‍👧
+Père Noël 🎅 	 \xF4\x91 Famille 👨‍👩‍👧
+
+-- Round trip: string -> escape -> unescape.
+-- One-liner ready to paste in ooRexxShell.
+-- Don't display string and uestring because they contain an invalid byte sequence.
+-- Just display if they are equal (1) or different (0).
+ooRexx> string = "Père Noël 🎅" "09"x "F4 91"x "Famille 👨‍👩‍👧" ; do escapeBy over "a", "c", "g" ; estring = .RexxUnicodeServices~utf8StringEscape(string, escapeBy) ; uestring = .RexxUnicode~stringUnescape(estring) ; string == uestring= ; end
+ 1
+ 1
+ 1
+/*
+     1
+     1
+     1
+*/
+
+
+-- ===============================================================================
 -- 2026 Aug 23
 
 /*
@@ -3455,7 +3507,7 @@ ooRexx> .RexxUnicode~codepointIsPrintable(-1)=              -- 0
  0
 
 -- Since the special value -1 is not printable, it is represented using Unicode escape notation
-ooRexx> .RexxUnicode~codepointPrintableString(-1)=          -- '\UFFFFFFFF'
+ooRexx> .RexxUnicode~codepointUtf8PrintableString(-1)=          -- '\UFFFFFFFF'
 '\UFFFFFFFF'
 
 -- The special value -1 has no name
@@ -3687,8 +3739,8 @@ Add .RexxUnicode~codepointUnicodeEscapeNotation(codepoint, buffer=.nil)
 Add .RexxUnicode~codepointIsPrintable(codepoint)
     Returns true if the codepoint is printable according to its category.
 
-Add .RexxUnicode~codepointPrintableString(codepoint, buffer=.nil)
-    Returns a printable string representation of this codepoint.
+Add .RexxUnicode~codepointUtf8PrintableString(codepoint, buffer=.nil)
+    Returns a UTF-8 printable string representation of this codepoint.
     Printable codepoints are returned as their UTF-8 character representation;
     non-printable codepoints are returned as a Unicode escape notation.
 
@@ -3730,11 +3782,13 @@ ooRexx> .RexxUnicode~codepointIsPrintable(65)=            -- 1
 ooRexx> .RexxUnicode~codepointIsPrintable("D800"~x2d)=    -- 0
  0
 
-ooRexx> .RexxUnicode~codepointPrintableString(0)=           -- '\u0000'
+ooRexx> .RexxUnicode~codepointUtf8PrintableString(0)=           -- '\u0000'
 '\u0000'
-ooRexx> .RexxUnicode~codepointPrintableString(65)=          -- 'A'
+ooRexx> .RexxUnicode~codepointUtf8PrintableString(65)=          -- 'A'
 'A'
-ooRexx> .RexxUnicode~codepointPrintableString("D800"~x2d)=  -- '\uD800'
+ooRexx> .RexxUnicode~codepointUtf8PrintableString(224)=         -- 'à'
+'à'
+ooRexx> .RexxUnicode~codepointUtf8PrintableString("D800"~x2d)=  -- '\uD800'
 '\uD800'
 
 ooRexx> .RexxUnicode~codepointCharName(2448~x2d)=           -- 'OCR DASH'

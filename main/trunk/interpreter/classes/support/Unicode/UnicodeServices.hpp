@@ -110,7 +110,8 @@ public:
     RexxInteger *codepointToUpper(RexxInteger *rexxCodepoint);
     RexxInteger *codepointToTitle(RexxInteger *rexxCodepoint);
 
-    RexxObject *codepointPrintableString(RexxInteger *rexxCodepoint, MutableBuffer *destination);
+    RexxObject *codepointAsciiPrintableString(RexxInteger *rexxCodepoint, MutableBuffer *destination);
+    RexxObject *codepointUtf8PrintableString(RexxInteger *rexxCodepoint, MutableBuffer *destination);
     RexxInteger *codepointIsPrintable(RexxInteger *rexxCodepoint);
     RexxObject *codepointUnicodeEscapeNotation(RexxInteger *rexxCodepoint, MutableBuffer *destination);
 

@@ -374,13 +374,37 @@ static inline bool codepointIsPrintable(utf8proc_int32_t codepoint)
 
 
 /**
- * Appends a printable string representation of this codepoint to `buffer`.
- * Printable codepoints are appended as their UTF-8 representation;
- * non-printable codepoints are appended as a Unicode escape sequence.
+ * Appends an ASCII printable string representation of this codepoint to `buffer`.
+ * ASCII printable codepoints are appended as their ASCII representation;
+ * all other codepoints are appended as a Unicode escape sequence.
  *
  * Returns the number of characters appended.
 */
-static inline size_t codepointPrintableString(utf8proc_int32_t codepoint, MutableBuffer *buffer)
+static inline size_t codepointAsciiPrintableString(utf8proc_int32_t codepoint, MutableBuffer *buffer)
+{
+    size_t size = 0;
+    if (codepoint <= 127 && codepointIsPrintable(codepoint))
+    {
+        char buf[4];
+        size = utf8proc_encode_char(codepoint, (utf8proc_uint8_t *)buf);
+        buffer->append(buf, size);
+    }
+    else
+    {
+        size = codepointUnicodeEscapeNotation(codepoint, buffer);
+    }
+    return size;
+}
+
+
+/**
+ * Appends a UTF-8 printable string representation of this codepoint to `buffer`.
+ * Printable codepoints are appended as their UTF-8 representation;
+ * all other codepoints are appended as a Unicode escape sequence.
+ *
+ * Returns the number of characters appended.
+*/
+static inline size_t codepointUtf8PrintableString(utf8proc_int32_t codepoint, MutableBuffer *buffer)
 {
     size_t size = 0;
     if (codepointIsPrintable(codepoint))
@@ -391,7 +415,6 @@ static inline size_t codepointPrintableString(utf8proc_int32_t codepoint, Mutabl
     }
     else
     {
-        // I think it's better to use the \u or \U notation, instead of the \x{ notation
         size = codepointUnicodeEscapeNotation(codepoint, buffer);
     }
     return size;
@@ -1944,7 +1967,7 @@ RexxInteger *RexxUnicodeServicesClass::codepointIsPrintable(RexxInteger *rexxCod
 }
 
 
-RexxObject *RexxUnicodeServicesClass::codepointPrintableString(RexxInteger *rexxCodepoint, MutableBuffer *destination)
+RexxObject *RexxUnicodeServicesClass::codepointAsciiPrintableString(RexxInteger *rexxCodepoint, MutableBuffer *destination)
 {
     requiredArgument(rexxCodepoint, "codepoint");
     utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
@@ -1954,7 +1977,24 @@ RexxObject *RexxUnicodeServicesClass::codepointPrintableString(RexxInteger *rexx
     Protected<MutableBuffer> buffer = destination;
     if (buffer == OREF_NULL) buffer = new MutableBuffer();
 
-    ::codepointPrintableString(codepoint, buffer);
+    ::codepointAsciiPrintableString(codepoint, buffer);
+
+    if (destination != OREF_NULL) return destination; // The user passed a buffer, returns this buffer
+    return buffer->makeString(); // The user did not pass a buffer, returns a string
+}
+
+
+RexxObject *RexxUnicodeServicesClass::codepointUtf8PrintableString(RexxInteger *rexxCodepoint, MutableBuffer *destination)
+{
+    requiredArgument(rexxCodepoint, "codepoint");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false);
+    if (destination == TheNilObject) destination = OREF_NULL;
+    if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
+
+    Protected<MutableBuffer> buffer = destination;
+    if (buffer == OREF_NULL) buffer = new MutableBuffer();
+
+    ::codepointUtf8PrintableString(codepoint, buffer);
 
     if (destination != OREF_NULL) return destination; // The user passed a buffer, returns this buffer
     return buffer->makeString(); // The user did not pass a buffer, returns a string
@@ -1962,9 +2002,11 @@ RexxObject *RexxUnicodeServicesClass::codepointPrintableString(RexxInteger *rexx
 
 
 /**
- * When escapeBy is "[c]odepoint", returns a string in which non-printable codepoints
+ * When escapeBy is "[A]sciiCodepoint", returns a string in which non-ASCII codepoints,
+ * non-printable codepoints and invalid byte sequences are replaced with escape sequences.
+ * When escapeBy is "[C]odepoint", returns a string in which non-printable codepoints
  * and invalid byte sequences are replaced with escape sequences.
- * When escapeBy is "[g]rapheme", returns a string in which invalid byte sequences
+ * When escapeBy is "[G]rapheme", returns a string in which invalid byte sequences
  * are replaced with escape sequences.
  * If a buffer is passed as an argument, the resulting string is appended to the buffer,
  * and the buffer is returned.
@@ -1987,8 +2029,11 @@ RexxObject *RexxUnicodeServicesClass::utf8StringEscape(RexxString *string, RexxS
 
     char by = 'c';
     if (escapeBy != OREF_NULL && escapeBy->getLength() >= 1) by = escapeBy->getStringData()[0];
+    bool ascii = (by == 'a' || by == 'A');
     switch (by)
     {
+        case 'a':
+        case 'A':
         case 'c':
         case 'C':
             {
@@ -2015,7 +2060,9 @@ RexxObject *RexxUnicodeServicesClass::utf8StringEscape(RexxString *string, RexxS
                             case 12: buffer->append("\\f"); break;
                             case 13: buffer->append("\\r"); break;
                             case 92: buffer->append("\\\\"); break;
-                            default: ::codepointPrintableString(codepoint, buffer);
+                            default:
+                                if (ascii) ::codepointAsciiPrintableString(codepoint, buffer);
+                                else ::codepointUtf8PrintableString(codepoint, buffer);
                         }
                     }
                 };
@@ -2049,9 +2096,9 @@ RexxObject *RexxUnicodeServicesClass::utf8StringEscape(RexxString *string, RexxS
 
         default:
             {
-                // raise syntax 88.900 array ("Expected argument \"escapeBy\" to caselessly start with 'C' or 'G'; found" quoted(escapeBy))
+                // raise syntax 88.900 array ("Expected argument \"escapeBy\" to caselessly start with 'A' or 'C' or 'G'; found" quoted(escapeBy))
                 Protected<MutableBuffer> errorMessage = new MutableBuffer;
-                errorMessage->append("Expected argument \"escapeBy\" to caselessly start with 'C' or 'G'; found ");
+                errorMessage->append("Expected argument \"escapeBy\" to caselessly start with 'A' or 'C' or 'G'; found ");
                 errorMessage->append('"');
                 errorMessage->append(escapeBy);
                 errorMessage->append('"');

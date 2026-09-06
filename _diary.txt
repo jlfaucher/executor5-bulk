@@ -22,6 +22,47 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 Sept 06
+
+[Unicode]
+
+Rename .RexxUnicodeServices~codepointPrintableString to codepointUtf8PrintableString.
+
+Add .RexxUnicodeServices~codepointAsciiPrintableString( codepoint, buffer = .nil ).
+    ASCII printable codepoints are returned as their ASCII representation;
+    all other codepoints are returned as a Unicode escape notation.
+
+Modify .RexxUnicodeServices~utf8StringEscape to support escapeBy = "[A]sciiCodepoint".
+    When escapeBy is "[A]sciiCodepoint", returns a string in which non-ASCII codepoints,
+    non-printable codepoints and invalid byte sequences are replaced with escape sequences.
+
+
+Examples
+
+    .RexxUnicodeServices~codepointUtf8PrintableString(224)=         -- 'à'
+    .RexxUnicodeServices~codepointAsciiPrintableString(224)=        -- '\u00E0'
+
+    -- "F4 91"x is an invalid byte sequence.
+    .RexxUnicodeServices~utf8StringEscape("Père Noël 🎅" "09"x "F4 91"x "Famille 👨‍👩‍👧", "a")=       -- 'P\u00E8re No\u00EBl \U0001F385 \t \xF4\x91 Famille \U0001F468\u200D\U0001F469\u200D\U0001F467'
+    .RexxUnicodeServices~utf8StringEscape("Père Noël 🎅" "09"x "F4 91"x "Famille 👨‍👩‍👧", "c")=       -- 'Père Noël 🎅 \t \xF4\x91 Famille 👨\u200D👩\u200D👧'
+    -- [09] is the tab character escaped by ooRexxShell.
+    .RexxUnicodeServices~utf8StringEscape("Père Noël 🎅" "09"x "F4 91"x "Famille 👨‍👩‍👧", "g")=       -- 'Père Noël 🎅 [09] \xF4\x91 Famille 👨‍👩‍👧'
+    -- Internally, the string contains "09"x.
+    say .RexxUnicodeServices~utf8StringEscape("Père Noël 🎅" "09"x "F4 91"x "Famille 👨‍👩‍👧", "g")    -- Père Noël 🎅 	 \xF4\x91 Famille 👨‍👩‍👧
+
+    -- Round trip: string -> escape -> unescape.
+    -- One-liner ready to paste in ooRexxShell.
+    -- Don't display string and uestring because they contain an invalid byte sequence.
+    -- Just display if they are equal (1) or different (0).
+    string = "Père Noël 🎅" "09"x "F4 91"x "Famille 👨‍👩‍👧" ; do escapeBy over "a", "c", "g" ; estring = .RexxUnicodeServices~utf8StringEscape(string, escapeBy) ; uestring = .RexxUnicode~stringUnescape(estring) ; string == uestring= ; end
+        /*
+         1
+         1
+         1
+        */
+
+
+===============================================================================
 2026 Sept 05
 
 [Unicode]

@@ -419,8 +419,38 @@ deprecated)</small></small>
 </tr>
 </tbody>
 </table>
+<p><a id="RexxUnicodeServices_codepointAsciiPrintableString"></a></p>
+<h4
+id="codepointasciiprintablestring">1.1.1.   codepointAsciiPrintableString</h4>
+<pre><code>.RexxUnicodeServices~codepointAsciiPrintableString( codepoint, buffer = .nil )</code></pre>
+<p>Returns an ASCII printable string representation for the given
+codepoint.</p>
+<p>ASCII printable codepoints are returned as their ASCII
+representation;<br />
+non-ASCII printable codepoints are returned as a Unicode escape
+notation;<br />
+non-printable codepoints are returned as a Unicode escape notation.</p>
+<p>If a buffer is passed as an argument, the resulting string is
+appended to the buffer, and the buffer is returned.</p>
+<p>See also <a
+href="#RexxUnicodeServices_codepointUtf8PrintableString">.RexxUnicodeServices~codepointUtf8PrintableString</a>.</p>
+<p><strong>Examples:</strong></p>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointAsciiPrintableString</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '\u0000'</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointAsciiPrintableString</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">65</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- 'A'</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointAsciiPrintableString</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">224</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">        </span><span class="rx-lncm">-- '\u00E0'</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointAsciiPrintableString</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws"> </span><span class="rx-lncm">-- '\uD800'</span></code>
+<code lineno="5">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Since the special value -1 is not printable, it is represented using Unicode escape notation.</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointAsciiPrintableString</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- '\UFFFFFFFF'</span></code>
+<code lineno="3">
+</code></pre>
+</div>
 <p><a id="RexxUnicodeServices_codepointBidiClass"></a></p>
-<h4 id="codepointbidiclass">1.1.1.   codepointBidiClass</h4>
+<h4 id="codepointbidiclass">1.1.2.   codepointBidiClass</h4>
 <pre><code>.RexxUnicodeServices~codepointBidiClass( codepoint, [&gt;refCode], [&gt;refLabel] )</code></pre>
 <p>Returns the bidirectional character type of <code>codepoint</code> as
 an enumeration value.</p>
@@ -474,14 +504,14 @@ title="Standard Annex #9 Unicode Bidirectional Algorithm - Bidirectional Charact
 </code></pre>
 </div>
 <p><a id="RexxUnicodeServices_codepointBidiMirrored"></a></p>
-<h4 id="codepointbidimirrored">1.1.2.   codepointBidiMirrored</h4>
+<h4 id="codepointbidimirrored">1.1.3.   codepointBidiMirrored</h4>
 <pre><code>.RexxUnicodeServices~codepointBidiMirrored( codepoint )</code></pre>
 <p>Returns <code>.true</code> if the <code>Bidi_Mirrored</code> property
 value of <code>codepoint</code> is <code>Yes</code>.</p>
 <p><a href="https://unicode.org/reports/tr9/#Mirroring"
 title="Standard Annex #9 Unicode Bidirectional Algorithm - Mirroring">https://unicode.org/reports/tr9/#Mirroring</a></p>
 <p><a id="RexxUnicodeServices_codepointBoundClass"></a></p>
-<h4 id="codepointboundclass">1.1.3.   codepointBoundClass</h4>
+<h4 id="codepointboundclass">1.1.4.   codepointBoundClass</h4>
 <pre><code>.RexxUnicodeServices~codepointBoundClass( codepoint, [&gt;refCode], [&gt;refLabel] )</code></pre>
 <p>Returns the <code>Grapheme_Cluster_Break</code> property value of
 <code>codepoint</code> as an enumeration value.</p>
@@ -537,7 +567,7 @@ title="Standard Annex #29 Unicode Text Segmentation - Grapheme Cluster Boundarie
 </code></pre>
 </div>
 <p><a id="RexxUnicodeServices_codepointCategory"></a></p>
-<h4 id="codepointcategory">1.1.4.   codepointCategory</h4>
+<h4 id="codepointcategory">1.1.5.   codepointCategory</h4>
 <pre><code>.RexxUnicodeServices~codepointCategory( codepoint, [&gt;refCode], [&gt;refLabel] )</code></pre>
 <p>Returns the <code>General_Category</code> property value of
 <code>codepoint</code> as an enumeration value.</p>
@@ -596,7 +626,7 @@ title="Unicode Core Specification - General Category">https://www.unicode.org/ve
 </code></pre>
 </div>
 <p><a id="RexxUnicodeServices_codepointCharWidth"></a></p>
-<h4 id="codepointcharwidth">1.1.5.   codepointCharWidth</h4>
+<h4 id="codepointcharwidth">1.1.6.   codepointCharWidth</h4>
 <pre><code>.RexxUnicodeServices~codepointCharWidth( codepoint )</code></pre>
 <p>Given a codepoint, returns a character width analogous to
 <code>wcwidth(codepoint)</code>, except that a width of 0 is returned
@@ -611,7 +641,7 @@ characters?</a></p>
 <p>See <a
 href="#RexxUnicodeServices_utf8StringWidth"><code>.RexxUnicodeServices~utf8StringWidth</code></a>.</p>
 <p><a id="RexxUnicodeServices_codepointCombiningClass"></a></p>
-<h4 id="codepointcombiningclass">1.1.6.   codepointCombiningClass</h4>
+<h4 id="codepointcombiningclass">1.1.7.   codepointCombiningClass</h4>
 <pre><code>.RexxUnicodeServices~codepointCombiningClass( codepoint, [&gt;refCode], [&gt;refLabel] )</code></pre>
 <p>Returns the <code>Canonical_Combining_Class</code> property value of
 <code>codepoint</code>.</p>
@@ -720,7 +750,7 @@ title="Unicode Character Database - Canonical Combining Class Values">https://ww
 </code></pre>
 </div>
 <p><a id="RexxUnicodeServices_codepointControlBoundary"></a></p>
-<h4 id="codepointcontrolboundary">1.1.7.   codepointControlBoundary</h4>
+<h4 id="codepointcontrolboundary">1.1.8.   codepointControlBoundary</h4>
 <pre><code>.RexxUnicodeServices~codepointControlBoundary( codepoint )</code></pre>
 <p>Returns <code>.true</code> if <code>codepoint</code> belongs to the
 <code>Zl</code>, <code>Zp</code>, <code>Cc</code>, or <code>Cf</code>
@@ -737,7 +767,7 @@ unless a use case is identified.</p>
 </blockquote>
 <p><a id="RexxUnicodeServices_codepointDecompositionType"></a></p>
 <h4
-id="codepointdecompositiontype">1.1.8.   codepointDecompositionType</h4>
+id="codepointdecompositiontype">1.1.9.   codepointDecompositionType</h4>
 <pre><code>.RexxUnicodeServices~codepointDecompositionType( codepoint, [&gt;refCode], [&gt;refLabel] )</code></pre>
 <p>Returns the <code>Decomposition_Type</code> property value of
 <code>codepoint</code> as an enumeration value.</p>
@@ -786,7 +816,7 @@ title="Unicode Normalization Forms">https://unicode.org/reports/tr15/</a></p>
 </div>
 <p><a id="RexxUnicodeServices_codepointEastAsianWidthIsAmbiguous"></a></p>
 <h4
-id="codepointeastasianwidthisambiguous">1.1.9.   codepointEastAsianWidthIsAmbiguous</h4>
+id="codepointeastasianwidthisambiguous">1.1.10.   codepointEastAsianWidthIsAmbiguous</h4>
 <pre><code>.RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous( codepoint )</code></pre>
 <p>Returns <code>.true</code> if the <code>East_Asian_Width</code>
 property value of <code>codepoint</code> is <code>"A"</code>
@@ -794,7 +824,7 @@ property value of <code>codepoint</code> is <code>"A"</code>
 <p><a href="https://www.unicode.org/reports/tr11/"
 title="Standard Annex #11 East Asian Width">https://www.unicode.org/reports/tr11/</a></p>
 <p><a id="RexxUnicodeServices_codepointIgnorable"></a></p>
-<h4 id="codepointignorable">1.1.10.   codepointIgnorable</h4>
+<h4 id="codepointignorable">1.1.11.   codepointIgnorable</h4>
 <pre><code>.RexxUnicodeServices~codepointIgnorable( codepoint )</code></pre>
 <p>Returns the <code>Default_Ignorable_Code_Point</code> property value
 of <code>codepoint</code> (boolean value).</p>
@@ -803,7 +833,7 @@ href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G40025
 title="Unicode Core Specification - Ignoring Characters in Processing">https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G40025</a></p>
 <p><a id="RexxUnicodeServices_codepointIndicConjunctBreak"></a></p>
 <h4
-id="codepointindicconjunctbreak">1.1.11.   codepointIndicConjunctBreak</h4>
+id="codepointindicconjunctbreak">1.1.12.   codepointIndicConjunctBreak</h4>
 <pre><code>.RexxUnicodeServices~codepointIndicConjunctBreak( codepoint, [&gt;refCode], [&gt;refLabel] )</code></pre>
 <p>Returns the <code>Indic_Conjunct_Break (InCB)</code> property value
 of <code>codepoint</code> as an enumeration value.</p>
@@ -840,15 +870,16 @@ title="Unicode Character Database - Derivation of Indic_Conjunct_Break">https://
 </code></pre>
 </div>
 <p><a id="RexxUnicodeServices_codepointIsLower"></a></p>
-<h4 id="codepointislower">1.1.12.   codepointIsLower</h4>
+<h4 id="codepointislower">1.1.13.   codepointIsLower</h4>
 <pre><code>.RexxUnicodeServices~codepointIsLower( codepoint )</code></pre>
 <p>Returns <code>.true</code> if the codepoint corresponds to a
 lowercase character and <code>.false</code> otherwise.</p>
 <p><a id="RexxUnicodeServices_codepointIsPrintable"></a></p>
-<h4 id="codepointisprintable">1.1.13.   codepointIsPrintable</h4>
+<h4 id="codepointisprintable">1.1.14.   codepointIsPrintable</h4>
 <pre><code>.RexxUnicodeServices~codepointIsPrintable( codepoint )</code></pre>
 <p>Returns <code>.true</code> if the codepoint is printable.</p>
-<p>Rules:</p>
+<p>Rules (where display width is the value returned by <a
+href="#RexxUnicodeServices_codepointCharWidth"><code>codepointCharWidth</code></a>):</p>
 <ul>
 <li>Codepoints having a display width of 0 are considered
 non-printable.</li>
@@ -875,35 +906,10 @@ width of 1.</li>
 </code></pre>
 </div>
 <p><a id="RexxUnicodeServices_codepointIsUpper"></a></p>
-<h4 id="codepointisupper">1.1.14.   codepointIsUpper</h4>
+<h4 id="codepointisupper">1.1.15.   codepointIsUpper</h4>
 <pre><code>.RexxUnicodeServices~codepointIsUpper( codepoint )</code></pre>
 <p>Returns <code>.true</code> if the codepoint corresponds to an
 uppercase character and <code>.false</code> otherwise.</p>
-<p><a id="RexxUnicodeServices_codepointPrintableString"></a></p>
-<h4
-id="codepointprintablestring">1.1.15.   codepointPrintableString</h4>
-<pre><code>.RexxUnicodeServices~codepointPrintableString( codepoint, buffer = .nil )</code></pre>
-<p>Returns a printable string representation for the given
-codepoint.</p>
-<p>Printable codepoints are returned as their UTF-8 character
-representation; non-printable codepoints are returned as a Unicode
-escape notation.</p>
-<p>If a buffer is passed as an argument, the resulting string is
-appended to the buffer, and the buffer is returned.</p>
-<p><strong>Examples:</strong></p>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '\u0000'</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">65</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- 'A'</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">  </span><span class="rx-lncm">-- '\uD800'</span></code>
-<code lineno="4">
-</code></pre>
-</div>
-<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-lncm">-- Since the special value -1 is not printable, it is represented using Unicode escape notation.</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointPrintableString</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '\UFFFFFFFF'</span></code>
-<code lineno="3">
-</code></pre>
-</div>
 <p><a id="RexxUnicodeServices_codepointToLower"></a></p>
 <h4 id="codepointtolower">1.1.16.   codepointToLower</h4>
 <pre><code>.RexxUnicodeServices~codepointToLower( codepoint )</code></pre>
@@ -949,8 +955,36 @@ appended to the buffer, and the buffer is returned.</p>
 <code lineno="2">
 </code></pre>
 </div>
+<p><a id="RexxUnicodeServices_codepointUtf8PrintableString"></a></p>
+<h4
+id="codepointutf8printablestring">1.1.20.   codepointUtf8PrintableString</h4>
+<pre><code>.RexxUnicodeServices~codepointUtf8PrintableString( codepoint, buffer = .nil )</code></pre>
+<p>Returns a UTF-8 printable string representation for the given
+codepoint.</p>
+<p>Printable codepoints are returned as their UTF-8 character
+representation;<br />
+non-printable codepoints are returned as a Unicode escape notation.</p>
+<p>If a buffer is passed as an argument, the resulting string is
+appended to the buffer, and the buffer is returned.</p>
+<p>See also <a
+href="#RexxUnicodeServices_codepointAsciiPrintableString">.RexxUnicodeServices~codepointAsciiPrintableString</a>.</p>
+<p><strong>Examples:</strong></p>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUtf8PrintableString</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '\u0000'</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUtf8PrintableString</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">65</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- 'A'</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUtf8PrintableString</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">224</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- 'à'</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUtf8PrintableString</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">D800</span><span class="rx-str rx-cquo">"</span><span class="rx-op">~</span><span class="rx-const rx-method">x2d</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">  </span><span class="rx-lncm">-- '\uD800'</span></code>
+<code lineno="5">
+</code></pre>
+</div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Since the special value -1 is not printable, it is represented using Unicode escape notation.</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeServices</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointUtf8PrintableString</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '\UFFFFFFFF'</span></code>
+<code lineno="3">
+</code></pre>
+</div>
 <p><a id="RexxUnicodeServices_graphemeBreak"></a></p>
-<h4 id="graphemebreak">1.1.20.   graphemeBreak</h4>
+<h4 id="graphemebreak">1.1.21.   graphemeBreak</h4>
 <pre><code>.RexxUnicodeServices~graphemeBreak( codepoint1, codepoint2, &gt;refState )
 
 .RexxUnicodeServices~graphemeBreak(
@@ -976,7 +1010,7 @@ title="Standard Annex #29 Unicode Text Segmentation - Grapheme Cluster Boundarie
 </code></pre>
 </div>
 <p><a id="RexxUnicodeServices_graphemeBreakBackward"></a></p>
-<h4 id="graphemebreakbackward">1.1.21.   graphemeBreakBackward</h4>
+<h4 id="graphemebreakbackward">1.1.22.   graphemeBreakBackward</h4>
 <pre><code>.RexxUnicodeServices~graphemeBreakBackward( string, indexB, codepoint1, codepoint2 )
 
 .RexxUnicodeServices~graphemeBreakBackward(
@@ -1207,15 +1241,15 @@ stops at the previous block's terminator, so <code>M</code> blocks of
 length <code>k</code> cost <code>O(M·k)</code> = <code>O(n)</code>, not
 <code>O(n²)</code>.</p>
 <p><a id="RexxUnicodeServices_new"></a></p>
-<h4 id="new">1.1.22.   new</h4>
+<h4 id="new">1.1.23.   new</h4>
 <p>This method raises an error because <code>RexxUnicodeServices</code>
 has no instance.</p>
 <p><a id="RexxUnicodeServices_systemIsLittleEndian"></a></p>
-<h4 id="systemislittleendian">1.1.23.   systemIsLittleEndian</h4>
+<h4 id="systemislittleendian">1.1.24.   systemIsLittleEndian</h4>
 <pre><code>.RexxUnicodeServices~systemIsLittleEndian</code></pre>
 <p>Returns <code>.true</code> if the system is little-endian.</p>
 <p><a id="RexxUnicodeServices_unicodeVersion"></a></p>
-<h4 id="unicodeversion">1.1.24.   unicodeVersion</h4>
+<h4 id="unicodeversion">1.1.25.   unicodeVersion</h4>
 <pre><code>.RexxUnicodeServices~unicodeVersion</code></pre>
 <p>Returns the Unicode version supported by the <code>utf8proc</code>
 library.</p>
@@ -1226,7 +1260,7 @@ library.</p>
 </code></pre>
 </div>
 <p><a id="RexxUnicodeServices_utf8DecodeCodepoint"></a></p>
-<h4 id="utf8decodecodepoint">1.1.25.   utf8DecodeCodepoint</h4>
+<h4 id="utf8decodecodepoint">1.1.26.   utf8DecodeCodepoint</h4>
 <pre><code>.RexxUnicodeServices~utf8DecodeCodepoint( string, indexB = 1, [&gt;refSizeB], [&gt;refErrorCode], [&gt;refErrorMsg] )
 
 .RexxUnicodeServices~utf8DecodeCodepoint(
@@ -1296,7 +1330,7 @@ detailed description of the error.</p>
 </div>
 <p><a id="RexxUnicodeServices_utf8DecodePreviousCodepoint"></a></p>
 <h4
-id="utf8decodepreviouscodepoint">1.1.26.   utf8DecodePreviousCodepoint</h4>
+id="utf8decodepreviouscodepoint">1.1.27.   utf8DecodePreviousCodepoint</h4>
 <pre><code>.RexxUnicodeServices~utf8DecodePreviousCodepoint( string, indexB = string~length + 1, [&gt;refSizeB], [&gt;refErrorCode], [&gt;refErrorMsg] )
 
 
@@ -1417,7 +1451,7 @@ detailed description of the error.</p>
 </code></pre>
 </div>
 <p><a id="RexxUnicodeServices_utf8EncodeCodepoint"></a></p>
-<h4 id="utf8encodecodepoint">1.1.27.   utf8EncodeCodepoint</h4>
+<h4 id="utf8encodecodepoint">1.1.28.   utf8EncodeCodepoint</h4>
 <pre><code>.RexxUnicodeServices~utf8EncodeCodepoint( codepoint, destination, [&gt;refSizeB] )
 
 .RexxUnicodeServices~utf8EncodeCodepoint(
@@ -1453,7 +1487,7 @@ byte sequence (0..4).</p>
 </code></pre>
 </div>
 <p><a id="RexxUnicodeServices_utf8procVersion"></a></p>
-<h4 id="utf8procversion">1.1.28.   utf8procVersion</h4>
+<h4 id="utf8procversion">1.1.29.   utf8procVersion</h4>
 <pre><code>.RexxUnicodeServices~utf8procVersion</code></pre>
 <p>Returns the version of the <code>utf8proc</code> library.</p>
 <p><strong>Example:</strong></p>
@@ -1463,7 +1497,7 @@ byte sequence (0..4).</p>
 </code></pre>
 </div>
 <p><a id="RexxUnicodeServices_utf8StringEscape"></a></p>
-<h4 id="utf8stringescape">1.1.29.   utf8StringEscape</h4>
+<h4 id="utf8stringescape">1.1.30.   utf8StringEscape</h4>
 <pre><code>.RexxUnicodeServices~utf8StringEscape( string, escapeBy = &quot;c&quot;, buffer = .nil )</code></pre>
 <p>Possible values for the <code>escapeBy</code> parameter are
 <code>"codepoint"</code> (default) and <code>"grapheme"</code>.<br />
@@ -1521,7 +1555,7 @@ appended to the buffer, and the buffer is returned.</p>
 </code></pre>
 </div>
 <p><a id="RexxUnicodeServices_utf8StringInfo"></a></p>
-<h4 id="utf8stringinfo">1.1.30.   utf8StringInfo</h4>
+<h4 id="utf8stringinfo">1.1.31.   utf8StringInfo</h4>
 <pre><code>.RexxUnicodeServices~utf8StringInfo( string, [&gt;refGraphemeCount], [&gt;refCodepointCount], [&gt;refErrorCount], stopAtFirstError = .false )
 
 .RexxUnicodeServices~utf8StringInfo(
@@ -1593,7 +1627,7 @@ error).</p>
 </code></pre>
 </div>
 <p><a id="RexxUnicodeServices_utf8StringUnescape"></a></p>
-<h4 id="utf8stringunescape">1.1.31.   utf8StringUnescape</h4>
+<h4 id="utf8stringunescape">1.1.32.   utf8StringUnescape</h4>
 <pre><code>.RexxUnicodeServices~utf8StringUnescape( string, buffer = .nil )</code></pre>
 <p>Returns a string in which escape sequences are replaced with their
 corresponding values.</p>
@@ -1679,7 +1713,7 @@ the native implementation:</p>
 </code></pre>
 </div>
 <p><a id="RexxUnicodeServices_utf8StringWidth"></a></p>
-<h4 id="utf8stringwidth">1.1.32.   utf8StringWidth</h4>
+<h4 id="utf8stringwidth">1.1.33.   utf8StringWidth</h4>
 <pre><code>.RexxUnicodeServices~utf8StringWidth( string, indexB = string~length + 1, eastAsianContext = .false )
 
 .RexxUnicodeServices~utf8StringWidth(
@@ -1719,7 +1753,7 @@ title="Rust Crate unicode_width"><code>unicode_width</code></a>.</p>
 </code></pre>
 </div>
 <p><a id="RexxUnicodeServices_utf8Transform"></a></p>
-<h4 id="utf8transform">1.1.33.   utf8Transform</h4>
+<h4 id="utf8transform">1.1.34.   utf8Transform</h4>
 <pre><code>.RexxUnicodeServices~utf8Transform( string, casefold = .false, lump= .false, nlf = 0, normalization = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false )
 
 .RexxUnicodeServices~utf8Transform(
@@ -1734,10 +1768,10 @@ title="Rust Crate unicode_width"><code>unicode_width</code></a>.</p>
     stripNA = .false        -- Strips unassigned codepoints
     )</code></pre>
 <p>Returns the transformed string.</p>
-<h5 id="casefold-argument">1.1.33.1.   'caseFold' argument</h5>
+<h5 id="casefold-argument">1.1.34.1.   'caseFold' argument</h5>
 <p>Performs unicode case folding, to be able to do a case-insensitive
 string comparison.</p>
-<h5 id="lump-argument">1.1.33.2.   'lump' argument</h5>
+<h5 id="lump-argument">1.1.34.2.   'lump' argument</h5>
 <p>Maps certain characters to a common representative (i.e., several
 distinct characters produce the same output character).<br />
 All the concerned characters become the same character, but still remain
@@ -1777,7 +1811,7 @@ U+005F  _   &lt;-- all connector characters (general category Pc),
 U+0060  `   &lt;-- modifier letter grave accent U+02CB
 U+007C  |   &lt;-- divides U+2223
 U+007E  ~   &lt;-- tilde operator U+223C</code></pre>
-<h5 id="nlf-argument">1.1.33.3.   'nlf' argument</h5>
+<h5 id="nlf-argument">1.1.34.3.   'nlf' argument</h5>
 <p><a
 href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213"
 title="Newline Guidelines">https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213</a></p>
@@ -1800,7 +1834,7 @@ converted to the Unicode Line Separator (LS) codepoint.</p>
 Converts LF, CRLF, CR and NEL into PS.<br />
 NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are
 converted to the Unicode Paragraph Separator (PS) codepoint.</p>
-<h5 id="normalization-argument">1.1.33.4.   'normalization'
+<h5 id="normalization-argument">1.1.34.4.   'normalization'
 argument</h5>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).</span></code>
@@ -1814,18 +1848,18 @@ argument</h5>
 </div>
 <p>If <code>normalization</code> is not <code>0</code>, apply the
 requested normalization.</p>
-<h5 id="stripcc-argument">1.1.33.5.   'stripCC' argument</h5>
+<h5 id="stripcc-argument">1.1.34.5.   'stripCC' argument</h5>
 <p>Strips and/or converts control characters.</p>
 <p>NLF-sequences are transformed into space, except if one of the
 NLF2LS/PS/LF options is given. HorizontalTab (HT) and FormFeed (FF) are
 treated as a NLF-sequence in this case.</p>
 <p>All other control characters are simply removed.</p>
-<h5 id="stripignorable-argument">1.1.33.6.   'stripIgnorable'
+<h5 id="stripignorable-argument">1.1.34.6.   'stripIgnorable'
 argument</h5>
 <p>Strips the characters whose property
 <code>Default_Ignorable_Code_Point</code> is true, such as
 <code>SOFT-HYPHEN</code> or <code>ZERO-WIDTH-SPACE</code>.</p>
-<h5 id="stripmark-argument">1.1.33.7.   'stripMark' argument</h5>
+<h5 id="stripmark-argument">1.1.34.7.   'stripMark' argument</h5>
 <p>Strips all character markings.</p>
 <p>This includes non-spacing, spacing and enclosing (i.e. accents)
 categories:</p>
@@ -1835,10 +1869,10 @@ categories:</p>
 <li><code>Mn</code> Nonspacing Mark</li>
 </ul>
 <p>This option works only with a normalization applied.</p>
-<h5 id="stripna-argument">1.1.33.8.   'stripNA' argument</h5>
+<h5 id="stripna-argument">1.1.34.8.   'stripNA' argument</h5>
 <p>Strips the characters whose category is <code>Cn</code>
 Unassigned.</p>
-<h5 id="examples-of-transformations">1.1.33.9.   Examples of
+<h5 id="examples-of-transformations">1.1.34.9.   Examples of
 transformations</h5>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">\N{&lt;control-0007&gt;}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n</span><span class="rx-str rx-cquo">"</span></code>
@@ -2034,6 +2068,8 @@ class.</p>
 <p>Inherited methods:</p>
 <ul>
 <li><a
+href="#RexxUnicodeServices_codepointAsciiPrintableString"><code>codepointAsciiPrintableString</code></a></li>
+<li><a
 href="#RexxUnicodeServices_codepointBidiClass"><code>codepointBidiClass</code></a></li>
 <li><a
 href="#RexxUnicodeServices_codepointBidiMirrored"><code>codepointBidiMirrored</code></a></li>
@@ -2062,8 +2098,6 @@ href="#RexxUnicodeServices_codepointIsPrintable"><code>codepointIsPrintable</cod
 <li><a
 href="#RexxUnicodeServices_codepointIsUpper"><code>codepointIsUpper</code></a></li>
 <li><a
-href="#RexxUnicodeServices_codepointPrintableString"><code>codepointPrintableString</code></a></li>
-<li><a
 href="#RexxUnicodeServices_codepointToLower"><code>codepointToLower</code></a></li>
 <li><a
 href="#RexxUnicodeServices_codepointToTitle"><code>codepointToTitle</code></a></li>
@@ -2071,6 +2105,8 @@ href="#RexxUnicodeServices_codepointToTitle"><code>codepointToTitle</code></a></
 href="#RexxUnicodeServices_codepointToUpper"><code>codepointToUpper</code></a></li>
 <li><a
 href="#RexxUnicodeServices_codepointUnicodeEscapeNotation"><code>codepointUnicodeEscapeNotation</code></a></li>
+<li><a
+href="#RexxUnicodeServices_codepointUtf8PrintableString"><code>codepointUtf8PrintableString</code></a></li>
 <li><a
 href="#RexxUnicodeServices_graphemeBreak"><code>graphemeBreak</code></a></li>
 <li><a
@@ -2463,7 +2499,7 @@ Otherwise, <code>indexer</code> receives a default-storage
 <code lineno="2"><span class="rx-lncm">-- U+FFFD Substitution of Maximal Subparts</span></code>
 <code lineno="3"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202</span></code>
 <code lineno="4"><span class="rx-env">.RexxUnicode</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-op">&gt;</span><span class="rx-var">indexer</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'</span></code>
-<code lineno="5"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrors</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="5"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrorMessages</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="6"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="7"><span class="rx-cm">    an Array (shape [4], 4 items)</span></code>
 <code lineno="8"><span class="rx-cm">     1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'</span></code>
@@ -2635,7 +2671,7 @@ discarded.</p>
 </div>
 <p><a id="RexxUnicode_U2D"></a></p>
 <h4 id="u2d">2.4.23.   U2D</h4>
-<pre><code>.RexxUnicode~U2D( UPlusCodepoint, start = 1, raiseError =.false, [&gt;refLength] )</code></pre>
+<pre><code>.RexxUnicode~U2D( UPlusCodepoint, start = 1, raiseError = .false, [&gt;refLength] )</code></pre>
 <p>Converts <code>"U+XXXX.."</code> to a decimal value.</p>
 <p>If <code>refLength</code> is provided by the caller, extra characters
 after the <code>U+XXXX..</code> are allowed.<br />
@@ -3752,7 +3788,7 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 <code lineno="3"><span class="rx-var">indexer</span><span class="rx-spe">=</span><span class="rx-ws">                            </span><span class="rx-lncm">-- (a👨‍👩‍👧b)</span></code>
 <code lineno="4"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startCodepointIndexes</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- [ 1, 2, 6, 9, 13, 16, 20]</span></code>
 <code lineno="5"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startGraphemeIndexes</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- [ 1, 2, 20]</span></code>
-<code lineno="6"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrors</span><span class="rx-spe">=</span><span class="rx-ws">                </span><span class="rx-lncm">-- an Array (no shape, 0 items)</span></code>
+<code lineno="6"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrorMessages</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- an Array (no shape, 0 items)</span></code>
 <code lineno="7"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointAtIndexC</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">3</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- 8205</span></code>
 <code lineno="8"><span class="rx-env">.RexxUnicodeCharacter</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">8205</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- (&lt;?&gt; \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")</span></code>
 <code lineno="9"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeAtIndexG</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">3</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">        </span><span class="rx-lncm">-- 'b'</span></code>
@@ -3766,7 +3802,7 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 <code lineno="4"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">F4 91 92 93 FF 41 80 BF 42</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">)</span></code>
 <code lineno="5"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startCodepointIndexes</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- [-1,-2,-3,-4,-5, 6,-7,-8, 9]</span></code>
 <code lineno="6"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startGraphemeIndexes</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- [-1,-2,-3,-4,-5, 6,-7,-8, 9]</span></code>
-<code lineno="7"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrors</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="7"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrorMessages</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="8"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="9"><span class="rx-cm">    an Array (shape [7], 7 items)</span></code>
 <code lineno="10"><span class="rx-cm">     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'</span></code>
@@ -3945,19 +3981,19 @@ array is created each time this method is used.</p>
 <code lineno="4">
 </code></pre>
 </div>
-<p><a id="RexxUnicodeStringIndexer_endCodepointStorageSize"></a></p>
-<h4 id="endcodepointstoragesize">7.3.6.   endCodepointStorageSize</h4>
-<pre><code>aRexxUnicodeStringIndexer~endCodepointStorageSize</code></pre>
-<p>Returns the number of codepoint indexes that are stored in the end
+<p><a id="RexxUnicodeStringIndexer_endCodepointStorageCount"></a></p>
+<h4 id="endcodepointstoragecount">7.3.6.   endCodepointStorageCount</h4>
+<pre><code>aRexxUnicodeStringIndexer~endCodepointStorageCount</code></pre>
+<p>Returns the count of codepoint indexes that are stored in the end
 storage.</p>
-<p>You can get the same number with
-<code>endCodepointIndexes~items</code>, but this method do not create an
-ooRexx array just to return the number.</p>
+<p>You can get the same value with
+<code>endCodepointIndexes~items</code>, but this method avoids creating
+an ooRexx array just to return the count.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
-<p><a id="RexxUnicodeStringIndexer_endErrors"></a></p>
-<h4 id="enderrors">7.3.7.   endErrors</h4>
-<pre><code>aRexxUnicodeStringIndexer~endErrors</code></pre>
+<p><a id="RexxUnicodeStringIndexer_endErrorMessages"></a></p>
+<h4 id="enderrormessages">7.3.7.   endErrorMessages</h4>
+<pre><code>aRexxUnicodeStringIndexer~endErrorMessages</code></pre>
 <p>Returns an array containing a copy of the error messages stored in
 the end storage.</p>
 <p>Error messages are stored in reverse order: the first item
@@ -3972,7 +4008,7 @@ array is created each time this method is used.</p>
 <pre><code lineNo="1"><span class="rx-lncm">-- U+FFFD Substitution of Maximal Subparts</span></code>
 <code lineno="2"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064</span></code>
 <code lineno="3"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">F4 91 92 93 FF 41 80 BF 42</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">)</span></code>
-<code lineno="4"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrors</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="4"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrorMessages</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="5"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="6"><span class="rx-cm">    an Array (shape [5], 5 items)</span></code>
 <code lineno="7"><span class="rx-cm">     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'</span></code>
@@ -3982,7 +4018,7 @@ array is created each time this method is used.</p>
 <code lineno="11"><span class="rx-cm">     5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'</span></code>
 <code lineno="12"><span class="rx-cm">    */</span></code>
 <code lineno="13"></code>
-<code lineno="14"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">endErrors</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="14"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">endErrorMessages</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="15"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="16"><span class="rx-cm">    an Array (shape [5], 5 items)</span></code>
 <code lineno="17"><span class="rx-cm">     1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'</span></code>
@@ -3994,13 +4030,14 @@ array is created each time this method is used.</p>
 <code lineno="23">
 </code></pre>
 </div>
-<p><a id="RexxUnicodeStringIndexer_endErrorStorageSize"></a></p>
-<h4 id="enderrorstoragesize">7.3.8.   endErrorStorageSize</h4>
-<pre><code>aRexxUnicodeStringIndexer~endErrorStorageSize</code></pre>
-<p>Returns the number of error messages that are stored in the end
+<p><a id="RexxUnicodeStringIndexer_endErrorStorageCount"></a></p>
+<h4 id="enderrorstoragecount">7.3.8.   endErrorStorageCount</h4>
+<pre><code>aRexxUnicodeStringIndexer~endErrorStorageCount</code></pre>
+<p>Returns the count of error messages that are stored in the end
 storage.</p>
-<p>You can get the same number with <code>endErrors~items</code>, but
-this method do not create an ooRexx array just to return the number.</p>
+<p>You can get the same value with <code>endErrorMessages~items</code>,
+but this method avoids creating an ooRexx array just to return the
+count.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_endGraphemeIndexes"></a></p>
@@ -4023,14 +4060,14 @@ array is created each time this method is used.</p>
 <code lineno="4">
 </code></pre>
 </div>
-<p><a id="RexxUnicodeStringIndexer_endGraphemeStorageSize"></a></p>
-<h4 id="endgraphemestoragesize">7.3.10.   endGraphemeStorageSize</h4>
-<pre><code>aRexxUnicodeStringIndexer~endGraphemeStorageSize</code></pre>
-<p>Returns the number of grapheme indexes that are stored in the end
+<p><a id="RexxUnicodeStringIndexer_endGraphemeStorageCount"></a></p>
+<h4 id="endgraphemestoragecount">7.3.10.   endGraphemeStorageCount</h4>
+<pre><code>aRexxUnicodeStringIndexer~endGraphemeStorageCount</code></pre>
+<p>Returns the count of grapheme indexes that are stored in the end
 storage.</p>
-<p>You can get the same number with
-<code>endGraphemeIndexes~items</code>, but this method do not create an
-ooRexx array just to return the number.</p>
+<p>You can get the same value with
+<code>endGraphemeIndexes~items</code>, but this method avoids creating
+an ooRexx array just to return the count.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_errorCount"></a></p>
@@ -4241,22 +4278,22 @@ storage, where only the starting and ending indexes are stored.</p>
 <code lineno="8"></code>
 <code lineno="9"><span class="rx-lncm">-- The specified start codepoint storage limit is 4</span></code>
 <code lineno="10"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointCount</span><span class="rx-spe">=</span><span class="rx-ws">             </span><span class="rx-lncm">-- 9</span></code>
-<code lineno="11"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startCodepointStorageSize</span><span class="rx-spe">=</span><span class="rx-ws">  </span><span class="rx-lncm">-- 4</span></code>
+<code lineno="11"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startCodepointStorageCount</span><span class="rx-spe">=</span><span class="rx-ws"> </span><span class="rx-lncm">-- 4</span></code>
 <code lineno="12"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startCodepointIndexes</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- [-1,-2,-3,-4]</span></code>
 <code lineno="13"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointAtIndexC</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">3</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- 65533</span></code>
 <code lineno="14"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointAtIndexC</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">5</span><span class="rx-spe">)</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- Code point index 5 is not stored.</span></code>
 <code lineno="15"></code>
 <code lineno="16"><span class="rx-lncm">-- The specified start grapheme storage limit is 2</span></code>
 <code lineno="17"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeCount</span><span class="rx-spe">=</span><span class="rx-ws">              </span><span class="rx-lncm">-- 9</span></code>
-<code lineno="18"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startGraphemeStorageSize</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- 2</span></code>
+<code lineno="18"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startGraphemeStorageCount</span><span class="rx-spe">=</span><span class="rx-ws">  </span><span class="rx-lncm">-- 2</span></code>
 <code lineno="19"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startGraphemeIndexes</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- [-1,-2]</span></code>
 <code lineno="20"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeAtIndexG</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- 91 (use ~c2x to not display an invalid byte sequence)</span></code>
 <code lineno="21"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeAtIndexG</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">3</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">c2x</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- Grapheme index 3 is not stored.</span></code>
 <code lineno="22"></code>
 <code lineno="23"><span class="rx-lncm">-- The specified start error storage limit is 1</span></code>
 <code lineno="24"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errorCount</span><span class="rx-spe">=</span><span class="rx-ws">                 </span><span class="rx-lncm">-- 7</span></code>
-<code lineno="25"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrorStorageSize</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- 1</span></code>
-<code lineno="26"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrors</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
+<code lineno="25"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrorStorageCount</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 1</span></code>
+<code lineno="26"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrorMessages</span><span class="rx-spe">=</span><span class="rx-spe">=</span></code>
 <code lineno="27"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="28"><span class="rx-cm">    an Array (shape [1], 1 items)</span></code>
 <code lineno="29"><span class="rx-cm">     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'</span></code>
@@ -4281,10 +4318,10 @@ storage, where only the starting and ending indexes are stored.</p>
 <code lineno="3"><span class="rx-lncm">-- In case of error, reports only the first error.</span></code>
 <code lineno="4"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">F4 91 92 93 FF 41 80 BF 42</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">Joyeux Noël 👨‍👩‍👧</span><span class="rx-str rx-cquo">"</span></code>
 <code lineno="5"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*startCodepointStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*startGraphemeStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*startErrorStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*endCodepointStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*endGraphemeStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">)</span></code>
-<code lineno="6"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errorCount</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- 7</span></code>
-<code lineno="7"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrors</span><span class="rx-op">~</span><span class="rx-const rx-method">items</span><span class="rx-spe">=</span><span class="rx-ws">  </span><span class="rx-lncm">-- 1</span></code>
-<code lineno="8"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrors</span><span class="rx-spe">[</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">]</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'</span></code>
-<code lineno="9"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">endGraphemeIndexes</span><span class="rx-spe">=</span><span class="rx-ws"> </span><span class="rx-lncm">-- [ 23, 22, 21, 19, 18]</span></code>
+<code lineno="6"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errorCount</span><span class="rx-spe">=</span><span class="rx-ws">                 </span><span class="rx-lncm">-- 7</span></code>
+<code lineno="7"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrorMessages</span><span class="rx-op">~</span><span class="rx-const rx-method">items</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- 1</span></code>
+<code lineno="8"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrorMessages</span><span class="rx-spe">[</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">]</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'</span></code>
+<code lineno="9"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">endGraphemeIndexes</span><span class="rx-spe">=</span><span class="rx-ws">         </span><span class="rx-lncm">-- [ 23, 22, 21, 19, 18]</span></code>
 <code lineno="10"><span class="rx-lncm">-- Pass -endIndexG, where a negative index means "index from the end"</span></code>
 <code lineno="11"><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">endIndexG</span><span class="rx-asg">=</span><span class="rx-int rx-ipart">1</span><span class="rx-ws"> </span><span class="rx-skw">to</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">endGraphemeIndexes</span><span class="rx-op">~</span><span class="rx-const rx-method">items</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">endIndexG</span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeAtIndexG</span><span class="rx-spe">(</span><span class="rx-op">-</span><span class="rx-var">endIndexG</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
 <code lineno="12"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
@@ -4307,20 +4344,20 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 <p>Beware of the size of the returned array! The internal storage is
 optimized for memory usage, but ooRexx arrays are not. Moreover, a new
 array is created each time this method is used.</p>
-<p><a id="RexxUnicodeStringIndexer_startCodepointStorageSize"></a></p>
+<p><a id="RexxUnicodeStringIndexer_startCodepointStorageCount"></a></p>
 <h4
-id="startcodepointstoragesize">7.3.19.   startCodepointStorageSize</h4>
-<pre><code>aRexxUnicodeStringIndexer~startCodepointStorageSize</code></pre>
-<p>Returns the number of codepoint indexes that are stored in the start
+id="startcodepointstoragecount">7.3.19.   startCodepointStorageCount</h4>
+<pre><code>aRexxUnicodeStringIndexer~startCodepointStorageCount</code></pre>
+<p>Returns the count of codepoint indexes that are stored in the start
 storage.</p>
-<p>You can get the same number with
-<code>startCodepointIndexes~items</code>, but this method do not create
-an ooRexx array just to return the number.</p>
+<p>You can get the same value with
+<code>startCodepointIndexes~items</code>, but this method avoids
+creating an ooRexx array just to return the count.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
-<p><a id="RexxUnicodeStringIndexer_startErrors"></a></p>
-<h4 id="starterrors">7.3.20.   startErrors</h4>
-<pre><code>aRexxUnicodeStringIndexer~startErrors</code></pre>
+<p><a id="RexxUnicodeStringIndexer_startErrorMessages"></a></p>
+<h4 id="starterrormessages">7.3.20.   startErrorMessages</h4>
+<pre><code>aRexxUnicodeStringIndexer~startErrorMessages</code></pre>
 <p>Returns an array containing a copy of the error messages stored in
 the start storage.</p>
 <p>For an explanation of storage, see <a
@@ -4328,13 +4365,14 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 <p>Beware of the size of the returned array! The internal storage is
 optimized for memory usage, but ooRexx arrays are not. Moreover, a new
 array is created each time this method is used.</p>
-<p><a id="RexxUnicodeStringIndexer_startErrorStorageSize"></a></p>
-<h4 id="starterrorstoragesize">7.3.21.   startErrorStorageSize</h4>
-<pre><code>aRexxUnicodeStringIndexer~startErrorStorageSize</code></pre>
-<p>Returns the number of error messages that are stored in the start
+<p><a id="RexxUnicodeStringIndexer_startErrorStorageCount"></a></p>
+<h4 id="starterrorstoragecount">7.3.21.   startErrorStorageCount</h4>
+<pre><code>aRexxUnicodeStringIndexer~startErrorStorageCount</code></pre>
+<p>Returns the count of error messages that are stored in the start
 storage.</p>
-<p>You can get the same number with <code>startErrors~items</code>, but
-this method do not create an ooRexx array just to return the number.</p>
+<p>You can get the same value with
+<code>startErrorMessages~items</code>, but this method avoids creating
+an ooRexx array just to return the count.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_startGraphemeIndexes"></a></p>
@@ -4347,15 +4385,15 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 <p>Beware of the size of the returned array! The internal storage is
 optimized for memory usage, but ooRexx arrays are not. Moreover, a new
 array is created each time this method is used.</p>
-<p><a id="RexxUnicodeStringIndexer_startGraphemeStorageSize"></a></p>
+<p><a id="RexxUnicodeStringIndexer_startGraphemeStorageCount"></a></p>
 <h4
-id="startgraphemestoragesize">7.3.23.   startGraphemeStorageSize</h4>
-<pre><code>aRexxUnicodeStringIndexer~startGraphemeStorageSize</code></pre>
-<p>Returns the number of grapheme indexes that are stored in the start
+id="startgraphemestoragecount">7.3.23.   startGraphemeStorageCount</h4>
+<pre><code>aRexxUnicodeStringIndexer~startGraphemeStorageCount</code></pre>
+<p>Returns the count of grapheme indexes that are stored in the start
 storage.</p>
-<p>You can get the same number with
-<code>startGraphemeIndexes~items</code>, but this method do not create
-an ooRexx array just to return the number.</p>
+<p>You can get the same value with
+<code>startGraphemeIndexes~items</code>, but this method avoids creating
+an ooRexx array just to return the count.</p>
 <p>For an explanation of storage, see <a
 href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code></a>.</p>
 <p><a id="RexxUnicodeStringIndexer_string"></a></p>

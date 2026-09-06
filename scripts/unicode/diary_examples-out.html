@@ -42,12 +42,64 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 3 Sep 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S83a5Qbc489f480
+</span><span style="font-weight:bold;color:green;">Input queue name: S11f49Qbc489f9c0
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
 
+
+<span style="font-weight:bold;color:blue;">-- ===============================================================================
+</span><span style="font-weight:bold;color:blue;">-- 2026 Sept 06
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">[Unicode]
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Rename .RexxUnicodeServices~codepointPrintableString to codepointUtf8PrintableString.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Add .RexxUnicodeServices~codepointAsciiPrintableString( codepoint, buffer = .nil ).
+</span><span style="font-weight:bold;color:blue;">    ASCII printable codepoints are returned as their ASCII representation;
+</span><span style="font-weight:bold;color:blue;">    all other codepoints are returned as a Unicode escape notation.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Modify .RexxUnicodeServices~utf8StringEscape to support escapeBy = &quot;[A]sciiCodepoint&quot;.
+</span><span style="font-weight:bold;color:blue;">    When escapeBy is &quot;[A]sciiCodepoint&quot;, returns a string in which non-ASCII codepoints,
+</span><span style="font-weight:bold;color:blue;">    non-printable codepoints and invalid byte sequences are replaced with escape sequences.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Examples
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointUtf8PrintableString(224)=         </span><span style="font-weight:bold;color:blue;">-- 'à'</span>
+'à'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointAsciiPrintableString(224)=        </span><span style="font-weight:bold;color:blue;">-- '\u00E0'</span>
+'\u00E0'
+
+<span style="font-weight:bold;color:blue;">-- &quot;F4 91&quot;x is an invalid byte sequence.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(&quot;Père Noël 🎅&quot; &quot;09&quot;x &quot;F4 91&quot;x &quot;Famille 👨‍👩‍👧&quot;, &quot;a&quot;)=       </span><span style="font-weight:bold;color:blue;">-- 'P\u00E8re No\u00EBl \U0001F385 \t \xF4\x91 Famille \U0001F468\u200D\U0001F469\u200D\U0001F467'</span>
+'P\u00E8re No\u00EBl \U0001F385 \t \xF4\x91 Famille \U0001F468\u200D\U0001F469\u200D\U0001F467'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(&quot;Père Noël 🎅&quot; &quot;09&quot;x &quot;F4 91&quot;x &quot;Famille 👨‍👩‍👧&quot;, &quot;c&quot;)=       </span><span style="font-weight:bold;color:blue;">-- 'Père Noël 🎅 \t \xF4\x91 Famille 👨\u200D👩\u200D👧'</span>
+'Père Noël 🎅 \t \xF4\x91 Famille 👨\u200D👩\u200D👧'
+<span style="font-weight:bold;color:blue;">-- [09] is the tab character escaped by ooRexxShell.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(&quot;Père Noël 🎅&quot; &quot;09&quot;x &quot;F4 91&quot;x &quot;Famille 👨‍👩‍👧&quot;, &quot;g&quot;)=       </span><span style="font-weight:bold;color:blue;">-- 'Père Noël 🎅 [09] \xF4\x91 Famille 👨‍👩‍👧'</span>
+'Père Noël 🎅 [09] \xF4\x91 Famille 👨‍👩‍👧'
+<span style="font-weight:bold;color:blue;">-- Internally, the string contains &quot;09&quot;x.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">say .RexxUnicodeServices~utf8StringEscape(&quot;Père Noël 🎅&quot; &quot;09&quot;x &quot;F4 91&quot;x &quot;Famille 👨‍👩‍👧&quot;, &quot;g&quot;)    </span><span style="font-weight:bold;color:blue;">-- Père Noël 🎅 	 \xF4\x91 Famille 👨‍👩‍👧</span>
+Père Noël 🎅 	 \xF4\x91 Famille 👨‍👩‍👧
+
+<span style="font-weight:bold;color:blue;">-- Round trip: string -&gt; escape -&gt; unescape.
+</span><span style="font-weight:bold;color:blue;">-- One-liner ready to paste in ooRexxShell.
+</span><span style="font-weight:bold;color:blue;">-- Don't display string and uestring because they contain an invalid byte sequence.
+</span><span style="font-weight:bold;color:blue;">-- Just display if they are equal (1) or different (0).
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;Père Noël 🎅&quot; &quot;09&quot;x &quot;F4 91&quot;x &quot;Famille 👨‍👩‍👧&quot; ; do escapeBy over &quot;a&quot;, &quot;c&quot;, &quot;g&quot; ; estring = .RexxUnicodeServices~utf8StringEscape(string, escapeBy) ; uestring = .RexxUnicode~stringUnescape(estring) ; string == uestring= ; end</span>
+ 1
+ 1
+ 1
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">     1
+</span><span style="font-weight:bold;color:blue;">     1
+</span><span style="font-weight:bold;color:blue;">     1
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
 
 <span style="font-weight:bold;color:blue;">-- ===============================================================================
 </span><span style="font-weight:bold;color:blue;">-- 2026 Aug 23
@@ -3500,7 +3552,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointDe
  0
 
 <span style="font-weight:bold;color:blue;">-- Since the special value -1 is not printable, it is represented using Unicode escape notation
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointPrintableString(-1)=          </span><span style="font-weight:bold;color:blue;">-- '\UFFFFFFFF'</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUtf8PrintableString(-1)=          </span><span style="font-weight:bold;color:blue;">-- '\UFFFFFFFF'</span>
 '\UFFFFFFFF'
 
 <span style="font-weight:bold;color:blue;">-- The special value -1 has no name
@@ -3732,8 +3784,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringToNFK
 </span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~codepointIsPrintable(codepoint)
 </span><span style="font-weight:bold;color:blue;">    Returns true if the codepoint is printable according to its category.
 </span><span style="font-weight:bold;color:blue;">
-</span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~codepointPrintableString(codepoint, buffer=.nil)
-</span><span style="font-weight:bold;color:blue;">    Returns a printable string representation of this codepoint.
+</span><span style="font-weight:bold;color:blue;">Add .RexxUnicode~codepointUtf8PrintableString(codepoint, buffer=.nil)
+</span><span style="font-weight:bold;color:blue;">    Returns a UTF-8 printable string representation of this codepoint.
 </span><span style="font-weight:bold;color:blue;">    Printable codepoints are returned as their UTF-8 character representation;
 </span><span style="font-weight:bold;color:blue;">    non-printable codepoints are returned as a Unicode escape notation.
 </span><span style="font-weight:bold;color:blue;">
@@ -3775,11 +3827,13 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIs
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointIsPrintable(&quot;D800&quot;~x2d)=    </span><span style="font-weight:bold;color:blue;">-- 0</span>
  0
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointPrintableString(0)=           </span><span style="font-weight:bold;color:blue;">-- '\u0000'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUtf8PrintableString(0)=           </span><span style="font-weight:bold;color:blue;">-- '\u0000'</span>
 '\u0000'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointPrintableString(65)=          </span><span style="font-weight:bold;color:blue;">-- 'A'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUtf8PrintableString(65)=          </span><span style="font-weight:bold;color:blue;">-- 'A'</span>
 'A'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointPrintableString(&quot;D800&quot;~x2d)=  </span><span style="font-weight:bold;color:blue;">-- '\uD800'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUtf8PrintableString(224)=         </span><span style="font-weight:bold;color:blue;">-- 'à'</span>
+'à'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUtf8PrintableString(&quot;D800&quot;~x2d)=  </span><span style="font-weight:bold;color:blue;">-- '\uD800'</span>
 '\uD800'
 
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointCharName(2448~x2d)=           </span><span style="font-weight:bold;color:blue;">-- 'OCR DASH'</span>

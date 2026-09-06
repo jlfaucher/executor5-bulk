@@ -42,7 +42,7 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 3 Sep 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S83cfQbc489f480
+</span><span style="font-weight:bold;color:green;">Input queue name: S11f7bQbc489f9c0
 </span>
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">Examples in rxunicode.md
@@ -50,6 +50,25 @@
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~codepointAsciiPrintableString
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointAsciiPrintableString(0)=          </span><span style="font-weight:bold;color:blue;">-- '\u0000'</span>
+'\u0000'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointAsciiPrintableString(65)=         </span><span style="font-weight:bold;color:blue;">-- 'A'</span>
+'A'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointAsciiPrintableString(224)=        </span><span style="font-weight:bold;color:blue;">-- '\u00E0'</span>
+'\u00E0'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointAsciiPrintableString(&quot;D800&quot;~x2d)= </span><span style="font-weight:bold;color:blue;">-- '\uD800'</span>
+'\uD800'
+
+
+<span style="font-weight:bold;color:blue;">-- Since the special value -1 is not printable, it is represented using Unicode escape notation.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointAsciiPrintableString(-1)=         </span><span style="font-weight:bold;color:blue;">-- '\UFFFFFFFF'</span>
+'\UFFFFFFFF'
 
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
@@ -198,19 +217,21 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~cod
 
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
-</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~codepointPrintableString
+</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~codepointUtf8PrintableString
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointPrintableString(0)=           </span><span style="font-weight:bold;color:blue;">-- '\u0000'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointUtf8PrintableString(0)=           </span><span style="font-weight:bold;color:blue;">-- '\u0000'</span>
 '\u0000'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointPrintableString(65)=          </span><span style="font-weight:bold;color:blue;">-- 'A'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointUtf8PrintableString(65)=          </span><span style="font-weight:bold;color:blue;">-- 'A'</span>
 'A'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointPrintableString(&quot;D800&quot;~x2d)=  </span><span style="font-weight:bold;color:blue;">-- '\uD800'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointUtf8PrintableString(224)=         </span><span style="font-weight:bold;color:blue;">-- 'à'</span>
+'à'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointUtf8PrintableString(&quot;D800&quot;~x2d)=  </span><span style="font-weight:bold;color:blue;">-- '\uD800'</span>
 '\uD800'
 
 
 <span style="font-weight:bold;color:blue;">-- Since the special value -1 is not printable, it is represented using Unicode escape notation.
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointPrintableString(-1)=          </span><span style="font-weight:bold;color:blue;">-- '\UFFFFFFFF'</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointUtf8PrintableString(-1)=          </span><span style="font-weight:bold;color:blue;">-- '\UFFFFFFFF'</span>
 '\UFFFFFFFF'
 
 
@@ -572,11 +593,13 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf
 '\U00010FFF'
 
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;👨‍👩‍👧&quot; || &quot;F4 91&quot;x</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(string)=          </span><span style="font-weight:bold;color:blue;">-- '👨\u200D👩\u200D👧\xF4\x91'</span>
-'👨\u200D👩\u200D👧\xF4\x91'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(string, &quot;g&quot;)=     </span><span style="font-weight:bold;color:blue;">-- '👨‍👩‍👧\xF4\x91'</span>
-'👨‍👩‍👧\xF4\x91'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;Père Mère Enfant 👨‍👩‍👧&quot; || &quot;F4 91&quot;x</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(string, &quot;a&quot;)=     </span><span style="font-weight:bold;color:blue;">-- 'P\u00E8re M\u00E8re Enfant \U0001F468\u200D\U0001F469\u200D\U0001F467\xF4\x91'</span>
+'P\u00E8re M\u00E8re Enfant \U0001F468\u200D\U0001F469\u200D\U0001F467\xF4\x91'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(string, &quot;c&quot;)=     </span><span style="font-weight:bold;color:blue;">-- 'Père Mère Enfant 👨\u200D👩\u200D👧\xF4\x91'</span>
+'Père Mère Enfant 👨\u200D👩\u200D👧\xF4\x91'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(string, &quot;g&quot;)=     </span><span style="font-weight:bold;color:blue;">-- 'Père Mère Enfant 👨‍👩‍👧\xF4\x91'</span>
+'Père Mère Enfant 👨‍👩‍👧\xF4\x91'
 
 
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(.RexxUnicode~stringUnescape(&quot;\N{&lt;lead surrogate-D800&gt;}&quot;))=    </span><span style="font-weight:bold;color:blue;">-- '\xED\xA0\x80'</span>
