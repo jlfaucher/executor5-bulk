@@ -31,6 +31,14 @@ Do not overengineer the buffer updates:
 In case of error, the buffer can be partially updated.
 
 
+Move graphemeCount, codepointCount and errorCount out of the generic iterators
+utf8StringCodepointIterator and utf8StringGraphemeIterator. These counters are
+now updated by utf8StringInfo using a generic action.
+Search for "2026.09.07" to see the benchmark durations.
+The fast path (not counting graphemes) is sligthly faster: ratios 0.890, 0.930, 0.916
+The slow path (counting graphemes) is slightly slower: ratios 1.039, 1.043, 1.071.
+
+
 ===============================================================================
 2026 Sept 06
 
@@ -166,6 +174,8 @@ The old ooRexx implementation is still temporarily available as .RexxUnicode~str
 Done: remove the old ooRexx implementations.
 
 Benchmark
+
+    -- Macbook pro M1 32GB
 
     Two native implementations of stringEscape are tested:
     - with specialized iterators (no generic action)
@@ -748,6 +758,9 @@ Benchmark
     .RexxUnicodeServices~utf8StringInfo(string, , >c, >e)   -- Duration: 0.027473, 0.033450, 0.032635, 0.027523, 0.036320. Average = 0.0314802
     c=; e=                                                  --  10000020; 0
     -- ratio = 2.31
+    -- 2026.09.07 After modifying the implementation to update the counters using a generic action
+    .RexxUnicodeServices~utf8StringInfo(string, , >c, >e)   -- Duration: 0.025502, 0.024386, 0.028895, 0.032259, 0.029093. Average = 0.028027
+    -- No performance degradation: ratio = 0.890
 
     -- 300 millions bytes, 100 millions codepoints, 2 graphemes
     ZWJ = .RexxUnicode~U2C("U+200D")
@@ -759,6 +772,10 @@ Benchmark
     .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, , >c, >e)      -- Duration: 0.805320, 0.774022, 0.812426, 0.792617, 0.772113. Average = 0.7912996
     c=; e=                                                                          --  100000001; 0
     -- ratio = 1.36
+    -- 2026.09.07 After modifying the implementation to update the counters using a generic action
+    .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, , >c, >e)      -- Duration: 0.751049, 0.695694, 0.816586, 0.730089, 0.686358. Average = 0.7359552
+    c=; e=                                                                          --  100000001; 0
+    -- No performance degradation: ratio = 0.930
 
     -- 100 millions bytes, 100 millions codepoints, 100 millions graphemes
     KA = .RexxUnicode~U2C("U+0915")
@@ -769,6 +786,10 @@ Benchmark
     .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, , >c, >e)      -- Duration: 0.384425, 0.387391, 0.414862, 0.395159, 0.396718. Average = 0.395711
     c=; e=                                                                          --  100000001; 0
     -- ratio = 1.97
+    -- 2026.09.07 After modifying the implementation to update the counters using a generic action
+    .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, , >c, >e)      -- Duration: 0.361993, 0.347117, 0.384789, 0.359603, 0.359583. Average = 0.362617
+    c=; e=                                                                          --  100000001; 0
+    -- No performance degradation: ratio = 0.916
 
 
 RexxUnicodeStringIndexer:
@@ -852,6 +873,10 @@ Benchmark
     -- optim 3
     .RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.089076, 0.068300, 0.071087, 0.085485, 0.084304. Average = 0.0796504
     -- ratio = 65.93
+    -- 2026.09.07 After modifying the implementation to update the counters using a generic action
+    .RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.073776, 0.073188, 0.086235, 0.076729, 0.073568. Average = 0.0766992
+    -- Slight performance degradation: ratio = 1.039
+    -- neglible? no! 16m 40s -> 17m 32s
 
     -- 300 millions bytes, 100 millions codepoints, 2 graphemes
     ZWJ = .RexxUnicode~U2C("U+200D")
@@ -870,6 +895,10 @@ Benchmark
     -- optim 3
     .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.291277, 1.117111, 1.203934, 1.146306, 1.108294. Average = 1.1733844
     -- ratio = 39.87
+    -- 2026.09.07 After modifying the implementation to update the counters using a generic action
+    .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.128673, 1.086685, 1.134700, 1.121402, 1.079862. Average = 1.1102644
+    -- Slight performance degradation: ratio = 1.043 times slower
+    -- negligible? no! 16m 40s -> 17m 38s
 
     -- 100 millions bytes, 100 millions codepoints, 100 millions graphemes
     KA = .RexxUnicode~U2C("U+0915")
@@ -887,8 +916,13 @@ Benchmark
     -- optim 3
     .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.802837, 0.806789, 0.825034, 0.819688, 0.776116. Average = 0.8060928
     -- ratio = 64.94
+    -- 2026.09.07 After modifying the implementation to update the counters using a generic action
+    .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.831832, 0.832001, 0.843413, 0.815228, 0.804038. Average = 0.8253024
+    -- Slight performance degradation: ratio = 1.071 times slower
+    -- negligible? no! 16m 40s -> 17m 85s
 
 Conclusion: optim 3 reduces performance, stay with optim 2.
+2026.09.07 Updating the counters using a generic action has a slight impact on performance.
 
 
 ===============================================================================
