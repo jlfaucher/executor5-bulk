@@ -1543,7 +1543,8 @@ g=; c=; e=                                                                  --  
 
 Returns a string in which escape sequences are replaced with their corresponding values.
 
-If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
+If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.  
+In case of error, the buffer is partially updated.
 
 Escape sequences are normally handled in string literals at parse time.
 This method handles them at run time instead.
@@ -2654,15 +2655,14 @@ This method is kept for compatibility with older versions of `rxunicode.cls`.
 
 #### 2.4.22.   U2C
 
-    .RexxUnicode~U2C( UPlusCodepoints, buffer = .nil )
+    .RexxUnicode~U2C( asciiStringUPlus, buffer = .nil )
 
 Encodes an ASCII string of the form `"U+XXXX.. U+XXXX.. ..."` into a UTF-8 string.
 
 The only valid separators are one or more spaces.
 
-If a buffer is passed, the decoded characters are appended to it.  
-The update is atomic: either all decoded characters are appended, or the buffer is left unchanged.  
-If an error occurs, any characters appended during this call are discarded.
+If a buffer is passed, the encoded characters are appended to it.  
+In case of error, the buffer is partially updated.
 
 The result is either a string or the buffer passed as argument.
 
@@ -2688,11 +2688,10 @@ The result is either a string or the buffer passed as argument.
 ```
 
 ```rexx
--- The update is atomic when passing a buffer:
--- either all decoded characters are appended, or the buffer is left unchanged.
+-- In case of error, the buffer is partially updated
 b = .MutableBuffer~new("🤶 ")
 .RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB", b)=   -- Cannot UTF-8 encode codepoint U+FFFFFF.
-b=                                                      -- M'🤶 '
+b=                                                      -- M'🤶 No'
 
 ```
 
@@ -2701,12 +2700,12 @@ b=                                                      -- M'🤶 '
 
 #### 2.4.23.   U2D
 
-    .RexxUnicode~U2D( UPlusCodepoint, start = 1, raiseError = .false, [>refLength] )
+    .RexxUnicode~U2D( asciiStringUPlus, start = 1, raiseError = .false, [>refLength] )
 
 Converts `"U+XXXX.."` to a decimal value.
 
 If `refLength` is provided by the caller, extra characters after the `U+XXXX..` are allowed.  
-Otherwise UPlusCodepoint must be strictly `"U+"` followed by 4 to 6 hex digits.
+Otherwise `asciiStringUPlus` must be strictly `"U+"` followed by 4 to 6 hex digits.
 
 If provided, `refLength` receives the length of `"U+XXXX.."`, allowing to skip it when parsing.
 

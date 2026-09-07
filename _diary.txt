@@ -22,6 +22,16 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 Sept 07
+
+[Unicode]
+
+Do not overengineer the buffer updates:
+.RexxUnicode~U2C no longer performs an atomic update.
+In case of error, the buffer can be partially updated.
+
+
+===============================================================================
 2026 Sept 06
 
 [Unicode]

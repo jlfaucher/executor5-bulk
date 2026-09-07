@@ -2622,10 +2622,10 @@ Examples
 
 .RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB")=                                      -- Cannot UTF-8 encode codepoint U+FFFFFF.
 
--- The update is atomic when passing a buffer:
--- either all decoded characters are appended, or the buffer is left unchanged.
-b = .MutableBuffer~new("🤶 "); .RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB", b)=   -- Cannot UTF-8 encode codepoint U+FFFFFF.
-b=                                                                                      -- M'🤶 '
+-- In case of error, the buffer is partially updated
+b = .MutableBuffer~new("🤶 ")
+.RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB", b)=   -- Cannot UTF-8 encode codepoint U+FFFFFF.
+b=                                                      -- M'🤶 No'
 
 .RexxUnicode~U2D("U+00EB")=                                                                 -- 235
 .RexxUnicode~U2D("U+00EB ")=                                                                -- -1

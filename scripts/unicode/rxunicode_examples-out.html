@@ -41,8 +41,8 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
-</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 3 Sep 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S11f7bQbc489f9c0
+</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 7 Sep 2026
+</span><span style="font-weight:bold;color:green;">Input queue name: S57c3Qbc489fa80
 </span>
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">Examples in rxunicode.md
@@ -1414,14 +1414,13 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~U2C(&quot;U
 </span><span style="font-weight:bold;color:red;">Error code= 98.900
 </span>
 
-<span style="font-weight:bold;color:blue;">-- The update is atomic when passing a buffer:
-</span><span style="font-weight:bold;color:blue;">-- either all decoded characters are appended, or the buffer is left unchanged.
+<span style="font-weight:bold;color:blue;">-- In case of error, the buffer is partially updated
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">b = .MutableBuffer~new(&quot;🤶 &quot;)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~U2C(&quot;U+004E U+006F U+FFFFFF U+00EB&quot;, b)=   </span><span style="font-weight:bold;color:blue;">-- Cannot UTF-8 encode codepoint U+FFFFFF.</span>
 <span style="font-weight:bold;color:red;">Cannot UTF-8 encode code point U+FFFFFF.
 </span><span style="font-weight:bold;color:red;">Error code= 98.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">b=                                                      </span><span style="font-weight:bold;color:blue;">-- M'🤶 '</span>
-M'🤶 '
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">b=                                                      </span><span style="font-weight:bold;color:blue;">-- M'🤶 No'</span>
+M'🤶 No'
 
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------

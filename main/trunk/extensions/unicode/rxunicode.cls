@@ -406,36 +406,23 @@ hexadecimal digits—for example, U+0001, U+0012, U+0123, U+1234, U+12345, U+102
 Encodes an ASCII string of the form "U+XXXX.. U+XXXX.. ..." into a UTF-8 string.
 The only valid separators are one or more spaces.
 If a buffer is passed, the decoded characters are appended to it.
-The update is atomic: either all decoded characters are appended, or the buffer is left unchanged.
-If an error occurs, any characters appended during this call are discarded.
+If an error occurs, the buffer is partially updated.
 */
 ::method U2C class
     use strict arg UPlusCodepoints, buffer=.nil
     UPlusCodepoints = requestBaseString(UPlusCodepoints, "UPlusCodepoints")
     returnBuffer = .nil <> buffer
     if .nil == buffer then buffer = .MutableBuffer~new
-    bufferInitialLength = buffer~length
     pos = 1
     do while pos <= UPlusCodepoints~length
         pos = UPlusCodepoints~verify(" ", "N", pos)
         if pos == 0 then leave -- end of UPlusCodepoints string
-        codepoint = self~U2D(UPlusCodepoints, pos, /*raiseError*/ .false, >length)
-        if codepoint == -1 then do
-            -- U+ decoding error, discard the characters appended so far
-            buffer~delete(bufferInitialLength + 1)
-            -- redo the decoding in mode raise error
-            codepoint = self~U2D(UPlusCodepoints, pos, /*raiseError*/ .true, >length)
-            -- no return here
-        end
+        codepoint = self~U2D(UPlusCodepoints, pos, /*raiseError*/ .true, >length)
         -- utf8proc implementation note:
         -- Note: we allow encoding 0xd800-0xdfff here, so as not to change
         -- the API, however, these are actually invalid in UTF-8
         self~utf8EncodeCodepoint(codepoint, buffer, >size)
-        if size == 0 then do
-            -- UTF-8 encoding error, discard the characters appended so far
-            buffer~delete(bufferInitialLength + 1)
-            signal encoding_error
-        end
+        if size == 0 then signal encoding_error
         pos += length
     end
     if returnBuffer then return buffer
