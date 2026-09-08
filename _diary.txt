@@ -22,6 +22,119 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 Sept 08
+
+[Unicode]
+
+Make the following ooRexx methods native in .RexxUnicodeServices:
+    .RexxUnicode~C2U( utf8String, buffer = .nil )
+    .RexxUnicode~C2X( utf8String, buffer = .nil )
+    .RexxUnicode~U2C( asciiStringUPlus, buffer = .nil )
+    .RexxUnicode~D2U( codepoint, buffer = .nil )
+    .RexxUnicode~U2D( asciiStringUPlus, start = 1, raiseError = .false, [>refLength] )
+
+Benchmark
+    -- Macbook pro M1 32GB
+
+    ---------------------------------------------------------
+    -- .RexxUnicode~C2URexx is the old ooRexx implementation.
+    -- .RexxUnicode~C2U is the new native implementation.
+    ---------------------------------------------------------
+
+        -- U+ize a 2,560,000-character string
+        string = xrange("00"x, "FF"x)~copies(1e4)
+        -- ooRexx implementation (non-native)
+        ustring = .RexxUnicode~C2URexx(string)                  -- Duration: 18.563402, 18.821285, 18.620579, 18.708234, 17.015600. Average = 18.34582
+        -- native implementation
+        ustring = .RexxUnicode~C2U(string)                      -- Duration: 0.066922, 0.068036, 0.066761, 0.064999, 0.060903. Average = 0.0655242
+        -- ratio = 279.99 times faster
+
+        -- U+ize a 256-character string 10,000 times
+        string = xrange("00"x, "FF"x)
+        -- ooRexx implementation (non-native)
+        do 1e4; ustring = .RexxUnicode~C2URexx(string); end     -- Duration: 17.829549, 17.563165, 17.807468, 17.564094, 17.850325. Average = 17.7229202
+        -- native implementation
+        do 1e4; ustring = .RexxUnicode~C2U(string); end         -- Duration: 0.109105, 0.103110, 0.110109, 0.084212, 0.092105. Average = 0.0997282
+        -- ratio = 177.71 times faster
+
+
+    ---------------------------------------------------------
+    -- .RexxUnicode~C2XRexx is the old ooRexx implementation.
+    -- .RexxUnicode~C2X is the new native implementation.
+    ---------------------------------------------------------
+
+        -- X-ize a 2,560,000-character string
+        string = xrange("00"x, "FF"x)~copies(1e4)
+        -- ooRexx implementation (non-native)
+        xstring = .RexxUnicode~C2XRexx(string)                  -- Duration: 13.243544, 13.033717, 13.049181, 13.034792, 12.988341. Average = 13.069915
+        -- native implementation
+        xstring = .RexxUnicode~C2X(string)                      -- Duration: 0.034801, 0.040577, 0.037183, 0.037547, 0.032414. Average = 0.0365044
+        -- ratio = 358.03 times faster
+
+        -- X-ize a 256-character string 10,000 times
+        string = xrange("00"x, "FF"x)
+        -- ooRexx implementation (non-native)
+        do 1e4; ustring = .RexxUnicode~C2XRexx(string); end     -- Duration: 13.136790, 13.037100, 13.130644, 13.170351, 13.007352. Average = 13.0964474
+        -- native implementation
+        do 1e4; ustring = .RexxUnicode~C2X(string); end         -- Duration: 0.058567, 0.069921, 0.063086, 0.059575, 0.042798. Average = 0.0587894
+        -- ratio = 222.77 times faster
+
+
+    ---------------------------------------------------------
+    -- .RexxUnicode~D2URexx is the old ooRexx implementation.
+    -- .RexxUnicode~D2U is the new native implementation.
+    ---------------------------------------------------------
+
+        -- U+ize the 1,114,112 code points
+        -- ooRexx implementation (non-native)
+        mb = .MutableBuffer~new; do cp=0 to .RexxUnicode~maxCodepoint; .RexxUnicode~D2URexx(cp, mb); end    -- Duration: 1.883942, 1.881294, 1.974167, 1.991752, 1.876859. Average = 1.9216028
+        mb~length=  -- 7798784
+        -- native implementation
+        mb = .MutableBuffer~new; do cp=0 to .RexxUnicode~maxCodepoint; .RexxUnicode~D2U(cp, mb); end        -- Duration: 0.157274, 0.147051, 0.159251, 0.152671, 0.153011. Average = 0.1538516
+        -- ratio = 12.49 times faster
+
+
+    ---------------------------------------------------------
+    -- .RexxUnicode~U2CRexx is the old ooRexx implementation.
+    -- .RexxUnicode~U2C is the new native implementation.
+    ---------------------------------------------------------
+
+        -- C-ize a 2,560,000-character U+ string
+        string = xrange("00"x, "FF"x)
+        ustring = .RexxUnicode~C2U(string)~copies(1e4)
+        ustring~length=                                         -- 17910000
+        -- ooRexx implementation (non-native)
+        cstring = .RexxUnicode~U2CRexx(ustring)                 -- Duration: 10.172634, 10.148672, 10.022872, 10.160695, 10.072003. Average = 10.1153752
+        cstring~length=                                         -- 5120000
+        -- native implementation
+        cstring = .RexxUnicode~U2C(ustring)                     -- Duration: 0.040182, 0.064230, 0.049437, 0.063696, 0.039926. Average = 0.0514942
+        -- ratio = 196.44 times faster
+
+        -- C-ize a 256-character U+ string 10,000 times
+        string = xrange("00"x, "FF"x)
+        ustring = .RexxUnicode~C2U(string)
+        ustring~length=                                         -- 1791
+        -- ooRexx implementation (non-native)
+        do 1e4; cstring = .RexxUnicode~U2CRexx(ustring); end    -- Duration: 10.108604, 10.076875, 10.012864, 10.100255, 9.945803. Average = 10.0488802
+        -- native implementation
+        do 1e4; cstring = .RexxUnicode~U2C(ustring); end        -- Duration: 0.057869, 0.068630, 0.067100, 0.070663, 0.055438. Average = 0.06394
+        -- ratio = 157.16 times faster
+
+
+    ---------------------------------------------------------
+    -- .RexxUnicode~U2DRexx is the old ooRexx implementation.
+    -- .RexxUnicode~U2D is the new native implementation.
+    ---------------------------------------------------------
+
+        -- D-ize the 1,114,112 U+ized code points
+        -- ooRexx implementation (non-native)
+        do cp=0 to .RexxUnicode~maxCodepoint; uplus = .RexxUnicode~D2URexx(cp); dec = .RexxUnicode~U2DRexx(uplus); end      -- Duration: 4.773036, 4.723121, 4.674679, 4.786684, 4.704593. Average = 4.7324226
+        -- native implementation
+        do cp=0 to .RexxUnicode~maxCodepoint; uplus = .RexxUnicode~D2U(cp); dec = .RexxUnicode~U2D(uplus); end              -- Duration: 0.449533, 0.430210, 0.476853, 0.441483, 0.455177. Average = 0.4506512
+        -- ratio = 10.50 times faster
+
+
+===============================================================================
 2026 Sept 07
 
 [Unicode]

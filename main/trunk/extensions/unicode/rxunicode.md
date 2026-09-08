@@ -215,9 +215,60 @@ Method-to-Unicode property mapping (PropertyAliases.txt):
 </table>
 
 
+<a id="RexxUnicodeServices_C2U"></a>
+
+#### 1.1.1.   C2U
+
+    .RexxUnicodeServices~C2U( string, buffer = .nil )
+
+Returns an ASCII string containing a sequence of `U+XXXX` (4 to 6 hex digits).
+
+If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
+
+**Examples:**
+
+```rexx
+.RexxUnicodeServices~C2U("Noël 🎅")=                        -- 'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
+.RexxUnicodeServices~C2U("Noël 🎅", .MutableBuffer~new)=    -- M'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
+
+```
+
+```rexx
+-- Invalid string
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+.RexxUnicodeServices~C2U("F4 91 92 93 FF 41 80 BF 42"x)=    -- 'U+FFFD U+FFFD U+FFFD U+FFFD U+FFFD U+0041 U+FFFD U+FFFD U+0042'
+.RexxUnicodeServices~C2X("F4 91 92 93 FF 41 80 BF 42"x)=    -- 'F4 91 92 93 FF 41 80 BF 42'
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+.RexxUnicodeServices~C2U("E1 80 E2 F0 91 92 F1 BF 41"x)=    -- 'U+FFFD U+FFFD U+FFFD U+FFFD U+0041'
+.RexxUnicodeServices~C2X("E1 80 E2 F0 91 92 F1 BF 41"x)=    -- 'E180 E2 F09192 F1BF 41'
+
+```
+
+
+<a id="RexxUnicodeServices_C2X"></a>
+
+#### 1.1.2.   C2X
+
+    .RexxUnicodeServices~C2X( string, buffer = .nil )
+
+Returns a string representing the encoded codepoints of `string` in hexadecimal.  
+The codepoints are separated by a single space.
+
+If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
+
+**Examples:**
+
+```rexx
+.RexxUnicodeServices~C2X("Noël 🎅")=                        -- '4E 6F C3AB 6C 20 F09F8E85'
+.RexxUnicodeServices~C2X("Noël 🎅", .MutableBuffer~new)=    -- M'4E 6F C3AB 6C 20 F09F8E85'
+
+```
+
+
 <a id="RexxUnicodeServices_codepointAsciiPrintableString"></a>
 
-#### 1.1.1.   codepointAsciiPrintableString
+#### 1.1.3.   codepointAsciiPrintableString
 
     .RexxUnicodeServices~codepointAsciiPrintableString( codepoint, buffer = .nil )
 
@@ -249,7 +300,7 @@ See also [.RexxUnicodeServices~codepointUtf8PrintableString](#RexxUnicodeService
 
 <a id="RexxUnicodeServices_codepointBidiClass"></a>
 
-#### 1.1.2.   codepointBidiClass
+#### 1.1.4.   codepointBidiClass
 
     .RexxUnicodeServices~codepointBidiClass( codepoint, [>refCode], [>refLabel] )
 
@@ -305,7 +356,7 @@ For portability, use refCode instead.
 
 <a id="RexxUnicodeServices_codepointBidiMirrored"></a>
 
-#### 1.1.3.   codepointBidiMirrored
+#### 1.1.5.   codepointBidiMirrored
 
     .RexxUnicodeServices~codepointBidiMirrored( codepoint )
 
@@ -316,7 +367,7 @@ Returns `.true` if the `Bidi_Mirrored` property value of `codepoint` is `Yes`.
 
 <a id="RexxUnicodeServices_codepointBoundClass"></a>
 
-#### 1.1.4.   codepointBoundClass
+#### 1.1.6.   codepointBoundClass
 
     .RexxUnicodeServices~codepointBoundClass( codepoint, [>refCode], [>refLabel] )
 
@@ -377,7 +428,7 @@ For portability, use refCode instead.
 
 <a id="RexxUnicodeServices_codepointCategory"></a>
 
-#### 1.1.5.   codepointCategory
+#### 1.1.7.   codepointCategory
 
     .RexxUnicodeServices~codepointCategory( codepoint, [>refCode], [>refLabel] )
 
@@ -441,7 +492,7 @@ For portability, use refCode instead.
 
 <a id="RexxUnicodeServices_codepointCharWidth"></a>
 
-#### 1.1.6.   codepointCharWidth
+#### 1.1.8.   codepointCharWidth
 
     .RexxUnicodeServices~codepointCharWidth( codepoint )
 
@@ -457,7 +508,7 @@ See [`.RexxUnicodeServices~utf8StringWidth`](#RexxUnicodeServices_utf8StringWidt
 
 <a id="RexxUnicodeServices_codepointCombiningClass"></a>
 
-#### 1.1.7.   codepointCombiningClass
+#### 1.1.9.   codepointCombiningClass
 
     .RexxUnicodeServices~codepointCombiningClass( codepoint, [>refCode], [>refLabel] )
 
@@ -567,7 +618,7 @@ Some values have neither a `refCode` nor a `refLabel`.
 
 <a id="RexxUnicodeServices_codepointControlBoundary"></a>
 
-#### 1.1.8.   codepointControlBoundary
+#### 1.1.10.   codepointControlBoundary
 
     .RexxUnicodeServices~codepointControlBoundary( codepoint )
 
@@ -584,7 +635,7 @@ Returns `.true` if `codepoint` belongs to the `Zl`, `Zp`, `Cc`, or `Cf` category
 
 <a id="RexxUnicodeServices_codepointDecompositionType"></a>
 
-#### 1.1.9.   codepointDecompositionType
+#### 1.1.11.   codepointDecompositionType
 
     .RexxUnicodeServices~codepointDecompositionType( codepoint, [>refCode], [>refLabel] )
 
@@ -636,7 +687,7 @@ For portability, use refCode instead.
 
 <a id="RexxUnicodeServices_codepointEastAsianWidthIsAmbiguous"></a>
 
-#### 1.1.10.   codepointEastAsianWidthIsAmbiguous
+#### 1.1.12.   codepointEastAsianWidthIsAmbiguous
 
     .RexxUnicodeServices~codepointEastAsianWidthIsAmbiguous( codepoint )
 
@@ -647,7 +698,7 @@ Returns `.true` if the `East_Asian_Width` property value of `codepoint` is `"A"`
 
 <a id="RexxUnicodeServices_codepointIgnorable"></a>
 
-#### 1.1.11.   codepointIgnorable
+#### 1.1.13.   codepointIgnorable
 
     .RexxUnicodeServices~codepointIgnorable( codepoint )
 
@@ -658,7 +709,7 @@ Returns the `Default_Ignorable_Code_Point` property value of `codepoint` (boolea
 
 <a id="RexxUnicodeServices_codepointIndicConjunctBreak"></a>
 
-#### 1.1.12.   codepointIndicConjunctBreak
+#### 1.1.14.   codepointIndicConjunctBreak
 
     .RexxUnicodeServices~codepointIndicConjunctBreak( codepoint, [>refCode], [>refLabel] )
 
@@ -699,7 +750,7 @@ For portability, use refCode instead.
 
 <a id="RexxUnicodeServices_codepointIsLower"></a>
 
-#### 1.1.13.   codepointIsLower
+#### 1.1.15.   codepointIsLower
 
     .RexxUnicodeServices~codepointIsLower( codepoint )
 
@@ -710,7 +761,7 @@ and `.false` otherwise.
 
 <a id="RexxUnicodeServices_codepointIsPrintable"></a>
 
-#### 1.1.14.   codepointIsPrintable
+#### 1.1.16.   codepointIsPrintable
 
     .RexxUnicodeServices~codepointIsPrintable( codepoint )
 
@@ -743,7 +794,7 @@ Rules (where display width is the value returned by [`codepointCharWidth`](#Rexx
 
 <a id="RexxUnicodeServices_codepointIsUpper"></a>
 
-#### 1.1.15.   codepointIsUpper
+#### 1.1.17.   codepointIsUpper
 
     .RexxUnicodeServices~codepointIsUpper( codepoint )
 
@@ -753,7 +804,7 @@ and `.false` otherwise.
 
 <a id="RexxUnicodeServices_codepointToLower"></a>
 
-#### 1.1.16.   codepointToLower
+#### 1.1.18.   codepointToLower
 
     .RexxUnicodeServices~codepointToLower( codepoint )
 
@@ -766,7 +817,7 @@ and always returns a single codepoint.
 
 <a id="RexxUnicodeServices_codepointToTitle"></a>
 
-#### 1.1.17.   codepointToTitle
+#### 1.1.19.   codepointToTitle
 
     .RexxUnicodeServices~codepointToTitle( codepoint )
 
@@ -779,7 +830,7 @@ and always returns a single codepoint.
 
 <a id="RexxUnicodeServices_codepointToUpper"></a>
 
-#### 1.1.18.   codepointToUpper
+#### 1.1.20.   codepointToUpper
 
     .RexxUnicodeServices~codepointToUpper( codepoint )
 
@@ -792,7 +843,7 @@ and always returns a single codepoint.
 
 <a id="RexxUnicodeServices_codepointUnicodeEscapeNotation"></a>
 
-#### 1.1.19.   codepointUnicodeEscapeNotation
+#### 1.1.21.   codepointUnicodeEscapeNotation
 
     .RexxUnicodeServices~codepointUnicodeEscapeNotation( codepoint, buffer = .nil )
 
@@ -817,7 +868,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 
 <a id="RexxUnicodeServices_codepointUtf8PrintableString"></a>
 
-#### 1.1.20.   codepointUtf8PrintableString
+#### 1.1.22.   codepointUtf8PrintableString
 
     .RexxUnicodeServices~codepointUtf8PrintableString( codepoint, buffer = .nil )
 
@@ -847,9 +898,112 @@ See also [.RexxUnicodeServices~codepointAsciiPrintableString](#RexxUnicodeServic
 ```
 
 
+<a id="RexxUnicodeServices_D2U"></a>
+
+#### 1.1.23.   D2U
+
+    .RexxUnicodeServices~D2U( codepoint, buffer = .nil )
+
+Returns a `U+XXXX` string (4 to 6 hex digits) representing the codepoint passed as a decimal value.  
+The special value -1 is represented using `U+FFFFFF`, even though the resulting value is not a valid Unicode scalar value
+
+If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
+
+[https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083][typographic_conventions_code_points]
+
+**Examples:**
+
+```rexx
+.RexxUnicodeServices~D2U(235)=                              -- 'U+00EB'
+.RexxUnicodeServices~D2U(235, .MutableBuffer~new)=          -- M'U+00EB'
+.RexxUnicodeServices~D2U(127877)=                           -- 'U+1F385'
+.RexxUnicodeServices~D2U(127877, .MutableBuffer~new)=       -- M'U+1F385'
+
+.RexxUnicodeServices~D2U(.RexxUnicode~maxCodepoint)=        -- 'U+10FFFF'
+.RexxUnicodeServices~D2U(.RexxUnicode~maxCodepoint + 1)=    -- Invalid code point 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeServices~D2U(-1)=                               -- 'U+FFFFFF'
+
+```
+
+
+<a id="RexxUnicodeServices_U2C"></a>
+
+#### 1.1.24.   U2C
+
+    .RexxUnicodeServices~U2C( asciiStringUPlus, buffer = .nil )
+
+Encodes an ASCII string of the form `"U+XXXX.. U+XXXX.. ..."` into a UTF-8 string.
+
+The only valid separators are one or more spaces.
+
+If a buffer is passed, the encoded characters are appended to it.  
+In case of error, the buffer is partially updated.
+
+The result is either a string or the buffer passed as argument.
+
+**Examples:**
+
+```rexx
+-- Spaces between consecutive \u{...} sequences are significant.
+-- Spaces between consecutive U+... sequences are not significant.
+.RexxUnicode~stringUnescape(" \u{0041} \u{0042} ")=     -- ' A B '
+.RexxUnicodeServices~U2C(   "  U+0041   U+0042  ")=     -- 'AB'
+
+```
+
+```rexx
+.RexxUnicodeServices~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385")=                         -- 'Noël 🎅'
+.RexxUnicodeServices~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385", .MutableBuffer~new)=     -- M'Noël 🎅'
+
+```
+
+```rexx
+.RexxUnicodeServices~U2C("U+004E U+006F U+FFFFFF U+00EB")=                                      -- Cannot UTF-8 encode codepoint U+FFFFFF.
+
+```
+
+```rexx
+-- In case of error, the buffer is partially updated
+b = .MutableBuffer~new("🤶 ")
+.RexxUnicodeServices~U2C("U+004E U+006F U+FFFFFF U+00EB", b)=   -- Cannot UTF-8 encode codepoint U+FFFFFF.
+b=                                                      -- M'🤶 No'
+
+```
+
+
+<a id="RexxUnicodeServices_U2D"></a>
+
+#### 1.1.25.   U2D
+
+    .RexxUnicodeServices~U2D( asciiStringUPlus, start = 1, raiseError = .false, [>refLength] )
+
+Converts `"U+XXXX.."` to a decimal value.
+
+If `refLength` is provided by the caller, extra characters after the `U+XXXX..` are allowed.  
+Otherwise `asciiStringUPlus` must be strictly `"U+"` followed by 4 to 6 hex digits.
+
+If provided, `refLength` receives the length of `"U+XXXX.."`, allowing to skip it when parsing.
+
+Returns the decimal value if no error occurs.  
+Otherwise, returns -1 or, if requested, raises an error.
+
+**Examples:**
+
+```rexx
+.RexxUnicodeServices~U2D("U+00EB")=                                                                 -- 235
+.RexxUnicodeServices~U2D("U+00EB ")=                                                                -- -1
+.RexxUnicodeServices~U2D("U+00EB ", /*start*/ 1, /*raiseError*/ .true)=                             -- Expected U+ or u+ followed by 4..6 hex digits; found "U+00EB ".
+.RexxUnicodeServices~U2D("U+00EB ", /*start*/ 1, /*raiseError*/ .true, >length)=; length=           -- 235; 6
+.RexxUnicodeServices~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .false)=                    -- -1
+.RexxUnicodeServices~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .true, >length)=; length=   -- Expected U+ or u+ followed by 4..6 hex digits; found " U+1F385 ".
+.RexxUnicodeServices~U2D("U+0020 U+1F385 ", /*start*/ 8, /*raiseError*/ .true, >length)=; length=   -- 127877; 7
+
+```
+
+
 <a id="RexxUnicodeServices_graphemeBreak"></a>
 
-#### 1.1.21.   graphemeBreak
+#### 1.1.26.   graphemeBreak
 
     .RexxUnicodeServices~graphemeBreak( codepoint1, codepoint2, >refState )
 
@@ -879,7 +1033,7 @@ state=                                                  -- 1
 
 <a id="RexxUnicodeServices_graphemeBreakBackward"></a>
 
-#### 1.1.22.   graphemeBreakBackward
+#### 1.1.27.   graphemeBreakBackward
 
     .RexxUnicodeServices~graphemeBreakBackward( string, indexB, codepoint1, codepoint2 )
 
@@ -1115,14 +1269,14 @@ block's terminator, so `M` blocks of length `k` cost `O(M·k)` = `O(n)`, not `O(
 
 <a id="RexxUnicodeServices_new"></a>
 
-#### 1.1.23.   new
+#### 1.1.28.   new
 
 This method raises an error because `RexxUnicodeServices` has no instance.
 
 
 <a id="RexxUnicodeServices_systemIsLittleEndian"></a>
 
-#### 1.1.24.   systemIsLittleEndian
+#### 1.1.29.   systemIsLittleEndian
 
     .RexxUnicodeServices~systemIsLittleEndian
 
@@ -1131,7 +1285,7 @@ Returns `.true` if the system is little-endian.
 
 <a id="RexxUnicodeServices_unicodeVersion"></a>
 
-#### 1.1.25.   unicodeVersion
+#### 1.1.30.   unicodeVersion
 
     .RexxUnicodeServices~unicodeVersion
 
@@ -1147,7 +1301,7 @@ say .RexxUnicodeServices~unicodeVersion        -- 17.0.0 (for example)
 
 <a id="RexxUnicodeServices_utf8DecodeCodepoint"></a>
 
-#### 1.1.26.   utf8DecodeCodepoint
+#### 1.1.31.   utf8DecodeCodepoint
 
 ```
 .RexxUnicodeServices~utf8DecodeCodepoint( string, indexB = 1, [>refSizeB], [>refErrorCode], [>refErrorMsg] )
@@ -1219,7 +1373,7 @@ to follow the `U+FFFD` Substitution of Maximal Subparts.
 
 <a id="RexxUnicodeServices_utf8DecodePreviousCodepoint"></a>
 
-#### 1.1.27.   utf8DecodePreviousCodepoint
+#### 1.1.32.   utf8DecodePreviousCodepoint
 
 ```
 .RexxUnicodeServices~utf8DecodePreviousCodepoint( string, indexB = string~length + 1, [>refSizeB], [>refErrorCode], [>refErrorMsg] )
@@ -1338,7 +1492,7 @@ indexB -= abs(size); indexB=                                                    
 
 <a id="RexxUnicodeServices_utf8EncodeCodepoint"></a>
 
-#### 1.1.28.   utf8EncodeCodepoint
+#### 1.1.33.   utf8EncodeCodepoint
 
 ```
 .RexxUnicodeServices~utf8EncodeCodepoint( codepoint, destination, [>refSizeB] )
@@ -1382,7 +1536,7 @@ Append the UTF-8 encoding of 1114112 to mb: size = 0 mb = oë€🎅
 
 <a id="RexxUnicodeServices_utf8procVersion"></a>
 
-#### 1.1.29.   utf8procVersion
+#### 1.1.34.   utf8procVersion
 
     .RexxUnicodeServices~utf8procVersion
 
@@ -1398,7 +1552,7 @@ say .RexxUnicodeServices~utf8procVersion        -- 2.11.3 (for example)
 
 <a id="RexxUnicodeServices_utf8StringEscape"></a>
 
-#### 1.1.30.   utf8StringEscape
+#### 1.1.35.   utf8StringEscape
 
     .RexxUnicodeServices~utf8StringEscape( string, escapeBy = "c", buffer = .nil )
 
@@ -1463,7 +1617,7 @@ Escaping U+D800 is '\xED\xA0\x80' because \x{EDA080} can't be UTF-8 decoded as U
 
 <a id="RexxUnicodeServices_utf8StringInfo"></a>
 
-#### 1.1.31.   utf8StringInfo
+#### 1.1.36.   utf8StringInfo
 
 ```
 .RexxUnicodeServices~utf8StringInfo( string, [>refGraphemeCount], [>refCodepointCount], [>refErrorCount], stopAtFirstError = .false )
@@ -1537,7 +1691,7 @@ g=; c=; e=                                                                  --  
 
 <a id="RexxUnicodeServices_utf8StringUnescape"></a>
 
-#### 1.1.32.   utf8StringUnescape
+#### 1.1.37.   utf8StringUnescape
 
     .RexxUnicodeServices~utf8StringUnescape( string, buffer = .nil )
 
@@ -1632,7 +1786,7 @@ which supports these messages sent by the native implementation:
 
 <a id="RexxUnicodeServices_utf8StringWidth"></a>
 
-#### 1.1.33.   utf8StringWidth
+#### 1.1.38.   utf8StringWidth
 
 ```
 .RexxUnicodeServices~utf8StringWidth( string, indexB = string~length + 1, eastAsianContext = .false )
@@ -1679,7 +1833,7 @@ say .RexxUnicode~stringEscape(string, "g"); say " "~copies(width) || "^"
 
 <a id="RexxUnicodeServices_utf8Transform"></a>
 
-#### 1.1.34.   utf8Transform
+#### 1.1.39.   utf8Transform
 
 ```
 .RexxUnicodeServices~utf8Transform( string, casefold = .false, lump= .false, nlf = 0, normalization = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false )
@@ -1699,13 +1853,13 @@ say .RexxUnicode~stringEscape(string, "g"); say " "~copies(width) || "^"
 
 Returns the transformed string.
 
-##### 1.1.34.1.   'caseFold' argument
+##### 1.1.39.1.   'caseFold' argument
 
 Performs unicode case folding, to be able to do a case-insensitive
 string comparison.
 
 
-##### 1.1.34.2.   'lump' argument
+##### 1.1.39.2.   'lump' argument
 
 Maps certain characters to a common representative (i.e., several distinct characters produce the same output character).  
 All the concerned characters become the same character, but still remain distinct characters.
@@ -1747,7 +1901,7 @@ Mapping rules:
     U+007E  ~   <-- tilde operator U+223C
 
 
-##### 1.1.34.3.   'nlf' argument
+##### 1.1.39.3.   'nlf' argument
 
 [https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-5/#G10213][newline_guidelines]
 
@@ -1774,7 +1928,7 @@ NLF sequences (LF, CRLF, CR, NEL) represent a paragraph break and are converted
 to the Unicode Paragraph Separator (PS) codepoint.
 
 
-##### 1.1.34.4.   'normalization' argument
+##### 1.1.39.4.   'normalization' argument
 
 ```rexx
 -- Value to pass as the `normalization` argument to utf8Transform (default: 0 no normalization).
@@ -1789,7 +1943,7 @@ to the Unicode Paragraph Separator (PS) codepoint.
 If `normalization` is not `0`, apply the requested normalization.
 
 
-##### 1.1.34.5.   'stripCC' argument
+##### 1.1.39.5.   'stripCC' argument
 
 Strips and/or converts control characters.
 
@@ -1800,13 +1954,13 @@ are treated as a NLF-sequence in this case.
 All other control characters are simply removed.
 
 
-##### 1.1.34.6.   'stripIgnorable' argument
+##### 1.1.39.6.   'stripIgnorable' argument
 
 Strips the characters whose property `Default_Ignorable_Code_Point` is true,
 such as `SOFT-HYPHEN` or `ZERO-WIDTH-SPACE`.
 
 
-##### 1.1.34.7.   'stripMark' argument
+##### 1.1.39.7.   'stripMark' argument
 
 Strips all character markings.
 
@@ -1819,12 +1973,12 @@ This includes non-spacing, spacing and enclosing (i.e. accents) categories:
 This option works only with a normalization applied.
 
 
-##### 1.1.34.8.   'stripNA' argument
+##### 1.1.39.8.   'stripNA' argument
 
 Strips the characters whose category is `Cn` Unassigned.
 
 
-##### 1.1.34.9.   Examples of transformations
+##### 1.1.39.9.   Examples of transformations
 
 ```rexx
 string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\N{ZERO-WIDTH-SPACE}Père\t\N{HYPHEN}\N{SOFT-HYPHEN}\N{EN DASH}\N{EM DASH}Noël\x{EFB790}\r\n"
@@ -2102,60 +2256,9 @@ See the documentation of [utf8Transform](#RexxUnicodeServices_utf8Transform) for
 
 ### 2.4.   Class methods
 
-<a id="RexxUnicode_C2U"></a>
-
-#### 2.4.1.   C2U
-
-    .RexxUnicode~C2U( string, buffer = .nil )
-
-Returns an ASCII string containing a sequence of `U+XXXX` (4 to 6 hex digits).
-
-If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
-
-**Examples:**
-
-```rexx
-.RexxUnicode~C2U("Noël 🎅")=                        -- 'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
-.RexxUnicode~C2U("Noël 🎅", .MutableBuffer~new)=    -- M'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
-
-```
-
-```rexx
--- Invalid string
--- U+FFFD Substitution of Maximal Subparts
--- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
-.RexxUnicode~C2U("F4 91 92 93 FF 41 80 BF 42"x)=    -- 'U+FFFD U+FFFD U+FFFD U+FFFD U+FFFD U+0041 U+FFFD U+FFFD U+0042'
-.RexxUnicode~C2X("F4 91 92 93 FF 41 80 BF 42"x)=    -- 'F4 91 92 93 FF 41 80 BF 42'
--- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
-.RexxUnicode~C2U("E1 80 E2 F0 91 92 F1 BF 41"x)=    -- 'U+FFFD U+FFFD U+FFFD U+FFFD U+0041'
-.RexxUnicode~C2X("E1 80 E2 F0 91 92 F1 BF 41"x)=    -- 'E180 E2 F09192 F1BF 41'
-
-```
-
-
-<a id="RexxUnicode_C2X"></a>
-
-#### 2.4.2.   C2X
-
-    .RexxUnicode~C2X( string, buffer = .nil )
-
-Returns a string representing the encoded codepoints of `string` in hexadecimal.  
-The codepoints are separated by a single space.
-
-If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
-
-**Examples:**
-
-```rexx
-.RexxUnicode~C2X("Noël 🎅")=                        -- '4E 6F C3AB 6C 20 F09F8E85'
-.RexxUnicode~C2X("Noël 🎅", .MutableBuffer~new)=    -- M'4E 6F C3AB 6C 20 F09F8E85'
-
-```
-
-
 <a id="RexxUnicode_character"></a>
 
-#### 2.4.3.   character
+#### 2.4.1.   character
 
     .RexxUnicode~character( identifier )
 
@@ -2201,14 +2304,14 @@ See the [`codepoint`](#RexxUnicode_codepoint) method for a definition of "codepo
 -- Only -1 is supported as a special value
 -- All other negative codepoints are invalid
 .RexxUnicode~character(-1)=                     -- (An invalid character)
-.RexxUnicode~character(-2)=                     -- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicode~character(-2)=                     -- Code point must be in the range 0 to 1114111 (U+10FFFF); found "-2".
 
 ```
 
 
 <a id="RexxUnicode_checkCodepoint"></a>
 
-#### 2.4.4.   checkCodepoint
+#### 2.4.2.   checkCodepoint
 
     .RexxUnicode~checkCodepoint( codepoint, minusOneAllowed =.false )
 
@@ -2219,7 +2322,7 @@ If `minusOneAllowed` is true then -1 is allowed (special value used in case of e
 
 <a id="RexxUnicode_codepoint"></a>
 
-#### 2.4.5.   codepoint
+#### 2.4.3.   codepoint
 
     .RexxUnicode~codepoint( identifier )
 
@@ -2271,14 +2374,14 @@ A codepoint identifier may be:
 -- Only -1 is supported as a special value
 -- All other negative codepoints are invalid
 .RexxUnicode~codepoint(-1)=                     -- -1
-.RexxUnicode~codepoint(-2)=                     -- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicode~codepoint(-2)=                     -- Code point must be in the range 0 to 1114111 (U+10FFFF); found "-2".
 
 ```
 
 
 <a id="RexxUnicode_codepointCharName"></a>
 
-#### 2.4.6.   codepointCharName
+#### 2.4.4.   codepointCharName
 
     .RexxUnicode~codepointCharName( codepoint, raiseError = .false )
 
@@ -2303,7 +2406,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
 
 <a id="RexxUnicode_codepointCharNameAlias"></a>
 
-#### 2.4.7.   codepointCharNameAlias
+#### 2.4.5.   codepointCharNameAlias
 
     .RexxUnicode~codepointCharNameAlias( codepoint, raiseError = .false )
 
@@ -2328,7 +2431,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
 
 <a id="RexxUnicode_codepointExtendedCharName"></a>
 
-#### 2.4.8.   codepointExtendedCharName
+#### 2.4.6.   codepointExtendedCharName
 
     .RexxUnicode~codepointExtendedCharName( codepoint, raiseError = .false )
 
@@ -2356,7 +2459,7 @@ This method requires the `ICU4ooRexx` class. If it is not loaded, the method ret
 
 <a id="RexxUnicode_codepointUTF8Encoding"></a>
 
-#### 2.4.9.   codepointUTF8Encoding
+#### 2.4.7.   codepointUTF8Encoding
 
     .RexxUnicode~codepointUTF8Encoding( codepoint, buffer = .nil )
 
@@ -2372,43 +2475,14 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 .RexxUnicode~codepointUTF8Encoding(2448~x2d)~c2x=   -- 'E29188'
 
 .RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint)~c2x=      -- 'F48FBFBF'
-.RexxUniRexxUnicodecodeServices~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  -- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).
-
-```
-
-
-<a id="RexxUnicode_D2U"></a>
-
-#### 2.4.10.   D2U
-
-    .RexxUnicode~D2U( codepoint, buffer = .nil )
-
-Returns a `U+XXXX` string (4 to 6 hex digits) representing the codepoint passed as a decimal value.
-
-If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
-
-The special value -1 is represented using `U+FFFFFF`, even though the resulting value is not a valid Unicode scalar value
-
-[https://www.unicode.org/versions/Unicode17.0.0/core-spec/appendix-a/#G7083][typographic_conventions_code_points]
-
-**Examples:**
-
-```rexx
-.RexxUnicode~D2U(235)=                              -- 'U+00EB'
-.RexxUnicode~D2U(235, .MutableBuffer~new)=          -- M'U+00EB'
-.RexxUnicode~D2U(127877)=                           -- 'U+1F385'
-.RexxUnicode~D2U(127877, .MutableBuffer~new)=       -- M'U+1F385'
-
-.RexxUnicode~D2U(.RexxUnicode~maxCodepoint)=        -- 'U+10FFFF'
-.RexxUnicode~D2U(.RexxUnicode~maxCodepoint + 1)=    -- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).
-.RexxUnicode~D2U(-1)=                               -- 'U+FFFFFF'
+.RexxUniRexxUnicodecodeServices~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  -- Invalid code point 1114112; allowed range is 0 to 1114111 (U+10FFFF).
 
 ```
 
 
 <a id="RexxUnicode_h_UAX44_LM2"></a>
 
-#### 2.4.11.   h_UAX44_LM2
+#### 2.4.8.   h_UAX44_LM2
 
     .RexxUnicode~h_UAX44_LM2( name )
 
@@ -2431,7 +2505,7 @@ or to `.RexxUnicode~UAX44_LM2` (slower, but always available).
 
 <a id="RexxUnicode_info"></a>
 
-#### 2.4.12.   info
+#### 2.4.9.   info
 
     .RexxUnicode~info
 
@@ -2455,7 +2529,7 @@ Returns a `StringTable` containing information about the Unicode environment.
 
 <a id="RexxUnicode_stringEscape"></a>
 
-#### 2.4.13.   stringEscape
+#### 2.4.10.   stringEscape
 
     .RexxUnicode~stringEscape( string, escapeBy = "c", buffer = .nil )
 
@@ -2466,7 +2540,7 @@ This method is kept for compatibility with older versions of `rxunicode.cls`.
 
 <a id="RexxUnicode_stringInfo"></a>
 
-#### 2.4.14.   stringInfo
+#### 2.4.11.   stringInfo
 
     .RexxUnicode~stringInfo( string, [>indexer] )
 
@@ -2512,7 +2586,7 @@ indexer~startErrorMessages==
 
 <a id="RexxUnicode_stringIsASCII"></a>
 
-#### 2.4.15.   stringIsASCII
+#### 2.4.12.   stringIsASCII
 
     .RexxUnicode~stringIsASCII( string )
 
@@ -2537,7 +2611,7 @@ string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")
 
 <a id="RexxUnicode_stringToNFC"></a>
 
-#### 2.4.16.   stringToNFC
+#### 2.4.13.   stringToNFC
 
     .RexxUnicode~stringToNFC( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable = .false, stripMark = .false, stripNA = .false )
 
@@ -2556,7 +2630,7 @@ See the [`utf8Transform`](#RexxUnicodeServices_utf8Transform) method for a descr
 
 <a id="RexxUnicode_stringToNFD"></a>
 
-#### 2.4.17.   stringToNFD
+#### 2.4.14.   stringToNFD
 
     .RexxUnicode~stringToNFD( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable = .false, stripMark = .false, stripNA = .false )
 
@@ -2575,7 +2649,7 @@ See the [`utf8Transform`](#RexxUnicodeServices_utf8Transform) method for a descr
 
 <a id="RexxUnicode_stringToNFKC"></a>
 
-#### 2.4.18.   stringToNFKC
+#### 2.4.15.   stringToNFKC
 
     .RexxUnicode~stringToNFKC( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable = .false, stripMark = .false, stripNA = .false )
 
@@ -2594,7 +2668,7 @@ See the [`utf8Transform`](#RexxUnicodeServices_utf8Transform) method for a descr
 
 <a id="RexxUnicode_stringToNFKC_CF"></a>
 
-#### 2.4.19.   stringToNFKC_CF
+#### 2.4.16.   stringToNFKC_CF
 
     .RexxUnicode~stringToNFKC_CF( string, lump= .false, nlf = 0, stripCC = .false, stripMark = .false, stripNA = .false )
 
@@ -2623,7 +2697,7 @@ See the [`utf8Transform`](#RexxUnicodeServices_utf8Transform) method for a descr
 
 <a id="RexxUnicode_stringToNFKD"></a>
 
-#### 2.4.20.   stringToNFKD
+#### 2.4.17.   stringToNFKD
 
     .RexxUnicode~stringToNFKD( string, casefold = .false, lump = .false, nlf = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false )
 
@@ -2642,7 +2716,7 @@ See the [`utf8Transform`](#RexxUnicodeServices_utf8Transform) method for a descr
 
 <a id="RexxUnicode_stringUnescape"></a>
 
-#### 2.4.21.   stringUnescape
+#### 2.4.18.   stringUnescape
 
     .RexxUnicode~stringUnescape( string, buffer = .nil )
 
@@ -2651,84 +2725,9 @@ This method forwards to the private native method [`.RexxUnicodeServices~utf8Str
 This method is kept for compatibility with older versions of `rxunicode.cls`.
 
 
-<a id="RexxUnicode_U2C"></a>
-
-#### 2.4.22.   U2C
-
-    .RexxUnicode~U2C( asciiStringUPlus, buffer = .nil )
-
-Encodes an ASCII string of the form `"U+XXXX.. U+XXXX.. ..."` into a UTF-8 string.
-
-The only valid separators are one or more spaces.
-
-If a buffer is passed, the encoded characters are appended to it.  
-In case of error, the buffer is partially updated.
-
-The result is either a string or the buffer passed as argument.
-
-**Examples:**
-
-```rexx
--- Spaces between consecutive \u{...} sequences are significant.
--- Spaces between consecutive U+... sequences are not significant.
-.RexxUnicode~stringUnescape(" \u{0041} \u{0042} ")=     -- ' A B '
-.RexxUnicode~U2C(           "  U+0041   U+0042  ")=     -- 'AB'
-
-```
-
-```rexx
-.RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385")=                         -- 'Noël 🎅'
-.RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385", .MutableBuffer~new)=     -- M'Noël 🎅'
-
-```
-
-```rexx
-.RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB")=                                      -- Cannot UTF-8 encode codepoint U+FFFFFF.
-
-```
-
-```rexx
--- In case of error, the buffer is partially updated
-b = .MutableBuffer~new("🤶 ")
-.RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB", b)=   -- Cannot UTF-8 encode codepoint U+FFFFFF.
-b=                                                      -- M'🤶 No'
-
-```
-
-
-<a id="RexxUnicode_U2D"></a>
-
-#### 2.4.23.   U2D
-
-    .RexxUnicode~U2D( asciiStringUPlus, start = 1, raiseError = .false, [>refLength] )
-
-Converts `"U+XXXX.."` to a decimal value.
-
-If `refLength` is provided by the caller, extra characters after the `U+XXXX..` are allowed.  
-Otherwise `asciiStringUPlus` must be strictly `"U+"` followed by 4 to 6 hex digits.
-
-If provided, `refLength` receives the length of `"U+XXXX.."`, allowing to skip it when parsing.
-
-Returns the decimal value if no error occurs.  
-Otherwise, returns -1 or, if requested, raises an error.
-
-**Examples:**
-
-```rexx
-.RexxUnicode~U2D("U+00EB")=                                                                 -- 235
-.RexxUnicode~U2D("U+00EB ")=                                                                -- -1
-.RexxUnicode~U2D("U+00EB ", /*start*/ 1, /*raiseError*/ .true)=                             -- Expected U+ or u+ followed by 4..6 hex digits; found "U+00EB ".
-.RexxUnicode~U2D("U+00EB ", /*start*/ 1, /*raiseError*/ .true, >length)=; length=           -- 235; 6
-.RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .false)=                    -- -1
-.RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .true, >length)=; length=   -- Expected U+ or u+ followed by 4..6 hex digits; found " U+1F385 ".
-.RexxUnicode~U2D("U+0020 U+1F385 ", /*start*/ 8, /*raiseError*/ .true, >length)=; length=   -- 127877; 7
-
-```
-
-
 <a id="RexxUnicode_UAX44_LM2"></a>
 
-#### 2.4.24.   UAX44_LM2
+#### 2.4.19.   UAX44_LM2
 
     .RexxUnicode~UAX44_LM2( string )
 
@@ -2752,7 +2751,7 @@ are removed.
 
 <a id="RexxUnicode_UAX44_LM3"></a>
 
-#### 2.4.25.   UAX44_LM3
+#### 2.4.20.   UAX44_LM3
 
     .RexxUnicode~UAX44_LM3( string )
 
@@ -2778,7 +2777,7 @@ are removed.
 
 <a id="RexxUnicode_utf8StringUnescape"></a>
 
-#### 2.4.26.   utf8StringUnescape
+#### 2.4.21.   utf8StringUnescape
 
     .RexxUnicode~utf8StringUnescape( string, buffer = .nil )
 
@@ -4728,7 +4727,7 @@ See [`.RexxUnicodeServices~codepointBidiClass`](#RexxUnicodeServices_codepointBi
 
 ```rexx
 .RexxUnicodeCharacter~new("0608"~x2d)~bidiClass=        --  'AL'
-.RexxUnicodeCharacter~new("FFFFFF"~x2d)~bidiClass=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~bidiClass=      --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 .RexxUnicodeCharacter~new(-1)~bidiClass=                --  '?'
 
 ```
@@ -4748,7 +4747,7 @@ See [`.RexxUnicodeServices~codepointBidiClass`](#RexxUnicodeServices_codepointBi
 
 ```rexx
 .RexxUnicodeCharacter~new("0608"~x2d)~bidiClassName=        --  'Arabic_Letter'
-.RexxUnicodeCharacter~new("FFFFFF"~x2d)~bidiClassName=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~bidiClassName=      --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 .RexxUnicodeCharacter~new(-1)~bidiClassName=                --  '?'
 
 ```
@@ -4782,7 +4781,7 @@ See [`.RexxUnicodeServices~codepointBoundClass`](#RexxUnicodeServices_codepointB
 
 ```rexx
 .RexxUnicodeCharacter~new("1F1E6"~x2d)~boundClass=      --  'RI'
-.RexxUnicodeCharacter~new("FFFFFF"~x2d)~boundClass=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~boundClass=     --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 .RexxUnicodeCharacter~new(-1)~boundClass=               --  '?'
 
 ```
@@ -4804,7 +4803,7 @@ See [`.RexxUnicodeServices~codepointBoundClass`](#RexxUnicodeServices_codepointB
 
 ```rexx
 .RexxUnicodeCharacter~new("1F1E6"~x2d)~boundClassName=      --  'Regional_Indicator'
-.RexxUnicodeCharacter~new("FFFFFF"~x2d)~boundClassName=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~boundClassName=     --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 .RexxUnicodeCharacter~new(-1)~boundClassName=               --  '?'
 
 ```
@@ -4826,7 +4825,7 @@ See [`.RexxUnicodeServices~codepointCategory`](#RexxUnicodeServices_codepointCat
 
 ```rexx
 .RexxUnicodeCharacter~new("0903"~x2d)~category=     -- 'Mc'
-.RexxUnicodeCharacter~new("FFFFFF"~x2d)~category=   --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~category=   --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215"..
 .RexxUnicodeCharacter~new(-1)~category=             --  'Cn'
 
 ```
@@ -4848,7 +4847,7 @@ See [`.RexxUnicodeServices~codepointCategory`](#RexxUnicodeServices_codepointCat
 
 ```rexx
 .RexxUnicodeCharacter~new("0903"~x2d)~categoryName=     -- 'Spacing_Mark'
-.RexxUnicodeCharacter~new("FFFFFF"~x2d)~categoryName=   --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~categoryName=   --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 .RexxUnicodeCharacter~new(-1)~categoryName=             --  'Unassigned'
 
 ```
@@ -4895,7 +4894,7 @@ See [`.RexxUnicodeServices~codepointCombiningClass`](#RexxUnicodeServices_codepo
 
 ```rexx
 .RexxUnicodeCharacter~new("031B"~x2d)~combiningClass=       --  'ATAR'
-.RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClass=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClass=     --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 .RexxUnicodeCharacter~new(-1)~combiningClass=               --  '?'
 
 ```
@@ -4921,7 +4920,7 @@ See [`.RexxUnicodeServices~codepointCombiningClass`](#RexxUnicodeServices_codepo
 
 ```rexx
 .RexxUnicodeCharacter~new("031B"~x2d)~combiningClassName=       --  'Attached_Above_Right'
-.RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClassName=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClassName=     --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 .RexxUnicodeCharacter~new(-1)~combiningClassName=               --  '?'
 
 ```
@@ -4947,7 +4946,7 @@ See [`.RexxUnicodeServices~codepointCombiningClass`](#RexxUnicodeServices_codepo
 
 ```rexx
 .RexxUnicodeCharacter~new("031B"~x2d)~combiningClassValue=      --  216
-.RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClassValue=    --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClassValue=    --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 .RexxUnicodeCharacter~new(-1)~combiningClassValue=              --  -1
 
 ```
@@ -5012,7 +5011,7 @@ See [`.RexxUnicodeServices~codepointDecompositionType`](#RexxUnicodeServices_cod
 .RexxUnicodeCharacter~new("0000"~x2d)~decompositionType=        --  'None'
 .RexxUnicodeCharacter~new("00A8"~x2d)~decompositionType=        --  'Compat'
 .RexxUnicodeCharacter~new("00BC"~x2d)~decompositionType=        --  'Fraction'
-.RexxUnicodeCharacter~new("FFFFFF"~x2d)~decompositionType=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~decompositionType=      --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 .RexxUnicodeCharacter~new(-1)~decompositionType=                --  '?'
 
 ```
@@ -5036,7 +5035,7 @@ See [`.RexxUnicodeServices~codepointDecompositionType`](#RexxUnicodeServices_cod
 .RexxUnicodeCharacter~new("0000"~x2d)~decompositionTypeName=        --  'Code point not explicitly listed for Decomposition_Type'
 .RexxUnicodeCharacter~new("00A8"~x2d)~decompositionTypeName=        --  'Unspecified compatibility character'
 .RexxUnicodeCharacter~new("00BC"~x2d)~decompositionTypeName=        --  'Vulgar fraction form'
-.RexxUnicodeCharacter~new("FFFFFF"~x2d)~decompositionTypeName=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~decompositionTypeName=      --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 .RexxUnicodeCharacter~new(-1)~decompositionTypeName=                --  '?'
 
 ```
@@ -5113,7 +5112,7 @@ See [`.RexxUnicodeServices~codepointIndicConjunctBreak`](#RexxUnicodeServices_co
 .RexxUnicodeCharacter~new("0300"~x2d)~indicConjunctBreak=           --  'Extend'
 .RexxUnicodeCharacter~new("0915"~x2d)~indicConjunctBreak=           --  'Consonant'
 .RexxUnicodeCharacter~new("094D"~x2d)~indicConjunctBreak=           --  'Linker'
-.RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreak=         --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreak=         --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 .RexxUnicodeCharacter~new(-1)~indicConjunctBreak=                   --  '?'
 
 ```
@@ -5138,7 +5137,7 @@ See [`.RexxUnicodeServices~codepointIndicConjunctBreak`](#RexxUnicodeServices_co
 .RexxUnicodeCharacter~new("0300"~x2d)~indicConjunctBreakName=       --  'Extend'
 .RexxUnicodeCharacter~new("0915"~x2d)~indicConjunctBreakName=       --  'Consonant'
 .RexxUnicodeCharacter~new("094D"~x2d)~indicConjunctBreakName=       --  'Linker'
-.RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreakName=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreakName=     --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 .RexxUnicodeCharacter~new(-1)~indicConjunctBreakName=               --  '?'
 
 ```

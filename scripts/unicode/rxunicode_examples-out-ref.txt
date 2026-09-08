@@ -8,6 +8,40 @@ ooRexx> tutor off
 
 
 --------------------------------------------------------------------------------
+-- .RexxUnicodeServices~C2U
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeServices~C2U("Noël 🎅")=                        -- 'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
+'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
+ooRexx> .RexxUnicodeServices~C2U("Noël 🎅", .MutableBuffer~new)=    -- M'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
+M'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
+
+
+-- Invalid string
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+ooRexx> .RexxUnicodeServices~C2U("F4 91 92 93 FF 41 80 BF 42"x)=    -- 'U+FFFD U+FFFD U+FFFD U+FFFD U+FFFD U+0041 U+FFFD U+FFFD U+0042'
+'U+FFFD U+FFFD U+FFFD U+FFFD U+FFFD U+0041 U+FFFD U+FFFD U+0042'
+ooRexx> .RexxUnicodeServices~C2X("F4 91 92 93 FF 41 80 BF 42"x)=    -- 'F4 91 92 93 FF 41 80 BF 42'
+'F4 91 92 93 FF 41 80 BF 42'
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+ooRexx> .RexxUnicodeServices~C2U("E1 80 E2 F0 91 92 F1 BF 41"x)=    -- 'U+FFFD U+FFFD U+FFFD U+FFFD U+0041'
+'U+FFFD U+FFFD U+FFFD U+FFFD U+0041'
+ooRexx> .RexxUnicodeServices~C2X("E1 80 E2 F0 91 92 F1 BF 41"x)=    -- 'E180 E2 F09192 F1BF 41'
+'E180 E2 F09192 F1BF 41'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeServices~C2X
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeServices~C2X("Noël 🎅")=                        -- '4E 6F C3AB 6C 20 F09F8E85'
+'4E 6F C3AB 6C 20 F09F8E85'
+ooRexx> .RexxUnicodeServices~C2X("Noël 🎅", .MutableBuffer~new)=    -- M'4E 6F C3AB 6C 20 F09F8E85'
+M'4E 6F C3AB 6C 20 F09F8E85'
+
+
+--------------------------------------------------------------------------------
 -- .RexxUnicodeServices~codepointAsciiPrintableString
 --------------------------------------------------------------------------------
 
@@ -203,6 +237,29 @@ ooRexx> .RexxUnicodeServices~codepointUnicodeEscapeNotation(-1)=            -- '
 
 ooRexx> .RexxUnicodeServices~codepointUnicodeEscapeNotation("D800"~x2d, .MutableBuffer~new)=    -- M'\uD800'
 M'\uD800'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeServices~D2U
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeServices~D2U(235)=                              -- 'U+00EB'
+'U+00EB'
+ooRexx> .RexxUnicodeServices~D2U(235, .MutableBuffer~new)=          -- M'U+00EB'
+M'U+00EB'
+ooRexx> .RexxUnicodeServices~D2U(127877)=                           -- 'U+1F385'
+'U+1F385'
+ooRexx> .RexxUnicodeServices~D2U(127877, .MutableBuffer~new)=       -- M'U+1F385'
+M'U+1F385'
+
+
+ooRexx> .RexxUnicodeServices~D2U(.RexxUnicode~maxCodepoint)=        -- 'U+10FFFF'
+'U+10FFFF'
+ooRexx> .RexxUnicodeServices~D2U(.RexxUnicode~maxCodepoint + 1)=    -- Code point must be in the range 0 to 1114111 (U+10FFFF); found "1114112".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "1114112".
+Error code= 88.900
+ooRexx> .RexxUnicodeServices~D2U(-1)=                               -- 'U+FFFFFF'
+'U+FFFFFF'
 
 
 --------------------------------------------------------------------------------
@@ -409,6 +466,54 @@ ooRexx> s=.RexxUnicodeReverseGraphemeSupplier~new(acute~copies(10000000) || ZWJ 
 
 -- The reverse grapheme supplier is much slower when GB11 is not applicable (100000001 graphemes instead of 2)
 -- too long: s=.RexxUnicodeReverseGraphemeSupplier~new("A"~copies(100000000) || ZWJ || grin); do while s~available; s~next; end      -- Duration: 398.995352
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeServices~U2C
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeServices~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385")=                         -- 'Noël 🎅'
+'Noël 🎅'
+ooRexx> .RexxUnicodeServices~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385", .MutableBuffer~new)=     -- M'Noël 🎅'
+M'Noël 🎅'
+
+
+ooRexx> .RexxUnicodeServices~U2C("U+004E U+006F U+FFFFFF U+00EB")=                                      -- Cannot UTF-8 encode code point U+FFFFFF at position 15.
+Cannot UTF-8 encode code point U+FFFFFF at position 15.
+Error code= 98.900
+
+
+-- In case of error, the buffer is partially updated
+ooRexx> b = .MutableBuffer~new("🤶 ")
+ooRexx> .RexxUnicodeServices~U2C("U+004E U+006F U+FFFFFF U+00EB", b)=   -- Cannot UTF-8 encode code point U+FFFFFF at position 15.
+Cannot UTF-8 encode code point U+FFFFFF at position 15.
+Error code= 98.900
+ooRexx> b=                                                      -- M'🤶 No'
+M'🤶 No'
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeServices~U2D
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeServices~U2D("U+00EB")=                                                                 -- 235
+ 235
+ooRexx> .RexxUnicodeServices~U2D("U+00EB ")=                                                                -- -1
+-1
+ooRexx> .RexxUnicodeServices~U2D("U+00EB ", /*start*/ 1, /*raiseError*/ .true)=                             -- Expected U+ or u+ followed by 4..6 hex digits; found "U+00EB ".
+Expected U+ or u+ followed by 4..6 hex digits; found "U+00EB ".
+Error code= 23.900
+ooRexx> .RexxUnicodeServices~U2D("U+00EB ", /*start*/ 1, /*raiseError*/ .true, >length)=; length=           -- 235; 6
+ 235
+ 6
+ooRexx> .RexxUnicodeServices~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .false)=                    -- -1
+-1
+ooRexx> .RexxUnicodeServices~U2D("U+0020 U+1F385 ", /*start*/ 7, /*raiseError*/ .true, >length)=; length=   -- Expected U+ or u+ followed by 4..6 hex digits; found " U+1F385 ".
+Expected U+ or u+ followed by 4..6 hex digits; found " U+1F385 ".
+Error code= 23.900
+ooRexx> .RexxUnicodeServices~U2D("U+0020 U+1F385 ", /*start*/ 8, /*raiseError*/ .true, >length)=; length=   -- 127877; 7
+ 127877
+ 7
 
 
 --------------------------------------------------------------------------------
@@ -1016,8 +1121,8 @@ ooRexx> .RexxUnicode~character("🎅")=                   -- ("🎅" \x{F09F8E85
 -- All other negative codepoints are invalid
 ooRexx> .RexxUnicode~character(-1)=                     -- (An invalid character)
 (An invalid character)
-ooRexx> .RexxUnicode~character(-2)=                     -- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: -2; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicode~character(-2)=                     -- Code point must be in the range 0 to 1114111 (U+10FFFF); found "-2".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "-2".
 Error code= 88.900
 
 
@@ -1059,8 +1164,8 @@ ooRexx> .RexxUnicode~codepoint("🎅")=                   -- 127877
 -- All other negative codepoints are invalid
 ooRexx> .RexxUnicode~codepoint(-1)=                     -- -1
 -1
-ooRexx> .RexxUnicode~codepoint(-2)=                     -- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: -2; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicode~codepoint(-2)=                     -- Code point must be in the range 0 to 1114111 (U+10FFFF); found "-2".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "-2".
 Error code= 88.900
 
 
@@ -1120,8 +1225,8 @@ ooRexx> .RexxUnicode~codepointUTF8Encoding(2448~x2d)~c2x=   -- 'E29188'
 
 ooRexx> .RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint)~c2x=      -- 'F48FBFBF'
 'F48FBFBF'
-ooRexx> .RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  -- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  -- Code point must be in the range 0 to 1114111 (U+10FFFF); found "1114112".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "1114112".
 Error code= 88.900
 
 
@@ -1141,8 +1246,8 @@ M'U+1F385'
 
 ooRexx> .RexxUnicode~D2U(.RexxUnicode~maxCodepoint)=        -- 'U+10FFFF'
 'U+10FFFF'
-ooRexx> .RexxUnicode~D2U(.RexxUnicode~maxCodepoint + 1)=    -- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicode~D2U(.RexxUnicode~maxCodepoint + 1)=    -- Code point must be in the range 0 to 1114111 (U+10FFFF); found "1114112".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "1114112".
 Error code= 88.900
 ooRexx> .RexxUnicode~D2U(-1)=                               -- 'U+FFFFFF'
 'U+FFFFFF'
@@ -1364,15 +1469,15 @@ ooRexx> .RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385", .MutableB
 M'Noël 🎅'
 
 
-ooRexx> .RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB")=                                      -- Cannot UTF-8 encode codepoint U+FFFFFF.
-Cannot UTF-8 encode code point U+FFFFFF.
+ooRexx> .RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB")=                                      -- Cannot UTF-8 encode code point U+FFFFFF at position 15.
+Cannot UTF-8 encode code point U+FFFFFF at position 15.
 Error code= 98.900
 
 
 -- In case of error, the buffer is partially updated
 ooRexx> b = .MutableBuffer~new("🤶 ")
-ooRexx> .RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB", b)=   -- Cannot UTF-8 encode codepoint U+FFFFFF.
-Cannot UTF-8 encode code point U+FFFFFF.
+ooRexx> .RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB", b)=   -- Cannot UTF-8 encode code point U+FFFFFF at position 15.
+Cannot UTF-8 encode code point U+FFFFFF at position 15.
 Error code= 98.900
 ooRexx> b=                                                      -- M'🤶 No'
 M'🤶 No'
@@ -2670,8 +2775,8 @@ UTF8: €
 
 ooRexx> .RexxUnicodeCharacter~new("0608"~x2d)~bidiClass=        --  'AL'
 'AL'
-ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~bidiClass=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~bidiClass=      --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 Error code= 88.900
 ooRexx> .RexxUnicodeCharacter~new(-1)~bidiClass=                --  '?'
 '?'
@@ -2683,8 +2788,8 @@ ooRexx> .RexxUnicodeCharacter~new(-1)~bidiClass=                --  '?'
 
 ooRexx> .RexxUnicodeCharacter~new("0608"~x2d)~bidiClassName=        --  'Arabic_Letter'
 'Arabic_Letter'
-ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~bidiClassName=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~bidiClassName=      --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 Error code= 88.900
 ooRexx> .RexxUnicodeCharacter~new(-1)~bidiClassName=                --  '?'
 '?'
@@ -2696,8 +2801,8 @@ ooRexx> .RexxUnicodeCharacter~new(-1)~bidiClassName=                --  '?'
 
 ooRexx> .RexxUnicodeCharacter~new("1F1E6"~x2d)~boundClass=      --  'RI'
 'RI'
-ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~boundClass=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~boundClass=     --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 Error code= 88.900
 ooRexx> .RexxUnicodeCharacter~new(-1)~boundClass=               --  '?'
 '?'
@@ -2709,8 +2814,8 @@ ooRexx> .RexxUnicodeCharacter~new(-1)~boundClass=               --  '?'
 
 ooRexx> .RexxUnicodeCharacter~new("1F1E6"~x2d)~boundClassName=      --  'Regional_Indicator'
 'Regional_Indicator'
-ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~boundClassName=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~boundClassName=     --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 Error code= 88.900
 ooRexx> .RexxUnicodeCharacter~new(-1)~boundClassName=               --  '?'
 '?'
@@ -2722,8 +2827,8 @@ ooRexx> .RexxUnicodeCharacter~new(-1)~boundClassName=               --  '?'
 
 ooRexx> .RexxUnicodeCharacter~new("0903"~x2d)~category=     -- 'Mc'
 'Mc'
-ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~category=   --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~category=   --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 Error code= 88.900
 ooRexx> .RexxUnicodeCharacter~new(-1)~category=             --  'Cn'
 'Cn'
@@ -2735,8 +2840,8 @@ ooRexx> .RexxUnicodeCharacter~new(-1)~category=             --  'Cn'
 
 ooRexx> .RexxUnicodeCharacter~new("0903"~x2d)~categoryName=     -- 'Spacing_Mark'
 'Spacing_Mark'
-ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~categoryName=   --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~categoryName=   --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 Error code= 88.900
 ooRexx> .RexxUnicodeCharacter~new(-1)~categoryName=             --  'Unassigned'
 'Unassigned'
@@ -2748,8 +2853,8 @@ ooRexx> .RexxUnicodeCharacter~new(-1)~categoryName=             --  'Unassigned'
 
 ooRexx> .RexxUnicodeCharacter~new("031B"~x2d)~combiningClass=       --  'ATAR'
 'ATAR'
-ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClass=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClass=     --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 Error code= 88.900
 ooRexx> .RexxUnicodeCharacter~new(-1)~combiningClass=               --  '?'
 '?'
@@ -2761,8 +2866,8 @@ ooRexx> .RexxUnicodeCharacter~new(-1)~combiningClass=               --  '?'
 
 ooRexx> .RexxUnicodeCharacter~new("031B"~x2d)~combiningClassName=       --  'Attached_Above_Right'
 'Attached_Above_Right'
-ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClassName=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClassName=     --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 Error code= 88.900
 ooRexx> .RexxUnicodeCharacter~new(-1)~combiningClassName=               --  '?'
 '?'
@@ -2774,8 +2879,8 @@ ooRexx> .RexxUnicodeCharacter~new(-1)~combiningClassName=               --  '?'
 
 ooRexx> .RexxUnicodeCharacter~new("031B"~x2d)~combiningClassValue=      --  216
  216
-ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClassValue=    --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~combiningClassValue=    --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 Error code= 88.900
 ooRexx> .RexxUnicodeCharacter~new(-1)~combiningClassValue=              --  -1
 -1
@@ -2803,8 +2908,8 @@ ooRexx> .RexxUnicodeCharacter~new("00A8"~x2d)~decompositionType=        --  'Com
 'Compat'
 ooRexx> .RexxUnicodeCharacter~new("00BC"~x2d)~decompositionType=        --  'Fraction'
 'Fraction'
-ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~decompositionType=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~decompositionType=      --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 Error code= 88.900
 ooRexx> .RexxUnicodeCharacter~new(-1)~decompositionType=                --  '?'
 '?'
@@ -2820,8 +2925,8 @@ ooRexx> .RexxUnicodeCharacter~new("00A8"~x2d)~decompositionTypeName=        --  
 'Unspecified compatibility character'
 ooRexx> .RexxUnicodeCharacter~new("00BC"~x2d)~decompositionTypeName=        --  'Vulgar fraction form'
 'Vulgar fraction form'
-ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~decompositionTypeName=      --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~decompositionTypeName=      --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 Error code= 88.900
 ooRexx> .RexxUnicodeCharacter~new(-1)~decompositionTypeName=                --  '?'
 '?'
@@ -2854,8 +2959,8 @@ ooRexx> .RexxUnicodeCharacter~new("0915"~x2d)~indicConjunctBreak=           --  
 'Consonant'
 ooRexx> .RexxUnicodeCharacter~new("094D"~x2d)~indicConjunctBreak=           --  'Linker'
 'Linker'
-ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreak=         --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreak=         --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 Error code= 88.900
 ooRexx> .RexxUnicodeCharacter~new(-1)~indicConjunctBreak=                   --  '?'
 '?'
@@ -2873,8 +2978,8 @@ ooRexx> .RexxUnicodeCharacter~new("0915"~x2d)~indicConjunctBreakName=       --  
 'Consonant'
 ooRexx> .RexxUnicodeCharacter~new("094D"~x2d)~indicConjunctBreakName=       --  'Linker'
 'Linker'
-ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreakName=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
-Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx> .RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreakName=     --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 Error code= 88.900
 ooRexx> .RexxUnicodeCharacter~new(-1)~indicConjunctBreakName=               --  '?'
 '?'

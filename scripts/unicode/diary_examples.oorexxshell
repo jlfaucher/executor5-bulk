@@ -1497,14 +1497,14 @@ Examples
 .RexxUnicodeCharacter~new("0300"~x2d)~indicConjunctBreak=           --  'Extend'
 .RexxUnicodeCharacter~new("0915"~x2d)~indicConjunctBreak=           --  'Consonant'
 .RexxUnicodeCharacter~new("094D"~x2d)~indicConjunctBreak=           --  'Linker'
-.RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreak=         --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreak=         --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 .RexxUnicodeCharacter~new(-1)~indicConjunctBreak=                   --  '?'
 
 .RexxUnicodeCharacter~new("0000"~x2d)~indicConjunctBreakName=       --  'None'
 .RexxUnicodeCharacter~new("0300"~x2d)~indicConjunctBreakName=       --  'Extend'
 .RexxUnicodeCharacter~new("0915"~x2d)~indicConjunctBreakName=       --  'Consonant'
 .RexxUnicodeCharacter~new("094D"~x2d)~indicConjunctBreakName=       --  'Linker'
-.RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreakName=     --  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeCharacter~new("FFFFFF"~x2d)~indicConjunctBreakName=     --  Code point must be in the range 0 to 1114111 (U+10FFFF); found "16777215".
 .RexxUnicodeCharacter~new(-1)~indicConjunctBreakName=               --  '?'
 
 
@@ -2309,7 +2309,7 @@ Examples
 -- Only -1 is supported as a special value
 -- All other negative codepoints are invalid
 .RexxUnicode~codepoint(-1)=                         -- -1
-.RexxUnicode~codepoint(-2)=                         -- Invalid code point: -2; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicode~codepoint(-2)=                         -- Code point must be in the range 0 to 1114111 (U+10FFFF); found "-2".
 
 -- The special value -1 is represented using U+FFFFFF, even though the resulting value is not a valid Unicode scalar value
 .RexxUnicode~D2U(-1)=                               -- 'U+FFFFFF'
@@ -2491,7 +2491,7 @@ Examples
 .RexxUnicode~codepointUTF8Encoding(2448~x2d)~c2x=                       -- 'E29188'
 
 .RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint)~c2x=      -- 'F48FBFBF'
-.RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  -- Invalid codepoint: 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  -- Code point must be in the range 0 to 1114111 (U+10FFFF); found "1114112".
 
 .RexxUnicode~codepointUnicodeEscapeNotation("D800"~x2d)=    -- '\uD800'
 
@@ -2614,17 +2614,17 @@ Examples
 .RexxUnicode~D2U(127877, .MutableBuffer~new)=       -- M'U+1F385'
 
 .RexxUnicode~D2U(.RexxUnicode~maxCodepoint)=        -- 'U+10FFFF'
-.RexxUnicode~D2U(.RexxUnicode~maxCodepoint + 1)=    -- Invalid codepoint: 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicode~D2U(.RexxUnicode~maxCodepoint + 1)=    -- Code point must be in the range 0 to 1114111 (U+10FFFF); found "1114112".
 .RexxUnicode~D2U(-1)=                               -- 'U+FFFFFF' (was Invalid codepoint -1; allowed range is 0 to 1114111 (U+10FFFF).)
 
 .RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385")=                         -- 'Noël 🎅'
 .RexxUnicode~U2C("U+004E U+006F U+00EB U+006C U+0020 U+1F385", .MutableBuffer~new)=     -- M'Noël 🎅'
 
-.RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB")=                                      -- Cannot UTF-8 encode codepoint U+FFFFFF.
+.RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB")=                                      -- Cannot UTF-8 encode code point U+FFFFFF at position 15.
 
 -- In case of error, the buffer is partially updated
 b = .MutableBuffer~new("🤶 ")
-.RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB", b)=   -- Cannot UTF-8 encode codepoint U+FFFFFF.
+.RexxUnicode~U2C("U+004E U+006F U+FFFFFF U+00EB", b)=   -- Cannot UTF-8 encode code point U+FFFFFF at position 15.
 b=                                                      -- M'🤶 No'
 
 .RexxUnicode~U2D("U+00EB")=                                                                 -- 235

@@ -1373,6 +1373,11 @@ PCPPM CPPCode::exportedMethods[] =
     CPPM(RexxUnicodeServicesClass::codepointUnicodeEscapeNotation),
     CPPM(RexxUnicodeServicesClass::utf8StringWidth),
     CPPM(RexxUnicodeServicesClass::codepointUtf8PrintableString),
+    CPPM(RexxUnicodeServicesClass::C2U),
+    CPPM(RexxUnicodeServicesClass::C2X),
+    CPPM(RexxUnicodeServicesClass::D2U),
+    CPPM(RexxUnicodeServicesClass::U2C),
+    CPPM(RexxUnicodeServicesClass::U2D),
     CPPM(RexxUnicodeServicesClass::sizeofUnicodeWidthTables),
 
     // This NULL terminator is important to mark the end of the table.

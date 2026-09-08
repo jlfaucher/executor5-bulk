@@ -35,6 +35,15 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+/*
+Reference documentation (main branch)
+https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/rxunicode.html
+
+Latest documentation (main branch)
+https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/README.html
+*/
+
+
 -- Make this class globally visible without requiring this package.
 -- ICU4ooRexx needs this to register itself using registerICU4ooRexx.
 .environment["REXXUNICODE"] = .RexxUnicode
@@ -92,6 +101,17 @@ Native methods of RexxUnicodeServices
     RexxObject *codepointUtf8PrintableString(RexxInteger *rexxCodepoint, MutableBuffer *destination);
     RexxInteger *codepointIsPrintable(RexxInteger *rexxCodepoint);
     RexxObject *codepointUnicodeEscapeNotation(RexxInteger *rexxCodepoint, MutableBuffer *destination);
+
+     // The "utf8String" prefix is omitted from these method names to keep them short.
+    RexxObject *C2U(RexxString *utf8String, MutableBuffer *destination);
+    RexxObject *C2X(RexxString *utf8String, MutableBuffer *destination);
+
+     // The "asciiString" prefix is omitted from these method names to keep them short.
+    RexxObject *U2C(RexxString *asciiStringUPlus, MutableBuffer *destination);
+    RexxInteger *U2D(RexxString *asciiStringUPlus, RexxInteger *indexB, RexxInteger *raiseError, VariableReference *refLength);
+
+    // The "codepoint" prefix is omitted from these method names to keep them short.
+    RexxObject *D2U(RexxInteger *rexxCodepoint, MutableBuffer *destination);
 
     // Helper for diagnostics
     RexxObject *sizeofUnicodeWidthTables();
@@ -204,8 +224,9 @@ Additional codepoint services
     if codepoint < 0 | codepoint > self~maxCodepoint then signal error_range
     return .true
 
+    error_range:
     not_wholenumber: raise syntax 88.900 array ("Code point must be in the range 0 to" self~maxCodepoint "("self~D2U(self~maxCodepoint)"); found" quoted(codepoint))
-    error_range: raise syntax 88.900 array ("Invalid code point:" codepoint"; allowed range is 0 to" self~maxCodepoint "("self~D2U(self~maxCodepoint)")")
+    -- error_range: raise syntax 88.900 array ("Invalid code point:" codepoint"; allowed range is 0 to" self~maxCodepoint "("self~D2U(self~maxCodepoint)")")
 
 
 -- Returns the UTF-8 encoding of this codepoint.
@@ -339,7 +360,7 @@ C2U C2X D2U U2C U2D
 *******************************************************************************/
 
 -- Returns an ASCII string containing a sequence of U+XXXX...
-::method C2U class
+::method C2URexx class
     use strict arg string, buffer=.nil
     string = requestBaseString(string)
     codepoints = .RexxUnicodeCodepointSupplier~new(string)
@@ -350,7 +371,7 @@ C2U C2X D2U U2C U2D
         if \first then buffer~append(" ")
         first = .false
         codepoint = codepoints~item -- get the codepoint as a whole number
-        UPlusCodepoint = self~D2U(codepoint, buffer)
+        UPlusCodepoint = self~D2URexx(codepoint, buffer)
         codepoints~next
     end
     if returnBuffer then return buffer
@@ -358,7 +379,7 @@ C2U C2X D2U U2C U2D
 
 
 -- Specialized C2X: Inserts a space between the codepoints
-::method C2X class
+::method C2XRexx class
     use strict arg string, buffer=.nil
     string = requestBaseString(string)
     codepoints = .RexxUnicodeCodepointSupplier~new(string)
@@ -383,7 +404,7 @@ six hexadecimal digits, using the digits 0–9 and uppercase letters A–F (for 
 respectively). Leading zeros are omitted, unless the code point would have fewer than four
 hexadecimal digits—for example, U+0001, U+0012, U+0123, U+1234, U+12345, U+102345
 */
-::method D2U class
+::method D2URexx class
     use strict arg codepoint, buffer=.nil
     self~checkCodepoint(codepoint, /*minusOneAllowed*/ .true)
     if .nil == buffer then do
@@ -408,7 +429,7 @@ The only valid separators are one or more spaces.
 If a buffer is passed, the decoded characters are appended to it.
 If an error occurs, the buffer is partially updated.
 */
-::method U2C class
+::method U2CRexx class
     use strict arg UPlusCodepoints, buffer=.nil
     UPlusCodepoints = requestBaseString(UPlusCodepoints, "UPlusCodepoints")
     returnBuffer = .nil <> buffer
@@ -417,7 +438,7 @@ If an error occurs, the buffer is partially updated.
     do while pos <= UPlusCodepoints~length
         pos = UPlusCodepoints~verify(" ", "N", pos)
         if pos == 0 then leave -- end of UPlusCodepoints string
-        codepoint = self~U2D(UPlusCodepoints, pos, /*raiseError*/ .true, >length)
+        codepoint = self~U2DRexx(UPlusCodepoints, pos, /*raiseError*/ .true, >length)
         -- utf8proc implementation note:
         -- Note: we allow encoding 0xd800-0xdfff here, so as not to change
         -- the API, however, these are actually invalid in UTF-8
@@ -438,7 +459,7 @@ Otherwise UPlusCodepoint must be strictly "U+" followed by 4 to 6 hex digits.
 The length of "U+XXXX.." is returned in refLength, allowing to skip it when parsing.
 In case of error, returns -1 by default or raises an error if requested.
 */
-::method U2D class
+::method U2DRexx class
     argRefLength = arg() == 4 -- default value not supported for variable references
     if argRefLength then use strict arg UPlusCodepoint, start=1, raiseError=.false, >refLength
                     else use strict arg UPlusCodepoint, start=1, raiseError=.false

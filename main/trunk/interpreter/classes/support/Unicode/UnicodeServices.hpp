@@ -115,6 +115,17 @@ public:
     RexxInteger *codepointIsPrintable(RexxInteger *rexxCodepoint);
     RexxObject *codepointUnicodeEscapeNotation(RexxInteger *rexxCodepoint, MutableBuffer *destination);
 
+     // The "utf8String" prefix is omitted from these method names to keep them short.
+    RexxObject *C2U(RexxString *utf8String, MutableBuffer *destination);
+    RexxObject *C2X(RexxString *utf8String, MutableBuffer *destination);
+
+     // The "asciiString" prefix is omitted from these method names to keep them short.
+    RexxObject *U2C(RexxString *asciiStringUPlus, MutableBuffer *destination);
+    RexxInteger *U2D(RexxString *asciiStringUPlus, RexxInteger *indexB, RexxInteger *raiseError, VariableReference *refLength);
+
+    // The "codepoint" prefix is omitted from these method names to keep them short.
+    RexxObject *D2U(RexxInteger *rexxCodepoint, MutableBuffer *destination);
+
     // Helper for diagnostics
     RexxObject *sizeofUnicodeWidthTables();
 };

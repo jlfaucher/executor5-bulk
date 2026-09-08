@@ -198,232 +198,7 @@ static inline int formatString(char *buffer, size_t size, const char *format, ..
 
 /******************************************************************************/
 /*                                                                            */
-/* Codepoint Helpers                                                          */
-/*                                                                            */
-/******************************************************************************/
-
-static const char HEX_DIGITS[] = "0123456789ABCDEF";
-
-/*
- * codepoint2hex (c2x)
- * This function is used to convert a codepoint UTF-8 byte sequence,
- * which is at most 4 bytes.
- * Appends the hex representation of `length` bytes from `bytes` to `buffer`,
- * two hex digits per byte, uppercase, no separators.
- * length is <= 4.
- *
- * Returns the number of hex digits appended (always 2 * length).
- */
-static inline size_t codepoint2hex(const utf8proc_uint8_t *bytes, size_t length, MutableBuffer *buffer)
-{
-    const size_t maxLength = 4;
-    char buf[2 * maxLength];
-    if (length > maxLength)
-    {
-        Protected<RexxString> rexxArgName = new_string("'length' of codepoint2hex");
-        Protected<RexxInteger> rexxMaxLength = new_integer(maxLength);
-        Protected<RexxInteger> rexxLength = new_integer(length);
-        reportException(Error_Invalid_argument_toobig, rexxArgName, rexxMaxLength, rexxLength);
-        return 0;
-    }
-    for (size_t i = 0; i < length; i++)
-    {
-        unsigned char b = (unsigned char)bytes[i];
-        buf[2 * i] = HEX_DIGITS[(b >> 4) & 0x0F];
-        buf[2 * i + 1] = HEX_DIGITS[b & 0x0F];
-    }
-    buffer->append(buf, 2 * length);
-    return 2 * length;
-}
-
-
-/*
- * codepoint2hex (d2x)
- * Appends the hexadecimal representation of `codepoint` to `buffer`,
- * as the rightmost `n` hex digits of its 32-bit two's-complement form
- * (i.e. truncated on the left if `n` is small, sign-extended via the
- * natural two's-complement bits if `n` is larger).
- *
- * `n` is either 4 or 8. Any other value raises an error.
- *
- * Returns the number of hex digits appended.
- */
-static inline size_t codepoint2hex(utf8proc_int32_t codepoint, size_t n, MutableBuffer *buffer)
-{
-    uint32_t value = (uint32_t)codepoint;
-    char digits[8];
-
-    if (n == 4)
-    {
-        digits[0] = HEX_DIGITS[(value >> 12) & 0xF];
-        digits[1] = HEX_DIGITS[(value >>  8) & 0xF];
-        digits[2] = HEX_DIGITS[(value >>  4) & 0xF];
-        digits[3] = HEX_DIGITS[value & 0xF];
-
-        buffer->append(digits, 4);
-        return 4;
-    }
-
-    if (n == 8)
-    {
-        digits[0] = HEX_DIGITS[(value >> 28) & 0xF];
-        digits[1] = HEX_DIGITS[(value >> 24) & 0xF];
-        digits[2] = HEX_DIGITS[(value >> 20) & 0xF];
-        digits[3] = HEX_DIGITS[(value >> 16) & 0xF];
-        digits[4] = HEX_DIGITS[(value >> 12) & 0xF];
-        digits[5] = HEX_DIGITS[(value >>  8) & 0xF];
-        digits[6] = HEX_DIGITS[(value >>  4) & 0xF];
-        digits[7] = HEX_DIGITS[value & 0xF];
-
-        buffer->append(digits, 8);
-        return 8;
-    }
-
-    Protected<RexxString> rexxArgName = new_string("'n' of codepoint2hex");
-    Protected<RexxString> rexxAllowedValues = new_string("4 or 8");
-    Protected<RexxInteger> rexxValue = new_integer(n);
-    reportException(Error_Invalid_argument_list, rexxArgName, rexxAllowedValues, rexxValue);
-    return 0;
-}
-
-
-/**
- * codepointUnicodeEscapeNotation
- * Appends the Unicode escape notation of `codepoint` to `buffer`:
- * either \uXXXX or \UXXXXXXXX.
- * `codepoint` can be negative.
- * The special value -1 is represented by \UFFFFFFFF.
- *
- * Returns the number of characters appended.
- */
-static inline size_t codepointUnicodeEscapeNotation(utf8proc_int32_t codepoint, MutableBuffer *buffer)
-{
-    if (codepoint < -0xFFFF)
-    {
-        buffer->append("\\U");
-        codepoint2hex(codepoint, 8, buffer);
-        return 10;
-    }
-    else if (codepoint < -1)
-    {
-        buffer->append("\\u");
-        codepoint2hex(codepoint, 4, buffer);
-        return 6;
-    }
-    else if (codepoint == -1)
-    {
-        // Special value used in case of error
-        buffer->append("\\UFFFFFFFF");
-        return 10;
-    }
-    else if (codepoint <= 0xFFFF)
-    {
-        buffer->append("\\u");
-        codepoint2hex(codepoint, 4, buffer);
-        return 6;
-    }
-    else
-    {
-        buffer->append("\\U");
-        codepoint2hex(codepoint, 8, buffer);
-        return 10;
-    }
-}
-
-
-/**
- * Returns true if the codepoint is printable.
- *
- * Categories having codepoints of width 0 that are considered not printable:
- *     Cc  Control
- *     Cf  Format
- *     Cs  Surrogate
- *     Zl  Line_Separator          (to avoid line breaks in single-line output)
- *     Zp  Paragraph_Separator     (to avoid line breaks in single-line output)
- *
- * Categories containing codepoints of width 0 that are nevertheless considered
- * printable because some fonts provide visible glyphs for them:
- *     Mc  Spacing_Mark
- *     Me  Enclosing_Mark
- *     Mn  Nonspacing_Mark
- */
-static inline bool codepointIsPrintable(utf8proc_int32_t codepoint)
-{
-    if (codepoint < 0) return false;
-    const utf8proc_property_t *property = utf8proc_get_property(codepoint);
-
-    // Mc, Me and Mn codepoints are considered printable,
-    // even though they have a display width of 0.
-    // Some fonts provide visible glyphs for them.
-    utf8proc_propval_t category = property->category;
-    if (category == UTF8PROC_CATEGORY_MC) return true;
-    if (category == UTF8PROC_CATEGORY_ME) return true;
-    if (category == UTF8PROC_CATEGORY_MN) return true;
-
-    // Codepoints having a display width of 0 are considered non-printable
-    if (property->charwidth == 0) return false;
-
-    // Unassigned (Cn) and private-use (Co) codepoints are considered non-printable,
-    // even though they have a display width of 1.
-    if (category == UTF8PROC_CATEGORY_CN) return false;
-    if (category == UTF8PROC_CATEGORY_CO) return false;
-
-    // Other codepoints are considered printable.
-    return true;
-}
-
-
-/**
- * Appends an ASCII printable string representation of this codepoint to `buffer`.
- * ASCII printable codepoints are appended as their ASCII representation;
- * all other codepoints are appended as a Unicode escape sequence.
- *
- * Returns the number of characters appended.
-*/
-static inline size_t codepointAsciiPrintableString(utf8proc_int32_t codepoint, MutableBuffer *buffer)
-{
-    size_t size = 0;
-    if (codepoint <= 127 && codepointIsPrintable(codepoint))
-    {
-        char buf[4];
-        size = utf8proc_encode_char(codepoint, (utf8proc_uint8_t *)buf);
-        buffer->append(buf, size);
-    }
-    else
-    {
-        size = codepointUnicodeEscapeNotation(codepoint, buffer);
-    }
-    return size;
-}
-
-
-/**
- * Appends a UTF-8 printable string representation of this codepoint to `buffer`.
- * Printable codepoints are appended as their UTF-8 representation;
- * all other codepoints are appended as a Unicode escape sequence.
- *
- * Returns the number of characters appended.
-*/
-static inline size_t codepointUtf8PrintableString(utf8proc_int32_t codepoint, MutableBuffer *buffer)
-{
-    size_t size = 0;
-    if (codepointIsPrintable(codepoint))
-    {
-        char buf[4];
-        size = utf8proc_encode_char(codepoint, (utf8proc_uint8_t *)buf);
-        buffer->append(buf, size);
-    }
-    else
-    {
-        size = codepointUnicodeEscapeNotation(codepoint, buffer);
-    }
-    return size;
-}
-
-
-/******************************************************************************/
-/*                                                                            */
-/* Optimized x2d x2c Helpers                                                  */
+/* Specialized x2d x2c Helpers                                                */
 /*                                                                            */
 /******************************************************************************/
 
@@ -528,6 +303,317 @@ static inline bool hex2bytes(const char *firstHexDigit, size_t length, MutableBu
     }
 
     return true;
+}
+
+
+/******************************************************************************/
+/*                                                                            */
+/* Codepoint Helpers                                                          */
+/*                                                                            */
+/******************************************************************************/
+
+static const char HEX_DIGITS[] = "0123456789ABCDEF";
+
+/*
+ * codepoint2hex (c2x)
+ * This function is used to convert a codepoint UTF-8 byte sequence,
+ * which is at most 4 bytes.
+ * Appends the hex representation of `length` bytes from `bytes` to `buffer`,
+ * two hex digits per byte, uppercase, no separators.
+ * length is <= 4.
+ *
+ * Returns the number of hex digits appended (always 2 * length).
+ */
+static inline size_t codepoint2hex(const utf8proc_uint8_t *bytes, size_t length, MutableBuffer *buffer)
+{
+    const size_t maxLength = 4;
+    char buf[2 * maxLength];
+    if (length > maxLength)
+    {
+        Protected<RexxString> rexxArgName = new_string("'length' of codepoint2hex");
+        Protected<RexxInteger> rexxMaxLength = new_integer(maxLength);
+        Protected<RexxInteger> rexxLength = new_integer(length);
+        reportException(Error_Invalid_argument_toobig, rexxArgName, rexxMaxLength, rexxLength);
+        return 0;
+    }
+    for (size_t i = 0; i < length; i++)
+    {
+        unsigned char b = (unsigned char)bytes[i];
+        buf[2 * i] = HEX_DIGITS[(b >> 4) & 0x0F];
+        buf[2 * i + 1] = HEX_DIGITS[b & 0x0F];
+    }
+    buffer->append(buf, 2 * length);
+    return 2 * length;
+}
+
+
+/*
+ * codepoint2hex (d2x)
+ * Appends the hexadecimal representation of `codepoint` to `buffer`,
+ * as the rightmost `n` hex digits of its 32-bit two's-complement form
+ * (i.e. truncated on the left if `n` is small, sign-extended via the
+ * natural two's-complement bits if `n` is larger).
+ *
+ * `n` is either 4, 5, 6 or 8. Any other value raises an error.
+ *
+ * Returns the number of hex digits appended.
+ */
+static inline size_t codepoint2hex(utf8proc_int32_t codepoint, size_t n, MutableBuffer *buffer)
+{
+    uint32_t value = (uint32_t)codepoint;
+    char digits[8];
+
+    if (n == 4)
+    {
+        digits[0] = HEX_DIGITS[(value >> 12) & 0xF];
+        digits[1] = HEX_DIGITS[(value >>  8) & 0xF];
+        digits[2] = HEX_DIGITS[(value >>  4) & 0xF];
+        digits[3] = HEX_DIGITS[value & 0xF];
+
+        buffer->append(digits, 4);
+        return 4;
+    }
+
+    if (n == 5)
+    {
+        digits[0] = HEX_DIGITS[(value >> 16) & 0xF];
+        digits[1] = HEX_DIGITS[(value >> 12) & 0xF];
+        digits[2] = HEX_DIGITS[(value >>  8) & 0xF];
+        digits[3] = HEX_DIGITS[(value >>  4) & 0xF];
+        digits[4] = HEX_DIGITS[value & 0xF];
+
+        buffer->append(digits, 5);
+        return 5;
+    }
+
+    if (n == 6)
+    {
+        digits[0] = HEX_DIGITS[(value >> 20) & 0xF];
+        digits[1] = HEX_DIGITS[(value >> 16) & 0xF];
+        digits[2] = HEX_DIGITS[(value >> 12) & 0xF];
+        digits[3] = HEX_DIGITS[(value >>  8) & 0xF];
+        digits[4] = HEX_DIGITS[(value >>  4) & 0xF];
+        digits[5] = HEX_DIGITS[value & 0xF];
+
+        buffer->append(digits, 6);
+        return 6;
+    }
+
+    if (n == 8)
+    {
+        digits[0] = HEX_DIGITS[(value >> 28) & 0xF];
+        digits[1] = HEX_DIGITS[(value >> 24) & 0xF];
+        digits[2] = HEX_DIGITS[(value >> 20) & 0xF];
+        digits[3] = HEX_DIGITS[(value >> 16) & 0xF];
+        digits[4] = HEX_DIGITS[(value >> 12) & 0xF];
+        digits[5] = HEX_DIGITS[(value >>  8) & 0xF];
+        digits[6] = HEX_DIGITS[(value >>  4) & 0xF];
+        digits[7] = HEX_DIGITS[value & 0xF];
+
+        buffer->append(digits, 8);
+        return 8;
+    }
+
+    Protected<RexxString> rexxArgName = new_string("'n' of codepoint2hex");
+    Protected<RexxString> rexxAllowedValues = new_string("4, 5, 6 or 8");
+    Protected<RexxInteger> rexxValue = new_integer(n);
+    reportException(Error_Invalid_argument_list, rexxArgName, rexxAllowedValues, rexxValue);
+    return 0;
+}
+
+
+/**
+ * codepointUnicodeEscapeNotation
+ * Appends the Unicode escape notation of `codepoint` to `buffer`:
+ * either \uXXXX or \UXXXXXXXX.
+ *
+ * if `codepoint` is negative the special value \UFFFFFFFF is appended (invalid).
+ *
+ * Returns the number of characters appended.
+ */
+static inline size_t codepointUnicodeEscapeNotation(utf8proc_int32_t codepoint, MutableBuffer *buffer)
+{
+    if (codepoint < 0)
+    {
+        // yes, 8 digits
+        buffer->append("\\UFFFFFFFF"); // invalid
+        return 10;
+    }
+    else if (codepoint <= 0xFFFF)
+    {
+        buffer->append("\\u");
+        codepoint2hex(codepoint, 4, buffer);
+        return 6;
+    }
+    else
+    {
+        buffer->append("\\U");
+        codepoint2hex(codepoint, 8, buffer);
+        return 10;
+    }
+}
+
+
+
+/**
+ * Returns a U+XXXX string (4 to 6 hex digits) representing the codepoint passed as a decimal value.
+ * A negative codepoint is represented using U+FFFFFF, even though the resulting value is not a valid Unicode scalar value
+ *
+ * Returns the number of characters appended.
+ *
+ * Appendix A - Notational conventions
+ * In running text, an individual Unicode code point is expressed as U+n, where n is four to
+ * six hexadecimal digits, using the digits 0–9 and uppercase letters A–F (for 10 through 15,
+ * respectively). Leading zeros are omitted, unless the code point would have fewer than four
+ * hexadecimal digits—for example, U+0001, U+0012, U+0123, U+1234, U+12345, U+102345
+*/
+static inline size_t codepoint2UPlus(utf8proc_int32_t codepoint, MutableBuffer *buffer)
+{
+    if (codepoint < 0)
+    {
+        // yes, 6, not 8 digits
+        buffer->append("U+FFFFFF"); // invalid
+        return 8;
+    }
+    else if (codepoint <= 0xFFFF)
+    {
+        buffer->append("U+");
+        codepoint2hex(codepoint, 4, buffer);
+        return 6;
+    }
+    else if (codepoint <= 0xFFFFF)
+    {
+        buffer->append("U+");
+        codepoint2hex(codepoint, 5, buffer);
+        return 7;
+    }
+    else
+    {
+        buffer->append("U+");
+        codepoint2hex(codepoint, 6, buffer);
+        return 8;
+    }
+}
+
+
+/**
+ * Converts a U+XXXX string (4 to 6 hex digits) to a decimal value.
+ * Returns -1 if invalid, otherwise the parsed value.
+ * The length argument receives the length of the parsed value.
+ *
+ */
+static inline utf8proc_int32_t UPlus2int(const char *start, const char *end, size_t *length)
+{
+    const char *str = start;
+
+    // U+ or u+
+    *length = 1;
+    if (*str != 'U' && *str != 'u') return -1;
+    *length = 2;
+    if (*++str != '+') return -1;
+
+    // hex digits
+    const char *firstHexDigit = ++str;
+    while (str < end && isxdigit((unsigned char)*str)) str++;
+    *length = (str - start);
+    size_t digitCount = str - firstHexDigit;
+    if (digitCount < 4 || digitCount > 6) return -1;
+
+    bool ok = false;
+    utf8proc_int32_t value = hex2int(firstHexDigit, digitCount, &ok);
+    if (!ok) return -1;
+
+    return value;
+}
+
+
+/**
+ * Returns true if the codepoint is printable.
+ *
+ * Categories having codepoints of width 0 that are considered not printable:
+ *     Cc  Control
+ *     Cf  Format
+ *     Cs  Surrogate
+ *     Zl  Line_Separator          (to avoid line breaks in single-line output)
+ *     Zp  Paragraph_Separator     (to avoid line breaks in single-line output)
+ *
+ * Categories containing codepoints of width 0 that are nevertheless considered
+ * printable because some fonts provide visible glyphs for them:
+ *     Mc  Spacing_Mark
+ *     Me  Enclosing_Mark
+ *     Mn  Nonspacing_Mark
+ */
+static inline bool codepointIsPrintable(utf8proc_int32_t codepoint)
+{
+    if (codepoint < 0) return false;
+    const utf8proc_property_t *property = utf8proc_get_property(codepoint);
+
+    // Mc, Me and Mn codepoints are considered printable,
+    // even though they have a display width of 0.
+    // Some fonts provide visible glyphs for them.
+    utf8proc_propval_t category = property->category;
+    if (category == UTF8PROC_CATEGORY_MC) return true;
+    if (category == UTF8PROC_CATEGORY_ME) return true;
+    if (category == UTF8PROC_CATEGORY_MN) return true;
+
+    // Codepoints having a display width of 0 are considered non-printable
+    if (property->charwidth == 0) return false;
+
+    // Unassigned (Cn) and private-use (Co) codepoints are considered non-printable,
+    // even though they have a display width of 1.
+    if (category == UTF8PROC_CATEGORY_CN) return false;
+    if (category == UTF8PROC_CATEGORY_CO) return false;
+
+    // Other codepoints are considered printable.
+    return true;
+}
+
+
+/**
+ * Appends an ASCII printable string representation of this codepoint to `buffer`.
+ * ASCII printable codepoints are appended as their ASCII representation;
+ * all other codepoints are appended as a Unicode escape sequence.
+ *
+ * Returns the number of characters appended.
+*/
+static inline size_t codepointAsciiPrintableString(utf8proc_int32_t codepoint, MutableBuffer *buffer)
+{
+    size_t size = 0;
+    if (codepoint <= 127 && codepointIsPrintable(codepoint))
+    {
+        char buf[4];
+        size = utf8proc_encode_char(codepoint, (utf8proc_uint8_t *)buf);
+        buffer->append(buf, size);
+    }
+    else
+    {
+        size = codepointUnicodeEscapeNotation(codepoint, buffer);
+    }
+    return size;
+}
+
+
+/**
+ * Appends a UTF-8 printable string representation of this codepoint to `buffer`.
+ * Printable codepoints are appended as their UTF-8 representation;
+ * all other codepoints are appended as a Unicode escape sequence.
+ *
+ * Returns the number of characters appended.
+*/
+static inline size_t codepointUtf8PrintableString(utf8proc_int32_t codepoint, MutableBuffer *buffer)
+{
+    size_t size = 0;
+    if (codepointIsPrintable(codepoint))
+    {
+        char buf[4];
+        size = utf8proc_encode_char(codepoint, (utf8proc_uint8_t *)buf);
+        buffer->append(buf, size);
+    }
+    else
+    {
+        size = codepointUnicodeEscapeNotation(codepoint, buffer);
+    }
+    return size;
 }
 
 
@@ -1524,6 +1610,8 @@ struct NoCodepointAction
  *     bool error,
  *     const utf8proc_uint8_t *bytes, utf8proc_ssize_t size,
  *     utf8proc_int32_t codepoint) const
+ *
+ * if error is true then codepoint is the replacement character U+FFFD
  */
 template <typename Action = NoCodepointAction>
 static inline void utf8StringCodepointIterator(const utf8proc_uint8_t *str, utf8proc_ssize_t length, bool stopAtFirstError, Action action = Action())
@@ -1537,7 +1625,7 @@ static inline void utf8StringCodepointIterator(const utf8proc_uint8_t *str, utf8
         {
             // Here, codepoint == -1
             sizeB = -sizeB;
-            action(true, str, sizeB, codepoint);
+            action(true, str, sizeB, 0xFFFD); // replacement character
 
             if (stopAtFirstError) break;
         }
@@ -1720,8 +1808,6 @@ RexxString *RexxUnicodeServicesClass::unicodeVersion()
  */
 RexxInteger *RexxUnicodeServicesClass::utf8DecodeCodepoint(RexxString *string, RexxInteger *indexB, VariableReference *refSizeB, VariableReference *refErrorCode, VariableReference *refErrorMsg)
 {
-    // Check arguments
-
     requiredArgument(string, "string");
     // Yes! Accept only a real string because the size returned with refSizeB must be applied on a real string, not on a Text instance (for example).
     requiredBaseString(string, "string");
@@ -1801,8 +1887,6 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodeCodepoint(RexxString *string, R
  */
 RexxInteger *RexxUnicodeServicesClass::utf8DecodePreviousCodepoint(RexxString *string, RexxInteger *indexB, VariableReference *refSizeB, VariableReference *refErrorCode, VariableReference *refErrorMsg)
 {
-    // Check arguments
-
     requiredArgument(string, "string");
     requiredBaseString(string, "string");
 
@@ -1870,7 +1954,6 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodePreviousCodepoint(RexxString *s
  */
 MutableBuffer *RexxUnicodeServicesClass::utf8EncodeCodepoint(RexxInteger *rexxCodepoint, MutableBuffer *destination, VariableReference *refSizeB)
 {
-    // Check arguments
     requiredArgument(rexxCodepoint, "codepoint");
     utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ false); // yes, no range checking, utf8proc_encode_char will return size == 0 if codepoint is invalid
     classArgument(destination, TheMutableBufferClass, "destination");
@@ -1879,6 +1962,9 @@ MutableBuffer *RexxUnicodeServicesClass::utf8EncodeCodepoint(RexxInteger *rexxCo
     // Default output values
     if (refSizeB != OREF_NULL) refSizeB->setValue(RexxInteger::integerZero);
 
+    // utf8proc implementation note:
+    // Note: we allow encoding 0xd800-0xdfff here, so as not to change
+    // the API, however, these are actually invalid in UTF-8
     char buffer[4];
     utf8proc_ssize_t size = utf8proc_encode_char(codepoint, (utf8proc_uint8_t *)buffer);
 
@@ -1968,7 +2054,6 @@ RexxObject *RexxUnicodeServicesClass::codepointUtf8PrintableString(RexxInteger *
  */
 RexxObject *RexxUnicodeServicesClass::utf8StringEscape(RexxString *string, RexxString *escapeBy, MutableBuffer *destination)
 {
-    // Check arguments
     requiredArgument(string, "string");
     requiredBaseString(string, "string");
     if (escapeBy != OREF_NULL) requiredBaseString(escapeBy, "escapeBy");
@@ -2078,8 +2163,6 @@ RexxObject *RexxUnicodeServicesClass::utf8StringEscape(RexxString *string, RexxS
  */
 RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, VariableReference *refGraphemeCount, VariableReference *refCodepointCount, VariableReference *refErrorCount, RexxInteger *rexxStopAtFirstError)
 {
-    // Check arguments
-
     requiredArgument(string, "string");
     requiredBaseString(string, "string");
 
@@ -2175,7 +2258,6 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
  */
 RexxObject *RexxUnicodeServicesClass::utf8StringUnescape(RexxString *string, MutableBuffer *destination)
 {
-    // Check arguments
     requiredArgument(string, "string");
     requiredBaseString(string, "string");
     if (destination == TheNilObject) destination = OREF_NULL;
@@ -2271,6 +2353,9 @@ RexxObject *RexxUnicodeServicesClass::utf8StringUnescape(RexxString *string, Mut
                     bool ok = false;
                     codepoint = hex2int(first, length, &ok);
                     if (!ok) goto expected_4_or_1_8_hexdigits;
+                    // utf8proc implementation note:
+                    // Note: we allow encoding 0xd800-0xdfff here, so as not to change
+                    // the API, however, these are actually invalid in UTF-8
                     char buf[4];
                     utf8proc_ssize_t size = utf8proc_encode_char(codepoint, (utf8proc_uint8_t *)buf);
                     if (size == 0) goto encoding_1_8_hexdigits_error;
@@ -2285,6 +2370,9 @@ RexxObject *RexxUnicodeServicesClass::utf8StringUnescape(RexxString *string, Mut
                     bool ok = false;
                     codepoint = hex2int(first, length, &ok);
                     if (!ok) goto expected_4_or_1_8_hexdigits;
+                    // utf8proc implementation note:
+                    // Note: we allow encoding 0xd800-0xdfff here, so as not to change
+                    // the API, however, these are actually invalid in UTF-8
                     char buf[4];
                     utf8proc_ssize_t size = utf8proc_encode_char(codepoint, (utf8proc_uint8_t *)buf);
                     if (size == 0) goto encoding_1_4_hexdigits_error;
@@ -2302,6 +2390,9 @@ RexxObject *RexxUnicodeServicesClass::utf8StringUnescape(RexxString *string, Mut
                     bool ok = false;
                     codepoint = hex2int(first, length, &ok);
                     if (!ok) goto expected_8_hexdigits;
+                    // utf8proc implementation note:
+                    // Note: we allow encoding 0xd800-0xdfff here, so as not to change
+                    // the API, however, these are actually invalid in UTF-8
                     char buf[4];
                     utf8proc_ssize_t size = utf8proc_encode_char(codepoint, (utf8proc_uint8_t *)buf);
                     if (size == 0) goto encoding_1_8_hexdigits_error;
@@ -2367,7 +2458,7 @@ RexxObject *RexxUnicodeServicesClass::utf8StringUnescape(RexxString *string, Mut
         // raise syntax 98.900 array("Name" quoted(name) "at position" slashPos "not found" || additional)
         {
             const char *additional = ICU4ooRexxIsRegistered(this) ? "" : " (ICU4ooRexx not loaded)";
-            formatString(error, sizeof(error), "Name \"%*s\" at position %zu not found%s", name->getLength(), name->getStringData(), slashPos, additional);
+            formatString(error, sizeof(error), "Name \"%.*s\" at position %zu not found%s", name->getLength(), name->getStringData(), slashPos, additional);
             reportException(Error_Execution_user_defined, error);
         }
 
@@ -2388,18 +2479,253 @@ RexxObject *RexxUnicodeServicesClass::utf8StringUnescape(RexxString *string, Mut
 
     name_encoding_error:
         // raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character"{"name"} at position" slashPos)
-        formatString(error, sizeof(error), "Cannot UTF-8 encode code point %u \\%c{%*s} at position %zu", codepoint, character, name->getLength(), name->getStringData(), slashPos);
-        reportException(Error_Invalid_character_string_user_defined, error);
+        formatString(error, sizeof(error), "Cannot UTF-8 encode code point %u \\%c{%.*s} at position %zu", codepoint, character, name->getLength(), name->getStringData(), slashPos);
+        reportException(Error_Execution_user_defined, error);
 
     encoding_1_8_hexdigits_error:
         // raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character"{"hexdigits"} at position" slashPos)
-        formatString(error, sizeof(error), "Cannot UTF-8 encode code point %u \\%c{%*s} at position %zu", codepoint, character, length, first, slashPos);
-        reportException(Error_Invalid_character_string_user_defined, error);
+        formatString(error, sizeof(error), "Cannot UTF-8 encode code point %u \\%c{%.*s} at position %zu", codepoint, character, length, first, slashPos);
+        reportException(Error_Execution_user_defined, error);
 
     encoding_1_4_hexdigits_error:
         // raise syntax 22.900 array ("Cannot UTF-8 encode code point" codepoint "\"character || hexdigits "at position" slashPos)
-        formatString(error, sizeof(error), "Cannot UTF-8 encode code point %u \\%c%*s at position %zu", codepoint, character, length, first, slashPos);
-        reportException(Error_Invalid_character_string_user_defined, error);
+        formatString(error, sizeof(error), "Cannot UTF-8 encode code point %u \\%c%.*s at position %zu", codepoint, character, length, first, slashPos);
+        reportException(Error_Execution_user_defined, error);
+
+    return OREF_NULL;
+}
+
+
+/**
+ * Returns an ASCII string containing a sequence of U+XXXX (4 to 6 hex digits).
+ *
+ * If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
+ */
+RexxObject *RexxUnicodeServicesClass::C2U(RexxString *utf8String, MutableBuffer *destination)
+{
+    requiredArgument(utf8String, "utf8String");
+    requiredBaseString(utf8String, "utf8String");
+    if (destination == TheNilObject) destination = OREF_NULL;
+    if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
+
+    const char *start = utf8String->getStringData();
+    size_t length = utf8String->getLength();
+
+    Protected<MutableBuffer> buffer = destination;
+    if (buffer == OREF_NULL) buffer = new MutableBuffer(length, length);
+
+    bool first = true;
+    auto codepointAction = [&](bool error, const utf8proc_uint8_t */*str*/, utf8proc_ssize_t /*sizeB*/, utf8proc_int32_t codepoint)
+    {
+        if (!first) buffer->append(' ');
+        first = false;
+        codepoint2UPlus(codepoint, buffer);
+    };
+    utf8StringCodepointIterator((const utf8proc_uint8_t *)start, length, /*stopAtFirstError:*/ false, codepointAction);
+
+    if (destination != OREF_NULL) return destination; // The user passed a buffer, returns this buffer
+    return buffer->makeString(); // The user did not pass a buffer, returns a string
+}
+
+
+/**
+ * Returns a string representing the encoded codepoints of string in hexadecimal.
+ * The codepoints are separated by a single space.
+ *
+ * If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
+ */
+RexxObject *RexxUnicodeServicesClass::C2X(RexxString *utf8String, MutableBuffer *destination)
+{
+    requiredArgument(utf8String, "utf8String");
+    requiredBaseString(utf8String, "utf8String");
+    if (destination == TheNilObject) destination = OREF_NULL;
+    if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
+
+    const char *start = utf8String->getStringData();
+    size_t length = utf8String->getLength();
+
+    Protected<MutableBuffer> buffer = destination;
+    if (buffer == OREF_NULL) buffer = new MutableBuffer(length, length);
+
+    bool first = true;
+    auto codepointAction = [&](bool error, const utf8proc_uint8_t *str, utf8proc_ssize_t sizeB, utf8proc_int32_t /*codepoint*/)
+    {
+        if (!first) buffer->append(' ');
+        first = false;
+        codepoint2hex(str, sizeB, buffer);
+    };
+    utf8StringCodepointIterator((const utf8proc_uint8_t *)start, length, /*stopAtFirstError:*/ false, codepointAction);
+
+    if (destination != OREF_NULL) return destination; // The user passed a buffer, returns this buffer
+    return buffer->makeString(); // The user did not pass a buffer, returns a string
+}
+
+
+/**
+ * Returns a U+XXXX string (4 to 6 hex digits) representing the codepoint passed as a decimal value.
+ * Negative codepoints are represented using U+FFFFFF, even though the resulting value is not a valid Unicode scalar value
+ *
+ * If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
+ *
+ * Appendix A - Notational conventions
+ * In running text, an individual Unicode code point is expressed as U+n, where n is four to
+ * six hexadecimal digits, using the digits 0–9 and uppercase letters A–F (for 10 through 15,
+ * respectively). Leading zeros are omitted, unless the code point would have fewer than four
+ * hexadecimal digits—for example, U+0001, U+0012, U+0123, U+1234, U+12345, U+102345
+ */
+RexxObject *RexxUnicodeServicesClass::D2U(RexxInteger *rexxCodepoint, MutableBuffer *destination)
+{
+    requiredArgument(rexxCodepoint, "codepoint");
+    utf8proc_int32_t codepoint = getCodepoint(rexxCodepoint, /*checkRange:*/ true, /*minusOneAllowed:*/ true, "Code point");
+    if (destination == TheNilObject) destination = OREF_NULL;
+    if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
+
+    Protected<MutableBuffer> buffer = destination;
+    if (buffer == OREF_NULL) buffer = new MutableBuffer;
+
+    codepoint2UPlus(codepoint, buffer);
+
+    if (destination != OREF_NULL) return destination; // The user passed a buffer, returns this buffer
+    return buffer->makeString(); // The user did not pass a buffer, returns a string
+}
+
+
+/**
+Encodes an ASCII string of the form "U+XXXX.. U+XXXX.. ..." into a UTF-8 string.
+The only valid separators are one or more spaces.
+
+If a buffer is passed, the encoded characters are appended to it.
+In case of error, the buffer is partially updated.
+
+The result is either a string or the buffer passed as argument.
+ */
+RexxObject *RexxUnicodeServicesClass::U2C(RexxString *asciiStringUPlus, MutableBuffer *destination)
+{
+    requiredArgument(asciiStringUPlus, "asciiStringUPlus");
+    requiredBaseString(asciiStringUPlus, "utfasciiStringUPlus8String");
+    if (destination == TheNilObject) destination = OREF_NULL;
+    if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
+
+    const char *start = asciiStringUPlus->getStringData();
+    size_t length = asciiStringUPlus->getLength();
+    const char *end = start + length;
+
+    Protected<MutableBuffer> buffer = destination;
+    if (buffer == OREF_NULL) buffer = new MutableBuffer(length, length);
+
+    // Buffer to format error messages
+    char error[200];
+
+    // Used in error messages
+    size_t UPlusPos = 0;
+    size_t UPlusLength = 0;
+    utf8proc_int32_t codepoint = -1;
+
+    const char *str = start;
+
+    for (;;)
+    {
+        // Skip spaces
+        // not using strspn because strspn needs a C string ending with \0
+        while (str < end && isspace((unsigned char)*str))
+        {
+            str++;
+            length--;
+        }
+        if (str == end) break; // end of string
+
+        UPlusPos = str - start + 1; // used in error message
+        codepoint = UPlus2int(str, end, &UPlusLength);
+        if (codepoint == -1) goto invalid_UPlus;
+
+        // utf8proc implementation note:
+        // Note: we allow encoding 0xd800-0xdfff here, so as not to change
+        // the API, however, these are actually invalid in UTF-8
+        char buf[4];
+        utf8proc_ssize_t size = utf8proc_encode_char(codepoint, (utf8proc_uint8_t *)buf);
+        if (size == 0) goto encoding_error;
+        buffer->append(buf, size);
+
+        str += UPlusLength;
+        length -= UPlusLength;
+    }
+
+    if (destination != OREF_NULL) return destination; // The user passed a buffer, returns this buffer
+    return buffer->makeString(); // The user did not pass a buffer, returns a string
+
+    invalid_UPlus:
+        // yes, display length characters, i.e. the rest of the string, which can be very long. That will be truncated at the size of the error buffer.
+        formatString(error, sizeof(error), "Expected U+ or u+ followed by 4..6 hex digits; found \"%.*s\" at position %zu", length, str, UPlusPos);
+        reportException(Error_Invalid_data_string_user_defined, error);
+
+    encoding_error:
+        formatString(error, sizeof(error), "Cannot UTF-8 encode code point %.*s at position %zu", UPlusLength, str, UPlusPos);
+        reportException(Error_Execution_user_defined, error);
+
+    return OREF_NULL;
+}
+
+
+/**
+Converts "U+XXXX.." to a decimal value.
+
+If refLength is provided by the caller, extra characters after the U+XXXX.. are allowed.
+Otherwise asciiStringUPlus must be strictly "U+" followed by 4 to 6 hex digits.
+
+If provided, refLength receives the length of "U+XXXX..", allowing to skip it when parsing.
+
+Returns the decimal value if no error occurs.
+Otherwise, returns -1 or, if requested, raises an error.
+
+ */
+RexxInteger *RexxUnicodeServicesClass::U2D(RexxString *asciiStringUPlus, RexxInteger *indexB, RexxInteger *raiseErrorRexx, VariableReference *refLength)
+{
+    requiredArgument(asciiStringUPlus, "asciiStringUPlus");
+    requiredBaseString(asciiStringUPlus, "asciiStringUPlus");
+
+    size_t index = 1;
+    if (indexB != OREF_NULL) index = positionArgument(indexB, "indexB"); // 1-based
+    if (index > asciiStringUPlus->getLength()) reportException(Error_Incorrect_method_position, index);
+
+    bool raiseError = false;
+    if (raiseErrorRexx != OREF_NULL) raiseError = (bool)integerRange(raiseErrorRexx, 0, 1, Error_Logical_value_user_defined, "Value of argument raiseError must be 0 or 1");
+
+    if (refLength != OREF_NULL) classArgument(refLength, TheVariableReferenceClass, "refLength");
+
+    const char *start = asciiStringUPlus->getStringData();
+    size_t length = asciiStringUPlus->getLength();
+    const char *end = start + length;
+
+    // Buffer to format error messages
+    char error[200];
+
+    size_t UPlusLength = 0;
+    index--; // 0-based
+    const char *str = start + index;
+    length -= index;
+    utf8proc_int32_t codepoint = UPlus2int(str, end, &UPlusLength);
+    if (codepoint == -1 && raiseError) goto invalid_UPlus;
+
+    if (refLength == OREF_NULL && (str + UPlusLength) != end)
+    {
+        // extra characters after the U+XXXX.. are not allowed
+        if (raiseError) goto extra_characters;
+        codepoint = -1;
+    }
+
+    if (refLength != OREF_NULL)
+    {
+        RexxInteger *rexxLength = new_integer(UPlusLength); // Protected<RexxInteger> not needed
+        refLength->setValue(rexxLength);
+    }
+
+    return new_integer(codepoint);
+
+    invalid_UPlus:
+    extra_characters:
+        // yes, display length characters, i.e. the rest of the string, which can be very long. That will be truncated at the size of the error buffer.
+        formatString(error, sizeof(error), "Expected U+ or u+ followed by 4..6 hex digits; found \"%.*s\"", length, str);
+        reportException(Error_Invalid_data_string_user_defined, error);
 
     return OREF_NULL;
 }
@@ -2449,8 +2775,6 @@ RexxInteger *RexxUnicodeServicesClass::graphemeBreak(RexxInteger *rexxCodepoint1
  */
 RexxInteger *RexxUnicodeServicesClass::graphemeBreakBackward(RexxString *string, RexxInteger *indexB, RexxInteger *rexxCodepoint1, RexxInteger *rexxCodepoint2)
 {
-    // Check arguments
-
     requiredArgument(string, "string");
     requiredBaseString(string, "string");
 
@@ -3396,8 +3720,6 @@ RexxObject *RexxUnicodeServicesClass::sizeofUnicodeWidthTables()
  */
 RexxInteger *RexxUnicodeServicesClass::utf8StringWidth(RexxString *string, RexxInteger *indexB, RexxInteger *eastAsianContext)
 {
-    // Check arguments
-
     requiredArgument(string, "string");
     requiredBaseString(string, "string");
 

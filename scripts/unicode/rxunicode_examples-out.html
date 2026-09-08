@@ -42,7 +42,7 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 7 Sep 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S57c3Qbc489fa80
+</span><span style="font-weight:bold;color:green;">Input queue name: S55ebQbc48c1200
 </span>
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">Examples in rxunicode.md
@@ -50,6 +50,40 @@
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~C2U
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2U(&quot;Noël 🎅&quot;)=                        </span><span style="font-weight:bold;color:blue;">-- 'U+004E U+006F U+00EB U+006C U+0020 U+1F385'</span>
+'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2U(&quot;Noël 🎅&quot;, .MutableBuffer~new)=    </span><span style="font-weight:bold;color:blue;">-- M'U+004E U+006F U+00EB U+006C U+0020 U+1F385'</span>
+M'U+004E U+006F U+00EB U+006C U+0020 U+1F385'
+
+
+<span style="font-weight:bold;color:blue;">-- Invalid string
+</span><span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts
+</span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2U(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x)=    </span><span style="font-weight:bold;color:blue;">-- 'U+FFFD U+FFFD U+FFFD U+FFFD U+FFFD U+0041 U+FFFD U+FFFD U+0042'</span>
+'U+FFFD U+FFFD U+FFFD U+FFFD U+FFFD U+0041 U+FFFD U+FFFD U+0042'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2X(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x)=    </span><span style="font-weight:bold;color:blue;">-- 'F4 91 92 93 FF 41 80 BF 42'</span>
+'F4 91 92 93 FF 41 80 BF 42'
+<span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2U(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x)=    </span><span style="font-weight:bold;color:blue;">-- 'U+FFFD U+FFFD U+FFFD U+FFFD U+0041'</span>
+'U+FFFD U+FFFD U+FFFD U+FFFD U+0041'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2X(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x)=    </span><span style="font-weight:bold;color:blue;">-- 'E180 E2 F09192 F1BF 41'</span>
+'E180 E2 F09192 F1BF 41'
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~C2X
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2X(&quot;Noël 🎅&quot;)=                        </span><span style="font-weight:bold;color:blue;">-- '4E 6F C3AB 6C 20 F09F8E85'</span>
+'4E 6F C3AB 6C 20 F09F8E85'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2X(&quot;Noël 🎅&quot;, .MutableBuffer~new)=    </span><span style="font-weight:bold;color:blue;">-- M'4E 6F C3AB 6C 20 F09F8E85'</span>
+M'4E 6F C3AB 6C 20 F09F8E85'
 
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
@@ -248,6 +282,29 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~cod
 
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~codepointUnicodeEscapeNotation(&quot;D800&quot;~x2d, .MutableBuffer~new)=    </span><span style="font-weight:bold;color:blue;">-- M'\uD800'</span>
 M'\uD800'
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~D2U
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~D2U(235)=                              </span><span style="font-weight:bold;color:blue;">-- 'U+00EB'</span>
+'U+00EB'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~D2U(235, .MutableBuffer~new)=          </span><span style="font-weight:bold;color:blue;">-- M'U+00EB'</span>
+M'U+00EB'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~D2U(127877)=                           </span><span style="font-weight:bold;color:blue;">-- 'U+1F385'</span>
+'U+1F385'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~D2U(127877, .MutableBuffer~new)=       </span><span style="font-weight:bold;color:blue;">-- M'U+1F385'</span>
+M'U+1F385'
+
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~D2U(.RexxUnicode~maxCodepoint)=        </span><span style="font-weight:bold;color:blue;">-- 'U+10FFFF'</span>
+'U+10FFFF'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~D2U(.RexxUnicode~maxCodepoint + 1)=    </span><span style="font-weight:bold;color:blue;">-- Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;1114112&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;1114112&quot;.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~D2U(-1)=                               </span><span style="font-weight:bold;color:blue;">-- 'U+FFFFFF'</span>
+'U+FFFFFF'
 
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
@@ -455,6 +512,54 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">s=.RexxUnicodeReverseGra
 <span style="font-weight:bold;color:blue;">-- The reverse grapheme supplier is much slower when GB11 is not applicable (100000001 graphemes instead of 2)
 </span><span style="font-weight:bold;color:blue;">-- too long: s=.RexxUnicodeReverseGraphemeSupplier~new(&quot;A&quot;~copies(100000000) || ZWJ || grin); do while s~available; s~next; end      -- Duration: 398.995352
 </span>
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~U2C
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2C(&quot;U+004E U+006F U+00EB U+006C U+0020 U+1F385&quot;)=                         </span><span style="font-weight:bold;color:blue;">-- 'Noël 🎅'</span>
+'Noël 🎅'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2C(&quot;U+004E U+006F U+00EB U+006C U+0020 U+1F385&quot;, .MutableBuffer~new)=     </span><span style="font-weight:bold;color:blue;">-- M'Noël 🎅'</span>
+M'Noël 🎅'
+
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2C(&quot;U+004E U+006F U+FFFFFF U+00EB&quot;)=                                      </span><span style="font-weight:bold;color:blue;">-- Cannot UTF-8 encode code point U+FFFFFF at position 15.</span>
+<span style="font-weight:bold;color:red;">Cannot UTF-8 encode code point U+FFFFFF at position 15.
+</span><span style="font-weight:bold;color:red;">Error code= 98.900
+</span>
+
+<span style="font-weight:bold;color:blue;">-- In case of error, the buffer is partially updated
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">b = .MutableBuffer~new(&quot;🤶 &quot;)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2C(&quot;U+004E U+006F U+FFFFFF U+00EB&quot;, b)=   </span><span style="font-weight:bold;color:blue;">-- Cannot UTF-8 encode code point U+FFFFFF at position 15.</span>
+<span style="font-weight:bold;color:red;">Cannot UTF-8 encode code point U+FFFFFF at position 15.
+</span><span style="font-weight:bold;color:red;">Error code= 98.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">b=                                                      </span><span style="font-weight:bold;color:blue;">-- M'🤶 No'</span>
+M'🤶 No'
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~U2D
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(&quot;U+00EB&quot;)=                                                                 </span><span style="font-weight:bold;color:blue;">-- 235</span>
+ 235
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(&quot;U+00EB &quot;)=                                                                </span><span style="font-weight:bold;color:blue;">-- -1</span>
+-1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(&quot;U+00EB &quot;, /*start*/ 1, /*raiseError*/ .true)=                             </span><span style="font-weight:bold;color:blue;">-- Expected U+ or u+ followed by 4..6 hex digits; found &quot;U+00EB &quot;.</span>
+<span style="font-weight:bold;color:red;">Expected U+ or u+ followed by 4..6 hex digits; found &quot;U+00EB &quot;.
+</span><span style="font-weight:bold;color:red;">Error code= 23.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(&quot;U+00EB &quot;, /*start*/ 1, /*raiseError*/ .true, &gt;length)=; length=           </span><span style="font-weight:bold;color:blue;">-- 235; 6</span>
+ 235
+ 6
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(&quot;U+0020 U+1F385 &quot;, /*start*/ 7, /*raiseError*/ .false)=                    </span><span style="font-weight:bold;color:blue;">-- -1</span>
+-1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(&quot;U+0020 U+1F385 &quot;, /*start*/ 7, /*raiseError*/ .true, &gt;length)=; length=   </span><span style="font-weight:bold;color:blue;">-- Expected U+ or u+ followed by 4..6 hex digits; found &quot; U+1F385 &quot;.</span>
+<span style="font-weight:bold;color:red;">Expected U+ or u+ followed by 4..6 hex digits; found &quot; U+1F385 &quot;.
+</span><span style="font-weight:bold;color:red;">Error code= 23.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(&quot;U+0020 U+1F385 &quot;, /*start*/ 8, /*raiseError*/ .true, &gt;length)=; length=   </span><span style="font-weight:bold;color:blue;">-- 127877; 7</span>
+ 127877
+ 7
+
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~utf8DecodePreviousCodepoint
@@ -1061,8 +1166,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(&
 </span><span style="font-weight:bold;color:blue;">-- All other negative codepoints are invalid
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(-1)=                     </span><span style="font-weight:bold;color:blue;">-- (An invalid character)</span>
 (An invalid character)
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(-2)=                     </span><span style="font-weight:bold;color:blue;">-- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: -2; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~character(-2)=                     </span><span style="font-weight:bold;color:blue;">-- Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;-2&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;-2&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
 
@@ -1104,8 +1209,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepoint(&
 </span><span style="font-weight:bold;color:blue;">-- All other negative codepoints are invalid
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepoint(-1)=                     </span><span style="font-weight:bold;color:blue;">-- -1</span>
 -1
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepoint(-2)=                     </span><span style="font-weight:bold;color:blue;">-- Invalid code point -2; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: -2; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepoint(-2)=                     </span><span style="font-weight:bold;color:blue;">-- Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;-2&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;-2&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
 
@@ -1165,8 +1270,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUT
 
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint)~c2x=      </span><span style="font-weight:bold;color:blue;">-- 'F48FBFBF'</span>
 'F48FBFBF'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  </span><span style="font-weight:bold;color:blue;">-- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  </span><span style="font-weight:bold;color:blue;">-- Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;1114112&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;1114112&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>
 
@@ -1186,8 +1291,8 @@ M'U+1F385'
 
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~D2U(.RexxUnicode~maxCodepoint)=        </span><span style="font-weight:bold;color:blue;">-- 'U+10FFFF'</span>
 'U+10FFFF'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~D2U(.RexxUnicode~maxCodepoint + 1)=    </span><span style="font-weight:bold;color:blue;">-- Invalid codepoint 1114112; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~D2U(.RexxUnicode~maxCodepoint + 1)=    </span><span style="font-weight:bold;color:blue;">-- Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;1114112&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;1114112&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~D2U(-1)=                               </span><span style="font-weight:bold;color:blue;">-- 'U+FFFFFF'</span>
 'U+FFFFFF'
@@ -1409,15 +1514,15 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~U2C(&quot;U
 M'Noël 🎅'
 
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~U2C(&quot;U+004E U+006F U+FFFFFF U+00EB&quot;)=                                      </span><span style="font-weight:bold;color:blue;">-- Cannot UTF-8 encode codepoint U+FFFFFF.</span>
-<span style="font-weight:bold;color:red;">Cannot UTF-8 encode code point U+FFFFFF.
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~U2C(&quot;U+004E U+006F U+FFFFFF U+00EB&quot;)=                                      </span><span style="font-weight:bold;color:blue;">-- Cannot UTF-8 encode code point U+FFFFFF at position 15.</span>
+<span style="font-weight:bold;color:red;">Cannot UTF-8 encode code point U+FFFFFF at position 15.
 </span><span style="font-weight:bold;color:red;">Error code= 98.900
 </span>
 
 <span style="font-weight:bold;color:blue;">-- In case of error, the buffer is partially updated
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">b = .MutableBuffer~new(&quot;🤶 &quot;)</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~U2C(&quot;U+004E U+006F U+FFFFFF U+00EB&quot;, b)=   </span><span style="font-weight:bold;color:blue;">-- Cannot UTF-8 encode codepoint U+FFFFFF.</span>
-<span style="font-weight:bold;color:red;">Cannot UTF-8 encode code point U+FFFFFF.
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~U2C(&quot;U+004E U+006F U+FFFFFF U+00EB&quot;, b)=   </span><span style="font-weight:bold;color:blue;">-- Cannot UTF-8 encode code point U+FFFFFF at position 15.</span>
+<span style="font-weight:bold;color:red;">Cannot UTF-8 encode code point U+FFFFFF at position 15.
 </span><span style="font-weight:bold;color:red;">Error code= 98.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">b=                                                      </span><span style="font-weight:bold;color:blue;">-- M'🤶 No'</span>
 M'🤶 No'
@@ -2715,8 +2820,8 @@ UTF8: €
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0608&quot;~x2d)~bidiClass=        </span><span style="font-weight:bold;color:blue;">--  'AL'</span>
 'AL'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~bidiClass=      </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~bidiClass=      </span><span style="font-weight:bold;color:blue;">--  Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~bidiClass=                </span><span style="font-weight:bold;color:blue;">--  '?'</span>
 '?'
@@ -2728,8 +2833,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~ne
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0608&quot;~x2d)~bidiClassName=        </span><span style="font-weight:bold;color:blue;">--  'Arabic_Letter'</span>
 'Arabic_Letter'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~bidiClassName=      </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~bidiClassName=      </span><span style="font-weight:bold;color:blue;">--  Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~bidiClassName=                </span><span style="font-weight:bold;color:blue;">--  '?'</span>
 '?'
@@ -2741,8 +2846,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~ne
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;1F1E6&quot;~x2d)~boundClass=      </span><span style="font-weight:bold;color:blue;">--  'RI'</span>
 'RI'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~boundClass=     </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~boundClass=     </span><span style="font-weight:bold;color:blue;">--  Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~boundClass=               </span><span style="font-weight:bold;color:blue;">--  '?'</span>
 '?'
@@ -2754,8 +2859,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~ne
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;1F1E6&quot;~x2d)~boundClassName=      </span><span style="font-weight:bold;color:blue;">--  'Regional_Indicator'</span>
 'Regional_Indicator'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~boundClassName=     </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~boundClassName=     </span><span style="font-weight:bold;color:blue;">--  Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~boundClassName=               </span><span style="font-weight:bold;color:blue;">--  '?'</span>
 '?'
@@ -2767,8 +2872,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~ne
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0903&quot;~x2d)~category=     </span><span style="font-weight:bold;color:blue;">-- 'Mc'</span>
 'Mc'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~category=   </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~category=   </span><span style="font-weight:bold;color:blue;">--  Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~category=             </span><span style="font-weight:bold;color:blue;">--  'Cn'</span>
 'Cn'
@@ -2780,8 +2885,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~ne
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;0903&quot;~x2d)~categoryName=     </span><span style="font-weight:bold;color:blue;">-- 'Spacing_Mark'</span>
 'Spacing_Mark'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~categoryName=   </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~categoryName=   </span><span style="font-weight:bold;color:blue;">--  Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~categoryName=             </span><span style="font-weight:bold;color:blue;">--  'Unassigned'</span>
 'Unassigned'
@@ -2793,8 +2898,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~ne
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;031B&quot;~x2d)~combiningClass=       </span><span style="font-weight:bold;color:blue;">--  'ATAR'</span>
 'ATAR'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~combiningClass=     </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~combiningClass=     </span><span style="font-weight:bold;color:blue;">--  Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~combiningClass=               </span><span style="font-weight:bold;color:blue;">--  '?'</span>
 '?'
@@ -2806,8 +2911,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~ne
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;031B&quot;~x2d)~combiningClassName=       </span><span style="font-weight:bold;color:blue;">--  'Attached_Above_Right'</span>
 'Attached_Above_Right'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~combiningClassName=     </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~combiningClassName=     </span><span style="font-weight:bold;color:blue;">--  Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~combiningClassName=               </span><span style="font-weight:bold;color:blue;">--  '?'</span>
 '?'
@@ -2819,8 +2924,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~ne
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;031B&quot;~x2d)~combiningClassValue=      </span><span style="font-weight:bold;color:blue;">--  216</span>
  216
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~combiningClassValue=    </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~combiningClassValue=    </span><span style="font-weight:bold;color:blue;">--  Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~combiningClassValue=              </span><span style="font-weight:bold;color:blue;">--  -1</span>
 -1
@@ -2848,8 +2953,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~ne
 'Compat'
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;00BC&quot;~x2d)~decompositionType=        </span><span style="font-weight:bold;color:blue;">--  'Fraction'</span>
 'Fraction'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~decompositionType=      </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~decompositionType=      </span><span style="font-weight:bold;color:blue;">--  Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~decompositionType=                </span><span style="font-weight:bold;color:blue;">--  '?'</span>
 '?'
@@ -2865,8 +2970,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~ne
 'Unspecified compatibility character'
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;00BC&quot;~x2d)~decompositionTypeName=        </span><span style="font-weight:bold;color:blue;">--  'Vulgar fraction form'</span>
 'Vulgar fraction form'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~decompositionTypeName=      </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~decompositionTypeName=      </span><span style="font-weight:bold;color:blue;">--  Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~decompositionTypeName=                </span><span style="font-weight:bold;color:blue;">--  '?'</span>
 '?'
@@ -2899,8 +3004,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~ne
 'Consonant'
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;094D&quot;~x2d)~indicConjunctBreak=           </span><span style="font-weight:bold;color:blue;">--  'Linker'</span>
 'Linker'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~indicConjunctBreak=         </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~indicConjunctBreak=         </span><span style="font-weight:bold;color:blue;">--  Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~indicConjunctBreak=                   </span><span style="font-weight:bold;color:blue;">--  '?'</span>
 '?'
@@ -2918,8 +3023,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~ne
 'Consonant'
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;094D&quot;~x2d)~indicConjunctBreakName=       </span><span style="font-weight:bold;color:blue;">--  'Linker'</span>
 'Linker'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~indicConjunctBreakName=     </span><span style="font-weight:bold;color:blue;">--  Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).</span>
-<span style="font-weight:bold;color:red;">Invalid code point: 16777215; allowed range is 0 to 1114111 (U+10FFFF).
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(&quot;FFFFFF&quot;~x2d)~indicConjunctBreakName=     </span><span style="font-weight:bold;color:blue;">--  Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;16777215&quot;.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(-1)~indicConjunctBreakName=               </span><span style="font-weight:bold;color:blue;">--  '?'</span>
 '?'

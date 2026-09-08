@@ -1793,6 +1793,11 @@ StartClassDefinition(RexxUnicodeServices)
         AddClassUnguardedMethod("CodepointIsPrintable", RexxUnicodeServicesClass::codepointIsPrintable, 1);
         AddClassUnguardedMethod("CodepointUnicodeEscapeNotation", RexxUnicodeServicesClass::codepointUnicodeEscapeNotation, 2);
         AddClassUnguardedMethod("CodepointUtf8PrintableString", RexxUnicodeServicesClass::codepointUtf8PrintableString, 2);
+        AddClassUnguardedMethod("C2U", RexxUnicodeServicesClass::C2U, 2);
+        AddClassUnguardedMethod("C2X", RexxUnicodeServicesClass::C2X, 2);
+        AddClassUnguardedMethod("D2U", RexxUnicodeServicesClass::D2U, 2);
+        AddClassUnguardedMethod("U2C", RexxUnicodeServicesClass::U2C, 2);
+        AddClassUnguardedMethod("U2D", RexxUnicodeServicesClass::U2D, 4);
         AddClassUnguardedMethod("SizeofUnicodeWidthTables", RexxUnicodeServicesClass::sizeofUnicodeWidthTables, 0);
 
     CompleteClassMethodDefinitions();
