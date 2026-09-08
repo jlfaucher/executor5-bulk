@@ -1114,7 +1114,7 @@ endif ()
 # Build the rexx.img file
 add_custom_command(OUTPUT ${ORX_IMAGE_OUTPUT_LOCATION}/rexx.img
            COMMAND $<TARGET_FILE:rexximage> ${ORX_IMAGE_OUTPUT_LOCATION}/rexx.img
-           DEPENDS rexximage rxapi ${image_class_files} ${platform_rexx_img_depends}
+           DEPENDS rexximage rxapi ${image_class_files} ${platform_rexx_img_depends} ${build_memory_dir}/Setup.cpp
            WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 add_custom_target(rexx_img ALL DEPENDS ${ORX_IMAGE_OUTPUT_LOCATION}/rexx.img)
