@@ -920,8 +920,9 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 .RexxUnicodeServices~D2U(127877, .MutableBuffer~new)=       -- M'U+1F385'
 
 .RexxUnicodeServices~D2U(.RexxUnicode~maxCodepoint)=        -- 'U+10FFFF'
-.RexxUnicodeServices~D2U(.RexxUnicode~maxCodepoint + 1)=    -- Invalid code point 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicodeServices~D2U(.RexxUnicode~maxCodepoint + 1)=    -- Code point must be in the range 0 to 1114111 (U+10FFFF); found "1114112".
 .RexxUnicodeServices~D2U(-1)=                               -- 'U+FFFFFF'
+.RexxUnicodeServices~D2U(-2)=                               -- Code point must be in the range 0 to 1114111 (U+10FFFF); found "-2".
 
 ```
 
@@ -1703,16 +1704,9 @@ In case of error, the buffer is partially updated.
 Escape sequences are normally handled in string literals at parse time.
 This method handles them at run time instead.
 
-**Implementation note**
-
-This method is private because it must be called from the `RexxUnicode` class,
-which supports these messages sent by the native implementation:
-
-- `codepointFromName` (helper implemented by `RexxUnicode` to retrieve a Unicode
-  character by name).
-- `ICU4ooRexxIsRegistered`.
-
 **Supported escape sequences**
+
+`\N{Unicode name}` is supported only by [`.RexxUnicode~utf8StringUnescape`](#RexxUnicode_utf8StringUnescape).
 
     \\                  "\"
     \'                  single quote
@@ -1736,33 +1730,35 @@ which supports these messages sent by the native implementation:
 **Examples**
 
 ```rexx
-.RexxUnicode~utf8StringUnescape("\\")=            -- '\'
-.RexxUnicode~utf8StringUnescape("a\\")=           -- 'a\'
-.RexxUnicode~utf8StringUnescape("\\b")=           -- '\b'
-.RexxUnicode~utf8StringUnescape("a\\b")=          -- 'a\b'
+.RexxUnicodeServices~utf8StringUnescape("\\")=            -- '\'
+.RexxUnicodeServices~utf8StringUnescape("a\\")=           -- 'a\'
+.RexxUnicodeServices~utf8StringUnescape("\\b")=           -- '\b'
+.RexxUnicodeServices~utf8StringUnescape("a\\b")=          -- 'a\b'
 
 ```
 
 ```rexx
-.RexxUnicode~utf8StringUnescape("\\", .MutableBuffer~new)=            -- M'\'
-.RexxUnicode~utf8StringUnescape("a\\", .MutableBuffer~new)=           -- M'a\'
-.RexxUnicode~utf8StringUnescape("\\b", .MutableBuffer~new)=           -- M'\b'
-.RexxUnicode~utf8StringUnescape("a\\b", .MutableBuffer~new)=          -- M'a\b'
+.RexxUnicodeServices~utf8StringUnescape("\\", .MutableBuffer~new)=            -- M'\'
+.RexxUnicodeServices~utf8StringUnescape("a\\", .MutableBuffer~new)=           -- M'a\'
+.RexxUnicodeServices~utf8StringUnescape("\\b", .MutableBuffer~new)=           -- M'\b'
+.RexxUnicodeServices~utf8StringUnescape("a\\b", .MutableBuffer~new)=          -- M'a\b'
 
 ```
 
 ```rexx
-.RexxUnicode~utf8StringUnescape("\a")~c2x=    -- 07
-.RexxUnicode~utf8StringUnescape("\b")~c2x=    -- 08
-.RexxUnicode~utf8StringUnescape("\f")~c2x=    -- '0C'
-.RexxUnicode~utf8StringUnescape("\n")~c2x=    -- '0A'
-.RexxUnicode~utf8StringUnescape("\r")~c2x=    -- '0D'
-.RexxUnicode~utf8StringUnescape("\t")~c2x=    -- 09
-.RexxUnicode~utf8StringUnescape("\v")~c2x=    -- '0B'
+.RexxUnicodeServices~utf8StringUnescape("\a")~c2x=    -- 07
+.RexxUnicodeServices~utf8StringUnescape("\b")~c2x=    -- 08
+.RexxUnicodeServices~utf8StringUnescape("\f")~c2x=    -- '0C'
+.RexxUnicodeServices~utf8StringUnescape("\n")~c2x=    -- '0A'
+.RexxUnicodeServices~utf8StringUnescape("\r")~c2x=    -- '0D'
+.RexxUnicodeServices~utf8StringUnescape("\t")~c2x=    -- 09
+.RexxUnicodeServices~utf8StringUnescape("\v")~c2x=    -- '0B'
 
 ```
 
 ```rexx
+-- \N{Unicode name} is supported only by .RexxUnicode~utf8StringUnescape.
+.RexxUnicodeServices~utf8StringUnescape("\N{OCR DASH}")=          -- Searching for a character by name is not supported by RexxUnicodeServices. Use RexxUnicode instead.
 .RexxUnicode~utf8StringUnescape("\N{OCR DASH}")=                  -- '⑈'
 .RexxUnicode~utf8StringUnescape("\N{MICR ON US SYMBOL}")=         -- '⑈'
 .RexxUnicode~utf8StringUnescape("\N{<control-0000>}")=            -- '[00]'
@@ -1771,15 +1767,15 @@ which supports these messages sent by the native implementation:
 ```
 
 ```rexx
-.RexxUnicode~utf8StringUnescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
+.RexxUnicodeServices~utf8StringUnescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
 
 ```
 
 ```rexx
 -- Spaces between consecutive \u{...} sequences are significant.
 -- Spaces between consecutive U+... sequences are not significant.
-.RexxUnicode~utf8StringUnescape(" \u{0041} \u{0042} ")=     -- ' A B '
-.RexxUnicode~U2C(               "  U+0041   U+0042  ")=     -- 'AB'
+.RexxUnicodeServices~utf8StringUnescape(" \u{0041} \u{0042} ")=     -- ' A B '
+.RexxUnicodeServices~U2C(               "  U+0041   U+0042  ")=     -- 'AB'
 
 ```
 
@@ -2475,7 +2471,7 @@ If a buffer is passed as an argument, the resulting string is appended to the bu
 .RexxUnicode~codepointUTF8Encoding(2448~x2d)~c2x=   -- 'E29188'
 
 .RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint)~c2x=      -- 'F48FBFBF'
-.RexxUniRexxUnicodecodeServices~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  -- Invalid code point 1114112; allowed range is 0 to 1114111 (U+10FFFF).
+.RexxUnicode~codepointUTF8Encoding(.RexxUnicode~maxCodepoint + 1)~c2x=  -- Code point must be in the range 0 to 1114111 (U+10FFFF); found "1114112".
 
 ```
 
@@ -2720,7 +2716,8 @@ See the [`utf8Transform`](#RexxUnicodeServices_utf8Transform) method for a descr
 
     .RexxUnicode~stringUnescape( string, buffer = .nil )
 
-This method forwards to the private native method [`.RexxUnicodeServices~utf8StringUnescape`](#RexxUnicodeServices_utf8StringUnescape).
+This method forwards to the native method [`.RexxUnicodeServices~utf8StringUnescape`](#RexxUnicodeServices_utf8StringUnescape).  
+`\N{Unicode name}` is additionally supported by this method.
 
 This method is kept for compatibility with older versions of `rxunicode.cls`.
 
@@ -2781,7 +2778,8 @@ are removed.
 
     .RexxUnicode~utf8StringUnescape( string, buffer = .nil )
 
-This method forwards to the private native method [`.RexxUnicodeServices~utf8StringUnescape`](#RexxUnicodeServices_utf8StringUnescape).
+This method forwards to the native method [`.RexxUnicodeServices~utf8StringUnescape`](#RexxUnicodeServices_utf8StringUnescape).  
+`\N{Unicode name}` is additionally supported by this method.
 
 
 ### 2.5.   Instance methods

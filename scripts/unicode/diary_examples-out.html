@@ -42,11 +42,44 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 7 Sep 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S55baQbc48c1200
+</span><span style="font-weight:bold;color:green;">Input queue name: S2a84Qbc48c1c80
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
+
+
+<span style="font-weight:bold;color:blue;">-- ===============================================================================
+</span><span style="font-weight:bold;color:blue;">-- 2026 Sept 09
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">[Unicode]
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Update .RexxUnicodeServices~utf8StringUnescape:
+</span><span style="font-weight:bold;color:blue;">    This method was private because searching characters by name depends on
+</span><span style="font-weight:bold;color:blue;">    functionalities supported only by .RexxUnicode.
+</span><span style="font-weight:bold;color:blue;">    Now this method is public, and a specific error message is raised when
+</span><span style="font-weight:bold;color:blue;">    unescaping \N{name}.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Example
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">    -- Before update
+</span><span style="font-weight:bold;color:blue;">    .RexxUnicodeServices~utf8StringUnescape(&quot;\U0001F385&quot;)=              -- Object &quot;The RexxUnicodeServices class&quot; cannot accept private message &quot;UTF8STRINGUNESCAPE&quot; from this context.
+</span><span style="font-weight:bold;color:blue;">    .RexxUnicode~utf8StringUnescape(&quot;\U0001F385&quot;)=                      -- '🎅'
+</span><span style="font-weight:bold;color:blue;">    .RexxUnicodeServices~utf8StringUnescape(&quot;\N{Father Christmas}&quot;)=    -- Object &quot;The RexxUnicodeServices class&quot; cannot accept private message &quot;UTF8STRINGUNESCAPE&quot; from this context.
+</span><span style="font-weight:bold;color:blue;">    .RexxUnicode~utf8StringUnescape(&quot;\N{Father Christmas}&quot;)=            -- '🎅'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- After update</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicodeServices~utf8StringUnescape(&quot;\U0001F385&quot;)=              </span><span style="font-weight:bold;color:blue;">-- '🎅'</span>
+'🎅'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~utf8StringUnescape(&quot;\U0001F385&quot;)=                      </span><span style="font-weight:bold;color:blue;">-- '🎅'</span>
+'🎅'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicodeServices~utf8StringUnescape(&quot;\N{Father Christmas}&quot;)=    </span><span style="font-weight:bold;color:blue;">-- Searching for a character by name is not supported by RexxUnicodeServices. Use RexxUnicode instead.</span>
+<span style="font-weight:bold;color:red;">Searching for a character by name is not supported by RexxUnicodeServices. Use RexxUnicode instead.
+</span><span style="font-weight:bold;color:red;">Error code= 98.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~utf8StringUnescape(&quot;\N{Father Christmas}&quot;)=            </span><span style="font-weight:bold;color:blue;">-- '🎅'</span>
+'🎅'
 
 
 <span style="font-weight:bold;color:blue;">-- ===============================================================================

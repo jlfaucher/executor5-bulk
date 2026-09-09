@@ -2251,10 +2251,10 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
  * If a buffer is passed as an argument, the resulting string is appended to the buffer, and the buffer is returned.
  * Escape sequences are normally handled in string literals at parse time. This method handles them at run time instead.
  *
- * This method must be called from the RexxUnicode class so that these messages are understood:
+ * Precondition to support \N{name}:
+ * This method must be called from a subclass, like RexxUnicode, that supports these messages:
  *  - codepointFromName
  *  - ICU4ooRexxIsRegistered
- * This constraint is enforced by declaring this method private.
  */
 RexxObject *RexxUnicodeServicesClass::utf8StringUnescape(RexxString *string, MutableBuffer *destination)
 {
@@ -2328,6 +2328,7 @@ RexxObject *RexxUnicodeServicesClass::utf8StringUnescape(RexxString *string, Mut
                     if (length == 0) goto expected_name;
                     pos++; // skip }
                     name = new_string(first, length);
+                    if ((RexxClass *)this == TheRexxUnicodeServicesClass) goto search_by_name_not_supported;
                     codepoint = codepointFromName(this, name);
                     if (codepoint == -1) goto name_not_found;
                     char buf[4];
@@ -2451,6 +2452,11 @@ RexxObject *RexxUnicodeServicesClass::utf8StringUnescape(RexxString *string, Mut
         // raise syntax 23.900 array("Expected {a Unicode character name} after \"character "at position" slashPos)
         formatString(error, sizeof(error), "Expected {a Unicode character name} after \\%c at position %zu", character, slashPos);
         reportException(Error_Invalid_data_string_user_defined, error);
+
+    search_by_name_not_supported:
+        // Yes, the class name "RexxUnicode" is hardcoded in the error message. This is more clear than "Use a subclass instead".
+        // But there is still NO hardcoded dependency on RexxUnicode inside the interpreter.
+        reportException(Error_Execution_user_defined, "Searching for a character by name is not supported by RexxUnicodeServices. Use RexxUnicode instead");
 
     name_not_found:
         // additional = ""

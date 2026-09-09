@@ -22,6 +22,32 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 Sept 09
+
+[Unicode]
+
+Update .RexxUnicodeServices~utf8StringUnescape:
+    This method was private because searching characters by name depends on
+    functionalities supported only by .RexxUnicode.
+    Now this method is public, and a specific error message is raised when
+    unescaping \N{name}.
+
+Example
+
+    -- Before update
+    .RexxUnicodeServices~utf8StringUnescape("\U0001F385")=              -- Object "The RexxUnicodeServices class" cannot accept private message "UTF8STRINGUNESCAPE" from this context.
+    .RexxUnicode~utf8StringUnescape("\U0001F385")=                      -- '🎅'
+    .RexxUnicodeServices~utf8StringUnescape("\N{Father Christmas}")=    -- Object "The RexxUnicodeServices class" cannot accept private message "UTF8STRINGUNESCAPE" from this context.
+    .RexxUnicode~utf8StringUnescape("\N{Father Christmas}")=            -- '🎅'
+
+    -- After update
+    .RexxUnicodeServices~utf8StringUnescape("\U0001F385")=              -- '🎅'
+    .RexxUnicode~utf8StringUnescape("\U0001F385")=                      -- '🎅'
+    .RexxUnicodeServices~utf8StringUnescape("\N{Father Christmas}")=    -- Searching for a character by name is not supported by RexxUnicodeServices. Use RexxUnicode instead.
+    .RexxUnicode~utf8StringUnescape("\N{Father Christmas}")=            -- '🎅'
+
+
+===============================================================================
 2026 Sept 08
 
 [Unicode]

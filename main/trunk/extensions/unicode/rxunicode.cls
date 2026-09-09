@@ -69,7 +69,7 @@ Native methods of RexxUnicodeServices
 
     RexxObject *utf8StringEscape(RexxString *string, RexxString *escapeBy, MutableBuffer *destination);
     RexxInteger *utf8StringInfo(RexxString *string, VariableReference *refGraphemeCount, VariableReference *refCodepointCount, VariableReference *refErrorCount, RexxInteger *rexxStopAtFirstError);
-    RexxObject *utf8StringUnescape(RexxString *string, MutableBuffer *destination); // PRIVATE
+    RexxObject *utf8StringUnescape(RexxString *string, MutableBuffer *destination);
     RexxInteger *utf8StringWidth(RexxString *string, RexxInteger *indexB, RexxInteger *eastAsianContext);
 
     RexxString *utf8Transform(RexxObject **arguments, size_t argCount);
@@ -285,9 +285,7 @@ Codepoint from identifier
 -- Gets a codepoint from a character name.
 -- Private helper for .RexxUnicodeServices~utf8StringUnescape, .RexxUnicode~stringUnescape and .RexxUnicode~codepoint.
 -- The native utf8StringUnescape method cannot call a private method when the native method is called outside an ooRexx method context.
--- Workaround:
---     - Call the native utf8StringUnescape method from an ooRexx method of RexxUnicode.
---     - Make the native utf8StringUnescape method private.
+-- Workaround: Call the native utf8StringUnescape method from an ooRexx method of RexxUnicode.
 ::method codepointFromName class private
     use strict arg name
     name = requestBaseString(name, "name")
@@ -477,17 +475,19 @@ How other languages are supporting escape characters for Unicode:
 
 -- Escape characters are normally handled in string literals at parse time.
 -- This method handles them at run time instead.
--- Keep this PUBLIC method!
--- It calls the PRIVATE method .RexxUnicodeServices~utf8StringUnescape from the right context.
+-- Keep this method!
+-- It calls the method .RexxUnicodeServices~utf8StringUnescape from the right context,
+-- avoiding this error:
+-- Object "The RexxUnicode class" cannot accept private message "CODEPOINTFROMNAME" from this context.
 ::method utf8StringUnescape class
-    forward class (super) -- inherited private native method
+    forward class (super) -- inherited native method
 
 
 -- Escape characters are normally handled in string literals at parse time.
 -- This method handles them at run time instead.
 -- This method is kept for compatibility with older versions of `rxunicode.cls`.
 ::method stringUnescape class
-    forward class (super) message "utf8StringUnescape" -- inherited private native method
+    forward class (super) message "utf8StringUnescape" -- inherited native method
 
 
 -- This method is kept for compatibility with older versions of `rxunicode.cls`.

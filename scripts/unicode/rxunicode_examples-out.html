@@ -42,7 +42,7 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 7 Sep 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S55ebQbc48c1200
+</span><span style="font-weight:bold;color:green;">Input queue name: S2ab5Qbc48c1c80
 </span>
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">Examples in rxunicode.md
@@ -305,7 +305,10 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~D2U
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~D2U(-1)=                               </span><span style="font-weight:bold;color:blue;">-- 'U+FFFFFF'</span>
 'U+FFFFFF'
-
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~D2U(-2)=                               </span><span style="font-weight:bold;color:blue;">-- Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;-2&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;-2&quot;.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeServices~graphemeBreak
@@ -802,46 +805,44 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">g=; c=; e=              
 </span><span style="font-weight:bold;color:blue;">--  .RexxUnicodeServices~utf8StringUnescape
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span>
-<span style="font-weight:bold;color:blue;">-- YES! Must be called from .RexxUnicode
-</span><span style="font-weight:bold;color:blue;">-- because .RexxUnicodeServices~utf8StringUnescape is PRIVATE.
-</span>
-<span style="font-weight:bold;color:blue;">-- The public method .RexxUnicode~utf8StringUnescape forwards to the private
-</span><span style="font-weight:bold;color:blue;">-- native method .RexxUnicodeServices~utf8StringUnescape.
-</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\\&quot;)=            </span><span style="font-weight:bold;color:blue;">-- '\'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;\\&quot;)=            </span><span style="font-weight:bold;color:blue;">-- '\'</span>
 '\'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;a\\&quot;)=           </span><span style="font-weight:bold;color:blue;">-- 'a\'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;a\\&quot;)=           </span><span style="font-weight:bold;color:blue;">-- 'a\'</span>
 'a\'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\\b&quot;)=           </span><span style="font-weight:bold;color:blue;">-- '\b'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;\\b&quot;)=           </span><span style="font-weight:bold;color:blue;">-- '\b'</span>
 '\b'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;a\\b&quot;)=          </span><span style="font-weight:bold;color:blue;">-- 'a\b'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;a\\b&quot;)=          </span><span style="font-weight:bold;color:blue;">-- 'a\b'</span>
 'a\b'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\\&quot;, .MutableBuffer~new)=            </span><span style="font-weight:bold;color:blue;">-- M'\'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;\\&quot;, .MutableBuffer~new)=            </span><span style="font-weight:bold;color:blue;">-- M'\'</span>
 M'\'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;a\\&quot;, .MutableBuffer~new)=           </span><span style="font-weight:bold;color:blue;">-- M'a\'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;a\\&quot;, .MutableBuffer~new)=           </span><span style="font-weight:bold;color:blue;">-- M'a\'</span>
 M'a\'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\\b&quot;, .MutableBuffer~new)=           </span><span style="font-weight:bold;color:blue;">-- M'\b'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;\\b&quot;, .MutableBuffer~new)=           </span><span style="font-weight:bold;color:blue;">-- M'\b'</span>
 M'\b'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;a\\b&quot;, .MutableBuffer~new)=          </span><span style="font-weight:bold;color:blue;">-- M'a\b'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;a\\b&quot;, .MutableBuffer~new)=          </span><span style="font-weight:bold;color:blue;">-- M'a\b'</span>
 M'a\b'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\a&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 07</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;\a&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 07</span>
  07
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\b&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 08</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;\b&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 08</span>
  08
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\f&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0C'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;\f&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0C'</span>
 '0C'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\n&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0A'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;\n&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0A'</span>
 '0A'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\r&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0D'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;\r&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0D'</span>
 '0D'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\t&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 09</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;\t&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 09</span>
  09
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\v&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0B'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;\v&quot;)~c2x=    </span><span style="font-weight:bold;color:blue;">-- '0B'</span>
 '0B'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\N{OCR DASH}&quot;)=                  </span><span style="font-weight:bold;color:blue;">-- '⑈'</span>
+<span style="font-weight:bold;color:blue;">-- \N{Unicode name} is supported only by .RexxUnicode~utf8StringUnescape.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;\N{OCR DASH}&quot;)=          </span><span style="font-weight:bold;color:blue;">-- Searching for a character by name is not supported by RexxUnicodeServices. Use RexxUnicode instead.</span>
+<span style="font-weight:bold;color:red;">Searching for a character by name is not supported by RexxUnicodeServices. Use RexxUnicode instead.
+</span><span style="font-weight:bold;color:red;">Error code= 98.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\N{OCR DASH}&quot;)=                  </span><span style="font-weight:bold;color:blue;">-- '⑈'</span>
 '⑈'
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\N{MICR ON US SYMBOL}&quot;)=         </span><span style="font-weight:bold;color:blue;">-- '⑈'</span>
 '⑈'
@@ -850,14 +851,14 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringU
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\N{&lt;lead surrogate-D800&gt;}&quot;)~c2x= </span><span style="font-weight:bold;color:blue;">-- 'EDA080' (use ~c2x to not display an invalid byte sequence)</span>
 'EDA080'
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94&quot;)=     </span><span style="font-weight:bold;color:blue;">-- '𝓐B𝓒𝓓𝓔'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94&quot;)=     </span><span style="font-weight:bold;color:blue;">-- '𝓐B𝓒𝓓𝓔'</span>
 '𝓐B𝓒𝓓𝓔'
 
 <span style="font-weight:bold;color:blue;">-- Spaces between consecutive \u{...} sequences are significant.
 </span><span style="font-weight:bold;color:blue;">-- Spaces between consecutive U+... sequences are not significant.
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot; \u{0041} \u{0042} &quot;)=     </span><span style="font-weight:bold;color:blue;">-- ' A B '</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot; \u{0041} \u{0042} &quot;)=     </span><span style="font-weight:bold;color:blue;">-- ' A B '</span>
 ' A B '
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~U2C(               &quot;  U+0041   U+0042  &quot;)=     </span><span style="font-weight:bold;color:blue;">-- 'AB'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2C(               &quot;  U+0041   U+0042  &quot;)=     </span><span style="font-weight:bold;color:blue;">-- 'AB'</span>
 'AB'
 
 
@@ -1296,7 +1297,10 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~D2U(.RexxUn
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~D2U(-1)=                               </span><span style="font-weight:bold;color:blue;">-- 'U+FFFFFF'</span>
 'U+FFFFFF'
-
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~D2U(-2)=                               </span><span style="font-weight:bold;color:blue;">-- Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;-2&quot;.</span>
+<span style="font-weight:bold;color:red;">Code point must be in the range 0 to 1114111 (U+10FFFF); found &quot;-2&quot;.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span><span style="font-weight:bold;color:blue;">-- .RexxUnicode~h_UAX44_LM2

@@ -13,7 +13,7 @@ Native methods of RexxUnicodeServices
 
     RexxObject *utf8StringEscape(RexxString *string, RexxString *escapeBy, MutableBuffer *destination);
     RexxInteger *utf8StringInfo(RexxString *string, VariableReference *refGraphemeCount, VariableReference *refCodepointCount, VariableReference *refErrorCount, RexxInteger *rexxStopAtFirstError);
-    RexxObject *utf8StringUnescape(RexxString *string, MutableBuffer *destination); // PRIVATE
+    RexxObject *utf8StringUnescape(RexxString *string, MutableBuffer *destination);
     RexxInteger *utf8StringWidth(RexxString *string, RexxInteger *indexB, RexxInteger *eastAsianContext);
 
     RexxString *utf8Transform(RexxObject **arguments, size_t argCount);

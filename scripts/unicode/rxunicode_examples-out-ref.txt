@@ -260,6 +260,9 @@ Code point must be in the range 0 to 1114111 (U+10FFFF); found "1114112".
 Error code= 88.900
 ooRexx> .RexxUnicodeServices~D2U(-1)=                               -- 'U+FFFFFF'
 'U+FFFFFF'
+ooRexx> .RexxUnicodeServices~D2U(-2)=                               -- Code point must be in the range 0 to 1114111 (U+10FFFF); found "-2".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "-2".
+Error code= 88.900
 
 
 --------------------------------------------------------------------------------
@@ -757,45 +760,43 @@ ooRexx> g=; c=; e=                                                              
 --  .RexxUnicodeServices~utf8StringUnescape
 --------------------------------------------------------------------------------
 
--- YES! Must be called from .RexxUnicode
--- because .RexxUnicodeServices~utf8StringUnescape is PRIVATE.
-
--- The public method .RexxUnicode~utf8StringUnescape forwards to the private
--- native method .RexxUnicodeServices~utf8StringUnescape.
-
-ooRexx> .RexxUnicode~utf8StringUnescape("\\")=            -- '\'
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("\\")=            -- '\'
 '\'
-ooRexx> .RexxUnicode~utf8StringUnescape("a\\")=           -- 'a\'
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("a\\")=           -- 'a\'
 'a\'
-ooRexx> .RexxUnicode~utf8StringUnescape("\\b")=           -- '\b'
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("\\b")=           -- '\b'
 '\b'
-ooRexx> .RexxUnicode~utf8StringUnescape("a\\b")=          -- 'a\b'
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("a\\b")=          -- 'a\b'
 'a\b'
 
-ooRexx> .RexxUnicode~utf8StringUnescape("\\", .MutableBuffer~new)=            -- M'\'
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("\\", .MutableBuffer~new)=            -- M'\'
 M'\'
-ooRexx> .RexxUnicode~utf8StringUnescape("a\\", .MutableBuffer~new)=           -- M'a\'
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("a\\", .MutableBuffer~new)=           -- M'a\'
 M'a\'
-ooRexx> .RexxUnicode~utf8StringUnescape("\\b", .MutableBuffer~new)=           -- M'\b'
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("\\b", .MutableBuffer~new)=           -- M'\b'
 M'\b'
-ooRexx> .RexxUnicode~utf8StringUnescape("a\\b", .MutableBuffer~new)=          -- M'a\b'
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("a\\b", .MutableBuffer~new)=          -- M'a\b'
 M'a\b'
 
-ooRexx> .RexxUnicode~utf8StringUnescape("\a")~c2x=    -- 07
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("\a")~c2x=    -- 07
  07
-ooRexx> .RexxUnicode~utf8StringUnescape("\b")~c2x=    -- 08
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("\b")~c2x=    -- 08
  08
-ooRexx> .RexxUnicode~utf8StringUnescape("\f")~c2x=    -- '0C'
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("\f")~c2x=    -- '0C'
 '0C'
-ooRexx> .RexxUnicode~utf8StringUnescape("\n")~c2x=    -- '0A'
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("\n")~c2x=    -- '0A'
 '0A'
-ooRexx> .RexxUnicode~utf8StringUnescape("\r")~c2x=    -- '0D'
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("\r")~c2x=    -- '0D'
 '0D'
-ooRexx> .RexxUnicode~utf8StringUnescape("\t")~c2x=    -- 09
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("\t")~c2x=    -- 09
  09
-ooRexx> .RexxUnicode~utf8StringUnescape("\v")~c2x=    -- '0B'
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("\v")~c2x=    -- '0B'
 '0B'
 
+-- \N{Unicode name} is supported only by .RexxUnicode~utf8StringUnescape.
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("\N{OCR DASH}")=          -- Searching for a character by name is not supported by RexxUnicodeServices. Use RexxUnicode instead.
+Searching for a character by name is not supported by RexxUnicodeServices. Use RexxUnicode instead.
+Error code= 98.900
 ooRexx> .RexxUnicode~utf8StringUnescape("\N{OCR DASH}")=                  -- '⑈'
 '⑈'
 ooRexx> .RexxUnicode~utf8StringUnescape("\N{MICR ON US SYMBOL}")=         -- '⑈'
@@ -805,14 +806,14 @@ ooRexx> .RexxUnicode~utf8StringUnescape("\N{<control-0000>}")=            -- '[0
 ooRexx> .RexxUnicode~utf8StringUnescape("\N{<lead surrogate-D800>}")~c2x= -- 'EDA080' (use ~c2x to not display an invalid byte sequence)
 'EDA080'
 
-ooRexx> .RexxUnicode~utf8StringUnescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("\u{1D4D0}\u0042\U0001D4D2\x{F09D9393}\xF0\x9D\x93\x94")=     -- '𝓐B𝓒𝓓𝓔'
 '𝓐B𝓒𝓓𝓔'
 
 -- Spaces between consecutive \u{...} sequences are significant.
 -- Spaces between consecutive U+... sequences are not significant.
-ooRexx> .RexxUnicode~utf8StringUnescape(" \u{0041} \u{0042} ")=     -- ' A B '
+ooRexx> .RexxUnicodeServices~utf8StringUnescape(" \u{0041} \u{0042} ")=     -- ' A B '
 ' A B '
-ooRexx> .RexxUnicode~U2C(               "  U+0041   U+0042  ")=     -- 'AB'
+ooRexx> .RexxUnicodeServices~U2C(               "  U+0041   U+0042  ")=     -- 'AB'
 'AB'
 
 
@@ -1251,6 +1252,9 @@ Code point must be in the range 0 to 1114111 (U+10FFFF); found "1114112".
 Error code= 88.900
 ooRexx> .RexxUnicode~D2U(-1)=                               -- 'U+FFFFFF'
 'U+FFFFFF'
+ooRexx> .RexxUnicode~D2U(-2)=                               -- Code point must be in the range 0 to 1114111 (U+10FFFF); found "-2".
+Code point must be in the range 0 to 1114111 (U+10FFFF); found "-2".
+Error code= 88.900
 
 
 --------------------------------------------------------------------------------
