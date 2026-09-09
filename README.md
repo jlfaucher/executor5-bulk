@@ -21,13 +21,13 @@ Unlike [Executor][executor] and [Executor5][executor5], this repository includes
 - [Unicode support][unicode_support]
 
 
-## ooRexx 5 bugs fixed but not yet backported:
+## ooRexx-5 bugs fixed but not yet backported:
 
 - [[bugs:#2066](https://sourceforge.net/p/oorexx/bugs/2066/)] ADDRESS with input, child process blocked on stdin when stdin is not ready.  
 [Diary](https://github.com/jlfaucher/executor5-bulk/blob/5522b7d0a1e5d1cbbb25f096735334f86c39a056/_diary.txt#L1793-L1795).
 
 
-## ooRexx 5 feature requests implemented but not yet backported:
+## ooRexx-5 feature requests implemented but not yet backported:
 
 - [[feature-requests:#868](https://sourceforge.net/p/oorexx/feature-requests/868/)] Better support of EOF in rexxtry.  
 [Diary](https://github.com/jlfaucher/executor5-bulk/blob/5522b7d0a1e5d1cbbb25f096735334f86c39a056/_diary.txt#L2976-L2987).
