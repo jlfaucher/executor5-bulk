@@ -5434,7 +5434,7 @@ Returns a string representing the UTF-8 encoding of the character.
 The `ICU4ooRexxInterface` class provides the interface used by the `ICU4ooRexx`
 [library][icu4oorexx_library] to register its services with [`RexxUnicode`](#RexxUnicode).
 
-`ICU4ooRexxInterface` is a private mixin class inherited by `RexxUnicode`.
+`ICU4ooRexxInterface` is a private mixin class inherited by `RexxUnicode`.  
 Its public methods are exposed through `RexxUnicode`.
 
 `::requires "rxunicode.cls"`
@@ -5447,7 +5447,7 @@ Its public methods are exposed through `RexxUnicode`.
 
     .ICU4ooRexxInterface~assertICU4ooRexxIsRegistered( raiseError = .true )
 
-Raises an error if `ICU4ooRexx` is not registered.  
+If `raiseError` is `.true` (default), raises an error if `ICU4ooRexx` is not registered.  
 If `raiseError` is `.false`, returns `.true` if `ICU4ooRexx` is registered, or `.false` otherwise.
 
 

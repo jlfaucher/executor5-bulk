@@ -5095,15 +5095,16 @@ href="https://github.com/jlfaucher/icu4oorexx"
 title="ICU4ooRexx Library">library</a> to register its services with <a
 href="#RexxUnicode"><code>RexxUnicode</code></a>.</p>
 <p><code>ICU4ooRexxInterface</code> is a private mixin class inherited
-by <code>RexxUnicode</code>. Its public methods are exposed through
-<code>RexxUnicode</code>.</p>
+by <code>RexxUnicode</code>.<br />
+Its public methods are exposed through <code>RexxUnicode</code>.</p>
 <p><code>::requires "rxunicode.cls"</code></p>
 <h3 id="class-methods-8">9.1.   Class methods</h3>
 <p><a id="ICU4ooRexxInterface_assertICU4ooRexxIsRegistered"></a></p>
 <h4
 id="asserticu4oorexxisregistered">9.1.1.   assertICU4ooRexxIsRegistered</h4>
 <pre><code>.ICU4ooRexxInterface~assertICU4ooRexxIsRegistered( raiseError = .true )</code></pre>
-<p>Raises an error if <code>ICU4ooRexx</code> is not registered.<br />
+<p>If <code>raiseError</code> is <code>.true</code> (default), raises an
+error if <code>ICU4ooRexx</code> is not registered.<br />
 If <code>raiseError</code> is <code>.false</code>, returns
 <code>.true</code> if <code>ICU4ooRexx</code> is registered, or
 <code>.false</code> otherwise.</p>
