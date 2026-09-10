@@ -5,6 +5,259 @@ ooRexx> tutor off
 
 
 -- ===============================================================================
+-- 2026 Sept 10
+
+/*
+[Unicode]
+
+Like all other methods of .RexxUnicodeServices, utf8Transform now checks its
+first argument (string) using requiredBaseString. Consequence: it accepts only
+a string, an integer, or a number as its first argument.
+
+Examples
+*/
+
+ooRexx> .RexxUnicodeServices~utf8Transform("a string")=     -- 'a string'
+'a string'
+ooRexx> .RexxUnicodeServices~utf8Transform(-1)=             -- -1
+-1
+ooRexx> .RexxUnicodeServices~utf8Transform(-1.0)=           -- -1.0
+-1.0
+ooRexx> .RexxUnicodeServices~utf8Transform(.array~new)=     -- Argument string class: expected String, found Array.
+Argument string class: expected String, found Array.
+Error code= 88.900
+
+
+/*
+Fix support for RexxInteger arguments: they must be converted to RexxString.
+All .RexxUnicodeServices methods taking a string are affected.
+
+Examples
+*/
+
+ooRexx> .RexxUnicodeServices~C2U(-1)=           -- 'U+002D U+0031' (was crashing)
+'U+002D U+0031'
+ooRexx> .RexxUnicodeServices~C2U(0)=            -- 'U+0030' (was '')
+'U+0030'
+ooRexx> .RexxUnicodeServices~C2U(1)=            -- 'U+0031' (was 'U+0001')
+'U+0031'
+ooRexx> .RexxUnicodeServices~C2U("1")=          -- 'U+0031'
+'U+0031'
+ooRexx> .RexxUnicodeServices~C2U(1+0)=          -- 'U+0031' (was 'U+0001')
+'U+0031'
+ooRexx> .RexxUnicodeServices~C2U(1.0)=          -- 'U+0031 U+002E U+0030'
+'U+0031 U+002E U+0030'
+ooRexx> .RexxUnicodeServices~C2U(10)=           -- 'U+0031 U+0030' (was 'U+0001 U+0000 U+0000 U+0000 U+0050 U+0000 U+0000 U+0000 U+0000 U+0000')
+'U+0031 U+0030'
+ooRexx> .RexxUnicodeServices~C2U("10")=         -- 'U+0031 U+0030'
+'U+0031 U+0030'
+
+ooRexx> .RexxUnicodeServices~C2X(-1)=           -- '2D 31' (was crashing)
+'2D 31'
+ooRexx> .RexxUnicodeServices~C2X(0)=            --  30 (was '')
+ 30
+ooRexx> .RexxUnicodeServices~C2X(1)=            --  31 (was 01)
+ 31
+ooRexx> .RexxUnicodeServices~C2X(10)=           -- '31 30' (was '01 00 00 00 50 00 00 00 00 00')
+'31 30'
+
+ooRexx> .RexxUnicodeServices~U2C(-1)=           -- Expected U+ or u+ followed by 4..6 hex digits; found "-1" at position 1. (was ...; found "" at position 1.)
+Expected U+ or u+ followed by 4..6 hex digits; found "-1" at position 1.
+Error code= 23.900
+ooRexx> .RexxUnicodeServices~U2C(0)=            -- Expected U+ or u+ followed by 4..6 hex digits; found "0" at position 1. (was '')
+Expected U+ or u+ followed by 4..6 hex digits; found "0" at position 1.
+Error code= 23.900
+ooRexx> .RexxUnicodeServices~U2C(1)=            -- Expected U+ or u+ followed by 4..6 hex digits; found "1" at position 1. (was ...; found "" at position 1.)
+Expected U+ or u+ followed by 4..6 hex digits; found "1" at position 1.
+Error code= 23.900
+ooRexx> .RexxUnicodeServices~U2C(10)=           -- Expected U+ or u+ followed by 4..6 hex digits; found "10" at position 1. (was ...; found "" at position 1.)
+Expected U+ or u+ followed by 4..6 hex digits; found "10" at position 1.
+Error code= 23.900
+
+ooRexx> .RexxUnicodeServices~U2D(-1)=           -- -1
+-1
+ooRexx> .RexxUnicodeServices~U2D(-1, , .true)=  -- Expected U+ or u+ followed by 4..6 hex digits; found "-1". (was ...; found "".)
+Expected U+ or u+ followed by 4..6 hex digits; found "-1".
+Error code= 23.900
+ooRexx> .RexxUnicodeServices~U2D(0)=            -- -1 (was Invalid position argument specified; found "1".)
+-1
+ooRexx> .RexxUnicodeServices~U2D(1)=            -- -1
+-1
+ooRexx> .RexxUnicodeServices~U2D(1, , .true)=   -- Expected U+ or u+ followed by 4..6 hex digits; found "1". (was ...; found "".)
+Expected U+ or u+ followed by 4..6 hex digits; found "1".
+Error code= 23.900
+ooRexx> .RexxUnicodeServices~U2D(10)=           -- -1
+-1
+ooRexx> .RexxUnicodeServices~U2D(10, 9)=        -- Invalid position argument specified; found "9". (was -1)
+Invalid position argument specified; found "9".
+Error code= 93.924
+ooRexx> .RexxUnicodeServices~U2D(10, 9, .true)= -- Invalid position argument specified; found "9" (was Expected U+ or u+ followed by 4..6 hex digits; found "".)
+Invalid position argument specified; found "9".
+Error code= 93.924
+ooRexx> .RexxUnicodeServices~U2D(10, 11)=       -- Invalid position argument specified; found "11".
+Invalid position argument specified; found "11".
+Error code= 93.924
+
+ooRexx> .RexxUnicodeServices~utf8DecodeCodepoint(-1, , >size)= ; size=      --  45 ; 1 (was Invalid position argument specified; found "1".)
+ 45
+ 1
+ooRexx> .RexxUnicodeServices~utf8DecodeCodepoint(0, , >size)= ; size=       --  48 ; 1 (was -1 ; 0)
+ 48
+ 1
+ooRexx> .RexxUnicodeServices~utf8DecodeCodepoint(1, , >size)= ; size=       --  49 ; 1 (was  1 ; 1)
+ 49
+ 1
+ooRexx> .RexxUnicodeServices~utf8DecodeCodepoint(10, , >size)= ; size=      --  49 ; 1 (was  1 ; 1)
+ 49
+ 1
+
+ooRexx> .RexxUnicodeServices~utf8StringEscape(-1)=  -- -1 (was crashing)
+-1
+ooRexx> .RexxUnicodeServices~utf8StringEscape(0)=   --  0 (was '')
+ 0
+ooRexx> .RexxUnicodeServices~utf8StringEscape(1)=   --  1 (was '\u0001')
+ 1
+ooRexx> .RexxUnicodeServices~utf8StringEscape(10)=  --  10 (was '\u0001\u0000\u0000\u0000P\u0000\u0000\u0000\u0000\u0000')
+ 10
+
+ooRexx> .RexxUnicodeServices~utf8StringInfo(-1, >g, >c, >e)= ; g= ; c= ; e=     --  0 ; 2 ; 2 ; 0 (was crashing)
+ 0
+ 2
+ 2
+ 0
+ooRexx> .RexxUnicodeServices~utf8StringInfo(0, >g, >c, >e)= ; g= ; c= ; e=      --  0 ; 1 ; 1 ; 0 (was 0 ; 0 ; 0 ; 0)
+ 0
+ 1
+ 1
+ 0
+ooRexx> .RexxUnicodeServices~utf8StringInfo(1, >g, >c, >e)= ; g= ; c= ; e=      --  0 ; 1 ; 1 ; 0 (was 0 ; 1 ; 1 ; 0)
+ 0
+ 1
+ 1
+ 0
+ooRexx> .RexxUnicodeServices~utf8StringInfo(10, >g, >c, >e)= ; g= ; c= ; e=     --  0 ; 2 ; 2 ; 0 (was 0 ; 10 ; 10 ; 0)
+ 0
+ 2
+ 2
+ 0
+
+ooRexx> .RexxUnicodeServices~utf8StringUnescape(-1)=    -- -1 (was crashing)
+-1
+ooRexx> .RexxUnicodeServices~utf8StringUnescape(0)=     --  0
+ 0
+ooRexx> .RexxUnicodeServices~utf8StringUnescape(1)=     --  1
+ 1
+ooRexx> .RexxUnicodeServices~utf8StringUnescape(10)=    --  10
+ 10
+
+ooRexx> .RexxUnicodeServices~utf8StringWidth(-1)=   --  2 (was 0)
+ 2
+ooRexx> .RexxUnicodeServices~utf8StringWidth(0)=    --  1 (was 0)
+ 1
+ooRexx> .RexxUnicodeServices~utf8StringWidth(1)=    --  1
+ 1
+ooRexx> .RexxUnicodeServices~utf8StringWidth(10)=   --  2 (was 10)
+ 2
+
+ooRexx> .RexxUnicodeServices~utf8Transform(-1)=     -- -1
+-1
+ooRexx> .RexxUnicodeServices~utf8Transform(0)=      --  0
+ 0
+ooRexx> .RexxUnicodeServices~utf8Transform(1)=      --  1
+ 1
+ooRexx> .RexxUnicodeServices~utf8Transform(10)=     --  10
+ 10
+
+ooRexx> .RexxUnicode~h_UAX44_LM2(-1)=           -- -1
+-1
+ooRexx> .RexxUnicode~h_UAX44_LM2(0)=            --  0
+ 0
+ooRexx> .RexxUnicode~h_UAX44_LM2(1)=            --  1
+ 1
+ooRexx> .RexxUnicode~h_UAX44_LM2(10)=           --  10
+ 10
+
+-- Forwards to .RexxUnicodeServices~utf8StringEscape
+ooRexx> .RexxUnicode~StringEscape(-1)=          -- -1 (was crashing)
+-1
+ooRexx> .RexxUnicode~StringEscape(0)=           --  0 (was '')
+ 0
+ooRexx> .RexxUnicode~StringEscape(1)=           --  1 (was '\u0001')
+ 1
+ooRexx> .RexxUnicode~StringEscape(10)=          --  10 (was '\u0001\u0000\u0000\u0000P\u0000\u0000\u0000\u0000\u0000')
+ 10
+
+-- Forwards to .RexxUnicodeServices~utf8StringInfo
+ooRexx> .RexxUnicode~stringInfo(-1)=            -- '(ASCII, 2 graphemes, 2 codepoints, 2 bytes, 0 error)' (was crashing)
+'(ASCII, 2 graphemes, 2 codepoints, 2 bytes, 0 error)'
+ooRexx> .RexxUnicode~stringInfo(0)=             -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)' (was '(ASCII, 0 grapheme, 0 codepoint, 1 byte, 0 error)')
+'(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+ooRexx> .RexxUnicode~stringInfo(1)=             -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+'(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+ooRexx> .RexxUnicode~stringInfo(10)=            -- '(ASCII, 2 graphemes, 2 codepoints, 2 bytes, 0 error)' (was '(ASCII, 10 graphemes, 10 codepoints, 2 bytes, 0 error)')
+'(ASCII, 2 graphemes, 2 codepoints, 2 bytes, 0 error)'
+
+ooRexx> .RexxUnicode~stringIsASCII(-1)=         --  1
+ 1
+ooRexx> .RexxUnicode~stringIsASCII(0)=          --  1
+ 1
+ooRexx> .RexxUnicode~stringIsASCII(1)=          --  1
+ 1
+ooRexx> .RexxUnicode~stringIsASCII(10)=         --  1
+ 1
+
+ooRexx> .RexxUnicodeCodepointSupplier~new(-1)== -- (was Invalid position argument specified; found "1".)
+a RexxUnicodeCodepointSupplier 
+ 1 :  45
+ 2 :  49
+/*
+    a RexxUnicodeCodepointSupplier
+     1 :  45
+     2 :  49
+*/
+ooRexx> .RexxUnicodeCodepointSupplier~new(0)==  -- (was a RexxUnicodeCodepointSupplier (nothing available))
+a RexxUnicodeCodepointSupplier 
+ 1 :  48
+/*
+    a RexxUnicodeCodepointSupplier
+     1 :  48
+*/
+ooRexx> .RexxUnicodeCodepointSupplier~new(1)==
+a RexxUnicodeCodepointSupplier 
+ 1 :  49
+/*
+    a RexxUnicodeCodepointSupplier
+     1 :  49
+    /* was:
+        a RexxUnicodeCodepointSupplier
+         1 :  1
+    */
+*/
+ooRexx> .RexxUnicodeCodepointSupplier~new(10)==
+a RexxUnicodeCodepointSupplier 
+ 1 :  49
+ 2 :  48
+/*
+    a RexxUnicodeCodepointSupplier
+     1 :  49
+     2 :  48
+    /* was:
+        a RexxUnicodeCodepointSupplier
+         1  :  1
+         2  :  0
+         3  :  0
+         4  :  0
+         5  :  80
+         6  :  0
+         7  :  0
+         8  :  0
+         9  :  0
+         10 :  0
+    */
+*/
+
+
+-- ===============================================================================
 -- 2026 Sept 09
 
 /*
@@ -25,15 +278,15 @@ Example
     .RexxUnicode~utf8StringUnescape("\N{Father Christmas}")=            -- '🎅'
 */
 
-ooRexx>     -- After update
-ooRexx>     .RexxUnicodeServices~utf8StringUnescape("\U0001F385")=              -- '🎅'
+-- After update
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("\U0001F385")=              -- '🎅'
 '🎅'
-ooRexx>     .RexxUnicode~utf8StringUnescape("\U0001F385")=                      -- '🎅'
+ooRexx> .RexxUnicode~utf8StringUnescape("\U0001F385")=                      -- '🎅'
 '🎅'
-ooRexx>     .RexxUnicodeServices~utf8StringUnescape("\N{Father Christmas}")=    -- Searching for a character by name is not supported by RexxUnicodeServices. Use RexxUnicode instead.
+ooRexx> .RexxUnicodeServices~utf8StringUnescape("\N{Father Christmas}")=    -- Searching for a character by name is not supported by RexxUnicodeServices. Use RexxUnicode instead.
 Searching for a character by name is not supported by RexxUnicodeServices. Use RexxUnicode instead.
 Error code= 98.900
-ooRexx>     .RexxUnicode~utf8StringUnescape("\N{Father Christmas}")=            -- '🎅'
+ooRexx> .RexxUnicode~utf8StringUnescape("\N{Father Christmas}")=            -- '🎅'
 '🎅'
 
 

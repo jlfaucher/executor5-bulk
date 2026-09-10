@@ -660,25 +660,26 @@ static inline ssize_t integer(RexxObject *obj, const char *errorMessage)
 
 
 /*
-Testing that stringClass is TheStringClass is too restrictive.
+Testing that objectClass is TheStringClass is too restrictive.
 It must also accept TheIntegerClass and TheNumberStringClass because these two
 classes lie about their identity! They claim to be a String, which results in
 this stupid error message: "Argument string class: expected String, found String."
 */
-static inline void requiredBaseString(RexxString *string, const char *argumentName)
+static inline RexxString *requiredBaseString(RexxObject *object, const char *argumentName)
 {
-    if (string == OREF_NULL) return;
+    if (object == OREF_NULL) return OREF_NULL;
 
-    RexxClass *stringClass = string->classObject();
-    if (stringClass == TheStringClass) return;
-    if (stringClass == TheIntegerClass) return;
-    if (stringClass == TheNumberStringClass) return;
+    RexxClass *objectClass = object->classObject();
+    if (objectClass == TheStringClass) return (RexxString *)object;
+    if (objectClass == TheIntegerClass) return object->requestString();
+    if (objectClass == TheNumberStringClass) return object->requestString();
 
     Protected<RexxString> errmsg = new_string("Argument ");
     errmsg = errmsg->concatWithCstring(argumentName);
     errmsg = errmsg->concatWithCstring(" class: expected String, found ");
-    errmsg = errmsg->concat(stringClass->getId());
+    errmsg = errmsg->concat(objectClass->getId());
     reportException(Error_Invalid_argument_user_defined, errmsg);
+    return OREF_NULL;
 }
 
 
@@ -1810,7 +1811,7 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodeCodepoint(RexxString *string, R
 {
     requiredArgument(string, "string");
     // Yes! Accept only a real string because the size returned with refSizeB must be applied on a real string, not on a Text instance (for example).
-    requiredBaseString(string, "string");
+    string = requiredBaseString(string, "string");
 
     size_t index = 1;
     if (indexB != OREF_NULL) index = positionArgument(indexB, "indexB"); // 1-based, range 1..length+1
@@ -1888,7 +1889,7 @@ RexxInteger *RexxUnicodeServicesClass::utf8DecodeCodepoint(RexxString *string, R
 RexxInteger *RexxUnicodeServicesClass::utf8DecodePreviousCodepoint(RexxString *string, RexxInteger *indexB, VariableReference *refSizeB, VariableReference *refErrorCode, VariableReference *refErrorMsg)
 {
     requiredArgument(string, "string");
-    requiredBaseString(string, "string");
+    string = requiredBaseString(string, "string");
 
     size_t index = string->getLength() + 1;
     if (indexB != OREF_NULL) index = positionArgument(indexB, "indexB"); // 1-based; boundary, not a byte offset
@@ -2055,8 +2056,8 @@ RexxObject *RexxUnicodeServicesClass::codepointUtf8PrintableString(RexxInteger *
 RexxObject *RexxUnicodeServicesClass::utf8StringEscape(RexxString *string, RexxString *escapeBy, MutableBuffer *destination)
 {
     requiredArgument(string, "string");
-    requiredBaseString(string, "string");
-    if (escapeBy != OREF_NULL) requiredBaseString(escapeBy, "escapeBy");
+    string = requiredBaseString(string, "string");
+    if (escapeBy != OREF_NULL) escapeBy = requiredBaseString(escapeBy, "escapeBy");
     if (destination == TheNilObject) destination = OREF_NULL;
     if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
 
@@ -2164,7 +2165,7 @@ RexxObject *RexxUnicodeServicesClass::utf8StringEscape(RexxString *string, RexxS
 RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, VariableReference *refGraphemeCount, VariableReference *refCodepointCount, VariableReference *refErrorCount, RexxInteger *rexxStopAtFirstError)
 {
     requiredArgument(string, "string");
-    requiredBaseString(string, "string");
+    string = requiredBaseString(string, "string");
 
     if (refGraphemeCount != OREF_NULL) classArgument(refGraphemeCount, TheVariableReferenceClass, "refGraphemeCount");
     if (refCodepointCount != OREF_NULL) classArgument(refCodepointCount, TheVariableReferenceClass, "refCodepointCount");
@@ -2259,7 +2260,7 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
 RexxObject *RexxUnicodeServicesClass::utf8StringUnescape(RexxString *string, MutableBuffer *destination)
 {
     requiredArgument(string, "string");
-    requiredBaseString(string, "string");
+    string = requiredBaseString(string, "string");
     if (destination == TheNilObject) destination = OREF_NULL;
     if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
 
@@ -2510,7 +2511,7 @@ RexxObject *RexxUnicodeServicesClass::utf8StringUnescape(RexxString *string, Mut
 RexxObject *RexxUnicodeServicesClass::C2U(RexxString *utf8String, MutableBuffer *destination)
 {
     requiredArgument(utf8String, "utf8String");
-    requiredBaseString(utf8String, "utf8String");
+    utf8String = requiredBaseString(utf8String, "utf8String");
     if (destination == TheNilObject) destination = OREF_NULL;
     if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
 
@@ -2543,7 +2544,7 @@ RexxObject *RexxUnicodeServicesClass::C2U(RexxString *utf8String, MutableBuffer 
 RexxObject *RexxUnicodeServicesClass::C2X(RexxString *utf8String, MutableBuffer *destination)
 {
     requiredArgument(utf8String, "utf8String");
-    requiredBaseString(utf8String, "utf8String");
+    utf8String = requiredBaseString(utf8String, "utf8String");
     if (destination == TheNilObject) destination = OREF_NULL;
     if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
 
@@ -2608,7 +2609,7 @@ The result is either a string or the buffer passed as argument.
 RexxObject *RexxUnicodeServicesClass::U2C(RexxString *asciiStringUPlus, MutableBuffer *destination)
 {
     requiredArgument(asciiStringUPlus, "asciiStringUPlus");
-    requiredBaseString(asciiStringUPlus, "utfasciiStringUPlus8String");
+    asciiStringUPlus = requiredBaseString(asciiStringUPlus, "utfasciiStringUPlus8String");
     if (destination == TheNilObject) destination = OREF_NULL;
     if (destination != OREF_NULL) classArgument(destination, TheMutableBufferClass, "destination");
 
@@ -2687,7 +2688,7 @@ Otherwise, returns -1 or, if requested, raises an error.
 RexxInteger *RexxUnicodeServicesClass::U2D(RexxString *asciiStringUPlus, RexxInteger *indexB, RexxInteger *raiseErrorRexx, VariableReference *refLength)
 {
     requiredArgument(asciiStringUPlus, "asciiStringUPlus");
-    requiredBaseString(asciiStringUPlus, "asciiStringUPlus");
+    asciiStringUPlus = requiredBaseString(asciiStringUPlus, "asciiStringUPlus");
 
     size_t index = 1;
     if (indexB != OREF_NULL) index = positionArgument(indexB, "indexB"); // 1-based
@@ -2782,7 +2783,7 @@ RexxInteger *RexxUnicodeServicesClass::graphemeBreak(RexxInteger *rexxCodepoint1
 RexxInteger *RexxUnicodeServicesClass::graphemeBreakBackward(RexxString *string, RexxInteger *indexB, RexxInteger *rexxCodepoint1, RexxInteger *rexxCodepoint2)
 {
     requiredArgument(string, "string");
-    requiredBaseString(string, "string");
+    string = requiredBaseString(string, "string");
 
     size_t index = positionArgument(indexB, "indexB"); // 1-based; boundary, not a byte offset
     // Since we have already decoded 2 codepoints, index cannot be length+1 or length or length-1
@@ -3558,10 +3559,9 @@ RexxInteger *RexxUnicodeServicesClass::codepointIsUpper(RexxInteger *rexxCodepoi
 
 
 // utf8proc helper
-RexxString *normalize(RexxString *string, utf8proc_option_t options)
+static inline RexxString *normalize(RexxString *string, utf8proc_option_t options)
 {
     utf8proc_uint8_t *retval;
-    string = stringArgument(string, ARG_ONE);
     const utf8proc_uint8_t *str = (const utf8proc_uint8_t *)string->getStringData();
     utf8proc_ssize_t strlength = (utf8proc_ssize_t)string->getLength();
     utf8proc_ssize_t reslength = utf8proc_map(str, strlength, &retval, options);
@@ -3583,7 +3583,7 @@ RexxString *RexxUnicodeServicesClass::utf8Transform(RexxObject **arguments, size
     // use strict arg string, casefold = .false, lump= .false, nlf = 0, normalization = 0, stripCC = .false, stripIgnorable= .false, stripMark = .false, stripNA = .false
 
     if (argCount < 1 ) missingArgument("string");
-    RexxString *string = stringArgument(arguments[0], "string");
+    RexxString *string = requiredBaseString(arguments[0], "string");
 
     RexxObject *rexxCasefold =          TheFalseObject; // default value = .false
     RexxObject *rexxLump =              TheFalseObject; // default value = .false
@@ -3727,7 +3727,7 @@ RexxObject *RexxUnicodeServicesClass::sizeofUnicodeWidthTables()
 RexxInteger *RexxUnicodeServicesClass::utf8StringWidth(RexxString *string, RexxInteger *indexB, RexxInteger *eastAsianContext)
 {
     requiredArgument(string, "string");
-    requiredBaseString(string, "string");
+    string = requiredBaseString(string, "string");
 
     size_t index = string->getLength() + 1;
     if (indexB != OREF_NULL) index = positionArgument(indexB, "indexB"); // 1-based; boundary, not a byte offset

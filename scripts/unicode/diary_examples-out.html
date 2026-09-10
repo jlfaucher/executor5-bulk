@@ -42,12 +42,265 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 7 Sep 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S2a84Qbc48c1c80
+</span><span style="font-weight:bold;color:green;">Input queue name: Sb39aQbc48c1d40
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
 
+
+<span style="font-weight:bold;color:blue;">-- ===============================================================================
+</span><span style="font-weight:bold;color:blue;">-- 2026 Sept 10
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">[Unicode]
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Like all other methods of .RexxUnicodeServices, utf8Transform now checks its
+</span><span style="font-weight:bold;color:blue;">first argument (string) using requiredBaseString. Consequence: it accepts only
+</span><span style="font-weight:bold;color:blue;">a string, an integer, or a number as its first argument.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Examples
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8Transform(&quot;a string&quot;)=     </span><span style="font-weight:bold;color:blue;">-- 'a string'</span>
+'a string'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8Transform(-1)=             </span><span style="font-weight:bold;color:blue;">-- -1</span>
+-1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8Transform(-1.0)=           </span><span style="font-weight:bold;color:blue;">-- -1.0</span>
+-1.0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8Transform(.array~new)=     </span><span style="font-weight:bold;color:blue;">-- Argument string class: expected String, found Array.</span>
+<span style="font-weight:bold;color:red;">Argument string class: expected String, found Array.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>
+
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">Fix support for RexxInteger arguments: they must be converted to RexxString.
+</span><span style="font-weight:bold;color:blue;">All .RexxUnicodeServices methods taking a string are affected.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Examples
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2U(-1)=           </span><span style="font-weight:bold;color:blue;">-- 'U+002D U+0031' (was crashing)</span>
+'U+002D U+0031'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2U(0)=            </span><span style="font-weight:bold;color:blue;">-- 'U+0030' (was '')</span>
+'U+0030'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2U(1)=            </span><span style="font-weight:bold;color:blue;">-- 'U+0031' (was 'U+0001')</span>
+'U+0031'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2U(&quot;1&quot;)=          </span><span style="font-weight:bold;color:blue;">-- 'U+0031'</span>
+'U+0031'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2U(1+0)=          </span><span style="font-weight:bold;color:blue;">-- 'U+0031' (was 'U+0001')</span>
+'U+0031'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2U(1.0)=          </span><span style="font-weight:bold;color:blue;">-- 'U+0031 U+002E U+0030'</span>
+'U+0031 U+002E U+0030'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2U(10)=           </span><span style="font-weight:bold;color:blue;">-- 'U+0031 U+0030' (was 'U+0001 U+0000 U+0000 U+0000 U+0050 U+0000 U+0000 U+0000 U+0000 U+0000')</span>
+'U+0031 U+0030'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2U(&quot;10&quot;)=         </span><span style="font-weight:bold;color:blue;">-- 'U+0031 U+0030'</span>
+'U+0031 U+0030'
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2X(-1)=           </span><span style="font-weight:bold;color:blue;">-- '2D 31' (was crashing)</span>
+'2D 31'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2X(0)=            </span><span style="font-weight:bold;color:blue;">--  30 (was '')</span>
+ 30
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2X(1)=            </span><span style="font-weight:bold;color:blue;">--  31 (was 01)</span>
+ 31
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~C2X(10)=           </span><span style="font-weight:bold;color:blue;">-- '31 30' (was '01 00 00 00 50 00 00 00 00 00')</span>
+'31 30'
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2C(-1)=           </span><span style="font-weight:bold;color:blue;">-- Expected U+ or u+ followed by 4..6 hex digits; found &quot;-1&quot; at position 1. (was ...; found &quot;&quot; at position 1.)</span>
+<span style="font-weight:bold;color:red;">Expected U+ or u+ followed by 4..6 hex digits; found &quot;-1&quot; at position 1.
+</span><span style="font-weight:bold;color:red;">Error code= 23.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2C(0)=            </span><span style="font-weight:bold;color:blue;">-- Expected U+ or u+ followed by 4..6 hex digits; found &quot;0&quot; at position 1. (was '')</span>
+<span style="font-weight:bold;color:red;">Expected U+ or u+ followed by 4..6 hex digits; found &quot;0&quot; at position 1.
+</span><span style="font-weight:bold;color:red;">Error code= 23.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2C(1)=            </span><span style="font-weight:bold;color:blue;">-- Expected U+ or u+ followed by 4..6 hex digits; found &quot;1&quot; at position 1. (was ...; found &quot;&quot; at position 1.)</span>
+<span style="font-weight:bold;color:red;">Expected U+ or u+ followed by 4..6 hex digits; found &quot;1&quot; at position 1.
+</span><span style="font-weight:bold;color:red;">Error code= 23.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2C(10)=           </span><span style="font-weight:bold;color:blue;">-- Expected U+ or u+ followed by 4..6 hex digits; found &quot;10&quot; at position 1. (was ...; found &quot;&quot; at position 1.)</span>
+<span style="font-weight:bold;color:red;">Expected U+ or u+ followed by 4..6 hex digits; found &quot;10&quot; at position 1.
+</span><span style="font-weight:bold;color:red;">Error code= 23.900
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(-1)=           </span><span style="font-weight:bold;color:blue;">-- -1</span>
+-1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(-1, , .true)=  </span><span style="font-weight:bold;color:blue;">-- Expected U+ or u+ followed by 4..6 hex digits; found &quot;-1&quot;. (was ...; found &quot;&quot;.)</span>
+<span style="font-weight:bold;color:red;">Expected U+ or u+ followed by 4..6 hex digits; found &quot;-1&quot;.
+</span><span style="font-weight:bold;color:red;">Error code= 23.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(0)=            </span><span style="font-weight:bold;color:blue;">-- -1 (was Invalid position argument specified; found &quot;1&quot;.)</span>
+-1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(1)=            </span><span style="font-weight:bold;color:blue;">-- -1</span>
+-1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(1, , .true)=   </span><span style="font-weight:bold;color:blue;">-- Expected U+ or u+ followed by 4..6 hex digits; found &quot;1&quot;. (was ...; found &quot;&quot;.)</span>
+<span style="font-weight:bold;color:red;">Expected U+ or u+ followed by 4..6 hex digits; found &quot;1&quot;.
+</span><span style="font-weight:bold;color:red;">Error code= 23.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(10)=           </span><span style="font-weight:bold;color:blue;">-- -1</span>
+-1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(10, 9)=        </span><span style="font-weight:bold;color:blue;">-- Invalid position argument specified; found &quot;9&quot;. (was -1)</span>
+<span style="font-weight:bold;color:red;">Invalid position argument specified; found &quot;9&quot;.
+</span><span style="font-weight:bold;color:red;">Error code= 93.924
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(10, 9, .true)= </span><span style="font-weight:bold;color:blue;">-- Invalid position argument specified; found &quot;9&quot; (was Expected U+ or u+ followed by 4..6 hex digits; found &quot;&quot;.)</span>
+<span style="font-weight:bold;color:red;">Invalid position argument specified; found &quot;9&quot;.
+</span><span style="font-weight:bold;color:red;">Error code= 93.924
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~U2D(10, 11)=       </span><span style="font-weight:bold;color:blue;">-- Invalid position argument specified; found &quot;11&quot;.</span>
+<span style="font-weight:bold;color:red;">Invalid position argument specified; found &quot;11&quot;.
+</span><span style="font-weight:bold;color:red;">Error code= 93.924
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8DecodeCodepoint(-1, , &gt;size)= ; size=      </span><span style="font-weight:bold;color:blue;">--  45 ; 1 (was Invalid position argument specified; found &quot;1&quot;.)</span>
+ 45
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8DecodeCodepoint(0, , &gt;size)= ; size=       </span><span style="font-weight:bold;color:blue;">--  48 ; 1 (was -1 ; 0)</span>
+ 48
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8DecodeCodepoint(1, , &gt;size)= ; size=       </span><span style="font-weight:bold;color:blue;">--  49 ; 1 (was  1 ; 1)</span>
+ 49
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8DecodeCodepoint(10, , &gt;size)= ; size=      </span><span style="font-weight:bold;color:blue;">--  49 ; 1 (was  1 ; 1)</span>
+ 49
+ 1
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(-1)=  </span><span style="font-weight:bold;color:blue;">-- -1 (was crashing)</span>
+-1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(0)=   </span><span style="font-weight:bold;color:blue;">--  0 (was '')</span>
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(1)=   </span><span style="font-weight:bold;color:blue;">--  1 (was '\u0001')</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringEscape(10)=  </span><span style="font-weight:bold;color:blue;">--  10 (was '\u0001\u0000\u0000\u0000P\u0000\u0000\u0000\u0000\u0000')</span>
+ 10
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(-1, &gt;g, &gt;c, &gt;e)= ; g= ; c= ; e=     </span><span style="font-weight:bold;color:blue;">--  0 ; 2 ; 2 ; 0 (was crashing)</span>
+ 0
+ 2
+ 2
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(0, &gt;g, &gt;c, &gt;e)= ; g= ; c= ; e=      </span><span style="font-weight:bold;color:blue;">--  0 ; 1 ; 1 ; 0 (was 0 ; 0 ; 0 ; 0)</span>
+ 0
+ 1
+ 1
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(1, &gt;g, &gt;c, &gt;e)= ; g= ; c= ; e=      </span><span style="font-weight:bold;color:blue;">--  0 ; 1 ; 1 ; 0 (was 0 ; 1 ; 1 ; 0)</span>
+ 0
+ 1
+ 1
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringInfo(10, &gt;g, &gt;c, &gt;e)= ; g= ; c= ; e=     </span><span style="font-weight:bold;color:blue;">--  0 ; 2 ; 2 ; 0 (was 0 ; 10 ; 10 ; 0)</span>
+ 0
+ 2
+ 2
+ 0
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(-1)=    </span><span style="font-weight:bold;color:blue;">-- -1 (was crashing)</span>
+-1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(0)=     </span><span style="font-weight:bold;color:blue;">--  0</span>
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(1)=     </span><span style="font-weight:bold;color:blue;">--  1</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(10)=    </span><span style="font-weight:bold;color:blue;">--  10</span>
+ 10
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringWidth(-1)=   </span><span style="font-weight:bold;color:blue;">--  2 (was 0)</span>
+ 2
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringWidth(0)=    </span><span style="font-weight:bold;color:blue;">--  1 (was 0)</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringWidth(1)=    </span><span style="font-weight:bold;color:blue;">--  1</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringWidth(10)=   </span><span style="font-weight:bold;color:blue;">--  2 (was 10)</span>
+ 2
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8Transform(-1)=     </span><span style="font-weight:bold;color:blue;">-- -1</span>
+-1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8Transform(0)=      </span><span style="font-weight:bold;color:blue;">--  0</span>
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8Transform(1)=      </span><span style="font-weight:bold;color:blue;">--  1</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8Transform(10)=     </span><span style="font-weight:bold;color:blue;">--  10</span>
+ 10
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~h_UAX44_LM2(-1)=           </span><span style="font-weight:bold;color:blue;">-- -1</span>
+-1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~h_UAX44_LM2(0)=            </span><span style="font-weight:bold;color:blue;">--  0</span>
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~h_UAX44_LM2(1)=            </span><span style="font-weight:bold;color:blue;">--  1</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~h_UAX44_LM2(10)=           </span><span style="font-weight:bold;color:blue;">--  10</span>
+ 10
+
+<span style="font-weight:bold;color:blue;">-- Forwards to .RexxUnicodeServices~utf8StringEscape
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~StringEscape(-1)=          </span><span style="font-weight:bold;color:blue;">-- -1 (was crashing)</span>
+-1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~StringEscape(0)=           </span><span style="font-weight:bold;color:blue;">--  0 (was '')</span>
+ 0
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~StringEscape(1)=           </span><span style="font-weight:bold;color:blue;">--  1 (was '\u0001')</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~StringEscape(10)=          </span><span style="font-weight:bold;color:blue;">--  10 (was '\u0001\u0000\u0000\u0000P\u0000\u0000\u0000\u0000\u0000')</span>
+ 10
+
+<span style="font-weight:bold;color:blue;">-- Forwards to .RexxUnicodeServices~utf8StringInfo
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(-1)=            </span><span style="font-weight:bold;color:blue;">-- '(ASCII, 2 graphemes, 2 codepoints, 2 bytes, 0 error)' (was crashing)</span>
+'(ASCII, 2 graphemes, 2 codepoints, 2 bytes, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(0)=             </span><span style="font-weight:bold;color:blue;">-- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)' (was '(ASCII, 0 grapheme, 0 codepoint, 1 byte, 0 error)')</span>
+'(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(1)=             </span><span style="font-weight:bold;color:blue;">-- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'</span>
+'(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(10)=            </span><span style="font-weight:bold;color:blue;">-- '(ASCII, 2 graphemes, 2 codepoints, 2 bytes, 0 error)' (was '(ASCII, 10 graphemes, 10 codepoints, 2 bytes, 0 error)')</span>
+'(ASCII, 2 graphemes, 2 codepoints, 2 bytes, 0 error)'
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringIsASCII(-1)=         </span><span style="font-weight:bold;color:blue;">--  1</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringIsASCII(0)=          </span><span style="font-weight:bold;color:blue;">--  1</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringIsASCII(1)=          </span><span style="font-weight:bold;color:blue;">--  1</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringIsASCII(10)=         </span><span style="font-weight:bold;color:blue;">--  1</span>
+ 1
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCodepointSupplier~new(-1)== </span><span style="font-weight:bold;color:blue;">-- (was Invalid position argument specified; found &quot;1&quot;.)</span>
+a RexxUnicodeCodepointSupplier 
+ 1 :  45
+ 2 :  49
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     1 :  45
+</span><span style="font-weight:bold;color:blue;">     2 :  49
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCodepointSupplier~new(0)==  </span><span style="font-weight:bold;color:blue;">-- (was a RexxUnicodeCodepointSupplier (nothing available))</span>
+a RexxUnicodeCodepointSupplier 
+ 1 :  48
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     1 :  48
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCodepointSupplier~new(1)==</span>
+a RexxUnicodeCodepointSupplier 
+ 1 :  49
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     1 :  49
+</span><span style="font-weight:bold;color:blue;">    /* was:
+</span><span style="font-weight:bold;color:blue;">        a RexxUnicodeCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">         1 :  1
+</span><span style="font-weight:bold;color:blue;">    */
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCodepointSupplier~new(10)==</span>
+a RexxUnicodeCodepointSupplier 
+ 1 :  49
+ 2 :  48
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a RexxUnicodeCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">     1 :  49
+</span><span style="font-weight:bold;color:blue;">     2 :  48
+</span><span style="font-weight:bold;color:blue;">    /* was:
+</span><span style="font-weight:bold;color:blue;">        a RexxUnicodeCodepointSupplier
+</span><span style="font-weight:bold;color:blue;">         1  :  1
+</span><span style="font-weight:bold;color:blue;">         2  :  0
+</span><span style="font-weight:bold;color:blue;">         3  :  0
+</span><span style="font-weight:bold;color:blue;">         4  :  0
+</span><span style="font-weight:bold;color:blue;">         5  :  80
+</span><span style="font-weight:bold;color:blue;">         6  :  0
+</span><span style="font-weight:bold;color:blue;">         7  :  0
+</span><span style="font-weight:bold;color:blue;">         8  :  0
+</span><span style="font-weight:bold;color:blue;">         9  :  0
+</span><span style="font-weight:bold;color:blue;">         10 :  0
+</span><span style="font-weight:bold;color:blue;">    */
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
 
 <span style="font-weight:bold;color:blue;">-- ===============================================================================
 </span><span style="font-weight:bold;color:blue;">-- 2026 Sept 09
@@ -70,15 +323,15 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
 </span><span style="font-weight:bold;color:blue;">    .RexxUnicode~utf8StringUnescape(&quot;\N{Father Christmas}&quot;)=            -- '🎅'
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    </span><span style="font-weight:bold;color:blue;">-- After update</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicodeServices~utf8StringUnescape(&quot;\U0001F385&quot;)=              </span><span style="font-weight:bold;color:blue;">-- '🎅'</span>
+<span style="font-weight:bold;color:blue;">-- After update
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;\U0001F385&quot;)=              </span><span style="font-weight:bold;color:blue;">-- '🎅'</span>
 '🎅'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~utf8StringUnescape(&quot;\U0001F385&quot;)=                      </span><span style="font-weight:bold;color:blue;">-- '🎅'</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\U0001F385&quot;)=                      </span><span style="font-weight:bold;color:blue;">-- '🎅'</span>
 '🎅'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicodeServices~utf8StringUnescape(&quot;\N{Father Christmas}&quot;)=    </span><span style="font-weight:bold;color:blue;">-- Searching for a character by name is not supported by RexxUnicodeServices. Use RexxUnicode instead.</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeServices~utf8StringUnescape(&quot;\N{Father Christmas}&quot;)=    </span><span style="font-weight:bold;color:blue;">-- Searching for a character by name is not supported by RexxUnicodeServices. Use RexxUnicode instead.</span>
 <span style="font-weight:bold;color:red;">Searching for a character by name is not supported by RexxUnicodeServices. Use RexxUnicode instead.
 </span><span style="font-weight:bold;color:red;">Error code= 98.900
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">    .RexxUnicode~utf8StringUnescape(&quot;\N{Father Christmas}&quot;)=            </span><span style="font-weight:bold;color:blue;">-- '🎅'</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~utf8StringUnescape(&quot;\N{Father Christmas}&quot;)=            </span><span style="font-weight:bold;color:blue;">-- '🎅'</span>
 '🎅'
 
 
