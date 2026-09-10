@@ -2176,6 +2176,8 @@ Inherited methods:
 
 Inherited methods:
 
+- [`C2U`](#RexxUnicodeServices_C2U)
+- [`C2X`](#RexxUnicodeServices_C2X)
 - [`codepointAsciiPrintableString`](#RexxUnicodeServices_codepointAsciiPrintableString)
 - [`codepointBidiClass`](#RexxUnicodeServices_codepointBidiClass)
 - [`codepointBidiMirrored`](#RexxUnicodeServices_codepointBidiMirrored)
@@ -2196,9 +2198,12 @@ Inherited methods:
 - [`codepointToUpper`](#RexxUnicodeServices_codepointToUpper)
 - [`codepointUnicodeEscapeNotation`](#RexxUnicodeServices_codepointUnicodeEscapeNotation)
 - [`codepointUtf8PrintableString`](#RexxUnicodeServices_codepointUtf8PrintableString)
+- [`D2U`](#RexxUnicodeServices_D2U)
 - [`graphemeBreak`](#RexxUnicodeServices_graphemeBreak)
 - [`graphemeBreakBackward`](#RexxUnicodeServices_graphemeBreakBackward)
 - [`systemIsLittleEndian`](#RexxUnicodeServices_systemIsLittleEndian)
+- [`U2C`](#RexxUnicodeServices_U2C)
+- [`U2D`](#RexxUnicodeServices_U2D)
 - [`unicodeVersion`](#RexxUnicodeServices_unicodeVersion)
 - [`utf8DecodeCodepoint`](#RexxUnicodeServices_utf8DecodeCodepoint)
 - [`utf8DecodePreviousCodepoint`](#RexxUnicodeServices_utf8DecodePreviousCodepoint)
