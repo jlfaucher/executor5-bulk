@@ -1594,28 +1594,32 @@ struct NoCodepointAction
 
 
 /**
- * Performs a full scan of a UTF-8 string, optionally invoking `action`
+ * Performs a full scan of a UTF-8 string, optionally invoking `codepointAction`
  * once for every codepoint scanned (including invalid byte sequences).
  *
  * @param str                   (in)    A UTF-8 string.
  * @param length                (in)    The string length in bytes
  * @param stopAtFirstError      (in)    true if must stop at first error.
  *                                      The default value is false.
- * @param action                (in)    Called once per scanned item, with
+ * @param codepointAction       (in)    Called once per scanned item, with
  *                                      the raw byte sequence for that codepoint
  *                                      (valid or not), and the decoded value
  *                                      (-1 when error is true).
  *                                      The default value is a no-op (zero cost).
  *
- * `action` is a `Callable` with signature void operator()(
+ * `codepointAction` is a `Callable` with signature void operator()(
  *     bool error,
  *     const utf8proc_uint8_t *bytes, utf8proc_ssize_t size,
  *     utf8proc_int32_t codepoint) const
  *
  * if error is true then codepoint is the replacement character U+FFFD
  */
-template <typename Action = NoCodepointAction>
-static inline void utf8StringCodepointIterator(const utf8proc_uint8_t *str, utf8proc_ssize_t length, bool stopAtFirstError, Action action = Action())
+template <typename CodepointAction = NoCodepointAction>
+static inline void utf8StringCodepointIterator(
+    const utf8proc_uint8_t *str,
+    utf8proc_ssize_t length,
+    bool stopAtFirstError,
+    CodepointAction codepointAction = CodepointAction())
 {
     for (;;)
     {
@@ -1626,13 +1630,13 @@ static inline void utf8StringCodepointIterator(const utf8proc_uint8_t *str, utf8
         {
             // Here, codepoint == -1
             sizeB = -sizeB;
-            action(true, str, sizeB, 0xFFFD); // replacement character
+            codepointAction(true, str, sizeB, 0xFFFD); // replacement character
 
             if (stopAtFirstError) break;
         }
         else
         {
-            action(false, str, sizeB, codepoint);
+            codepointAction(false, str, sizeB, codepoint);
         }
         str += sizeB;
         length -= sizeB;
@@ -1643,35 +1647,54 @@ static inline void utf8StringCodepointIterator(const utf8proc_uint8_t *str, utf8
 struct NoGraphemeAction
 {
     inline void operator()
-    (bool error, const utf8proc_uint8_t * bytes, utf8proc_ssize_t size, size_t gCodepointCount) const {}
+    (bool error, const utf8proc_uint8_t * bytes, utf8proc_ssize_t size) const {}
 };
 
 
 /**
- * Performs a full scan of a UTF-8 string, optionally invoking `action`
- * once for every complete grapheme, and once for every isolated invalid
- * byte sequence (an error always closes any pending grapheme and forms
- * its own single-item unit, mirroring the counting logic).
+ * Performs a full scan of a UTF-8 string, optionally invoking:
+ * - `graphemeAction` once for every complete grapheme, and once for every isolated
+ *   invalid byte sequence (an error always closes any pending grapheme and forms
+ *   its own single-item unit, mirroring the counting logic).
+ * - `codepointAction` once for every valid codepoint, and once for every isolated
+ *   invalid byte sequence.
  *
  * @param str                   (in)    A UTF-8 string.
  * @param length                (in)    The string length in bytes
  * @param stopAtFirstError      (in)    true if must stop at first error.
  *                                      The default value is false.
- * @param action                (in)    Called once per complete grapheme
- *                                      (error == false), or once per
+ * @param graphemeAction        (in)    Called once per complete grapheme
+ *                                      (error == false), and once per
+ *                                      isolated invalid byte sequence
+ *                                      (error == true).
+ *                                      The default value is a no-op (zero cost).
+ * @param codepointAction       (in)    Called once per valid codepoint
+ *                                      (error == false), and once per
  *                                      isolated invalid byte sequence
  *                                      (error == true).
  *                                      The default value is a no-op (zero cost).
  *
- * `action` is a `Callable` with signature void operator()(
+ * `graphemeAction` is a `Callable` with signature void operator()(
  *     bool error,
- *     const utf8proc_uint8_t *bytes, utf8proc_ssize_t size, size_t gCodepointCount) const
+ *     const utf8proc_uint8_t *bytes, utf8proc_ssize_t size) const
+ * `codepointAction` is a `Callable` with signature void operator()(
+ *     bool error,
+ *     const utf8proc_uint8_t *bytes, utf8proc_ssize_t size,
+ *     utf8proc_int32_t codepoint) const
  */
-template <typename Action = NoGraphemeAction>
-static inline const void utf8StringGraphemeIterator(const utf8proc_uint8_t *str, utf8proc_ssize_t length, bool stopAtFirstError, Action action = Action())
+template
+<
+    typename GraphemeAction = NoGraphemeAction,
+    typename CodepointAction = NoCodepointAction
+>
+static inline const void utf8StringGraphemeIterator(
+    const utf8proc_uint8_t *str,
+    utf8proc_ssize_t length,
+    bool stopAtFirstError,
+    GraphemeAction graphemeAction = GraphemeAction(),
+    CodepointAction codepointAction = CodepointAction()
+)
 {
-    size_t gCodepointCount = 0; // count of codepoints in the current grapheme
-
     utf8proc_int32_t previousCodepoint = -1;
     const utf8proc_property_t *previousCodepointProperty = NULL;
 
@@ -1693,14 +1716,15 @@ static inline const void utf8StringGraphemeIterator(const utf8proc_uint8_t *str,
             codepointProperty = NULL;
 
             // Close whatever grapheme was pending...
-            if (str != gStart) action(false, gStart, str - gStart, gCodepointCount);
+            if (str != gStart) graphemeAction(false, gStart, str - gStart);
+            gStart = str; // to indicate that this pending grapheme has been closed
 
-            gCodepointCount = 0; // reset, new grapheme
             graphemeBreakState = 0;
             sizeB = -sizeB;
 
             // ...then the error itself is always an isolated, single-item grapheme: flush it immediately.
-            action(true, str, sizeB, 1); // 1 codepoint in error
+            codepointAction(true, str, sizeB, 0xFFFD); // replacement character
+            graphemeAction(true, str, sizeB);
 
             if (stopAtFirstError) break;
 
@@ -1708,6 +1732,8 @@ static inline const void utf8StringGraphemeIterator(const utf8proc_uint8_t *str,
         }
         else
         {
+            codepointAction(false, str, sizeB, codepoint);
+
             // optim 2: if codepoint == previousCodepoint then no need to retrieve the property record of codepoint.
             if (codepoint != previousCodepoint) codepointProperty = utf8proc_get_property(codepoint); // must get it now, will be assigned to previousCodepointProperty
 
@@ -1737,11 +1763,9 @@ static inline const void utf8StringGraphemeIterator(const utf8proc_uint8_t *str,
             if (startsNewGrapheme && str != gStart)
             {
                 // The grapheme that was accumulating in [gStart, str) just closed, because `str` starts a new one.
-                action(false, gStart, str - gStart, gCodepointCount);
+                graphemeAction(false, gStart, str - gStart);
                 gStart = str;
-                gCodepointCount = 0;
             }
-            gCodepointCount += 1; // reset, include the last codepoint
         }
         previousCodepoint = codepoint;
         previousCodepointProperty = codepointProperty;
@@ -1750,7 +1774,7 @@ static inline const void utf8StringGraphemeIterator(const utf8proc_uint8_t *str,
     }
 
     // Flush the last pending grapheme, if any.
-    if (gCodepointCount != 0 && str != gStart) action(false, gStart, str - gStart, gCodepointCount);
+    if (str != gStart) graphemeAction(false, gStart, str - gStart);
 }
 
 
@@ -2111,7 +2135,7 @@ RexxObject *RexxUnicodeServicesClass::utf8StringEscape(RexxString *string, RexxS
         case 'g':
         case 'G':
             {
-                auto graphemeAction = [&](bool error, const utf8proc_uint8_t *str, utf8proc_ssize_t sizeB, size_t /*codepointCount*/)
+                auto graphemeAction = [&](bool error, const utf8proc_uint8_t *str, utf8proc_ssize_t sizeB)
                 {
                     if (error)
                     {
@@ -2204,25 +2228,31 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
     else
     {
         // Slower path, must count graphemes
-        auto graphemeAction = [&](bool error, const utf8proc_uint8_t *str, utf8proc_ssize_t sizeB, size_t gCodepointCount)
+        auto graphemeAction = [&](bool error, const utf8proc_uint8_t *str, utf8proc_ssize_t sizeB)
+        {
+            if (error)
+            {
+                if (!stopAtFirstError) graphemeCount++;
+            }
+            else
+            {
+                graphemeCount++;
+            }
+        };
+        auto codepointAction = [&](bool error, const utf8proc_uint8_t *str, utf8proc_ssize_t sizeB, utf8proc_int32_t codepoint)
         {
             if (error)
             {
                 errorCount++;
-                if (!stopAtFirstError)
-                {
-                    codepointCount++;
-                    graphemeCount++;
-                }
                 if (firstInvalidByteSequence == NULL) firstInvalidByteSequence = str;
+                if (!stopAtFirstError) codepointCount++;
             }
             else
             {
-                codepointCount += gCodepointCount;
-                graphemeCount++;
+                codepointCount++;
             }
         };
-        utf8StringGraphemeIterator(str, remainingLength, stopAtFirstError, graphemeAction);
+        utf8StringGraphemeIterator(str, remainingLength, stopAtFirstError, graphemeAction, codepointAction);
     }
 
     if (refGraphemeCount != OREF_NULL)

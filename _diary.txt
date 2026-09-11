@@ -22,6 +22,26 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 Sept 11
+
+[Unicode]
+
+Add a generic parameter codepointAction to utf8StringGraphemeIterator.
+This is in preparation for the future native StringIndexer class.
+Impacted methods:
+- utf8StringEscape
+- utf8StringInfo
+
+Search for "2026.09.11" to see the benchmark durations:
+- utf8StringEscape with an empty NoCodepointAction: 1 to 1.04 times slower (negligible)
+- utf8StringInfo with an empty NoCodepointAction: 1.04 to 1.10 times slower (strange or noise? should not be impacted)
+- utf8StringInfo with a codepoint action counting the codepoints: 1.01 to 1.04 times slower (strange or noise? a real action is faster than an empty action)
+Conclusion:
+A codepoint action can be used to store the codepoint indexes.
+The performance impact of using a codepoint action is negligible.
+
+
+===============================================================================
 2026 Sept 10
 
 [Unicode]
@@ -652,6 +672,12 @@ Benchmark
     -- ratio = 1.53 times faster
     -- 2026.09.01 Generic iterators with an empty action
     .RexxUnicodeServices~utf8StringInfo(string, , >c, >e)   -- Duration: 0.028806, 0.021499, 0.027610, 0.021564, 0.025835. Average = 0.0250628
+    -- 2026.09.11a After adding a generic parameter codepointAction to utf8StringGraphemeIterator. Testing with the default NoCodepointAction.
+    .RexxUnicodeServices~utf8StringInfo(string, , >c, >e)   -- Duration: 0.022689, 0.030630, 0.028002, 0.029113, 0.027863. Average = 0.0276594
+    -- ratio with 2026.09.01 = 1.10 times slower
+    -- 2026.09.11b After adding a generic parameter codepointAction to utf8StringGraphemeIterator. Testing with a codepoint action counting the codepoints.
+    .RexxUnicodeServices~utf8StringInfo(string, , >c, >e)   -- Duration: 0.028384, 0.025087, 0.026429, 0.024433, 0.022814. Average = 0.0254294
+    -- ratio with 2026.09.01 = 1.01 times slower
 
     -- 300 millions bytes, 100 millions codepoints, 2 graphemes
     ZWJ = .RexxUnicode~U2C("U+200D")
@@ -672,6 +698,13 @@ Benchmark
     -- ratio = 1.21 times faster
     -- 2026.09.01 Generic iterators with an empty action
     .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, , >c, >e)      -- Duration: 0.674952, 0.725734, 0.714724, 0.671916, 0.719850. Average = 0.7014352
+    -- ratio = 1.04 times faster
+    -- 2026.09.11a After adding a generic parameter codepointAction to utf8StringGraphemeIterator. Testing with the default NoCodepointAction.
+    .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, , >c, >e)      -- Duration: 0.774907, 0.777316, 0.777072, 0.778320, 0.711846. Average = 0.7638922
+    -- ratio with 2026.09.01 = 1.09 times slower
+    -- 2026.09.11b After adding a generic parameter codepointAction to utf8StringGraphemeIterator. Testing with a codepoint action counting the codepoints.
+    .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, , >c, >e)      -- Duration: 0.731282, 0.697748, 0.735451, 0.741820, 0.722943. Average = 0.7258488
+    -- ratio with 2026.09.01 = 1.03 times slower
 
     -- 100 millions bytes, 100 millions codepoints, 100 millions graphemes
     KA = .RexxUnicode~U2C("U+0915")
@@ -685,6 +718,13 @@ Benchmark
     -- ratio = 1.25 times faster
     -- 2026.09.01 Generic iterators with an empty action
     .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, , >c, >e)      -- Duration: 0.343011, 0.351241, 0.369860, 0.341259, 0.341556. Average = 0.3493854
+    -- ratio = 1.05 times slower
+    -- 2026.09.11a After adding a generic parameter codepointAction to utf8StringGraphemeIterator. Testing with the default NoCodepointAction.
+    .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, , >c, >e)      -- Duration: 0.362366, 0.364239, 0.367149, 0.402762, 0.367521. Average = 0.3728074
+    -- ratio with 2026.09.01 = 1.07 times slower
+    -- 2026.09.11b After adding a generic parameter codepointAction to utf8StringGraphemeIterator. Testing with a codepoint action counting the codepoints.
+    .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, , >c, >e)      -- Duration: 0.362930, 0.354398, 0.379769, 0.356198, 0.329738. Average = 0.3566066
+    -- ratio with 2026.09.01 = 1.02 times slower
 
 Conclusion:
 Declaring the helpers `static inline` has a real performance benefit.
@@ -1143,15 +1183,18 @@ Benchmark
     .RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.082261, 0.087612, 0.077739, 0.087773, 0.084461. Average = 0.0839692
     -- ratio = 62.54
     -- optim 2
-    .RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.06872, 0.073200, 0.069776, 0.080893, 0.076436. Average = 0.073805
+    .RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.06872, 0.073200, 0.069776, 0.080893, 0.076436. Average = 0.073805 (optim 2 retained)
     -- ratio = 71.16
     -- optim 3
-    .RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.089076, 0.068300, 0.071087, 0.085485, 0.084304. Average = 0.0796504
+    .RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.089076, 0.068300, 0.071087, 0.085485, 0.084304. Average = 0.0796504  (optim 3 not retained)
     -- ratio = 65.93
     -- 2026.09.07 After modifying the implementation to update the counters using a generic action
     .RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.073776, 0.073188, 0.086235, 0.076729, 0.073568. Average = 0.0766992
     -- Slight performance degradation: ratio = 1.039
     -- neglible? no! 16m 40s -> 17m 32s
+    -- 2026.09.11 After adding a generic parameter codepointAction to utf8StringGraphemeIterator. Testing with the default NoCodepointAction.
+    .RexxUnicodeServices~utf8StringInfo(string, >g, >c, >e)     -- Duration: 0.072535, 0.078037, 0.075811, 0.065559, 0.070532. Average = 0.0724948
+    -- No performance degradation
 
     -- 300 millions bytes, 100 millions codepoints, 2 graphemes
     ZWJ = .RexxUnicode~U2C("U+200D")
@@ -1165,15 +1208,18 @@ Benchmark
     .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.302490, 1.101131, 1.264783, 1.243771, 1.119017. Average = 1.2062384
     -- ratio = 38.78
     -- optim 2
-    .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.045596, 1.028079, 1.094758, 1.114948, 1.039706. Average = 1.0646174
+    .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.045596, 1.028079, 1.094758, 1.114948, 1.039706. Average = 1.0646174 (optim 2 retained)
     -- ratio = 43.94
     -- optim 3
-    .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.291277, 1.117111, 1.203934, 1.146306, 1.108294. Average = 1.1733844
+    .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.291277, 1.117111, 1.203934, 1.146306, 1.108294. Average = 1.1733844 (optim 3 not retained)
     -- ratio = 39.87
     -- 2026.09.07 After modifying the implementation to update the counters using a generic action
     .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.128673, 1.086685, 1.134700, 1.121402, 1.079862. Average = 1.1102644
     -- Slight performance degradation: ratio = 1.043 times slower
     -- negligible? no! 16m 40s -> 17m 38s
+    -- 2026.09.11 After adding a generic parameter codepointAction to utf8StringGraphemeIterator. Testing with the default NoCodepointAction.
+    .RexxUnicodeServices~utf8StringInfo(ZWJ~copies(100000000) || KA, >g, >c, >e)    -- Duration: 1.135483, 1.226222, 1.259563, 1.097862, 1.076676. Average = 1.1591612
+    -- Slight performance degradation: ratio = 1.04 times slower, but questionable. The durations are not homogeneous.
 
     -- 100 millions bytes, 100 millions codepoints, 100 millions graphemes
     KA = .RexxUnicode~U2C("U+0915")
@@ -1186,18 +1232,21 @@ Benchmark
     .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.937448, 0.970168, 0.877471, 0.892368, 0.853769. Average = 0.9062448
     -- ratio = 57.76
     -- optim 2
-    .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.777837, 0.762745, 0.792339, 0.769909, 0.748684. Average = 0.7703028
+    .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.777837, 0.762745, 0.792339, 0.769909, 0.748684. Average = 0.7703028 (optim 2 retained)
     -- ratio = 67.96
     -- optim 3
-    .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.802837, 0.806789, 0.825034, 0.819688, 0.776116. Average = 0.8060928
+    .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.802837, 0.806789, 0.825034, 0.819688, 0.776116. Average = 0.8060928 (optim 3 not retained)
     -- ratio = 64.94
     -- 2026.09.07 After modifying the implementation to update the counters using a generic action
     .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.831832, 0.832001, 0.843413, 0.815228, 0.804038. Average = 0.8253024
     -- Slight performance degradation: ratio = 1.071 times slower
     -- negligible? no! 16m 40s -> 17m 85s
+    -- 2026.09.11 After adding a generic parameter codepointAction to utf8StringGraphemeIterator. Testing with the default NoCodepointAction.
+    .RexxUnicodeServices~utf8StringInfo("A"~copies(100000000) || KA, >g, >c, >e)    -- Duration: 0.846031, 0.855743, 0.848508, 0.811557, 0.805194. Average = 0.8334066
+    -- ratio = 1.01 times slower, negligible
 
 Conclusion: optim 3 reduces performance, stay with optim 2.
-2026.09.07 Updating the counters using a generic action has a slight impact on performance.
+2026.09.07 Updating the counters using a generic action has a slight performance impact.
 
 
 ===============================================================================
