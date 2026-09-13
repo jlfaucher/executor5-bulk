@@ -7,6 +7,337 @@ demo on
 
 
 -- ===============================================================================
+-- 2026 Sept 13
+
+/*
+[Unicode]
+
+Rework the start and end storage of RexxUnicodeStringIndexer:
+- Simplify the filling of the start storage by using a RexxUnicodeGraphemeSupplier
+  to fill the arrays.
+- No longer use a CircularQueue for the end storage.
+- Use arrays filled by a RexxUnicodeReverseGraphemeSupplier.
+- Adjust the size of the end storage based on the size of the start storage and
+  the number of codepoints, graphemes, and errors found during the full scan.
+  There is no longer any overlap between the end and start storage.
+
+These changes prepare for the future native StringIndexer class.
+
+
+aRexxUnicodeStringIndexer~codepointIndexC returns .nil (was 0) if the codepoint
+index cannot be found with a binary search.
+
+aRexxUnicodeStringIndexer~graphemeIndexG returns.nil (an error was raised) if
+the grapheme index cannot be found with a binary search.
+
+
+Regression tests
+*/
+
+---------------------
+-- Full start storage
+---------------------
+
+-- "F4 91"x is an invalid byte sequence
+string = "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x
+.RexxUnicode~stringInfo(string)=        -- '(not-ASCII, 12 graphemes, 16 codepoints, 32 bytes, 6 errors)'
+indexer = .RexxUnicodeStringIndexer~new(string)
+
+-- Codepoints
+indexer~codepointCount=                 -- 16
+indexer~startCodepointIndexes=          -- [-1,-2, 3, 4, 8,-9,-10, 11, 12, 16, 19, 23, 26, 30,-31,-32]
+indexer~endCodepointIndexes=            -- an Array (no shape, 0 items)
+do i = -indexer~codepointCount to indexer~codepointCount ; if i \== 0 then say i ":" indexer~codepointIndexB(i) ; end
+/*
+    -16 : -1
+    -15 : -2
+    -14 : 3
+    -13 : 4
+    -12 : 8
+    -11 : -9
+    -10 : -10
+    -9 : 11
+    -8 : 12
+    -7 : 16
+    -6 : 19
+    -5 : 23
+    -4 : 26
+    -3 : 30
+    -2 : -31
+    -1 : -32
+    1 : -1
+    2 : -2
+    3 : 3
+    4 : 4
+    5 : 8
+    6 : -9
+    7 : -10
+    8 : 11
+    9 : 12
+    10 : 16
+    11 : 19
+    12 : 23
+    13 : 26
+    14 : 30
+    15 : -31
+    16 : -32
+*/
+indexer~codepointIndexB(-(indexer~codepointCount + 1))=     -- Invalid code point index: -17 exceeds the code point count 16.
+indexer~codepointIndexB(0)=                                 -- Invalid code point index: 0.
+indexer~codepointIndexB(  indexer~codepointCount + 1)=      -- Invalid code point index: 17 exceeds the code point count 16.
+
+-- Graphemes
+indexer~graphemeCount=                  -- 12
+indexer~startGraphemeIndexes=           -- [-1,-2, 3, 4, 8,-9,-10, 11, 12, 30,-31,-32]
+indexer~endGraphemeIndexes=             -- an Array (no shape, 0 items)
+do i = -indexer~graphemeCount to indexer~graphemeCount ; if i \== 0 then say i ":" indexer~graphemeIndexB(i) indexer~graphemeIndexB(i, /*next:*/ .true) ; end
+/*
+    -12 : -1 -2
+    -11 : -2 3
+    -10 : 3 4
+    -9 : 4 8
+    -8 : 8 -9
+    -7 : -9 -10
+    -6 : -10 11
+    -5 : 11 12
+    -4 : 12 30
+    -3 : 30 -31
+    -2 : -31 -32
+    -1 : -32 33
+    1 : -1 -2
+    2 : -2 3
+    3 : 3 4
+    4 : 4 8
+    5 : 8 -9
+    6 : -9 -10
+    7 : -10 11
+    8 : 11 12
+    9 : 12 30
+    10 : 30 -31
+    11 : -31 -32
+    12 : -32 33
+*/
+indexer~graphemeIndexB(-(indexer~graphemeCount + 1))=       -- Invalid grapheme index: -13 exceeds the grapheme count 12.
+indexer~graphemeIndexB(0)=                                  -- Invalid grapheme index: 0.
+indexer~graphemeIndexB(  indexer~graphemeCount + 1)=        -- Invalid grapheme index: 13 exceeds the grapheme count 12.
+
+-- Error messages
+indexer~errorCount=                     -- 6
+indexer~startErrorMessages==
+/*
+    an Array (shape [6], 6 items)
+     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+     3 : 'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)'
+     4 : 'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)'
+     5 : 'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)'
+     6 : 'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)'
+*/
+indexer~endErrorMessages==              -- an Array (no shape, 0 items)
+
+-------------------
+-- Full end storage
+-------------------
+
+-- "F4 91"x is an invalid byte sequence
+string = "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x
+.RexxUnicode~stringInfo(string)=        -- '(not-ASCII, 12 graphemes, 16 codepoints, 32 bytes, 6 errors)'
+indexer = .RexxUnicodeStringIndexer~new(string, 0, 0, 0, 100, 100, 100)
+
+-- Codepoints
+indexer~codepointCount=                 -- 16
+indexer~startCodepointIndexes=          -- an Array (no shape, 0 items)
+indexer~endCodepointIndexes=            -- [-32,-31, 30, 26, 23, 19, 16, 12, 11,-10,-9, 8, 4, 3,-2,-1]
+do i = -indexer~codepointCount to indexer~codepointCount ; if i \== 0 then say i ":" indexer~codepointIndexB(i) ; end
+/*
+    -16 : -1
+    -15 : -2
+    -14 : 3
+    -13 : 4
+    -12 : 8
+    -11 : -9
+    -10 : -10
+    -9 : 11
+    -8 : 12
+    -7 : 16
+    -6 : 19
+    -5 : 23
+    -4 : 26
+    -3 : 30
+    -2 : -31
+    -1 : -32
+    1 : -1
+    2 : -2
+    3 : 3
+    4 : 4
+    5 : 8
+    6 : -9
+    7 : -10
+    8 : 11
+    9 : 12
+    10 : 16
+    11 : 19
+    12 : 23
+    13 : 26
+    14 : 30
+    15 : -31
+    16 : -32
+*/
+indexer~codepointIndexB(-(indexer~codepointCount + 1))=     -- Invalid code point index: -17 exceeds the code point count 16.
+indexer~codepointIndexB(0)=                                 -- Invalid code point index: 0.
+indexer~codepointIndexB(  indexer~codepointCount + 1)=      -- Invalid code point index: 17 exceeds the code point count 16.
+
+-- Graphemes
+indexer~graphemeCount=                  -- 12
+indexer~startGraphemeIndexes=           -- an Array (no shape, 0 items)
+indexer~endGraphemeIndexes=             -- [-32,-31, 30, 12, 11,-10,-9, 8, 4, 3,-2,-1]
+do i = -indexer~graphemeCount to indexer~graphemeCount ; if i \== 0 then say i ":" indexer~graphemeIndexB(i) indexer~graphemeIndexB(i, /*next:*/ .true) ; end
+/*
+    -12 : -1 -2
+    -11 : -2 3
+    -10 : 3 4
+    -9 : 4 8
+    -8 : 8 -9
+    -7 : -9 -10
+    -6 : -10 11
+    -5 : 11 12
+    -4 : 12 30
+    -3 : 30 -31
+    -2 : -31 -32
+    -1 : -32 33
+    1 : -1 -2
+    2 : -2 3
+    3 : 3 4
+    4 : 4 8
+    5 : 8 -9
+    6 : -9 -10
+    7 : -10 11
+    8 : 11 12
+    9 : 12 30
+    10 : 30 -31
+    11 : -31 -32
+    12 : -32 33
+*/
+indexer~graphemeIndexB(-(indexer~graphemeCount + 1))=       -- Invalid grapheme index: -13 exceeds the grapheme count 12.
+indexer~graphemeIndexB(0)=                                  -- Invalid grapheme index: 0.
+indexer~graphemeIndexB(  indexer~graphemeCount + 1)=        -- Invalid grapheme index: 13 exceeds the grapheme count 12.
+
+-- Error messages
+indexer~errorCount=                     -- 6
+indexer~startErrorMessages==            -- an Array (no shape, 0 items)
+indexer~endErrorMessages==
+/*
+    an Array (shape [6], 6 items)
+     1 : 'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)'
+     2 : 'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)'
+     3 : 'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)'
+     4 : 'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)'
+     5 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+     6 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+*/
+
+--------------------------------
+-- Limited start and end storage
+--------------------------------
+
+-- "F4 91"x is an invalid byte sequence
+string = "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x
+.RexxUnicode~stringInfo(string)=        -- '(not-ASCII, 12 graphemes, 16 codepoints, 32 bytes, 6 errors)'
+indexer = .RexxUnicodeStringIndexer~new(string, 4, 2, 1, 4, 2, 1)
+
+-- Codepoints
+indexer~codepointCount=                 -- 16
+indexer~startCodepointIndexes=          -- [-1,-2, 3, 4]
+indexer~endCodepointIndexes=            -- [-32,-31, 30, 26]
+do i = -indexer~codepointCount to indexer~codepointCount ; if i \== 0 then say i ":" indexer~codepointIndexB(i, /*raiseError:*/ .false) ; end
+/*
+    -16 : -1
+    -15 : -2
+    -14 : 3
+    -13 : 4
+    -12 : The NIL object
+    -11 : The NIL object
+    -10 : The NIL object
+    -9 : The NIL object
+    -8 : The NIL object
+    -7 : The NIL object
+    -6 : The NIL object
+    -5 : The NIL object
+    -4 : 26
+    -3 : 30
+    -2 : -31
+    -1 : -32
+    1 : -1
+    2 : -2
+    3 : 3
+    4 : 4
+    5 : The NIL object
+    6 : The NIL object
+    7 : The NIL object
+    8 : The NIL object
+    9 : The NIL object
+    10 : The NIL object
+    11 : The NIL object
+    12 : The NIL object
+    13 : 26
+    14 : 30
+    15 : -31
+    16 : -32
+*/
+indexer~codepointIndexB(-(indexer~codepointCount + 1))=     -- Invalid code point index: -17 exceeds the code point count 16.
+indexer~codepointIndexB(0)=                                 -- Invalid code point index: 0.
+indexer~codepointIndexB(  indexer~codepointCount + 1)=      -- Invalid code point index: 17 exceeds the code point count 16.
+
+-- Graphemes
+indexer~graphemeCount=                  -- 12
+indexer~startGraphemeIndexes=           -- [-1,-2]
+indexer~endGraphemeIndexes=             -- [-32,-31]
+do i = -indexer~graphemeCount to indexer~graphemeCount ; if i \== 0 then say i ":" indexer~graphemeIndexB(i, , /*raiseError:*/ .false) indexer~graphemeIndexB(i, /*next:*/ .true, /*raiseError:*/ .false) ; end
+/*
+    -12 : -1 -2
+    -11 : -2 3
+    -10 : 3 The NIL object
+    -9 : The NIL object The NIL object
+    -8 : The NIL object The NIL object
+    -7 : The NIL object The NIL object
+    -6 : The NIL object The NIL object
+    -5 : The NIL object The NIL object
+    -4 : The NIL object The NIL object
+    -3 : The NIL object -31
+    -2 : -31 -32
+    -1 : -32 33
+    1 : -1 -2
+    2 : -2 3
+    3 : 3 The NIL object
+    4 : The NIL object The NIL object
+    5 : The NIL object The NIL object
+    6 : The NIL object The NIL object
+    7 : The NIL object The NIL object
+    8 : The NIL object The NIL object
+    9 : The NIL object The NIL object
+    10 : The NIL object -31
+    11 : -31 -32
+    12 : -32 33
+*/
+indexer~graphemeIndexB(-(indexer~graphemeCount + 1))=       -- Invalid grapheme index: -13 exceeds the grapheme count 12.
+indexer~graphemeIndexB(0)=                                  -- Invalid grapheme index: 0.
+indexer~graphemeIndexB(  indexer~graphemeCount + 1)=        -- Invalid grapheme index: 13 exceeds the grapheme count 12.
+
+-- Error messages
+indexer~errorCount=                     -- 6
+indexer~startErrorMessages==
+/*
+    an Array (shape [1], 1 items)
+     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+*/
+indexer~endErrorMessages==
+/*
+    an Array (shape [1], 1 items)
+     1 : 'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)'
+*/
+
+
+-- ===============================================================================
 -- 2026 Sept 10
 
 /*
@@ -1870,26 +2201,26 @@ indexer~codepointIndexC(-100)=  -- Invalid byte index: -100 exceeds the byte str
 indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 1, 0, 0, 1)
 do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
 /*
-    1 : 0
-    2 : 0
-    3 : 0
-    4 : 0
-    5 : 0
-    6 : 0
-    7 : 0
-    8 : 0
-    9 : 0
-    10: 0
-    11: 0
-    12: 0
-    13: 0
-    14: 0
-    15: 0
-    16: 0
-    17: 0
-    18: 0
-    19: 0
-    20: 0
+    1 : The NIL object
+    2 : The NIL object
+    3 : The NIL object
+    4 : The NIL object
+    5 : The NIL object
+    6 : The NIL object
+    7 : The NIL object
+    8 : The NIL object
+    9 : The NIL object
+    10: The NIL object
+    11: The NIL object
+    12: The NIL object
+    13: The NIL object
+    14: The NIL object
+    15: The NIL object
+    16: The NIL object
+    17: The NIL object
+    18: The NIL object
+    19: The NIL object
+    20: The NIL object
 */
 
 
@@ -1935,7 +2266,26 @@ indexer~graphemeIndexG(-100)=   -- Invalid byte index: -100 exceeds the byte str
 indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
 do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
 /*
-    Grapheme index 2 is not stored. Binary search for byte index 1 requires unlimited storage.
+    1 : The NIL object
+    2 : The NIL object
+    3 : The NIL object
+    4 : The NIL object
+    5 : The NIL object
+    6 : The NIL object
+    7 : The NIL object
+    8 : The NIL object
+    9 : The NIL object
+    10: The NIL object
+    11: The NIL object
+    12: The NIL object
+    13: The NIL object
+    14: The NIL object
+    15: The NIL object
+    16: The NIL object
+    17: The NIL object
+    18: The NIL object
+    19: The NIL object
+    20: The NIL object
 */
 
 
@@ -2201,7 +2551,7 @@ do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~gra
 
 -- 5 codepoints, start storage limit 10, end storage limit 10
 .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~startCodepointIndexes=       -- [ 1, 2, 3, 4, 5]
-.RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~endCodepointIndexes=         -- [ 5, 4, 3, 2, 1]
+.RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~endCodepointIndexes=         -- an Array (no shape, 0 items)
 .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(-6)=       -- Invalid code point index: -6 exceeds the code point count 5.
 .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(-5)=       -- 97
 .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(-4)=       -- 98
@@ -2326,7 +2676,7 @@ do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~gra
 
 -- 5 graphemes, start storage limit 10, end storage limit 10
 .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~startGraphemeIndexes=  -- [ 1, 2, 3, 4, 5]
-.RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~endGraphemeIndexes=    -- [ 5, 4, 3, 2, 1]
+.RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~endGraphemeIndexes=    -- an Array (no shape, 0 items)
 .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(-6)=  -- Invalid grapheme index: -6 exceeds the grapheme count 5.
 .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(-5)=  -- 'a'
 .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(-4)=  -- 'b'

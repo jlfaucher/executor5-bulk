@@ -42,12 +42,591 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 7 Sep 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: Sb39aQbc48c1d40
+</span><span style="font-weight:bold;color:green;">Input queue name: S139c9Qa19000540
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">tutor off</span>
 
+
+<span style="font-weight:bold;color:blue;">-- ===============================================================================
+</span><span style="font-weight:bold;color:blue;">-- 2026 Sept 13
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">[Unicode]
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Rework the start and end storage of RexxUnicodeStringIndexer:
+</span><span style="font-weight:bold;color:blue;">- Simplify the filling of the start storage by using a RexxUnicodeGraphemeSupplier
+</span><span style="font-weight:bold;color:blue;">  to fill the arrays.
+</span><span style="font-weight:bold;color:blue;">- No longer use a CircularQueue for the end storage.
+</span><span style="font-weight:bold;color:blue;">- Use arrays filled by a RexxUnicodeReverseGraphemeSupplier.
+</span><span style="font-weight:bold;color:blue;">- Adjust the size of the end storage based on the size of the start storage and
+</span><span style="font-weight:bold;color:blue;">  the number of codepoints, graphemes, and errors found during the full scan.
+</span><span style="font-weight:bold;color:blue;">  There is no longer any overlap between the end and start storage.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">These changes prepare for the future native StringIndexer class.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">aRexxUnicodeStringIndexer~codepointIndexC returns .nil (was 0) if the codepoint
+</span><span style="font-weight:bold;color:blue;">index cannot be found with a binary search.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">aRexxUnicodeStringIndexer~graphemeIndexG returns.nil (an error was raised) if
+</span><span style="font-weight:bold;color:blue;">the grapheme index cannot be found with a binary search.
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">Regression tests
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">---------------------
+</span><span style="font-weight:bold;color:blue;">-- Full start storage
+</span><span style="font-weight:bold;color:blue;">---------------------
+</span>
+<span style="font-weight:bold;color:blue;">-- &quot;F4 91&quot;x is an invalid byte sequence
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;F4 91&quot;x &quot;🎅&quot; &quot;F4 91&quot;x &quot;👨‍👩‍👧&quot; &quot;F4 91&quot;x</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(string)=        </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 12 graphemes, 16 codepoints, 32 bytes, 6 errors)'</span>
+'(not-ASCII, 12 graphemes, 16 codepoints, 32 bytes, 6 errors)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(string)</span>
+
+<span style="font-weight:bold;color:blue;">-- Codepoints
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointCount=                 </span><span style="font-weight:bold;color:blue;">-- 16</span>
+ 16
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=          </span><span style="font-weight:bold;color:blue;">-- [-1,-2, 3, 4, 8,-9,-10, 11, 12, 16, 19, 23, 26, 30,-31,-32]</span>
+[-1,-2, 3, 4, 8,-9,-10, 11, 12, 16, 19, 23, 26, 30,-31,-32]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=            </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = -indexer~codepointCount to indexer~codepointCount ; if i \== 0 then say i &quot;:&quot; indexer~codepointIndexB(i) ; end</span>
+-16 : -1
+-15 : -2
+-14 : 3
+-13 : 4
+-12 : 8
+-11 : -9
+-10 : -10
+-9 : 11
+-8 : 12
+-7 : 16
+-6 : 19
+-5 : 23
+-4 : 26
+-3 : 30
+-2 : -31
+-1 : -32
+1 : -1
+2 : -2
+3 : 3
+4 : 4
+5 : 8
+6 : -9
+7 : -10
+8 : 11
+9 : 12
+10 : 16
+11 : 19
+12 : 23
+13 : 26
+14 : 30
+15 : -31
+16 : -32
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    -16 : -1
+</span><span style="font-weight:bold;color:blue;">    -15 : -2
+</span><span style="font-weight:bold;color:blue;">    -14 : 3
+</span><span style="font-weight:bold;color:blue;">    -13 : 4
+</span><span style="font-weight:bold;color:blue;">    -12 : 8
+</span><span style="font-weight:bold;color:blue;">    -11 : -9
+</span><span style="font-weight:bold;color:blue;">    -10 : -10
+</span><span style="font-weight:bold;color:blue;">    -9 : 11
+</span><span style="font-weight:bold;color:blue;">    -8 : 12
+</span><span style="font-weight:bold;color:blue;">    -7 : 16
+</span><span style="font-weight:bold;color:blue;">    -6 : 19
+</span><span style="font-weight:bold;color:blue;">    -5 : 23
+</span><span style="font-weight:bold;color:blue;">    -4 : 26
+</span><span style="font-weight:bold;color:blue;">    -3 : 30
+</span><span style="font-weight:bold;color:blue;">    -2 : -31
+</span><span style="font-weight:bold;color:blue;">    -1 : -32
+</span><span style="font-weight:bold;color:blue;">    1 : -1
+</span><span style="font-weight:bold;color:blue;">    2 : -2
+</span><span style="font-weight:bold;color:blue;">    3 : 3
+</span><span style="font-weight:bold;color:blue;">    4 : 4
+</span><span style="font-weight:bold;color:blue;">    5 : 8
+</span><span style="font-weight:bold;color:blue;">    6 : -9
+</span><span style="font-weight:bold;color:blue;">    7 : -10
+</span><span style="font-weight:bold;color:blue;">    8 : 11
+</span><span style="font-weight:bold;color:blue;">    9 : 12
+</span><span style="font-weight:bold;color:blue;">    10 : 16
+</span><span style="font-weight:bold;color:blue;">    11 : 19
+</span><span style="font-weight:bold;color:blue;">    12 : 23
+</span><span style="font-weight:bold;color:blue;">    13 : 26
+</span><span style="font-weight:bold;color:blue;">    14 : 30
+</span><span style="font-weight:bold;color:blue;">    15 : -31
+</span><span style="font-weight:bold;color:blue;">    16 : -32
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexB(-(indexer~codepointCount + 1))=     </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: -17 exceeds the code point count 16.</span>
+<span style="font-weight:bold;color:red;">Invalid code point index: -17 exceeds the code point count 16.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexB(0)=                                 </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: 0.</span>
+<span style="font-weight:bold;color:red;">Invalid code point index: 0.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexB(  indexer~codepointCount + 1)=      </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: 17 exceeds the code point count 16.</span>
+<span style="font-weight:bold;color:red;">Invalid code point index: 17 exceeds the code point count 16.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>
+<span style="font-weight:bold;color:blue;">-- Graphemes
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeCount=                  </span><span style="font-weight:bold;color:blue;">-- 12</span>
+ 12
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=           </span><span style="font-weight:bold;color:blue;">-- [-1,-2, 3, 4, 8,-9,-10, 11, 12, 30,-31,-32]</span>
+[-1,-2, 3, 4, 8,-9,-10, 11, 12, 30,-31,-32]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endGraphemeIndexes=             </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = -indexer~graphemeCount to indexer~graphemeCount ; if i \== 0 then say i &quot;:&quot; indexer~graphemeIndexB(i) indexer~graphemeIndexB(i, /*next:*/ .true) ; end</span>
+-12 : -1 -2
+-11 : -2 3
+-10 : 3 4
+-9 : 4 8
+-8 : 8 -9
+-7 : -9 -10
+-6 : -10 11
+-5 : 11 12
+-4 : 12 30
+-3 : 30 -31
+-2 : -31 -32
+-1 : -32 33
+1 : -1 -2
+2 : -2 3
+3 : 3 4
+4 : 4 8
+5 : 8 -9
+6 : -9 -10
+7 : -10 11
+8 : 11 12
+9 : 12 30
+10 : 30 -31
+11 : -31 -32
+12 : -32 33
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    -12 : -1 -2
+</span><span style="font-weight:bold;color:blue;">    -11 : -2 3
+</span><span style="font-weight:bold;color:blue;">    -10 : 3 4
+</span><span style="font-weight:bold;color:blue;">    -9 : 4 8
+</span><span style="font-weight:bold;color:blue;">    -8 : 8 -9
+</span><span style="font-weight:bold;color:blue;">    -7 : -9 -10
+</span><span style="font-weight:bold;color:blue;">    -6 : -10 11
+</span><span style="font-weight:bold;color:blue;">    -5 : 11 12
+</span><span style="font-weight:bold;color:blue;">    -4 : 12 30
+</span><span style="font-weight:bold;color:blue;">    -3 : 30 -31
+</span><span style="font-weight:bold;color:blue;">    -2 : -31 -32
+</span><span style="font-weight:bold;color:blue;">    -1 : -32 33
+</span><span style="font-weight:bold;color:blue;">    1 : -1 -2
+</span><span style="font-weight:bold;color:blue;">    2 : -2 3
+</span><span style="font-weight:bold;color:blue;">    3 : 3 4
+</span><span style="font-weight:bold;color:blue;">    4 : 4 8
+</span><span style="font-weight:bold;color:blue;">    5 : 8 -9
+</span><span style="font-weight:bold;color:blue;">    6 : -9 -10
+</span><span style="font-weight:bold;color:blue;">    7 : -10 11
+</span><span style="font-weight:bold;color:blue;">    8 : 11 12
+</span><span style="font-weight:bold;color:blue;">    9 : 12 30
+</span><span style="font-weight:bold;color:blue;">    10 : 30 -31
+</span><span style="font-weight:bold;color:blue;">    11 : -31 -32
+</span><span style="font-weight:bold;color:blue;">    12 : -32 33
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexB(-(indexer~graphemeCount + 1))=       </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: -13 exceeds the grapheme count 12.</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: -13 exceeds the grapheme count 12.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexB(0)=                                  </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: 0.</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: 0.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexB(  indexer~graphemeCount + 1)=        </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: 13 exceeds the grapheme count 12.</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: 13 exceeds the grapheme count 12.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>
+<span style="font-weight:bold;color:blue;">-- Error messages
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorCount=                     </span><span style="font-weight:bold;color:blue;">-- 6</span>
+ 6
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
+an Array (shape [6], 6 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+ 2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+ 3 : 'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point &gt; U+10FFFF)'
+ 4 : 'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)'
+ 5 : 'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point &gt; U+10FFFF)'
+ 6 : 'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    an Array (shape [6], 6 items)
+</span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     3 : 'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">     4 : 'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     5 : 'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">     6 : 'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorMessages==              </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
+
+<span style="font-weight:bold;color:blue;">-------------------
+</span><span style="font-weight:bold;color:blue;">-- Full end storage
+</span><span style="font-weight:bold;color:blue;">-------------------
+</span>
+<span style="font-weight:bold;color:blue;">-- &quot;F4 91&quot;x is an invalid byte sequence
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;F4 91&quot;x &quot;🎅&quot; &quot;F4 91&quot;x &quot;👨‍👩‍👧&quot; &quot;F4 91&quot;x</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(string)=        </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 12 graphemes, 16 codepoints, 32 bytes, 6 errors)'</span>
+'(not-ASCII, 12 graphemes, 16 codepoints, 32 bytes, 6 errors)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(string, 0, 0, 0, 100, 100, 100)</span>
+
+<span style="font-weight:bold;color:blue;">-- Codepoints
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointCount=                 </span><span style="font-weight:bold;color:blue;">-- 16</span>
+ 16
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=          </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=            </span><span style="font-weight:bold;color:blue;">-- [-32,-31, 30, 26, 23, 19, 16, 12, 11,-10,-9, 8, 4, 3,-2,-1]</span>
+[-32,-31, 30, 26, 23, 19, 16, 12, 11,-10,-9, 8, 4, 3,-2,-1]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = -indexer~codepointCount to indexer~codepointCount ; if i \== 0 then say i &quot;:&quot; indexer~codepointIndexB(i) ; end</span>
+-16 : -1
+-15 : -2
+-14 : 3
+-13 : 4
+-12 : 8
+-11 : -9
+-10 : -10
+-9 : 11
+-8 : 12
+-7 : 16
+-6 : 19
+-5 : 23
+-4 : 26
+-3 : 30
+-2 : -31
+-1 : -32
+1 : -1
+2 : -2
+3 : 3
+4 : 4
+5 : 8
+6 : -9
+7 : -10
+8 : 11
+9 : 12
+10 : 16
+11 : 19
+12 : 23
+13 : 26
+14 : 30
+15 : -31
+16 : -32
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    -16 : -1
+</span><span style="font-weight:bold;color:blue;">    -15 : -2
+</span><span style="font-weight:bold;color:blue;">    -14 : 3
+</span><span style="font-weight:bold;color:blue;">    -13 : 4
+</span><span style="font-weight:bold;color:blue;">    -12 : 8
+</span><span style="font-weight:bold;color:blue;">    -11 : -9
+</span><span style="font-weight:bold;color:blue;">    -10 : -10
+</span><span style="font-weight:bold;color:blue;">    -9 : 11
+</span><span style="font-weight:bold;color:blue;">    -8 : 12
+</span><span style="font-weight:bold;color:blue;">    -7 : 16
+</span><span style="font-weight:bold;color:blue;">    -6 : 19
+</span><span style="font-weight:bold;color:blue;">    -5 : 23
+</span><span style="font-weight:bold;color:blue;">    -4 : 26
+</span><span style="font-weight:bold;color:blue;">    -3 : 30
+</span><span style="font-weight:bold;color:blue;">    -2 : -31
+</span><span style="font-weight:bold;color:blue;">    -1 : -32
+</span><span style="font-weight:bold;color:blue;">    1 : -1
+</span><span style="font-weight:bold;color:blue;">    2 : -2
+</span><span style="font-weight:bold;color:blue;">    3 : 3
+</span><span style="font-weight:bold;color:blue;">    4 : 4
+</span><span style="font-weight:bold;color:blue;">    5 : 8
+</span><span style="font-weight:bold;color:blue;">    6 : -9
+</span><span style="font-weight:bold;color:blue;">    7 : -10
+</span><span style="font-weight:bold;color:blue;">    8 : 11
+</span><span style="font-weight:bold;color:blue;">    9 : 12
+</span><span style="font-weight:bold;color:blue;">    10 : 16
+</span><span style="font-weight:bold;color:blue;">    11 : 19
+</span><span style="font-weight:bold;color:blue;">    12 : 23
+</span><span style="font-weight:bold;color:blue;">    13 : 26
+</span><span style="font-weight:bold;color:blue;">    14 : 30
+</span><span style="font-weight:bold;color:blue;">    15 : -31
+</span><span style="font-weight:bold;color:blue;">    16 : -32
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexB(-(indexer~codepointCount + 1))=     </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: -17 exceeds the code point count 16.</span>
+<span style="font-weight:bold;color:red;">Invalid code point index: -17 exceeds the code point count 16.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexB(0)=                                 </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: 0.</span>
+<span style="font-weight:bold;color:red;">Invalid code point index: 0.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexB(  indexer~codepointCount + 1)=      </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: 17 exceeds the code point count 16.</span>
+<span style="font-weight:bold;color:red;">Invalid code point index: 17 exceeds the code point count 16.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>
+<span style="font-weight:bold;color:blue;">-- Graphemes
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeCount=                  </span><span style="font-weight:bold;color:blue;">-- 12</span>
+ 12
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=           </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endGraphemeIndexes=             </span><span style="font-weight:bold;color:blue;">-- [-32,-31, 30, 12, 11,-10,-9, 8, 4, 3,-2,-1]</span>
+[-32,-31, 30, 12, 11,-10,-9, 8, 4, 3,-2,-1]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = -indexer~graphemeCount to indexer~graphemeCount ; if i \== 0 then say i &quot;:&quot; indexer~graphemeIndexB(i) indexer~graphemeIndexB(i, /*next:*/ .true) ; end</span>
+-12 : -1 -2
+-11 : -2 3
+-10 : 3 4
+-9 : 4 8
+-8 : 8 -9
+-7 : -9 -10
+-6 : -10 11
+-5 : 11 12
+-4 : 12 30
+-3 : 30 -31
+-2 : -31 -32
+-1 : -32 33
+1 : -1 -2
+2 : -2 3
+3 : 3 4
+4 : 4 8
+5 : 8 -9
+6 : -9 -10
+7 : -10 11
+8 : 11 12
+9 : 12 30
+10 : 30 -31
+11 : -31 -32
+12 : -32 33
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    -12 : -1 -2
+</span><span style="font-weight:bold;color:blue;">    -11 : -2 3
+</span><span style="font-weight:bold;color:blue;">    -10 : 3 4
+</span><span style="font-weight:bold;color:blue;">    -9 : 4 8
+</span><span style="font-weight:bold;color:blue;">    -8 : 8 -9
+</span><span style="font-weight:bold;color:blue;">    -7 : -9 -10
+</span><span style="font-weight:bold;color:blue;">    -6 : -10 11
+</span><span style="font-weight:bold;color:blue;">    -5 : 11 12
+</span><span style="font-weight:bold;color:blue;">    -4 : 12 30
+</span><span style="font-weight:bold;color:blue;">    -3 : 30 -31
+</span><span style="font-weight:bold;color:blue;">    -2 : -31 -32
+</span><span style="font-weight:bold;color:blue;">    -1 : -32 33
+</span><span style="font-weight:bold;color:blue;">    1 : -1 -2
+</span><span style="font-weight:bold;color:blue;">    2 : -2 3
+</span><span style="font-weight:bold;color:blue;">    3 : 3 4
+</span><span style="font-weight:bold;color:blue;">    4 : 4 8
+</span><span style="font-weight:bold;color:blue;">    5 : 8 -9
+</span><span style="font-weight:bold;color:blue;">    6 : -9 -10
+</span><span style="font-weight:bold;color:blue;">    7 : -10 11
+</span><span style="font-weight:bold;color:blue;">    8 : 11 12
+</span><span style="font-weight:bold;color:blue;">    9 : 12 30
+</span><span style="font-weight:bold;color:blue;">    10 : 30 -31
+</span><span style="font-weight:bold;color:blue;">    11 : -31 -32
+</span><span style="font-weight:bold;color:blue;">    12 : -32 33
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexB(-(indexer~graphemeCount + 1))=       </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: -13 exceeds the grapheme count 12.</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: -13 exceeds the grapheme count 12.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexB(0)=                                  </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: 0.</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: 0.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexB(  indexer~graphemeCount + 1)=        </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: 13 exceeds the grapheme count 12.</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: 13 exceeds the grapheme count 12.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>
+<span style="font-weight:bold;color:blue;">-- Error messages
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorCount=                     </span><span style="font-weight:bold;color:blue;">-- 6</span>
+ 6
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==            </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorMessages==</span>
+an Array (shape [6], 6 items)
+ 1 : 'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)'
+ 2 : 'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point &gt; U+10FFFF)'
+ 3 : 'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)'
+ 4 : 'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point &gt; U+10FFFF)'
+ 5 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+ 6 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    an Array (shape [6], 6 items)
+</span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     2 : 'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">     3 : 'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     4 : 'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">     5 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     6 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">--------------------------------
+</span><span style="font-weight:bold;color:blue;">-- Limited start and end storage
+</span><span style="font-weight:bold;color:blue;">--------------------------------
+</span>
+<span style="font-weight:bold;color:blue;">-- &quot;F4 91&quot;x is an invalid byte sequence
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;F4 91&quot;x &quot;🎅&quot; &quot;F4 91&quot;x &quot;👨‍👩‍👧&quot; &quot;F4 91&quot;x</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicode~stringInfo(string)=        </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 12 graphemes, 16 codepoints, 32 bytes, 6 errors)'</span>
+'(not-ASCII, 12 graphemes, 16 codepoints, 32 bytes, 6 errors)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(string, 4, 2, 1, 4, 2, 1)</span>
+
+<span style="font-weight:bold;color:blue;">-- Codepoints
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointCount=                 </span><span style="font-weight:bold;color:blue;">-- 16</span>
+ 16
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=          </span><span style="font-weight:bold;color:blue;">-- [-1,-2, 3, 4]</span>
+[-1,-2, 3, 4]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=            </span><span style="font-weight:bold;color:blue;">-- [-32,-31, 30, 26]</span>
+[-32,-31, 30, 26]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = -indexer~codepointCount to indexer~codepointCount ; if i \== 0 then say i &quot;:&quot; indexer~codepointIndexB(i, /*raiseError:*/ .false) ; end</span>
+-16 : -1
+-15 : -2
+-14 : 3
+-13 : 4
+-12 : The NIL object
+-11 : The NIL object
+-10 : The NIL object
+-9 : The NIL object
+-8 : The NIL object
+-7 : The NIL object
+-6 : The NIL object
+-5 : The NIL object
+-4 : 26
+-3 : 30
+-2 : -31
+-1 : -32
+1 : -1
+2 : -2
+3 : 3
+4 : 4
+5 : The NIL object
+6 : The NIL object
+7 : The NIL object
+8 : The NIL object
+9 : The NIL object
+10 : The NIL object
+11 : The NIL object
+12 : The NIL object
+13 : 26
+14 : 30
+15 : -31
+16 : -32
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    -16 : -1
+</span><span style="font-weight:bold;color:blue;">    -15 : -2
+</span><span style="font-weight:bold;color:blue;">    -14 : 3
+</span><span style="font-weight:bold;color:blue;">    -13 : 4
+</span><span style="font-weight:bold;color:blue;">    -12 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    -11 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    -10 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    -9 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    -8 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    -7 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    -6 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    -5 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    -4 : 26
+</span><span style="font-weight:bold;color:blue;">    -3 : 30
+</span><span style="font-weight:bold;color:blue;">    -2 : -31
+</span><span style="font-weight:bold;color:blue;">    -1 : -32
+</span><span style="font-weight:bold;color:blue;">    1 : -1
+</span><span style="font-weight:bold;color:blue;">    2 : -2
+</span><span style="font-weight:bold;color:blue;">    3 : 3
+</span><span style="font-weight:bold;color:blue;">    4 : 4
+</span><span style="font-weight:bold;color:blue;">    5 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    6 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    7 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    8 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    9 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    10 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    11 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    12 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    13 : 26
+</span><span style="font-weight:bold;color:blue;">    14 : 30
+</span><span style="font-weight:bold;color:blue;">    15 : -31
+</span><span style="font-weight:bold;color:blue;">    16 : -32
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexB(-(indexer~codepointCount + 1))=     </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: -17 exceeds the code point count 16.</span>
+<span style="font-weight:bold;color:red;">Invalid code point index: -17 exceeds the code point count 16.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexB(0)=                                 </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: 0.</span>
+<span style="font-weight:bold;color:red;">Invalid code point index: 0.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexB(  indexer~codepointCount + 1)=      </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: 17 exceeds the code point count 16.</span>
+<span style="font-weight:bold;color:red;">Invalid code point index: 17 exceeds the code point count 16.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>
+<span style="font-weight:bold;color:blue;">-- Graphemes
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeCount=                  </span><span style="font-weight:bold;color:blue;">-- 12</span>
+ 12
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=           </span><span style="font-weight:bold;color:blue;">-- [-1,-2]</span>
+[-1,-2]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endGraphemeIndexes=             </span><span style="font-weight:bold;color:blue;">-- [-32,-31]</span>
+[-32,-31]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = -indexer~graphemeCount to indexer~graphemeCount ; if i \== 0 then say i &quot;:&quot; indexer~graphemeIndexB(i, , /*raiseError:*/ .false) indexer~graphemeIndexB(i, /*next:*/ .true, /*raiseError:*/ .false) ; end</span>
+-12 : -1 -2
+-11 : -2 3
+-10 : 3 The NIL object
+-9 : The NIL object The NIL object
+-8 : The NIL object The NIL object
+-7 : The NIL object The NIL object
+-6 : The NIL object The NIL object
+-5 : The NIL object The NIL object
+-4 : The NIL object The NIL object
+-3 : The NIL object -31
+-2 : -31 -32
+-1 : -32 33
+1 : -1 -2
+2 : -2 3
+3 : 3 The NIL object
+4 : The NIL object The NIL object
+5 : The NIL object The NIL object
+6 : The NIL object The NIL object
+7 : The NIL object The NIL object
+8 : The NIL object The NIL object
+9 : The NIL object The NIL object
+10 : The NIL object -31
+11 : -31 -32
+12 : -32 33
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    -12 : -1 -2
+</span><span style="font-weight:bold;color:blue;">    -11 : -2 3
+</span><span style="font-weight:bold;color:blue;">    -10 : 3 The NIL object
+</span><span style="font-weight:bold;color:blue;">    -9 : The NIL object The NIL object
+</span><span style="font-weight:bold;color:blue;">    -8 : The NIL object The NIL object
+</span><span style="font-weight:bold;color:blue;">    -7 : The NIL object The NIL object
+</span><span style="font-weight:bold;color:blue;">    -6 : The NIL object The NIL object
+</span><span style="font-weight:bold;color:blue;">    -5 : The NIL object The NIL object
+</span><span style="font-weight:bold;color:blue;">    -4 : The NIL object The NIL object
+</span><span style="font-weight:bold;color:blue;">    -3 : The NIL object -31
+</span><span style="font-weight:bold;color:blue;">    -2 : -31 -32
+</span><span style="font-weight:bold;color:blue;">    -1 : -32 33
+</span><span style="font-weight:bold;color:blue;">    1 : -1 -2
+</span><span style="font-weight:bold;color:blue;">    2 : -2 3
+</span><span style="font-weight:bold;color:blue;">    3 : 3 The NIL object
+</span><span style="font-weight:bold;color:blue;">    4 : The NIL object The NIL object
+</span><span style="font-weight:bold;color:blue;">    5 : The NIL object The NIL object
+</span><span style="font-weight:bold;color:blue;">    6 : The NIL object The NIL object
+</span><span style="font-weight:bold;color:blue;">    7 : The NIL object The NIL object
+</span><span style="font-weight:bold;color:blue;">    8 : The NIL object The NIL object
+</span><span style="font-weight:bold;color:blue;">    9 : The NIL object The NIL object
+</span><span style="font-weight:bold;color:blue;">    10 : The NIL object -31
+</span><span style="font-weight:bold;color:blue;">    11 : -31 -32
+</span><span style="font-weight:bold;color:blue;">    12 : -32 33
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexB(-(indexer~graphemeCount + 1))=       </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: -13 exceeds the grapheme count 12.</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: -13 exceeds the grapheme count 12.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexB(0)=                                  </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: 0.</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: 0.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexB(  indexer~graphemeCount + 1)=        </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: 13 exceeds the grapheme count 12.</span>
+<span style="font-weight:bold;color:red;">Invalid grapheme index: 13 exceeds the grapheme count 12.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>
+<span style="font-weight:bold;color:blue;">-- Error messages
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorCount=                     </span><span style="font-weight:bold;color:blue;">-- 6</span>
+ 6
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
+an Array (shape [1], 1 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    an Array (shape [1], 1 items)
+</span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorMessages==</span>
+an Array (shape [1], 1 items)
+ 1 : 'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    an Array (shape [1], 1 items)
+</span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
 
 <span style="font-weight:bold;color:blue;">-- ===============================================================================
 </span><span style="font-weight:bold;color:blue;">-- 2026 Sept 10
@@ -2766,47 +3345,47 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexC(
 <span style="font-weight:bold;color:blue;">-- Binary search for codepoint indexes cannot work with non-incremental sparse storage
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 1, 0, 0, 1)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~string~length; say i~left(2)&quot;:&quot; indexer~codepointIndexC(i); end</span>
-1 : 0
-2 : 0
-3 : 0
-4 : 0
-5 : 0
-6 : 0
-7 : 0
-8 : 0
-9 : 0
-10: 0
-11: 0
-12: 0
-13: 0
-14: 0
-15: 0
-16: 0
-17: 0
-18: 0
-19: 0
-20: 0
+1 : The NIL object
+2 : The NIL object
+3 : The NIL object
+4 : The NIL object
+5 : The NIL object
+6 : The NIL object
+7 : The NIL object
+8 : The NIL object
+9 : The NIL object
+10: The NIL object
+11: The NIL object
+12: The NIL object
+13: The NIL object
+14: The NIL object
+15: The NIL object
+16: The NIL object
+17: The NIL object
+18: The NIL object
+19: The NIL object
+20: The NIL object
 <span style="font-weight:bold;color:blue;">/*
-</span><span style="font-weight:bold;color:blue;">    1 : 0
-</span><span style="font-weight:bold;color:blue;">    2 : 0
-</span><span style="font-weight:bold;color:blue;">    3 : 0
-</span><span style="font-weight:bold;color:blue;">    4 : 0
-</span><span style="font-weight:bold;color:blue;">    5 : 0
-</span><span style="font-weight:bold;color:blue;">    6 : 0
-</span><span style="font-weight:bold;color:blue;">    7 : 0
-</span><span style="font-weight:bold;color:blue;">    8 : 0
-</span><span style="font-weight:bold;color:blue;">    9 : 0
-</span><span style="font-weight:bold;color:blue;">    10: 0
-</span><span style="font-weight:bold;color:blue;">    11: 0
-</span><span style="font-weight:bold;color:blue;">    12: 0
-</span><span style="font-weight:bold;color:blue;">    13: 0
-</span><span style="font-weight:bold;color:blue;">    14: 0
-</span><span style="font-weight:bold;color:blue;">    15: 0
-</span><span style="font-weight:bold;color:blue;">    16: 0
-</span><span style="font-weight:bold;color:blue;">    17: 0
-</span><span style="font-weight:bold;color:blue;">    18: 0
-</span><span style="font-weight:bold;color:blue;">    19: 0
-</span><span style="font-weight:bold;color:blue;">    20: 0
+</span><span style="font-weight:bold;color:blue;">    1 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    2 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    3 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    4 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    5 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    6 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    7 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    8 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    9 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    10: The NIL object
+</span><span style="font-weight:bold;color:blue;">    11: The NIL object
+</span><span style="font-weight:bold;color:blue;">    12: The NIL object
+</span><span style="font-weight:bold;color:blue;">    13: The NIL object
+</span><span style="font-weight:bold;color:blue;">    14: The NIL object
+</span><span style="font-weight:bold;color:blue;">    15: The NIL object
+</span><span style="font-weight:bold;color:blue;">    16: The NIL object
+</span><span style="font-weight:bold;color:blue;">    17: The NIL object
+</span><span style="font-weight:bold;color:blue;">    18: The NIL object
+</span><span style="font-weight:bold;color:blue;">    19: The NIL object
+</span><span style="font-weight:bold;color:blue;">    20: The NIL object
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
 
@@ -2880,10 +3459,47 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexG(1
 <span style="font-weight:bold;color:blue;">-- Binary search for grapheme index cannot work with non-incremental sparse storage
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 0, 1, 0, 0, 1)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~string~length; say i~left(2)&quot;:&quot; indexer~graphemeIndexG(i); end</span>
-<span style="font-weight:bold;color:red;">Grapheme index 2 is not stored. Binary search for byte index 1 requires unlimited storage.
-</span><span style="font-weight:bold;color:red;">Error code= 88.900
-</span><span style="font-weight:bold;color:blue;">/*
-</span><span style="font-weight:bold;color:blue;">    Grapheme index 2 is not stored. Binary search for byte index 1 requires unlimited storage.
+1 : The NIL object
+2 : The NIL object
+3 : The NIL object
+4 : The NIL object
+5 : The NIL object
+6 : The NIL object
+7 : The NIL object
+8 : The NIL object
+9 : The NIL object
+10: The NIL object
+11: The NIL object
+12: The NIL object
+13: The NIL object
+14: The NIL object
+15: The NIL object
+16: The NIL object
+17: The NIL object
+18: The NIL object
+19: The NIL object
+20: The NIL object
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    1 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    2 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    3 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    4 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    5 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    6 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    7 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    8 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    9 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    10: The NIL object
+</span><span style="font-weight:bold;color:blue;">    11: The NIL object
+</span><span style="font-weight:bold;color:blue;">    12: The NIL object
+</span><span style="font-weight:bold;color:blue;">    13: The NIL object
+</span><span style="font-weight:bold;color:blue;">    14: The NIL object
+</span><span style="font-weight:bold;color:blue;">    15: The NIL object
+</span><span style="font-weight:bold;color:blue;">    16: The NIL object
+</span><span style="font-weight:bold;color:blue;">    17: The NIL object
+</span><span style="font-weight:bold;color:blue;">    18: The NIL object
+</span><span style="font-weight:bold;color:blue;">    19: The NIL object
+</span><span style="font-weight:bold;color:blue;">    20: The NIL object
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
 
@@ -3303,8 +3919,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:blue;">-- 5 codepoints, start storage limit 10, end storage limit 10
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 10, , , 10)~startCodepointIndexes=       </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 3, 4, 5]</span>
 [ 1, 2, 3, 4, 5]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 10, , , 10)~endCodepointIndexes=         </span><span style="font-weight:bold;color:blue;">-- [ 5, 4, 3, 2, 1]</span>
-[ 5, 4, 3, 2, 1]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 10, , , 10)~endCodepointIndexes=         </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, 10, , , 10)~codepointAtIndexC(-6)=       </span><span style="font-weight:bold;color:blue;">-- Invalid code point index: -6 exceeds the code point count 5.</span>
 <span style="font-weight:bold;color:red;">Invalid code point index: -6 exceeds the code point count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900
@@ -3572,8 +4188,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexe
 <span style="font-weight:bold;color:blue;">-- 5 graphemes, start storage limit 10, end storage limit 10
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 10, , , 10)~startGraphemeIndexes=  </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 3, 4, 5]</span>
 [ 1, 2, 3, 4, 5]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 10, , , 10)~endGraphemeIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 5, 4, 3, 2, 1]</span>
-[ 5, 4, 3, 2, 1]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 10, , , 10)~endGraphemeIndexes=    </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
+an Array (no shape, 0 items)
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;abcde&quot;, , 10, , , 10)~graphemeAtIndexG(-6)=  </span><span style="font-weight:bold;color:blue;">-- Invalid grapheme index: -6 exceeds the grapheme count 5.</span>
 <span style="font-weight:bold;color:red;">Invalid grapheme index: -6 exceeds the grapheme count 5.
 </span><span style="font-weight:bold;color:red;">Error code= 88.900

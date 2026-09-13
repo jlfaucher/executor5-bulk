@@ -817,9 +817,11 @@ How other languages are supporting escape characters for Unicode:
 ::attribute indexG get package          -- 1-based, counted from the beginning of the string
 
 ::method init
-    expose isFirstStep string indexG
+    expose isFirstStep string indexG -
+           indexer graphemeAction codepointAction
 
-    use strict arg string, defaultIndexType="", defaultItemType=""
+    use strict arg string, defaultIndexType="", defaultItemType="", -
+                   indexer=.nil, graphemeAction=.nil, codepointAction=.nil
     string = requestBaseString(string, "string")
     self~setDefaultIndexType(defaultIndexType)
     self~setDefaultItemType(defaultItemType)
@@ -851,7 +853,9 @@ are the same operation - scanBoundary is used for both.
 ::method decode private
     expose isFirstStep string grapheme graphemeIndexB error -
            /* scan state, shared with scanBoundary */ -
-           indexB previousCodepoint graphemeBreakState pendingIndexB pendingError
+           indexB previousCodepoint graphemeBreakState pendingIndexB pendingError -
+           indexer graphemeAction
+
     use strict arg -- none
 
     if isFirstStep then do
@@ -872,6 +876,7 @@ are the same operation - scanBoundary is used for both.
     self~scanBoundary                  -- locates the end of the current grapheme (.nil at end of string)
     if pendingIndexB~isNil then grapheme = string~substr(abs(graphemeIndexB))
     else grapheme = string~substr(abs(graphemeIndexB), abs(pendingIndexB) - abs(graphemeIndexB))
+    if .nil \== indexer, .nil \== graphemeAction then indexer~send(graphemeAction, error \== "", abs(graphemeIndexB), grapheme~length, error)
     -- grapheme, graphemeIndexB and error are ready for use;
     -- on reentry from ~next, graphemeIndexB/error have been set from pendingIndexB/pendingError
     return
@@ -885,7 +890,9 @@ are the same operation - scanBoundary is used for both.
 --   pendingIndexB = byte position (>0)       -> boundary at a validly-decoded codepoint
 --   pendingIndexB = -(byte position)         -> boundary at an invalid byte sequence; pendingError describes it
 ::method scanBoundary private
-    expose string indexB previousCodepoint graphemeBreakState pendingIndexB pendingError
+    expose string indexB previousCodepoint graphemeBreakState pendingIndexB pendingError -
+           indexer codepointAction
+
     use strict arg -- none
 
     loop forever
@@ -900,10 +907,14 @@ are the same operation - scanBoundary is used for both.
         if sizeB < 0 then do                   -- invalid byte sequence: always its own boundary
             pendingIndexB = -indexB
             pendingError  = "start byte position" indexB ":" errorMsg
+            if .nil \== indexer, .nil \== codepointAction then indexer~send(codepointAction, .true, indexB, -sizeB, codepoint, pendingError)
             indexB += abs(sizeB)                -- skip the invalid bytes
             previousCodepoint = codepoint
             graphemeBreakState = 0              -- reset the extended grapheme state
             return
+        end
+        else do
+            if .nil \== indexer, .nil \== codepointAction then indexer~send(codepointAction, .false, indexB, sizeB, codepoint, "")
         end
 
         -- graphemeBreak must NOT be called when previousCodepoint < 0 (nothing to compare against yet)
@@ -951,8 +962,11 @@ are the same operation - scanBoundary is used for both.
 ::attribute indexG get package          -- 1-based, counted from the end of the string
 
 ::method init
-    expose string indexB indexG error
-    use strict arg string, defaultIndexType="", defaultItemType=""
+    expose string indexB indexG error -
+           indexer graphemeAction codepointAction
+
+    use strict arg string, defaultIndexType="", defaultItemType="", -
+                   indexer=.nil, graphemeAction=.nil, codepointAction=.nil
     string = requestBaseString(string, "string")
     self~setDefaultIndexType(defaultIndexType)
     self~setDefaultItemType(defaultItemType)
@@ -982,7 +996,9 @@ are the same operation - scanBoundary is used for both.
 -- Decode the grapheme cluster ending immediately before `indexB`, and set
 -- indexB's new left edge into graphemeIndexB. grapheme = .nil at start of text.
 ::method decodePrevious private
-    expose string indexB grapheme graphemeIndexB error
+    expose string indexB grapheme graphemeIndexB error -
+           indexer graphemeAction codepointAction
+
     use strict arg -- none
 
 debug = .false -- keep it for the moment
@@ -999,6 +1015,7 @@ if debug then say "Leave decodePrevious with graphemeIndexB =" graphemeIndexB", 
         return
     end
 
+    -- here, indexB is the index of the codepoint AFTER the codepoint to decode
     codepoint2 = .RexxUnicode~utf8DecodePreviousCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
 if debug then say "    utf8DecodePreviousCodepoint with indexB =" indexB "returned codepoint2 =" codepoint2 "of size" sizeB
     cursor = indexB - abs(sizeB)      -- start of the rightmost scalar so far
@@ -1009,13 +1026,19 @@ if debug then say "    utf8DecodePreviousCodepoint with indexB =" indexB "return
         graphemeIndexB = -cursor -- same convention as .RexxUnicodeStringIndexer; a negative byte index indicates an invalid byte sequence
         grapheme = string~substr(cursor, indexB - cursor)
         error = "start byte position" cursor ":" errorMsg
+        if .nil \== indexer, .nil \== codepointAction then indexer~send(codepointAction, .true, cursor, -sizeB, codepoint2, error)
+        if .nil \== indexer, .nil \== graphemeAction then indexer~send(graphemeAction, .true, cursor, grapheme~length, error)
 if debug then say "Leave decodePrevious with graphemeIndexB =" graphemeIndexB", grapheme =" grapheme~c2x
         return
+    end
+    else do
+        if .nil \== indexer, .nil \== codepointAction then indexer~send(codepointAction, .false, cursor, sizeB, codepoint2, "")
     end
 
     loop
         if cursor <= 1 then leave    -- start of text: always a boundary
 
+        -- here, cursor is the index of the codepoint AFTER the codepoint to decode
         codepoint1 = .RexxUnicode~utf8DecodePreviousCodepoint(string, cursor, >sizeB1, >errorCode1, >errorMsg1)
 if debug then say "    utf8DecodePreviousCodepoint with cursor =" cursor "returned codepoint1 =" codepoint1 "of size" sizeB
         pos1 = cursor - abs(sizeB1)
@@ -1027,6 +1050,7 @@ if debug then say "    graphemeBreakBackward with pos1 =" pos1", codepoint1 =" c
         if graphemeBreakBackward then leave
 
         -- No break: extend the grapheme leftward and keep going
+        if .nil \== indexer, .nil \== codepointAction then indexer~send(codepointAction, .false, pos1, -sizeB1, codepoint1, "")
         cursor = pos1
         codepoint2 = codepoint1
         prop2 = prop1
@@ -1035,6 +1059,7 @@ if debug then say "    graphemeBreakBackward with pos1 =" pos1", codepoint1 =" c
     graphemeIndexB = cursor
     grapheme = string~substr(cursor, indexB - cursor)
     error = ""
+    if .nil \== indexer, .nil \== graphemeAction then indexer~send(graphemeAction, .false, cursor, grapheme~length, "")
 if debug then say "Leave decodePrevious with graphemeIndexB =" graphemeIndexB", grapheme =" grapheme~c2x
 
 
@@ -1149,9 +1174,11 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 
 ::method init
     expose string -
+           startCodepointStorageLimit startGraphemeStorageLimit startErrorStorageLimit -
+           endCodepointStorageLimit endGraphemeStorageLimit endErrorStorageLimit -
            startCodepointIndexes endCodepointIndexes -
            codepointCount -
-           startGraphemeIndexes lastGraphemeSuccessorIndex endGraphemeIndexes -
+           startGraphemeIndexes startLastGraphemeNextIndex endGraphemeIndexes -
            graphemeCount -
            startErrorMessages endErrorMessages -
            errorCount
@@ -1161,30 +1188,34 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
                    endCodepointStorageLimit = 0, endGraphemeStorageLimit = 0, endErrorStorageLimit = 0
     string = requestBaseString(string)
 
-    startCodepointIndexes = .nil
-    if startCodepointStorageLimit > 0 then startCodepointIndexes = .array~new
     codepointCount = 0
-
-    startGraphemeIndexes = .nil
-    if startGraphemeStorageLimit > 0 then startGraphemeIndexes = .array~new
     graphemeCount = 0
-    -- hidden index to let calculate the grapheme's length of the grapheme at startGraphemeStorageLimit.
-    -- This index is not put in startGraphemeIndexes to keep startGraphemeIndexes's items <=  startGraphemeStorageLimit.
-    lastGraphemeSuccessorIndex = string~length + 1
-
-    startErrorMessages = .nil
-    if startErrorStorageLimit > 0 then startErrorMessages = .array~new
     errorCount = 0
 
+    startCodepointIndexes = .nil
+    startGraphemeIndexes = .nil
+    startErrorMessages = .nil
+
+    -- Extra index to let calculate the grapheme's length of the grapheme at startGraphemeStorageLimit.
+    -- This index is not put in startGraphemeIndexes to keep startGraphemeIndexes's items <= startGraphemeStorageLimit.
+    startLastGraphemeNextIndex = string~length + 1 -- will be updated during the scan
+
+    /*
+    Remember:
+    - no need of endLastGraphemeNextIndex for endGraphemeIndexes
+      because it's always string~length + 1.
+    - no need of startLastCodepointNextIndex for startCodepointIndexes
+      because the UTF-8 encoding gives the length (the codepoint is decoded to return it as a wholenumber).
+    - no need of endLastCodepointNextIndex for endCodepointIndexes, for the same reason.
+    */
 
     endCodepointIndexes = .nil
-    if endCodepointStorageLimit > 0 then endCodepointIndexes = .CircularQueue~new(endCodepointStorageLimit)
-
     endGraphemeIndexes = .nil
-    if endGraphemeStorageLimit > 0 then endGraphemeIndexes = .CircularQueue~new(endGraphemeStorageLimit)
-
     endErrorMessages = .nil
-    if endErrorStorageLimit > 0 then endErrorMessages = .CircularQueue~new(endErrorStorageLimit)
+
+    /***************************/
+    /* Fast path if no storage */
+    /***************************/
 
     if startCodepointStorageLimit == 0, startGraphemeStorageLimit == 0, startErrorStorageLimit == 0 -
        endCodepointStorageLimit == 0, endGraphemeStorageLimit == 0, endErrorStorageLimit == 0 -
@@ -1194,88 +1225,168 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
         return
     end
 
-    indexB = 1
-    previousCodepoint = -1
-    graphemeBreakState = 0
+    /**********************/
+    /* Forward indexation */
+    /**********************/
 
-    loop forever
-        codepoint = .RexxUnicode~utf8DecodeCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
-        if sizeB == 0 then leave -- End of string
+    if startCodepointStorageLimit > 0 then startCodepointIndexes = .array~new
+    if startGraphemeStorageLimit > 0 then startGraphemeIndexes = .array~new
+    if startErrorStorageLimit > 0 then startErrorMessages = .array~new
 
-        if sizeB < 0 then do
-            errorCount += 1
-            errorMsg = "start byte position" indexB ":" errorMsg
-            if errorCount <= startErrorStorageLimit then startErrorMessages~append(errorMsg)
-            if endErrorStorageLimit > 0 then endErrorMessages~append(errorMsg)
-
-            codepointCount += 1
-            if codepointCount <= startCodepointStorageLimit then startCodepointIndexes~append(-indexB) -- a negative index means "error"
-            if endCodepointStorageLimit > 0 then endCodepointIndexes~append(-indexB)
-
-            graphemeCount += 1
-            if graphemeCount <= startGraphemeStorageLimit then startGraphemeIndexes~append(-indexB) -- a negative index means "error"
-            if graphemeCount == (startGraphemeStorageLimit + 1) then lastGraphemeSuccessorIndex = -indexB
-            if endGraphemeStorageLimit > 0 then endGraphemeIndexes~append(-indexB)
-
-            graphemeBreakState = 0 -- reset the extended grapheme state
-            previousCodepoint = codepoint
-            indexB += abs(sizeB) -- skip the invalid bytes
-
-            iterate
-        end
-
-        codepointCount += 1
-        if codepointCount <= startCodepointStorageLimit then startCodepointIndexes~append(indexB)
-        if endCodepointStorageLimit > 0 then endCodepointIndexes~append(indexB)
-
-        if previousCodepoint < 0 then do
-            -- First codepoint or Error recovery
-            graphemeCount += 1
-            if graphemeCount <= startGraphemeStorageLimit then startGraphemeIndexes~append(indexB)
-            if graphemeCount == (startGraphemeStorageLimit + 1) then lastGraphemeSuccessorIndex = indexB
-            if endGraphemeStorageLimit > 0 then endGraphemeIndexes~append(indexB)
-        end
-        else do
-            if .RexxUnicode~graphemeBreak(previousCodepoint, codepoint, >graphemeBreakState) then do
-                graphemeCount += 1
-                if graphemeCount <= startGraphemeStorageLimit then startGraphemeIndexes~append(indexB)
-                if graphemeCount == (startGraphemeStorageLimit + 1) then lastGraphemeSuccessorIndex = indexB
-                if endGraphemeStorageLimit > 0 then endGraphemeIndexes~append(indexB)
-            end
-        end
-        previousCodepoint = codepoint
-        indexB += sizeB
+    s = .RexxUnicodeGraphemeSupplier~new(string, , , self, "startGraphemeAction", "startCodepointAction")
+    do while s~available
+        -- full scan
+        s~next
     end
 
-    -- Convert the circular queues to arrays in Lifo order, ready for indexing from the end.
-    -- Illustration with codepoints:
-    --     index -1: indexer~codepointAtIndexC(indexer~codepointCount)          first codepoint from the end
-    --     index -2: indexer~codepointAtIndexC(indexer~codepointCount - 1)      second codepoint from the end
-    --     index -3: indexer~codepointAtIndexC(indexer~codepointCount - 2)      third codepoint from the end
-    --     etc.
-    if .nil \== endCodepointIndexes then endCodepointIndexes = endCodepointIndexes~makeArray("L")
-    if .nil \== endGraphemeIndexes then endGraphemeIndexes = endGraphemeIndexes~makeArray("L")
-    if .nil \== endErrorMessages then endErrorMessages = endErrorMessages~makeArray("L")
-    return
+    /***********************/
+    /* Backward indexation */
+    /***********************/
+
+    /*
+        startCodepointStorageLimit      endCodepointStorageLimit    codepointCount      adjusted endCodepointStorageLimit
+        max                             any                         any                 N/A
+        0                               max                         any                 codepointCount
+        10                              10                          5                   N/A
+        10                              10                          15                  5
+        10                              2                           15                  2
+    */
+    if startCodepointStorageLimit < codepointCount then do
+        -- Some codepoints indexes are not stored
+        endCodepointStorageLimit = min(endCodepointStorageLimit, codepointCount - startCodepointStorageLimit)
+        if endCodepointStorageLimit > 0 then endCodepointIndexes = .array~new(endCodepointStorageLimit)
+    end
+
+    if startGraphemeStorageLimit < graphemeCount then do
+        -- Some graphemes indexes are not stored
+        endGraphemeStorageLimit = min(endGraphemeStorageLimit, graphemeCount - startGraphemeStorageLimit)
+        if endGraphemeStorageLimit > 0 then endGraphemeIndexes = .array~new(endGraphemeStorageLimit)
+    end
+
+    if startErrorStorageLimit < errorCount then do
+        -- Some errors are not stored
+        endErrorStorageLimit = min(endErrorStorageLimit, errorCount - startErrorStorageLimit)
+        if endErrorStorageLimit > 0 then endErrorMessages = .array~new(endErrorStorageLimit)
+    end
+
+    s = .RexxUnicodeReverseGraphemeSupplier~new(string, , , self, "endGraphemeAction", "endCodepointAction")
+    do while s~available
+        -- stop when all end storages are full
+        full = .true
+        if .nil \== endCodepointIndexes, endCodepointIndexes~items < endCodepointStorageLimit then full = .false
+        if .nil \== endGraphemeIndexes, endGraphemeIndexes~items < endGraphemeStorageLimit then full = .false
+        if .nil \== endErrorMessages, endErrorMessages~items < endErrorStorageLimit then full = .false
+        if full then leave
+
+        s~next
+    end
+
+
+-- Called by a grapheme supplier for every valid codepoint  and every invalid byte sequence
+::method startCodepointAction package
+    expose codepointCount -
+           startCodepointStorageLimit startCodepointIndexes -
+           errorCount -
+           startErrorStorageLimit startErrorMessages
+    -- trace i
+    use strict arg error /* boolean */, indexB /* >0 */, sizeB, codepoint /* integer */, errorMsg=""
+
+    if error then do
+        -- The byte sequence is invalid
+        errorCount += 1
+        if .nil \== startErrorMessages, startErrorMessages~items < startErrorStorageLimit then startErrorMessages~append(errorMsg)
+
+        -- stopAtFirstError is not supported by a supplier, but is supported by a native iterator
+        if .true /* \ stopAtFirstError */ then do
+            codepointCount += 1
+            if .nil \== startCodepointIndexes, startCodepointIndexes~items < startCodepointStorageLimit then startCodepointIndexes~append(-indexB) -- a negative index means "error"
+        end
+    end
+    else do
+        codepointCount += 1
+        if .nil \== startCodepointIndexes, startCodepointIndexes~items < startCodepointStorageLimit then startCodepointIndexes~append(indexB)
+    end
+
+
+-- Called by a grapheme supplier for every grapheme  and every invalid byte sequence
+::method startGraphemeAction package
+    expose graphemeCount -
+           startGraphemeStorageLimit startGraphemeIndexes startLastGraphemeNextIndex
+    -- trace i
+    use strict arg error /* boolean */, indexB /* >0 */, sizeB, errorMsg=""
+
+    if error then do
+         -- stopAtFirstError is not supported by a supplier, but is supported by a native iterator
+        if .true /* \ stopAtFirstError */ then do
+            graphemeCount += 1
+            if .nil \== startGraphemeIndexes, startGraphemeIndexes~items < startGraphemeStorageLimit then do
+                startGraphemeIndexes~append(-indexB) -- a negative index means "error"
+                startLastGraphemeNextIndex = indexB + sizeB
+            end
+        end
+    end
+    else do
+        graphemeCount += 1
+        if .nil \== startGraphemeIndexes, startGraphemeIndexes~items < startGraphemeStorageLimit then do
+            startGraphemeIndexes~append(indexB)
+            startLastGraphemeNextIndex = indexB + sizeB
+        end
+    end
+
+
+-- Called by a reverse grapheme supplier for every valid codepoint  and every invalid byte sequence
+::method endCodepointAction package
+    expose endCodepointStorageLimit endCodepointIndexes -
+           endErrorStorageLimit endErrorMessages
+    -- trace i
+    use strict arg error /* boolean */, indexB /* >0 */, sizeB, codepoint /* integer */, errorMsg=""
+
+    if error then do
+        -- The byte sequence is invalid
+        if .nil \== endErrorMessages, endErrorMessages~items < endErrorStorageLimit then endErrorMessages~append(errorMsg)
+        -- stopAtFirstError is not supported by a supplier, but is supported by a native iterator
+        if .true /* \ stopAtFirstError */ then do
+            if .nil \== endCodepointIndexes, endCodepointIndexes~items < endCodepointStorageLimit then endCodepointIndexes~append(-indexB) -- a negative index means "error"
+        end
+    end
+    else do
+        if .nil \== endCodepointIndexes, endCodepointIndexes~items < endCodepointStorageLimit then endCodepointIndexes~append(indexB)
+    end
+
+
+-- Called by a reverse grapheme supplier for every grapheme  and every invalid byte sequence
+::method endGraphemeAction package
+    expose endGraphemeStorageLimit endGraphemeIndexes
+    -- trace i
+    use strict arg error /* boolean */, indexB /* >0 */, sizeB, errorMsg=""
+
+    if error then do
+         -- stopAtFirstError is not supported by a supplier, but is supported by a native iterator
+        if .true /* \ stopAtFirstError */ then do
+            if .nil \== endGraphemeIndexes, endGraphemeIndexes~items < endGraphemeStorageLimit then endGraphemeIndexes~append(-indexB) -- a negative index means "error"
+        end
+    end
+    else do
+        if .nil \== endGraphemeIndexes, endGraphemeIndexes~items < endGraphemeStorageLimit then endGraphemeIndexes~append(indexB)
+    end
 
 
 -- Converts a codepoint index to a byte index
 ::method codepointIndexB
     expose string startCodepointIndexes endCodepointIndexes codepointCount
-    use strict arg indexC
+    use strict arg indexC, raiseError=.true
 
     signedIndexC = indexC -- used in error messages
-    if indexC <= 0 then do
+    if indexC == 0 then signal invalid_codepoint_index
+    else if indexC < 0 then do
         -- Index from the end
         indexC = codepointCount - abs(indexC) + 1
-        if signedIndexC == 0 then raise syntax 88.900 array ("Invalid code point index:" signedIndexC)
-        if indexC <= 0 then raise syntax 88.900 array ("Invalid code point index:" signedIndexC "exceeds the code point count" codepointCount)
-        if indexC > codepointCount then raise syntax 88.900 array ("Invalid code point index:" signedIndexC "exceeds the code point count" codepointCount)
+        if indexC <= 0 then signal codepoint_index_too_large
     end
     else do
         -- Index from the start
         -- Here, indexC > 0
-        if indexC > codepointCount then raise syntax 88.900 array ("Invalid code point index:" indexC "exceeds the code point count" codepointCount)
+        if indexC > codepointCount then signal codepoint_index_too_large
     end
 
     if .nil \== endCodepointIndexes,  endCodepointIndexes~items \== 0 then do
@@ -1301,61 +1412,59 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     -- Here, no end storage (either because not requested, or because the string is empty), or end storage not applicable for the request index
     items = 0
     if .nil \== startCodepointIndexes then items = startCodepointIndexes~items
-    if indexC > items then do
-        if codepointCount > items then do
-            -- Limited storage
-            if indexC <= codepointCount then raise syntax 88.900 array ("Code point index" signedIndexC "is not stored")
-        end
-        -- indexC is too large because the string has not enough codepoints.
-        raise syntax 88.900 array ("Invalid code point index:" signedIndexC "exceeds the codepoint count" items)
-    end
+    if indexC > items then signal codepoint_index_is_not_stored
     return startCodepointIndexes[indexC]
+
+    invalid_codepoint_index:        if raiseError then raise syntax 88.900 array ("Invalid code point index:" signedIndexC) ; else return .nil
+    codepoint_index_too_large:      if raiseError then raise syntax 88.900 array ("Invalid code point index:" signedIndexC "exceeds the code point count" codepointCount) ; else return .nil
+    codepoint_index_is_not_stored:  if raiseError then raise syntax 88.900 array ("Code point index" signedIndexC "is not stored") ; else return .nil
 
 
 -- Returns the codepoint index (1-based) corresponding to byte index (1-based) `indexB`.
--- It is zero if the codepoint index, or any of the intermediate codepoint indexes are not stored.
+-- It is .nil if the codepoint index, or any of the intermediate codepoint indexes are not stored.
 -- It is negative if the byte index is not aligned with a codepoint boundary.
+-- It is .nil if the codepoint index, or any of the intermediate codepoint indexes are not stored.
 -- Performs a binary search.
--- Supports negative byte indexes and sparse storage, even though the latter does not make much sense.
+-- Supports negative byte indexes and sparse storage.
 ::method codepointIndexC
     expose startCodepointIndexes endCodepointIndexes codepointCount
     use strict arg indexB
 
-    if indexB == 0 then raise syntax 88.900 array ("Invalid byte index:" indexB)
-
-    -- If self~string is empty, an error is raised because abs(indexB), which is not 0, can't be > self~string~length
     signedIndexB = indexB -- used in error messages
-    if indexB < 0 then do
+    if indexB == 0 then signal invalid_codepoint_index
+    else if indexB < 0 then do
         -- Index from the end
         indexB = self~string~length - abs(indexB) + 1
-        if indexB <= 0 then raise syntax 88.900 array ("Invalid byte index:" signedIndexB "exceeds the byte string length" self~string~length)
+        if indexB <= 0 then signal codepoint_index_too_large
         -- here, we are sure that indexB is in the range 1..self~string~length
     end
     else do
         -- Index from the start
         -- Here, indexB > 0
-        if indexB > self~string~length then raise syntax 88.900 array ("Invalid byte index:" indexB "exceeds the byte string length" self~string~length)
+        if indexB > self~string~length then signal codepoint_index_too_large
     end
 
-    -- here, codepointCount can't be zero because self~string is not empty
-
-    if .nil == startCodepointIndexes then return 0 -- no storage
+    -- Here, codepointCount can't be zero because self~string is not empty.
+    -- If self~string was empty, an error has been raised because abs(indexB), which is not 0, can't be > self~string~length
 
     indexC1 = 1
     indexC2 = codepointCount
     do forever
         if indexC1 > indexC2 then return -indexC2 -- -- negative when not aligned with the codepoint index
         indexC = (indexC1 + indexC2) % 2
-        item = startCodepointIndexes[indexC]
+        item = .nil
+        if .nil \== startCodepointIndexes then item = startCodepointIndexes[indexC]
         if .nil == item, .nil \== endCodepointIndexes then item = endCodepointIndexes[codepointCount - indexC + 1]
-        -- if .nil == item then raise syntax 88.900 array ("Codepoint index" indexC "is not stored. Binary search for byte index" signedIndexB "requires unlimited storage")
-        if .nil == item then return 0
+        if .nil == item then return .nil -- not stored
         item = abs(item) -- the stored index can be negative to indicate an invalid byte sequence
         if item == indexB then return indexC
         if item > indexB then indexC2 = indexC - 1
                          else indexC1 = indexC + 1
     end
     return -- should never reach here
+
+    invalid_codepoint_index:    raise syntax 88.900 array ("Invalid byte index:" signedIndexB)
+    codepoint_index_too_large:  raise syntax 88.900 array ("Invalid byte index:" signedIndexB "exceeds the byte string length" self~string~length)
 
 
 -- Returns the codepoint at position indexC
@@ -1367,36 +1476,32 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     return .RexxUnicode~utf8DecodeCodepoint(string, startB) -- yes, must decode to return the codepoint as a whole number
 
 
--- Converts a grapheme index to a byte index
+-- Converts a grapheme index to a byte index.
+-- When `next` is .true, return the byte index of the next grapheme index (this is
+-- different from asking the byte index of indexG + 1, because indexG + 1 may be
+-- considered too large).
 ::method graphemeIndexB
-    expose string startGraphemeIndexes lastGraphemeSuccessorIndex endGraphemeIndexes graphemeCount
-    use strict arg indexG, plus1 = .false
+    expose string startGraphemeIndexes startLastGraphemeNextIndex endGraphemeIndexes graphemeCount
+    use strict arg indexG, next = .false, raiseError=.true
 
     signedIndexG = indexG -- used in error messages
     if indexG <= 0 then do
         -- Index from the end
         indexG = graphemeCount - abs(indexG) + 1
 
-        -- Special case, to not raise an error when the user requests the grapheme at position -1 (last grapheme).
-        -- This method is called internally with indexG == 0 and plus1 == .true when the index -1 was specified
-        if plus1, indexG == (graphemeCount + 1) then nop -- no error
-        else do
-            if signedIndexG == 0 then raise syntax 88.900 array ("Invalid grapheme index:" signedIndexG)
-            if indexG <= 0 then raise syntax 88.900 array ("Invalid grapheme index:" signedIndexG "exceeds the grapheme count" graphemeCount)
-            if indexG > graphemeCount then raise syntax 88.900 array ("Invalid grapheme index:" signedIndexG "exceeds the grapheme count" graphemeCount)
-        end
+        if signedIndexG == 0 then signal invalid_grapheme_index
+        if indexG <= 0 then signal grapheme_index_too_large
+        if indexG > graphemeCount then signal grapheme_index_too_large
     end
     else do
         -- Index from the start
         -- Here, indexG > 0
-
-        -- Special case, to not raise an error when the user requests the grapheme exactly at graphemeCount position (last grapheme).
-        -- This method is called internally with indexG == (graphemeCount + 1) and plus1 == .true
-        if plus1, indexG == (graphemeCount + 1) then nop -- no error
-        else if indexG > graphemeCount then raise syntax 88.900 array ("Invalid grapheme index:" signedIndexG "exceeds the grapheme count" graphemeCount)
+        if indexG > graphemeCount then signal grapheme_index_too_large
     end
 
-    if .nil \== endGraphemeIndexes,  endGraphemeIndexes~items \== 0 then do
+    if next then indexG += 1
+
+    if .nil \== endGraphemeIndexes, endGraphemeIndexes~items \== 0 then do
         /*
         We have a non-empty end storage.
         Assuming a string made of 10 graphemes, a start storage limit of 3, an end storage limit of 4.
@@ -1412,14 +1517,8 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
         if indexG > firstEndIndexMinus1 then do
             -- The requested index is in the end storage
 
-            -- special case, to not raise an error when the user requests the grapheme exactly at graphemeCount position (last grapheme).
-            if plus1, indexG == (graphemeCount + 1) then do
-                -- Don't return lastGraphemeSuccessorIndex,
-                -- because here we need the successor of the last grapheme,
-                -- not the successor of the last stored grapheme.
-                -- lastGraphemeSuccessorIndex is different from string~length + 1 when the storage is limited.
-                return string~length + 1 -- byte index of the grapheme after the grapheme at graphemeCount
-            end
+            -- This special case can happen when `next` is .true
+            if indexG == (graphemeCount + 1) then return string~length + 1 -- byte index of the grapheme after the grapheme at graphemeCount
 
             endIndexG = graphemeCount - indexG + 1 -- converts an index in the range 7..10 to an index in the range 4..1
             return endGraphemeIndexes[endIndexG]
@@ -1428,22 +1527,22 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 
     -- Here, no end storage (either because not requested, or because the string is empty), or end storage not applicable for the request index
 
-    -- special case, to not raise an error when the user requests the grapheme exactly at startGraphemeIndexes~items position (last stored grapheme).
-    if plus1, indexG == (startGraphemeIndexes~items + 1) then return lastGraphemeSuccessorIndex
+    if .nil == startGraphemeIndexes then signal codepoint_index_is_not_stored
 
-    if indexG > startGraphemeIndexes~items then do
-        if graphemeCount > startGraphemeIndexes~items then do
-            -- Limited storage
-            if indexG <= graphemeCount then raise syntax 88.900 array ("Grapheme index" signedIndexG "is not stored")
-        end
-        -- indexG is too large because the string has not enough codepoints.
-        raise syntax 88.900 array ("Invalid grapheme index:" signedIndexG "exceeds the grapheme count" startGraphemeIndexes~items)
-    end
+    -- This special case can happen when `next` is .true
+    if indexG == (startGraphemeIndexes~items + 1) then return startLastGraphemeNextIndex
+
+    if indexG > startGraphemeIndexes~items then signal grapheme_index_is_not_stored
     return startGraphemeIndexes[indexG]
+
+    invalid_grapheme_index:         if raiseError then raise syntax 88.900 array ("Invalid grapheme index:" signedIndexG) ; else return .nil
+    grapheme_index_too_large:       if raiseError then raise syntax 88.900 array ("Invalid grapheme index:" signedIndexG "exceeds the grapheme count" graphemeCount) ; else return .nil
+    grapheme_index_is_not_stored:   if raiseError then raise syntax 88.900 array ("Grapheme index" signedIndexG "is not stored") ; else return .nil
 
 
 -- Returns the grapheme index corresponding to byte index `indexB`.
 -- It is negative if the byte index is not aligned with a grapheme boundary.
+-- It is .nil if the grapheme index, or any of the intermediate grapheme indexes are not stored.
 -- Performs a binary search.
 -- Supports negative byte indexes and sparse storage, even though the latter does not make much sense.
 ::method graphemeIndexG
@@ -1454,14 +1553,14 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     if indexB <= 0 then do
         -- Index from the end
         indexB = self~string~length - abs(indexB) + 1
-        if signedIndexB == 0 then raise syntax 88.900 array ("Invalid byte index:" signedIndexB)
-        if indexB <= 0 then raise syntax 88.900 array ("Invalid byte index:" signedIndexB "exceeds the byte string length" self~string~length)
-        if indexB > self~string~length then raise syntax 88.900 array ("Invalid byte index:" signedIndexB "exceeds the byte string length" self~string~length)
+        if signedIndexB == 0 then signal invalid_byte_index
+        if indexB <= 0 then signal byte_index_too_large
+        if indexB > self~string~length then signal byte_index_too_large
     end
     else do
         -- Index from the start
         -- Here, indexB > 0
-        if indexB > self~string~length then raise syntax 88.900 array ("Invalid byte index:" indexB "exceeds the byte string length" self~string~length)
+        if indexB > self~string~length then signal byte_index_too_large
     end
 
     indexG1 = 1
@@ -1469,9 +1568,10 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     do forever
         if indexG1 > indexG2 then return -indexG2 -- -- negative when not aligned with the grapheme index
         indexG = (indexG1 + indexG2) % 2
-        item = startGraphemeIndexes[indexG]
+        item = .nil
+        if .nil \== startGraphemeIndexes then item = startGraphemeIndexes[indexG]
         if .nil == item, .nil \== endGraphemeIndexes then item = endGraphemeIndexes[graphemeCount - indexG + 1]
-        if .nil == item then raise syntax 88.900 array ("Grapheme index" indexG "is not stored. Binary search for byte index" signedIndexB "requires unlimited storage")
+        if .nil == item then return .nil
         item = abs(item) -- the stored index can be negative to indicate an invalid byte sequence
         if item == indexB then return indexG
         if item > indexB then indexG2 = indexG - 1
@@ -1479,13 +1579,16 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     end
     return -- should never reach here
 
+    invalid_byte_index:         raise syntax 88.900 array ("Invalid byte index:" signedIndexB)
+    byte_index_too_large:       raise syntax 88.900 array ("Invalid byte index:" signedIndexB "exceeds the byte string length" self~string~length)
+
 
 -- Returns the grapheme at position indexG
 ::method graphemeAtIndexG
     expose string
     use strict arg indexG
     startB = self~graphemeIndexB(indexG)
-    nextB = self~graphemeIndexB(indexG+1, /*plus1:*/ .true)
+    nextB = self~graphemeIndexB(indexG, /*next*/ .true)
     absStartB = abs(startB) -- startB can be negative (meaning current byte sequence is invalid)
     absNextB = abs(nextB) -- nextB can be negative (meaning next byte sequence is invalid)
     return string~substr(absStartB, absNextB - absStartB) -- yes, always the current byte sequence, even if invalid

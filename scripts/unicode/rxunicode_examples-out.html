@@ -42,7 +42,7 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 7 Sep 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S2ab5Qbc48c1c80
+</span><span style="font-weight:bold;color:green;">Input queue name: S139faQa19000540
 </span>
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">Examples in rxunicode.md
@@ -2419,47 +2419,47 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointIndexC(
 <span style="font-weight:bold;color:blue;">-- Binary search for codepoint indexes cannot work with non-incremental sparse storage
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 0, 1, 0, 0, 1)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~string~length; say i~left(2)&quot;:&quot; indexer~codepointIndexC(i); end</span>
-1 : 0
-2 : 0
-3 : 0
-4 : 0
-5 : 0
-6 : 0
-7 : 0
-8 : 0
-9 : 0
-10: 0
-11: 0
-12: 0
-13: 0
-14: 0
-15: 0
-16: 0
-17: 0
-18: 0
-19: 0
-20: 0
+1 : The NIL object
+2 : The NIL object
+3 : The NIL object
+4 : The NIL object
+5 : The NIL object
+6 : The NIL object
+7 : The NIL object
+8 : The NIL object
+9 : The NIL object
+10: The NIL object
+11: The NIL object
+12: The NIL object
+13: The NIL object
+14: The NIL object
+15: The NIL object
+16: The NIL object
+17: The NIL object
+18: The NIL object
+19: The NIL object
+20: The NIL object
 <span style="font-weight:bold;color:blue;">/*
-</span><span style="font-weight:bold;color:blue;">    1 : 0
-</span><span style="font-weight:bold;color:blue;">    2 : 0
-</span><span style="font-weight:bold;color:blue;">    3 : 0
-</span><span style="font-weight:bold;color:blue;">    4 : 0
-</span><span style="font-weight:bold;color:blue;">    5 : 0
-</span><span style="font-weight:bold;color:blue;">    6 : 0
-</span><span style="font-weight:bold;color:blue;">    7 : 0
-</span><span style="font-weight:bold;color:blue;">    8 : 0
-</span><span style="font-weight:bold;color:blue;">    9 : 0
-</span><span style="font-weight:bold;color:blue;">    10: 0
-</span><span style="font-weight:bold;color:blue;">    11: 0
-</span><span style="font-weight:bold;color:blue;">    12: 0
-</span><span style="font-weight:bold;color:blue;">    13: 0
-</span><span style="font-weight:bold;color:blue;">    14: 0
-</span><span style="font-weight:bold;color:blue;">    15: 0
-</span><span style="font-weight:bold;color:blue;">    16: 0
-</span><span style="font-weight:bold;color:blue;">    17: 0
-</span><span style="font-weight:bold;color:blue;">    18: 0
-</span><span style="font-weight:bold;color:blue;">    19: 0
-</span><span style="font-weight:bold;color:blue;">    20: 0
+</span><span style="font-weight:bold;color:blue;">    1 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    2 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    3 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    4 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    5 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    6 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    7 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    8 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    9 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    10: The NIL object
+</span><span style="font-weight:bold;color:blue;">    11: The NIL object
+</span><span style="font-weight:bold;color:blue;">    12: The NIL object
+</span><span style="font-weight:bold;color:blue;">    13: The NIL object
+</span><span style="font-weight:bold;color:blue;">    14: The NIL object
+</span><span style="font-weight:bold;color:blue;">    15: The NIL object
+</span><span style="font-weight:bold;color:blue;">    16: The NIL object
+</span><span style="font-weight:bold;color:blue;">    17: The NIL object
+</span><span style="font-weight:bold;color:blue;">    18: The NIL object
+</span><span style="font-weight:bold;color:blue;">    19: The NIL object
+</span><span style="font-weight:bold;color:blue;">    20: The NIL object
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
 
@@ -2470,8 +2470,9 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~stri
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 5, 0, 0, 5)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=  </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 6, 9, 13]</span>
 [ 1, 2, 6, 9, 13]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 20, 16, 13, 9, 6]</span>
-[ 20, 16, 13, 9, 6]
+<span style="font-weight:bold;color:blue;">-- No overlap between the end and start storage: 13, 9, 6 are already stored in the start storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 20, 16], not [ 20, 16, 13, 9, 6]</span>
+[ 20, 16]
 
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
@@ -2499,16 +2500,16 @@ an Array (shape [5], 5 items)
 </span>
 
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorMessages==</span>
-an Array (shape [5], 5 items)
+an Array (shape [2], 2 items)
  1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
  2 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
- 3 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
- 4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
- 5 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
 <span style="font-weight:bold;color:blue;">/*
-</span><span style="font-weight:bold;color:blue;">    an Array (shape [5], 5 items)
+</span><span style="font-weight:bold;color:blue;">    an Array (shape [2], 2 items)
 </span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
 </span><span style="font-weight:bold;color:blue;">     2 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">    No overlap between the end and start storage.
+</span><span style="font-weight:bold;color:blue;">    The following error messages are already stored in the start storage:
 </span><span style="font-weight:bold;color:blue;">     3 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
 </span><span style="font-weight:bold;color:blue;">     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
 </span><span style="font-weight:bold;color:blue;">     5 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
@@ -2522,8 +2523,9 @@ an Array (shape [5], 5 items)
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 0, 5, 0, 0, 5)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=   </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 20]</span>
 [ 1, 2, 20]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endGraphemeIndexes=     </span><span style="font-weight:bold;color:blue;">-- [ 20, 2, 1]</span>
-[ 20, 2, 1]
+<span style="font-weight:bold;color:blue;">-- No overlap between the end and start storage: 20, 2, 1 are already stored in the start storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items), not [ 20, 2, 1]</span>
+an Array (no shape, 0 items)
 
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
@@ -2589,10 +2591,47 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexG(-
 <span style="font-weight:bold;color:blue;">-- Binary search for grapheme indexes cannot work with non-incremental sparse storage
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 0, 1, 0, 0, 1)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~string~length; say i~left(2)&quot;:&quot; indexer~graphemeIndexG(i); end</span>
-<span style="font-weight:bold;color:red;">Grapheme index 2 is not stored. Binary search for byte index 1 requires unlimited storage.
-</span><span style="font-weight:bold;color:red;">Error code= 88.900
-</span><span style="font-weight:bold;color:blue;">/*
-</span><span style="font-weight:bold;color:blue;">    Grapheme index 2 is not stored. Binary search for byte index 1 requires unlimited storage.
+1 : The NIL object
+2 : The NIL object
+3 : The NIL object
+4 : The NIL object
+5 : The NIL object
+6 : The NIL object
+7 : The NIL object
+8 : The NIL object
+9 : The NIL object
+10: The NIL object
+11: The NIL object
+12: The NIL object
+13: The NIL object
+14: The NIL object
+15: The NIL object
+16: The NIL object
+17: The NIL object
+18: The NIL object
+19: The NIL object
+20: The NIL object
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    1 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    2 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    3 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    4 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    5 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    6 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    7 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    8 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    9 : The NIL object
+</span><span style="font-weight:bold;color:blue;">    10: The NIL object
+</span><span style="font-weight:bold;color:blue;">    11: The NIL object
+</span><span style="font-weight:bold;color:blue;">    12: The NIL object
+</span><span style="font-weight:bold;color:blue;">    13: The NIL object
+</span><span style="font-weight:bold;color:blue;">    14: The NIL object
+</span><span style="font-weight:bold;color:blue;">    15: The NIL object
+</span><span style="font-weight:bold;color:blue;">    16: The NIL object
+</span><span style="font-weight:bold;color:blue;">    17: The NIL object
+</span><span style="font-weight:bold;color:blue;">    18: The NIL object
+</span><span style="font-weight:bold;color:blue;">    19: The NIL object
+</span><span style="font-weight:bold;color:blue;">    20: The NIL object
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
 

@@ -3983,7 +3983,7 @@ This result is not affected by the storage limits.
 
 #### 7.3.3.   codepointIndexB
 
-    aRexxUnicodeStringIndexer~codepointIndexB( indexC )
+    aRexxUnicodeStringIndexer~codepointIndexB( indexC, raiseError = .true )
 
 Returns the byte index (1-based) corresponding to codepoint index (1-based) `indexC`.  
 It is negative if the codepoint's byte sequence is invalid.
@@ -3991,10 +3991,13 @@ It is negative if the codepoint's byte sequence is invalid.
 `indexC` must be a positive or negative whole number.  
 If `indexC` is negative, the codepoint index is counted from the end of the string.
 
-An error is raised when
+If `raiseError` is `.true` (the default), an error is raised when:
 
+- `indexC` is zero.
 - `abs(indexC)` exceeds the codepoint count.
 - the requested index is not stored and the indexer is non-incremental.
+
+If `raiseError` is `.false`, `.nil` is returned in case of error.
 
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
@@ -4006,8 +4009,8 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
     aRexxUnicodeStringIndexer~codepointIndexC( indexB )
 
 Returns the codepoint index (1-based) corresponding to byte index (1-based) `indexB`.  
-It is zero if the codepoint index cannot be found with a binary search.  
-It is negative if the byte index is not aligned with a codepoint boundary.
+It is negative if the byte index is not aligned with a codepoint boundary.  
+It is `.nil` if the codepoint index cannot be found with a binary search.  
 
 `indexB` must be a positive or negative whole number.  
 If `indexB` is negative, the byte index is counted from the end of the string.
@@ -4064,26 +4067,26 @@ indexer~codepointIndexC(-5)=    -- 6
 indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
 do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
     /*
-    1 : 0
-    2 : 0
-    3 : 0
-    4 : 0
-    5 : 0
-    6 : 0
-    7 : 0
-    8 : 0
-    9 : 0
-    10: 0
-    11: 0
-    12: 0
-    13: 0
-    14: 0
-    15: 0
-    16: 0
-    17: 0
-    18: 0
-    19: 0
-    20: 0
+    1 : The NIL object
+    2 : The NIL object
+    3 : The NIL object
+    4 : The NIL object
+    5 : The NIL object
+    6 : The NIL object
+    7 : The NIL object
+    8 : The NIL object
+    9 : The NIL object
+    10: The NIL object
+    11: The NIL object
+    12: The NIL object
+    13: The NIL object
+    14: The NIL object
+    15: The NIL object
+    16: The NIL object
+    17: The NIL object
+    18: The NIL object
+    19: The NIL object
+    20: The NIL object
     */
 
 ```
@@ -4110,7 +4113,8 @@ this method is used.
 ```rexx
 indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 5, 0, 0, 5)
 indexer~startCodepointIndexes=  -- [ 1, 2, 6, 9, 13]
-indexer~endCodepointIndexes=    -- [ 20, 16, 13, 9, 6]
+-- No overlap between the end and start storage: 13, 9, 6 are already stored in the start storage
+indexer~endCodepointIndexes=    -- [ 20, 16], not [ 20, 16, 13, 9, 6]
 
 ```
 
@@ -4163,9 +4167,12 @@ indexer~startErrorMessages==
 
 indexer~endErrorMessages==
     /*
-    an Array (shape [5], 5 items)
+    an Array (shape [2], 2 items)
      1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
      2 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+
+    No overlap between the end and start storage.
+    The following error messages are already stored in the start storage:
      3 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
      4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
      5 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
@@ -4209,7 +4216,8 @@ this method is used.
 ```rexx
 indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 5, 0, 0, 5)
 indexer~startGraphemeIndexes=   -- [ 1, 2, 20]
-indexer~endGraphemeIndexes=     -- [ 20, 2, 1]
+-- No overlap between the end and start storage: 20, 2, 1 are already stored in the start storage
+indexer~endCodepointIndexes=    -- an Array (no shape, 0 items), not [ 20, 2, 1]
 
 ```
 
@@ -4273,7 +4281,7 @@ This result is not affected by the storage limits.
 
 #### 7.3.14.   graphemeIndexB
 
-    aRexxUnicodeStringIndexer~graphemeIndexB( indexG )
+    aRexxUnicodeStringIndexer~graphemeIndexB( indexG, next = .false, raiseError = .true )
 
 Returns the byte index corresponding to grapheme index `indexG`.  
 It is negative if the grapheme's byte sequence is invalid.
@@ -4281,10 +4289,18 @@ It is negative if the grapheme's byte sequence is invalid.
 `indexG` must be a positive or negative whole number.  
 If `indexG` is negative, the grapheme index is counted from the end of the string.
 
-An error is raised when
+`next` is a boolean, with a default value of `.false`.  
+If `next` is `.true`, the byte index corresponding to the next grapheme index is
+returned. This is different from requesting the byte index of `indexG + 1`, because
+`indexG + 1` may be considered too large.
 
+If `raiseError` is `.true` (the default), an error is raised when:
+
+- `indexG` is zero.
 - `abs(indexG)` exceeds the grapheme count.
 - the requested index is not stored and the indexer is non-incremental.
+
+If `raiseError` is `.false`, `.nil` is returned in case of error.
 
 For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
 
@@ -4296,8 +4312,8 @@ For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnico
     aRexxUnicodeStringIndexer~graphemeIndexG( indexB )
 
 Returns the grapheme index corresponding to byte index `indexB`.  
-It is zero if the grapheme index cannot be found with a binary search.
-It is negative if the byte index is not aligned with a grapheme boundary.
+It is negative if the byte index is not aligned with a grapheme boundary.  
+It is `.nil` if the grapheme index cannot be found with a binary search.
 
 `indexB` must be a positive or negative whole number.  
 If `indexB` is negative, the byte index is counted from the end of the string.
@@ -4354,7 +4370,26 @@ indexer~graphemeIndexG(-19)=   -- 2
 indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
 do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
     /*
-    Grapheme index 2 is not stored. Binary search for byte index 1 requires unlimited storage.
+    1 : The NIL object
+    2 : The NIL object
+    3 : The NIL object
+    4 : The NIL object
+    5 : The NIL object
+    6 : The NIL object
+    7 : The NIL object
+    8 : The NIL object
+    9 : The NIL object
+    10: The NIL object
+    11: The NIL object
+    12: The NIL object
+    13: The NIL object
+    14: The NIL object
+    15: The NIL object
+    16: The NIL object
+    17: The NIL object
+    18: The NIL object
+    19: The NIL object
+    20: The NIL object
     */
 
 ```
