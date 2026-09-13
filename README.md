@@ -19,6 +19,8 @@ Unlike [Executor][executor] and [Executor5][executor5], this repository includes
 - [String~isASCII][diary_string_isascii]
 - [String~translateInto][string_translateinto]
 - [Unicode support][unicode_support]
+- [Object~objectSize][diary_object_objectsize]
+- [Object~objectVariables][diary_object_objectvariables]
 
 
 ## ooRexx-5 bugs fixed but not yet backported:
@@ -61,14 +63,16 @@ Unlike [Executor][executor] and [Executor5][executor5], this repository includes
 <img src="images/Executor5-bulk_mascot_wbg.png" alt="Executor5-bulk mascot" width="60%">
 </div>
 
-[build_executor5_bulk]: https://github.com/jlfaucher/builder/blob/master/build-executor5-bulk.txt
-[build_icu4oorexx]: https://github.com/jlfaucher/builder/blob/master/build-ICU4ooRexx.txt
+[build_executor5_bulk]: https://github.com/jlfaucher/builder/blob/master/build-executor5-bulk.txt "Build Executor5-bulk"
+[build_icu4oorexx]: https://github.com/jlfaucher/builder/blob/master/build-ICU4ooRexx.txt "Build ICU4ooRexx"
 [diary]: https://github.com/jlfaucher/executor5-bulk/blob/main/_diary.txt "Diary"
+[diary_object_objectsize]: https://github.com/jlfaucher/executor5-bulk/blob/60a16f3bc296636cadd2281906d3746916150e09/_diary.txt#L845-L852 "Object~objectSize"
+[diary_string_isascii]: https://github.com/jlfaucher/executor5-bulk/blob/b9a6fbb04015f96634c707412a0ff735e19a80df/_diary.txt#L470-L583 "String~isASCII"
 [executor]: https://github.com/jlfaucher/executor "Executor"
 [executor5]: https://github.com/jlfaucher/executor5 "Executor5"
 [rxmessagebox]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/rexxutil/rxmessagebox.html "RxMessageBox"
 [sourceforge]: https://sourceforge.net/p/oorexx/code-0/HEAD/tree "SourceForge"
-[stream_istty]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/stream/stream_istty.html "stream~query('isTTY')"
-[diary_string_isascii]: https://github.com/jlfaucher/executor5-bulk/blob/b9a6fbb04015f96634c707412a0ff735e19a80df/_diary.txt#L470-L583
+[stream_istty]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/stream/stream_istty.html "Stream~query('isTTY')"
 [string_translateinto]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/string/translateInto.html "String~translateInto"
-[unicode_support]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/README.html
+[unicode_support]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/README.html "Unicode support"
+[diary_object_objectvariables]: https://github.com/jlfaucher/executor5-bulk/blob/60a16f3bc296636cadd2281906d3746916150e09/_diary.txt#L856-L859 "Object~objectVariables"
