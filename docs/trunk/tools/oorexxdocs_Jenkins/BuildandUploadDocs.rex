@@ -174,7 +174,7 @@ say 'Debug sfdocfolder' sfdocfolder
     if rexxReqs() then  -- Rexx programs are available to build documents
       do a_doc over buildArray
         call hldoc2pdf a_doc
-        address '' scpcmd pdfpath || .file~separator || a_doc || '.pdf' sfuser || '@' || sfIP || sfdocfolde
+        address '' scpcmd pdfpath || .file~separator || a_doc || '.pdf' sfuser || '@' || sfIP || sfdocfolder
         call hldoc2html   -- no argument means the same document
         zip_source = htmlpath || .file~separator || a_doc || .file~separator
         call sysfileDelete zip_source || '.DS_Store'
