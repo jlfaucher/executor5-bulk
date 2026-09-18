@@ -162,7 +162,7 @@ Additional string services
     string = requestBaseString(string)
     if arg() == 2 then indexer = .RexxUnicodeStringIndexer~new(string)          -- no limit, because indexer requested by user
                   else indexer = .RexxUnicodeStringIndexer~new(string, 0, 0, 0) -- no need to store indexes and errors
-    return indexer~info
+    return indexer~stringInfo
 
 
 ::method stringIsASCII class
@@ -1595,7 +1595,7 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 
 
 -- Returns a string providing information about the indexer's string
-::method info
+::method stringInfo
     use strict arg -- none
 
     string = self~string

@@ -4396,10 +4396,11 @@ do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); e
 
 
 <a id="RexxUnicodeStringIndexer_info"></a>
+<a id="RexxUnicodeStringIndexer_stringInfo"></a>
 
 #### 7.3.16.   info
 
-    aRexxUnicodeStringIndexer~info
+    aRexxUnicodeStringIndexer~stringInfo
 
 Returns a string providing information about the indexer's string:
 
@@ -4412,12 +4413,12 @@ Returns a string providing information about the indexer's string:
 **Examples:**
 
 ```rexx
-.RexxUnicodeStringIndexer~new("")~info=            -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
-.RexxUnicodeStringIndexer~new("e")~info=           -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
-.RexxUnicodeStringIndexer~new("é")~info=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
-.RexxUnicodeStringIndexer~new("€")~info=           -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
-.RexxUnicodeStringIndexer~new("🎅")~info=          -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
-.RexxUnicodeStringIndexer~new("👨‍👩‍👧")~info=          -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+.RexxUnicodeStringIndexer~new("")~stringInfo=       -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
+.RexxUnicodeStringIndexer~new("e")~stringInfo=      -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+.RexxUnicodeStringIndexer~new("é")~stringInfo=      -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
+.RexxUnicodeStringIndexer~new("€")~stringInfo=      -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
+.RexxUnicodeStringIndexer~new("🎅")~stringInfo=     -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+.RexxUnicodeStringIndexer~new("👨‍👩‍👧")~stringInfo=     -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
 
 ```
 
@@ -4425,7 +4426,7 @@ Returns a string providing information about the indexer's string:
 -- Invalid string
 -- U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
-.RexxUnicodeStringIndexer~new("E1 80 E2 F0 91 92 F1 BF 41"x)~info=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+.RexxUnicodeStringIndexer~new("E1 80 E2 F0 91 92 F1 BF 41"x)~stringInfo=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
 
 ```
 
