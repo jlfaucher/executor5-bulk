@@ -7,7 +7,44 @@ demo on
 
 
 -- ===============================================================================
--- 2026 Sept 17
+-- 2026 Sept 19
+
+/*
+[Unicode]
+
+Add a generic parameter stopIteration to utf8StringCodepointIterator and
+utf8StringGraphemeIterator.
+This is in preparation for the future native StringIndexer class.
+Impacted methods:
+- utf8StringEscape  (don't stop)
+- utf8StringInfo    (stop if stopAtFirstError is true)
+- C2U               (don't stop)
+- C2X               (don't stop)
+
+Search for "2026.09.19" to see the benchmark durations.
+Conclusion:
+The performance impact of using a stopIteration lambda is negligible.
+
+Regression tests
+*/
+
+-- The case stopAtFirstError was never tested...
+
+-- Error at the beginning
+.RexxUnicode~utf8StringInfo("F4 91"x || "ab🎅" || "👨‍👩‍👧cd", >g, >c, >e, /*stopAtFirstError:*/ .false)=; g=; c=; e=  -- 1; 8; 12; 2
+.RexxUnicode~utf8StringInfo("F4 91"x || "ab🎅" || "👨‍👩‍👧cd", >g, >c, >e, /*stopAtFirstError:*/ .true)=; g=; c=; e=   -- 1; 0; 0; 1
+
+-- Error in the middle
+.RexxUnicode~utf8StringInfo("ab🎅" || "F4 91"x || "👨‍👩‍👧cd", >g, >c, >e, /*stopAtFirstError:*/ .false)=; g=; c=; e=  -- 7; 8; 12; 2
+.RexxUnicode~utf8StringInfo("ab🎅" || "F4 91"x || "👨‍👩‍👧cd", >g, >c, >e, /*stopAtFirstError:*/ .true)=; g=; c=; e=   -- 7; 3; 3; 1
+
+-- Error at the end
+.RexxUnicode~utf8StringInfo("ab🎅" || "👨‍👩‍👧cd" || "F4 91"x, >g, >c, >e, /*stopAtFirstError:*/ .false)=; g=; c=; e=  -- 27; 8; 12; 2
+.RexxUnicode~utf8StringInfo("ab🎅" || "👨‍👩‍👧cd" || "F4 91"x, >g, >c, >e, /*stopAtFirstError:*/ .true)=; g=; c=; e=   -- 27; 6; 10; 1
+
+
+-- ===============================================================================
+-- 2026 Sept 18
 
 /*
 [Unicode]

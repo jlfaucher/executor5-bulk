@@ -1593,14 +1593,19 @@ struct NoCodepointAction
 };
 
 
+struct DontStop
+{
+    inline bool operator()
+    () const { return false; }
+};
+
+
 /**
  * Performs a full scan of a UTF-8 string, optionally invoking `codepointAction`
  * once for every codepoint scanned (including invalid byte sequences).
  *
  * @param str                   (in)    A UTF-8 string.
  * @param length                (in)    The string length in bytes
- * @param stopAtFirstError      (in)    true if must stop at first error.
- *                                      The default value is false.
  * @param codepointAction       (in)    Called once per scanned item, with
  *                                      the raw byte sequence for that codepoint
  *                                      (valid or not), and the decoded value
@@ -1611,15 +1616,22 @@ struct NoCodepointAction
  *     bool error,
  *     const utf8proc_uint8_t *bytes, utf8proc_ssize_t size,
  *     utf8proc_int32_t codepoint) const
+ * If error is true then codepoint is the replacement character U+FFFD
  *
- * if error is true then codepoint is the replacement character U+FFFD
+ * `stopIteration` is a `Callable` with signature bool operator()() const
+ * If the returned value is true, the iteration is stopped.
  */
-template <typename CodepointAction = NoCodepointAction>
+template
+<
+    typename CodepointAction = NoCodepointAction,
+    typename StopIteration = DontStop
+>
 static inline void utf8StringCodepointIterator(
     const utf8proc_uint8_t *str,
     utf8proc_ssize_t length,
-    bool stopAtFirstError,
-    CodepointAction codepointAction = CodepointAction())
+    CodepointAction codepointAction = CodepointAction(),
+    StopIteration stopIteration = DontStop()
+)
 {
     for (;;)
     {
@@ -1631,13 +1643,13 @@ static inline void utf8StringCodepointIterator(
             // Here, codepoint == -1
             sizeB = -sizeB;
             codepointAction(true, str, sizeB, 0xFFFD); // replacement character
-
-            if (stopAtFirstError) break;
+            if (stopIteration()) break;
         }
         else
         {
             codepointAction(false, str, sizeB, codepoint);
-        }
+            if (stopIteration()) break;
+       }
         str += sizeB;
         length -= sizeB;
     }
@@ -1661,8 +1673,6 @@ struct NoGraphemeAction
  *
  * @param str                   (in)    A UTF-8 string.
  * @param length                (in)    The string length in bytes
- * @param stopAtFirstError      (in)    true if must stop at first error.
- *                                      The default value is false.
  * @param graphemeAction        (in)    Called once per complete grapheme
  *                                      (error == false), and once per
  *                                      isolated invalid byte sequence
@@ -1677,22 +1687,28 @@ struct NoGraphemeAction
  * `graphemeAction` is a `Callable` with signature void operator()(
  *     bool error,
  *     const utf8proc_uint8_t *bytes, utf8proc_ssize_t size) const
+ *
  * `codepointAction` is a `Callable` with signature void operator()(
  *     bool error,
  *     const utf8proc_uint8_t *bytes, utf8proc_ssize_t size,
  *     utf8proc_int32_t codepoint) const
+ * If error is true then codepoint is the replacement character U+FFFD
+ *
+ * `stopIteration` is a `Callable` with signature bool operator()() const
+ *  If the returned value is true, the iteration is stopped.
  */
 template
 <
     typename GraphemeAction = NoGraphemeAction,
-    typename CodepointAction = NoCodepointAction
+    typename CodepointAction = NoCodepointAction,
+    typename StopIteration = DontStop
 >
 static inline const void utf8StringGraphemeIterator(
     const utf8proc_uint8_t *str,
     utf8proc_ssize_t length,
-    bool stopAtFirstError,
     GraphemeAction graphemeAction = GraphemeAction(),
-    CodepointAction codepointAction = CodepointAction()
+    CodepointAction codepointAction = CodepointAction(),
+    StopIteration stopIteration = DontStop()
 )
 {
     utf8proc_int32_t previousCodepoint = -1;
@@ -1726,7 +1742,7 @@ static inline const void utf8StringGraphemeIterator(
             codepointAction(true, str, sizeB, 0xFFFD); // replacement character
             graphemeAction(true, str, sizeB);
 
-            if (stopAtFirstError) break;
+            if (stopIteration()) break;
 
             gStart = str + sizeB;
         }
@@ -1765,6 +1781,7 @@ static inline const void utf8StringGraphemeIterator(
                 // The grapheme that was accumulating in [gStart, str) just closed, because `str` starts a new one.
                 graphemeAction(false, gStart, str - gStart);
                 gStart = str;
+                if (stopIteration()) break;
             }
         }
         previousCodepoint = codepoint;
@@ -2128,7 +2145,7 @@ RexxObject *RexxUnicodeServicesClass::utf8StringEscape(RexxString *string, RexxS
                         }
                     }
                 };
-                utf8StringCodepointIterator((const utf8proc_uint8_t *)start, length, /*stopAtFirstError:*/ false, codepointAction);
+                utf8StringCodepointIterator((const utf8proc_uint8_t *)start, length, codepointAction);
             }
             break;
 
@@ -2149,7 +2166,7 @@ RexxObject *RexxUnicodeServicesClass::utf8StringEscape(RexxString *string, RexxS
                         buffer->append((const char *)str, sizeB);
                     }
                 };
-                utf8StringGraphemeIterator((const utf8proc_uint8_t *)start, length, /*stopAtFirstError:*/ false, graphemeAction);
+                utf8StringGraphemeIterator((const utf8proc_uint8_t *)start, length, graphemeAction);
             }
             break;
 
@@ -2208,6 +2225,11 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
     const utf8proc_uint8_t *str = start;
     const utf8proc_uint8_t *firstInvalidByteSequence = NULL;
 
+    auto stopIteration = [&]()
+    {
+        return stopAtFirstError && errorCount != 0;
+    };
+
     if (refGraphemeCount == OREF_NULL)
     {
         // Fast path, no need to count graphemes
@@ -2223,8 +2245,9 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
                 codepointCount++;
             }
         };
-       utf8StringCodepointIterator(str, remainingLength, stopAtFirstError, codepointAction);
-   }
+
+        utf8StringCodepointIterator(str, remainingLength, codepointAction, stopIteration);
+    }
     else
     {
         // Slower path, must count graphemes
@@ -2252,7 +2275,7 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringInfo(RexxString *string, Variab
                 codepointCount++;
             }
         };
-        utf8StringGraphemeIterator(str, remainingLength, stopAtFirstError, graphemeAction, codepointAction);
+        utf8StringGraphemeIterator(str, remainingLength, graphemeAction, codepointAction, stopIteration);
     }
 
     if (refGraphemeCount != OREF_NULL)
@@ -2558,7 +2581,7 @@ RexxObject *RexxUnicodeServicesClass::C2U(RexxString *utf8String, MutableBuffer 
         first = false;
         codepoint2UPlus(codepoint, buffer);
     };
-    utf8StringCodepointIterator((const utf8proc_uint8_t *)start, length, /*stopAtFirstError:*/ false, codepointAction);
+    utf8StringCodepointIterator((const utf8proc_uint8_t *)start, length, codepointAction);
 
     if (destination != OREF_NULL) return destination; // The user passed a buffer, returns this buffer
     return buffer->makeString(); // The user did not pass a buffer, returns a string
@@ -2591,7 +2614,7 @@ RexxObject *RexxUnicodeServicesClass::C2X(RexxString *utf8String, MutableBuffer 
         first = false;
         codepoint2hex(str, sizeB, buffer);
     };
-    utf8StringCodepointIterator((const utf8proc_uint8_t *)start, length, /*stopAtFirstError:*/ false, codepointAction);
+    utf8StringCodepointIterator((const utf8proc_uint8_t *)start, length, codepointAction);
 
     if (destination != OREF_NULL) return destination; // The user passed a buffer, returns this buffer
     return buffer->makeString(); // The user did not pass a buffer, returns a string
