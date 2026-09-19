@@ -3042,6 +3042,32 @@ The default value is `""` (codepoint as a whole number).
 See the [`item`](#RexxUnicodeCodepointSupplier_item) method for the list of possible values.
 
 
+<a id="RexxUnicodeCodepointSupplier_init_advanced"></a>
+
+##### 3.2.4.1.   Advanced
+
+A `RexxUnicodeCodepointSupplier` instance can send messages to an observer.  
+**Note:** If an observer is assigned, it's not possible to create a copy of the supplier.
+
+A `RexxUnicodeCodepointSupplier` instance can start at a specified indexB.  
+The initial value of the supplier index can be specified with indexC.
+
+Additional arguments supported by `RexxUnicodeCodepointSupplier~init`:
+
+    observer=.nil               -- The observer receiving the messages.
+    codepointAction=.nil        -- Message sent for each decoded codepoint.
+    indexB=1                    -- Initial byte index (1-based): the first codepoint to decode starts at this index.
+    indexC=1                    -- Codepoint count from the begining of the string. Initial value corresponding to the initial byte index.
+
+Arguments of a codepoint message:
+
+    use strict arg error /* boolean */, -           -- .true if the codepoint byte sequence is invalid, .false otherwise
+                   indexB /* >0 */, -               -- index (1-based) of the first byte of the codepoint byte sequence
+                   sizeB, -                         -- size in bytes of the codepoint byte sequence
+                   codepoint /* whole number */, -  -- codepoint as a whole number value
+                   errorMsg=""                      -- error message when error is .true
+
+
 <a id="RexxUnicodeCodepointSupplier_item"></a>
 
 #### 3.2.5.   item
@@ -3284,6 +3310,40 @@ See the [`index`](#RexxUnicodeGraphemeSupplier_index) method for the list of pos
 If specified, `defaultItemType` defines the default item type returned by the `item` method.  
 The default value is `""` (grapheme as a string).  
 See the [`item`](#RexxUnicodeGraphemeSupplier_item) method for the list of possible values.
+
+
+<a id="RexxUnicodeGraphemeSupplier_init_advanced"></a>
+
+##### 4.2.4.1.   Advanced
+
+A `RexxUnicodeGraphemeSupplier` instance can send messages to an observer.  
+**Note:** If an observer is assigned, it's not possible to create a copy of the supplier.
+
+A `RexxUnicodeGraphemeSupplier` instance can start at a specified indexB.  
+The initial value of the supplier index can be specified with indexG.
+
+Additional arguments supported by `RexxUnicodeGraphemeSupplier~init`:
+
+        observer=.nil               -- The observer receiving the messages.
+        graphemeAction=.nil         -- Message sent for each decoded grapheme.
+        codepointAction=.nil        -- Message sent for each decoded codepoint.
+        indexB=1                    -- Initial byte index (1-based): the first grapheme to decode starts at this index.
+        indexG=1                    -- Grapheme count from the begining of the string. Initial value corresponding to the initial byte index.
+
+Arguments of a grapheme message:
+
+    use strict arg error /* boolean */, -           -- .true if the grapheme byte sequence is invalid, .false otherwise
+                   indexB /* >0 */, -               -- index (1-based) of the first byte of the grapheme byte sequence
+                   sizeB, -                         -- size in bytes of the grapheme byte sequence
+                   errorMsg=""                      -- error message when error is .true
+
+Arguments of a codepoint message:
+
+    use strict arg error /* boolean */, -           -- .true if the codepoint byte sequence is invalid, .false otherwise
+                   indexB /* >0 */, -               -- index (1-based) of the first byte of the codepoint byte sequence
+                   sizeB, -                         -- size in bytes of the codepoint byte sequence
+                   codepoint /* whole number */, -  -- codepoint as a whole number value
+                   errorMsg=""                      -- error message when error is .true
 
 
 <a id="RexxUnicodeGraphemeSupplier_item"></a>
@@ -3573,6 +3633,32 @@ The default value is `""` (codepoint as a whole number).
 See the [`item`](#RexxUnicodeReverseCodepointSupplier_item) method for the list of possible values.
 
 
+<a id="RexxUnicodeReverseCodepointSupplier_init_advanced"></a>
+
+##### 5.2.4.1.   Advanced
+
+A `RexxUnicodeReverseCodepointSupplier` instance can send messages to an observer.  
+**Note:** If an observer is assigned, it's not possible to create a copy of the supplier.
+
+A `RexxUnicodeReverseCodepointSupplier` instance can start at a specified indexB.  
+The initial value of the supplier index can be specified with indexC.
+
+Additional arguments supported by `RexxUnicodeReverseCodepointSupplier~init`:
+
+        observer=.nil               -- The observer receiving the messages.
+        codepointAction=.nil        -- Message sent for each decoded codepoint.
+        indexB=(string~length + 1)  -- Initial byte index (1-based): the first codepoint to decode ends just before this index.
+        indexC=1                    -- Codepoint count from the end of the string. Initial value corresponding to the initial byte index.
+
+Arguments of a codepoint message:
+
+    use strict arg error /* boolean */, -           -- .true if the codepoint byte sequence is invalid, .false otherwise
+                   indexB /* >0 */, -               -- index (1-based) of the first byte of the codepoint byte sequence
+                   sizeB, -                         -- size in bytes of the codepoint byte sequence
+                   codepoint /* whole number */, -  -- codepoint as a whole number value
+                   errorMsg=""                      -- error message when error is .true
+
+
 <a id="RexxUnicodeReverseCodepointSupplier_item"></a>
 
 #### 5.2.5.   item
@@ -3824,6 +3910,40 @@ The default value is `""` (grapheme as a string).
 See the [`item`](#RexxUnicodeReverseGraphemeSupplier_item) method for the list of possible values.
 
 
+<a id="RexxUnicodeReverseGraphemeSupplier_init_advanced"></a>
+
+##### 6.2.4.1.   Advanced
+
+A `RexxUnicodeReverseGraphemeSupplier` instance can send messages to an observer.  
+**Note:** If an observer is assigned, it's not possible to create a copy of the supplier.
+
+A `RexxUnicodeReverseGraphemeSupplier` instance can start at a specified indexB.  
+The initial value of the supplier index can be specified with indexG.
+
+Additional arguments supported by `RexxUnicodeReverseGraphemeSupplier~init`:
+
+        observer=.nil               -- The observer receiving the messages.
+        graphemeAction=.nil         -- Message sent for each decoded grapheme.
+        codepointAction=.nil        -- Message sent for each decoded codepoint.
+        indexB=(string~length + 1)  -- Initial byte position (1-based): the first grapheme to decode ends just before this index.
+        indexG=1                    -- Grapheme count from the end of the string. Initial value corresponding to the initial byte index.
+
+Arguments of a grapheme message:
+
+    use strict arg error /* boolean */, -           -- .true if the grapheme byte sequence is invalid, .false otherwise
+                   indexB /* >0 */, -               -- index (1-based) of the first byte of the grapheme byte sequence
+                   sizeB, -                         -- size in bytes of the grapheme byte sequence
+                   errorMsg=""                      -- error message when error is .true
+
+Arguments of a codepoint message:
+
+    use strict arg error /* boolean */, -           -- .true if the codepoint byte sequence is invalid, .false otherwise
+                   indexB /* >0 */, -               -- index (1-based) of the first byte of the codepoint byte sequence
+                   sizeB, -                         -- size in bytes of the codepoint byte sequence
+                   codepoint /* whole number */, -  -- codepoint as a whole number value
+                   errorMsg=""                      -- error message when error is .true
+
+
 <a id="RexxUnicodeReverseGraphemeSupplier_item"></a>
 
  6.2.5.   item
@@ -4064,7 +4184,7 @@ indexer~codepointIndexC(-5)=    -- 6
 
 ```rexx
 -- Binary search for codepoint indexes cannot work with non-incremental sparse storage
-indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1, 0)
 do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
     /*
     1 : The NIL object
@@ -4091,6 +4211,35 @@ do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); 
 
 ```
 
+```rexx
+-- Binary search for codepoint indexes is working with incremental sparse storage
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1, 0, /*incremental:*/ .true)
+do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
+    /*
+    1 : 1
+    2 : 2
+    3 : -2
+    4 : -2
+    5 : -2
+    6 : 3
+    7 : -3
+    8 : -3
+    9 : 4
+    10: -4
+    11: -4
+    12: -4
+    13: 5
+    14: -5
+    15: -5
+    16: 6
+    17: -6
+    18: -6
+    19: -6
+    20: 7
+    */
+
+```
+
 
 <a id="RexxUnicodeStringIndexer_endCodepointIndexes"></a>
 
@@ -4111,7 +4260,7 @@ this method is used.
 **Example**
 
 ```rexx
-indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 5, 0, 0, 5)
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 5, 0, 0, 5)
 indexer~startCodepointIndexes=  -- [ 1, 2, 6, 9, 13]
 -- No overlap between the end and start storage: 13, 9, 6 are already stored in the start storage
 indexer~endCodepointIndexes=    -- [ 20, 16], not [ 20, 16, 13, 9, 6]
@@ -4214,7 +4363,7 @@ this method is used.
 **Example**
 
 ```rexx
-indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 5, 0, 0, 5)
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 5, 0, 0, 5, 0)
 indexer~startGraphemeIndexes=   -- [ 1, 2, 20]
 -- No overlap between the end and start storage: 20, 2, 1 are already stored in the start storage
 indexer~endCodepointIndexes=    -- an Array (no shape, 0 items), not [ 20, 2, 1]
@@ -4367,7 +4516,7 @@ indexer~graphemeIndexG(-19)=   -- 2
 
 ```rexx
 -- Binary search for grapheme indexes cannot work with non-incremental sparse storage
-indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 1, 0, 0, 1, 0)
 do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
     /*
     1 : The NIL object
@@ -4394,8 +4543,36 @@ do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); e
 
 ```
 
+```rexx
+-- Binary search for grapheme indexes is working with incremental sparse storage
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 1, 0, 0, 1, 0, 0, /*incremental:*/ .true)
+do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
+    /*
+    1 : 1
+    2 : 2
+    3 : -2
+    4 : -2
+    5 : -2
+    6 : -2
+    7 : -2
+    8 : -2
+    9 : -2
+    10: -2
+    11: -2
+    12: -2
+    13: -2
+    14: -2
+    15: -2
+    16: -2
+    17: -2
+    18: -2
+    19: -2
+    20: 3
+    */
 
-<a id="RexxUnicodeStringIndexer_info"></a>
+```
+
+
 <a id="RexxUnicodeStringIndexer_stringInfo"></a>
 
 #### 7.3.16.   info
@@ -4440,14 +4617,16 @@ aRexxUnicodeStringIndexer~init(
     string,
 
     -- Start storage limits
-    startCodepointStorageLimit = (.RexxInfo~internalMaxNumber),
     startGraphemeStorageLimit = (.RexxInfo~internalMaxNumber),
+    startCodepointStorageLimit = (.RexxInfo~internalMaxNumber),
     startErrorStorageLimit = (.RexxInfo~internalMaxNumber),
     
     -- End storage limits
-    endCodepointStorageLimit = 0,
     endGraphemeStorageLimit = 0,
-    endErrorStorageLimit = 0
+    endCodepointStorageLimit = 0,
+    endErrorStorageLimit = 0,
+    
+    incremental = .false
     )
 ```
 
@@ -4455,14 +4634,14 @@ Initializes a `RexxUnicodeStringIndexer` instance with the UTF-8 string `string`
 
 Start storage limits can be specified when creating the indexer; by default, no limit is applied:
 
-- `startCodepointStorageLimit` determines how many codepoint indexes can be stored in the start storage.
 - `startGraphemeStorageLimit` determines how many grapheme indexes can be stored in the start storage.
+- `startCodepointStorageLimit` determines how many codepoint indexes can be stored in the start storage.
 - `startErrorStorageLimit` determines how many error messages can be stored in the start storage.
 
 End storage limits can be specified when creating the indexer; by default, no end storage is allocated (0).
 
-- `endCodepointStorageLimit` determines how many codepoint indexes can be stored in the end storage.
 - `endGraphemeStorageLimit` determines how many grapheme indexes can be stored in the end storage.
+- `endCodepointStorageLimit` determines how many codepoint indexes can be stored in the end storage.
 - `endErrorStorageLimit` determines how many error messages can be stored in the end storage.
 
 The start storage limits and end storage limits allow fine-tuning of memory usage.
@@ -4470,12 +4649,24 @@ The start storage limits and end storage limits allow fine-tuning of memory usag
 End storage is useful when start storage is limited;
 it allows sparse storage, where only the starting and ending indexes are stored.
 
+In incremental mode:
+
+- Limited storage can be completed on demand.
+- The errors `"Code point index is not stored"` and `"Grapheme index is not stored"`
+  are no longer raised.
+- When a requested index is not stored, that index is stored, along with any
+  missing intermediate indexes.
+- The storage to be updated (start or end) is selected based on the smaller
+  number of intermediate indexes to be stored. When the distance is the same,
+  the start storage is used because a forward decoding is faster than a backward
+  decoding.
+
 **Examples**
 
 ```rexx
 -- Example 1
 -- If the identifier is a valid UTF-8 string and is made of just one codepoint then return this codepoint.
-indexer = .RexxUnicodeStringIndexer~new(identifier, /*startCodepointStorageLimit:*/ 1, /*startGraphemeStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 0)
+indexer = .RexxUnicodeStringIndexer~new(identifier, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 1, /*startErrorStorageLimit:*/ 0)
 if indexer~errorCount == 0, indexer~codepointCount == 1 then return indexer~codepointAtIndexC(1)
 
 ```
@@ -4485,8 +4676,8 @@ if indexer~errorCount == 0, indexer~codepointCount == 1 then return indexer~code
 -- U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
 indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x, -
-                                        /*startCodepointStorageLimit:*/ 4, -
                                         /*startGraphemeStorageLimit:*/ 2, -
+                                        /*startCodepointStorageLimit:*/ 4, -
                                         /*startErrorStorageLimit:*/ 1)
 
 -- The specified start codepoint storage limit is 4
@@ -4530,7 +4721,7 @@ indexer~errorCount=         -- 7
 -- Gets the five last grapheme indexes.
 -- In case of error, reports only the first error.
 string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
-indexer = .RexxUnicodeStringIndexer~new(string, /*startCodepointStorageLimit:*/ 0, /*startGraphemeStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 1, /*endCodepointStorageLimit:*/ 0, /*endGraphemeStorageLimit:*/ 5)
+indexer = .RexxUnicodeStringIndexer~new(string, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 1, /*endGraphemeStorageLimit:*/ 5, /*endCodepointStorageLimit:*/ 0)
 indexer~errorCount=                 -- 7
 indexer~startErrorMessages~items=   -- 1
 indexer~startErrorMessages[1]=      -- 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'

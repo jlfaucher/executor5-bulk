@@ -2986,6 +2986,28 @@ number).<br />
 See the <a
 href="#RexxUnicodeCodepointSupplier_item"><code>item</code></a> method
 for the list of possible values.</p>
+<p><a id="RexxUnicodeCodepointSupplier_init_advanced"></a></p>
+<h5 id="advanced">3.2.4.1.   Advanced</h5>
+<p>A <code>RexxUnicodeCodepointSupplier</code> instance can send
+messages to an observer.<br />
+<strong>Note:</strong> If an observer is assigned, it's not possible to
+create a copy of the supplier.</p>
+<p>A <code>RexxUnicodeCodepointSupplier</code> instance can start at a
+specified indexB.<br />
+The initial value of the supplier index can be specified with
+indexC.</p>
+<p>Additional arguments supported by
+<code>RexxUnicodeCodepointSupplier~init</code>:</p>
+<pre><code>observer=.nil               -- The observer receiving the messages.
+codepointAction=.nil        -- Message sent for each decoded codepoint.
+indexB=1                    -- Initial byte index (1-based): the first codepoint to decode starts at this index.
+indexC=1                    -- Codepoint count from the begining of the string. Initial value corresponding to the initial byte index.</code></pre>
+<p>Arguments of a codepoint message:</p>
+<pre><code>use strict arg error /* boolean */, -           -- .true if the codepoint byte sequence is invalid, .false otherwise
+               indexB /* &gt;0 */, -               -- index (1-based) of the first byte of the codepoint byte sequence
+               sizeB, -                         -- size in bytes of the codepoint byte sequence
+               codepoint /* whole number */, -  -- codepoint as a whole number value
+               errorMsg=&quot;&quot;                      -- error message when error is .true</code></pre>
 <p><a id="RexxUnicodeCodepointSupplier_item"></a></p>
 <h4 id="item">3.2.5.   item</h4>
 <pre><code>aRexxUnicodeCodepointSupplier~item( type = defaultItemType )</code></pre>
@@ -3216,6 +3238,34 @@ The default value is <code>""</code> (grapheme as a string).<br />
 See the <a
 href="#RexxUnicodeGraphemeSupplier_item"><code>item</code></a> method
 for the list of possible values.</p>
+<p><a id="RexxUnicodeGraphemeSupplier_init_advanced"></a></p>
+<h5 id="advanced-1">4.2.4.1.   Advanced</h5>
+<p>A <code>RexxUnicodeGraphemeSupplier</code> instance can send messages
+to an observer.<br />
+<strong>Note:</strong> If an observer is assigned, it's not possible to
+create a copy of the supplier.</p>
+<p>A <code>RexxUnicodeGraphemeSupplier</code> instance can start at a
+specified indexB.<br />
+The initial value of the supplier index can be specified with
+indexG.</p>
+<p>Additional arguments supported by
+<code>RexxUnicodeGraphemeSupplier~init</code>:</p>
+<pre><code>    observer=.nil               -- The observer receiving the messages.
+    graphemeAction=.nil         -- Message sent for each decoded grapheme.
+    codepointAction=.nil        -- Message sent for each decoded codepoint.
+    indexB=1                    -- Initial byte index (1-based): the first grapheme to decode starts at this index.
+    indexG=1                    -- Grapheme count from the begining of the string. Initial value corresponding to the initial byte index.</code></pre>
+<p>Arguments of a grapheme message:</p>
+<pre><code>use strict arg error /* boolean */, -           -- .true if the grapheme byte sequence is invalid, .false otherwise
+               indexB /* &gt;0 */, -               -- index (1-based) of the first byte of the grapheme byte sequence
+               sizeB, -                         -- size in bytes of the grapheme byte sequence
+               errorMsg=&quot;&quot;                      -- error message when error is .true</code></pre>
+<p>Arguments of a codepoint message:</p>
+<pre><code>use strict arg error /* boolean */, -           -- .true if the codepoint byte sequence is invalid, .false otherwise
+               indexB /* &gt;0 */, -               -- index (1-based) of the first byte of the codepoint byte sequence
+               sizeB, -                         -- size in bytes of the codepoint byte sequence
+               codepoint /* whole number */, -  -- codepoint as a whole number value
+               errorMsg=&quot;&quot;                      -- error message when error is .true</code></pre>
 <p><a id="RexxUnicodeGraphemeSupplier_item"></a></p>
 <h4 id="item-1">4.2.5.   item</h4>
 <pre><code>aRexxUnicodeGraphemeSupplier~item( type = defaultItemType )</code></pre>
@@ -3489,6 +3539,28 @@ number).<br />
 See the <a
 href="#RexxUnicodeReverseCodepointSupplier_item"><code>item</code></a>
 method for the list of possible values.</p>
+<p><a id="RexxUnicodeReverseCodepointSupplier_init_advanced"></a></p>
+<h5 id="advanced-2">5.2.4.1.   Advanced</h5>
+<p>A <code>RexxUnicodeReverseCodepointSupplier</code> instance can send
+messages to an observer.<br />
+<strong>Note:</strong> If an observer is assigned, it's not possible to
+create a copy of the supplier.</p>
+<p>A <code>RexxUnicodeReverseCodepointSupplier</code> instance can start
+at a specified indexB.<br />
+The initial value of the supplier index can be specified with
+indexC.</p>
+<p>Additional arguments supported by
+<code>RexxUnicodeReverseCodepointSupplier~init</code>:</p>
+<pre><code>    observer=.nil               -- The observer receiving the messages.
+    codepointAction=.nil        -- Message sent for each decoded codepoint.
+    indexB=(string~length + 1)  -- Initial byte index (1-based): the first codepoint to decode ends just before this index.
+    indexC=1                    -- Codepoint count from the end of the string. Initial value corresponding to the initial byte index.</code></pre>
+<p>Arguments of a codepoint message:</p>
+<pre><code>use strict arg error /* boolean */, -           -- .true if the codepoint byte sequence is invalid, .false otherwise
+               indexB /* &gt;0 */, -               -- index (1-based) of the first byte of the codepoint byte sequence
+               sizeB, -                         -- size in bytes of the codepoint byte sequence
+               codepoint /* whole number */, -  -- codepoint as a whole number value
+               errorMsg=&quot;&quot;                      -- error message when error is .true</code></pre>
 <p><a id="RexxUnicodeReverseCodepointSupplier_item"></a></p>
 <h4 id="item-2">5.2.5.   item</h4>
 <pre><code>aRexxUnicodeReverseCodepointSupplier~item( type = defaultItemType )</code></pre>
@@ -3723,6 +3795,34 @@ The default value is <code>""</code> (grapheme as a string).<br />
 See the <a
 href="#RexxUnicodeReverseGraphemeSupplier_item"><code>item</code></a>
 method for the list of possible values.</p>
+<p><a id="RexxUnicodeReverseGraphemeSupplier_init_advanced"></a></p>
+<h5 id="advanced-3">6.2.4.1.   Advanced</h5>
+<p>A <code>RexxUnicodeReverseGraphemeSupplier</code> instance can send
+messages to an observer.<br />
+<strong>Note:</strong> If an observer is assigned, it's not possible to
+create a copy of the supplier.</p>
+<p>A <code>RexxUnicodeReverseGraphemeSupplier</code> instance can start
+at a specified indexB.<br />
+The initial value of the supplier index can be specified with
+indexG.</p>
+<p>Additional arguments supported by
+<code>RexxUnicodeReverseGraphemeSupplier~init</code>:</p>
+<pre><code>    observer=.nil               -- The observer receiving the messages.
+    graphemeAction=.nil         -- Message sent for each decoded grapheme.
+    codepointAction=.nil        -- Message sent for each decoded codepoint.
+    indexB=(string~length + 1)  -- Initial byte position (1-based): the first grapheme to decode ends just before this index.
+    indexG=1                    -- Grapheme count from the end of the string. Initial value corresponding to the initial byte index.</code></pre>
+<p>Arguments of a grapheme message:</p>
+<pre><code>use strict arg error /* boolean */, -           -- .true if the grapheme byte sequence is invalid, .false otherwise
+               indexB /* &gt;0 */, -               -- index (1-based) of the first byte of the grapheme byte sequence
+               sizeB, -                         -- size in bytes of the grapheme byte sequence
+               errorMsg=&quot;&quot;                      -- error message when error is .true</code></pre>
+<p>Arguments of a codepoint message:</p>
+<pre><code>use strict arg error /* boolean */, -           -- .true if the codepoint byte sequence is invalid, .false otherwise
+               indexB /* &gt;0 */, -               -- index (1-based) of the first byte of the codepoint byte sequence
+               sizeB, -                         -- size in bytes of the codepoint byte sequence
+               codepoint /* whole number */, -  -- codepoint as a whole number value
+               errorMsg=&quot;&quot;                      -- error message when error is .true</code></pre>
 <p><a id="RexxUnicodeReverseGraphemeSupplier_item"></a></p>
 <p>6.2.5.   item</p>
 <pre><code>aRexxUnicodeReverseGraphemeSupplier~item( type = defaultItemType )</code></pre>
@@ -3945,7 +4045,7 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 </div>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Binary search for codepoint indexes cannot work with non-incremental sparse storage</span></code>
-<code lineno="2"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span></code>
+<code lineno="2"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span></code>
 <code lineno="3"><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-ws"> </span><span class="rx-skw">to</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">string</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-op">~</span><span class="rx-const rx-method">left</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIndexC</span><span class="rx-spe">(</span><span class="rx-var">i</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
 <code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="5"><span class="rx-cm">    1 : The NIL object</span></code>
@@ -3972,6 +4072,35 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 <code lineno="26">
 </code></pre>
 </div>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Binary search for codepoint indexes is working with incremental sparse storage</span></code>
+<code lineno="2"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*incremental:*/</span><span class="rx-ws"> </span><span class="rx-env">.true</span><span class="rx-spe">)</span></code>
+<code lineno="3"><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-ws"> </span><span class="rx-skw">to</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">string</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-op">~</span><span class="rx-const rx-method">left</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointIndexC</span><span class="rx-spe">(</span><span class="rx-var">i</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
+<code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="5"><span class="rx-cm">    1 : 1</span></code>
+<code lineno="6"><span class="rx-cm">    2 : 2</span></code>
+<code lineno="7"><span class="rx-cm">    3 : -2</span></code>
+<code lineno="8"><span class="rx-cm">    4 : -2</span></code>
+<code lineno="9"><span class="rx-cm">    5 : -2</span></code>
+<code lineno="10"><span class="rx-cm">    6 : 3</span></code>
+<code lineno="11"><span class="rx-cm">    7 : -3</span></code>
+<code lineno="12"><span class="rx-cm">    8 : -3</span></code>
+<code lineno="13"><span class="rx-cm">    9 : 4</span></code>
+<code lineno="14"><span class="rx-cm">    10: -4</span></code>
+<code lineno="15"><span class="rx-cm">    11: -4</span></code>
+<code lineno="16"><span class="rx-cm">    12: -4</span></code>
+<code lineno="17"><span class="rx-cm">    13: 5</span></code>
+<code lineno="18"><span class="rx-cm">    14: -5</span></code>
+<code lineno="19"><span class="rx-cm">    15: -5</span></code>
+<code lineno="20"><span class="rx-cm">    16: 6</span></code>
+<code lineno="21"><span class="rx-cm">    17: -6</span></code>
+<code lineno="22"><span class="rx-cm">    18: -6</span></code>
+<code lineno="23"><span class="rx-cm">    19: -6</span></code>
+<code lineno="24"><span class="rx-cm">    20: 7</span></code>
+<code lineno="25"><span class="rx-cm">    */</span></code>
+<code lineno="26">
+</code></pre>
+</div>
 <p><a id="RexxUnicodeStringIndexer_endCodepointIndexes"></a></p>
 <h4 id="endcodepointindexes">7.3.5.   endCodepointIndexes</h4>
 <pre><code>aRexxUnicodeStringIndexer~endCodepointIndexes</code></pre>
@@ -3986,7 +4115,7 @@ optimized for memory usage, but ooRexx arrays are not. Moreover, a new
 array is created each time this method is used.</p>
 <p><strong>Example</strong></p>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">)</span></code>
+<pre><code lineNo="1"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">)</span></code>
 <code lineno="2"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startCodepointIndexes</span><span class="rx-spe">=</span><span class="rx-ws">  </span><span class="rx-lncm">-- [ 1, 2, 6, 9, 13]</span></code>
 <code lineno="3"><span class="rx-lncm">-- No overlap between the end and start storage: 13, 9, 6 are already stored in the start storage</span></code>
 <code lineno="4"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">endCodepointIndexes</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- [ 20, 16], not [ 20, 16, 13, 9, 6]</span></code>
@@ -4069,7 +4198,7 @@ optimized for memory usage, but ooRexx arrays are not. Moreover, a new
 array is created each time this method is used.</p>
 <p><strong>Example</strong></p>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">)</span></code>
+<pre><code lineNo="1"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span></code>
 <code lineno="2"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startGraphemeIndexes</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- [ 1, 2, 20]</span></code>
 <code lineno="3"><span class="rx-lncm">-- No overlap between the end and start storage: 20, 2, 1 are already stored in the start storage</span></code>
 <code lineno="4"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">endCodepointIndexes</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- an Array (no shape, 0 items), not [ 20, 2, 1]</span></code>
@@ -4205,7 +4334,7 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 </div>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Binary search for grapheme indexes cannot work with non-incremental sparse storage</span></code>
-<code lineno="2"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span></code>
+<code lineno="2"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span></code>
 <code lineno="3"><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-ws"> </span><span class="rx-skw">to</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">string</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-op">~</span><span class="rx-const rx-method">left</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeIndexG</span><span class="rx-spe">(</span><span class="rx-var">i</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
 <code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
 <code lineno="5"><span class="rx-cm">    1 : The NIL object</span></code>
@@ -4232,9 +4361,38 @@ href="#RexxUnicodeStringIndexer_init"><code>aRexxUnicodeStringIndexer~init</code
 <code lineno="26">
 </code></pre>
 </div>
-<p><a id="RexxUnicodeStringIndexer_info"></a></p>
+<div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
+<pre><code lineNo="1"><span class="rx-lncm">-- Binary search for grapheme indexes is working with incremental sparse storage</span></code>
+<code lineno="2"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">a👨‍👩‍👧b</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*incremental:*/</span><span class="rx-ws"> </span><span class="rx-env">.true</span><span class="rx-spe">)</span></code>
+<code lineno="3"><span class="rx-kw">do</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-ws"> </span><span class="rx-skw">to</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">string</span><span class="rx-op">~</span><span class="rx-const rx-method">length</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">say</span><span class="rx-ws"> </span><span class="rx-var">i</span><span class="rx-op">~</span><span class="rx-const rx-method">left</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">2</span><span class="rx-spe">)</span><span class="rx-str rx-oquo">"</span><span class="rx-str">:</span><span class="rx-str rx-cquo">"</span><span class="rx-op"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">graphemeIndexG</span><span class="rx-spe">(</span><span class="rx-var">i</span><span class="rx-spe">)</span><span class="rx-spe">;</span><span class="rx-ws"> </span><span class="rx-kw">end</span></code>
+<code lineno="4"><span class="rx-ws">    </span><span class="rx-cm">/*</span></code>
+<code lineno="5"><span class="rx-cm">    1 : 1</span></code>
+<code lineno="6"><span class="rx-cm">    2 : 2</span></code>
+<code lineno="7"><span class="rx-cm">    3 : -2</span></code>
+<code lineno="8"><span class="rx-cm">    4 : -2</span></code>
+<code lineno="9"><span class="rx-cm">    5 : -2</span></code>
+<code lineno="10"><span class="rx-cm">    6 : -2</span></code>
+<code lineno="11"><span class="rx-cm">    7 : -2</span></code>
+<code lineno="12"><span class="rx-cm">    8 : -2</span></code>
+<code lineno="13"><span class="rx-cm">    9 : -2</span></code>
+<code lineno="14"><span class="rx-cm">    10: -2</span></code>
+<code lineno="15"><span class="rx-cm">    11: -2</span></code>
+<code lineno="16"><span class="rx-cm">    12: -2</span></code>
+<code lineno="17"><span class="rx-cm">    13: -2</span></code>
+<code lineno="18"><span class="rx-cm">    14: -2</span></code>
+<code lineno="19"><span class="rx-cm">    15: -2</span></code>
+<code lineno="20"><span class="rx-cm">    16: -2</span></code>
+<code lineno="21"><span class="rx-cm">    17: -2</span></code>
+<code lineno="22"><span class="rx-cm">    18: -2</span></code>
+<code lineno="23"><span class="rx-cm">    19: -2</span></code>
+<code lineno="24"><span class="rx-cm">    20: 3</span></code>
+<code lineno="25"><span class="rx-cm">    */</span></code>
+<code lineno="26">
+</code></pre>
+</div>
+<p><a id="RexxUnicodeStringIndexer_stringInfo"></a></p>
 <h4 id="info-1">7.3.16.   info</h4>
-<pre><code>aRexxUnicodeStringIndexer~info</code></pre>
+<pre><code>aRexxUnicodeStringIndexer~stringInfo</code></pre>
 <p>Returns a string providing information about the indexer's
 string:</p>
 <ul>
@@ -4246,12 +4404,12 @@ string:</p>
 </ul>
 <p><strong>Examples:</strong></p>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
-<pre><code lineNo="1"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"></span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span><span class="rx-ws">            </span><span class="rx-lncm">-- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'</span></code>
-<code lineno="2"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">e</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'</span></code>
-<code lineno="3"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">é</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'</span></code>
-<code lineno="4"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">€</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span><span class="rx-ws">           </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'</span></code>
-<code lineno="5"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'</span></code>
-<code lineno="6"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">👨‍👩‍👧</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span><span class="rx-ws">          </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'</span></code>
+<pre><code lineNo="1"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str"></span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">=</span><span class="rx-ws">       </span><span class="rx-lncm">-- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'</span></code>
+<code lineno="2"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">e</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'</span></code>
+<code lineno="3"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">é</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">€</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'</span></code>
+<code lineno="5"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">🎅</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'</span></code>
+<code lineno="6"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-str rx-oquo">"</span><span class="rx-str">👨‍👩‍👧</span><span class="rx-str rx-cquo">"</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">=</span><span class="rx-ws">     </span><span class="rx-lncm">-- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'</span></code>
 <code lineno="7">
 </code></pre>
 </div>
@@ -4259,7 +4417,7 @@ string:</p>
 <pre><code lineNo="1"><span class="rx-lncm">-- Invalid string</span></code>
 <code lineno="2"><span class="rx-lncm">-- U+FFFD Substitution of Maximal Subparts</span></code>
 <code lineno="3"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202</span></code>
-<code lineno="4"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">info</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'</span></code>
+<code lineno="4"><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">E1 80 E2 F0 91 92 F1 BF 41</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">)</span><span class="rx-op">~</span><span class="rx-const rx-method">stringInfo</span><span class="rx-spe">=</span><span class="rx-ws">    </span><span class="rx-lncm">-- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'</span></code>
 <code lineno="5">
 </code></pre>
 </div>
@@ -4269,33 +4427,35 @@ string:</p>
     string,
 
     -- Start storage limits
-    startCodepointStorageLimit = (.RexxInfo~internalMaxNumber),
     startGraphemeStorageLimit = (.RexxInfo~internalMaxNumber),
+    startCodepointStorageLimit = (.RexxInfo~internalMaxNumber),
     startErrorStorageLimit = (.RexxInfo~internalMaxNumber),
     
     -- End storage limits
-    endCodepointStorageLimit = 0,
     endGraphemeStorageLimit = 0,
-    endErrorStorageLimit = 0
+    endCodepointStorageLimit = 0,
+    endErrorStorageLimit = 0,
+    
+    incremental = .false
     )</code></pre>
 <p>Initializes a <code>RexxUnicodeStringIndexer</code> instance with the
 UTF-8 string <code>string</code>.</p>
 <p>Start storage limits can be specified when creating the indexer; by
 default, no limit is applied:</p>
 <ul>
-<li><code>startCodepointStorageLimit</code> determines how many
-codepoint indexes can be stored in the start storage.</li>
 <li><code>startGraphemeStorageLimit</code> determines how many grapheme
 indexes can be stored in the start storage.</li>
+<li><code>startCodepointStorageLimit</code> determines how many
+codepoint indexes can be stored in the start storage.</li>
 <li><code>startErrorStorageLimit</code> determines how many error
 messages can be stored in the start storage.</li>
 </ul>
 <p>End storage limits can be specified when creating the indexer; by
 default, no end storage is allocated (0).</p>
 <ul>
-<li><code>endCodepointStorageLimit</code> determines how many codepoint
-indexes can be stored in the end storage.</li>
 <li><code>endGraphemeStorageLimit</code> determines how many grapheme
+indexes can be stored in the end storage.</li>
+<li><code>endCodepointStorageLimit</code> determines how many codepoint
 indexes can be stored in the end storage.</li>
 <li><code>endErrorStorageLimit</code> determines how many error messages
 can be stored in the end storage.</li>
@@ -4304,11 +4464,23 @@ can be stored in the end storage.</li>
 memory usage.</p>
 <p>End storage is useful when start storage is limited; it allows sparse
 storage, where only the starting and ending indexes are stored.</p>
+<p>In incremental mode:</p>
+<ul>
+<li>Limited storage can be completed on demand.</li>
+<li>The errors <code>"Code point index is not stored"</code> and
+<code>"Grapheme index is not stored"</code> are no longer raised.</li>
+<li>When a requested index is not stored, that index is stored, along
+with any missing intermediate indexes.</li>
+<li>The storage to be updated (start or end) is selected based on the
+smaller number of intermediate indexes to be stored. When the distance
+is the same, the start storage is used because a forward decoding is
+faster than a backward decoding.</li>
+</ul>
 <p><strong>Examples</strong></p>
 <div class="highlight-rexx-vim-light-zellner" data-rexx-style-locked="">
 <pre><code lineNo="1"><span class="rx-lncm">-- Example 1</span></code>
 <code lineno="2"><span class="rx-lncm">-- If the identifier is a valid UTF-8 string and is made of just one codepoint then return this codepoint.</span></code>
-<code lineno="3"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">identifier</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*startCodepointStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*startGraphemeStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*startErrorStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span></code>
+<code lineno="3"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">identifier</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*startGraphemeStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*startCodepointStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*startErrorStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span></code>
 <code lineno="4"><span class="rx-kw">if</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errorCount</span><span class="rx-ws"> </span><span class="rx-op">=</span><span class="rx-op">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointCount</span><span class="rx-ws"> </span><span class="rx-op">=</span><span class="rx-op">=</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-ws"> </span><span class="rx-kw">then</span><span class="rx-ws"> </span><span class="rx-kw">return</span><span class="rx-ws"> </span><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">codepointAtIndexC</span><span class="rx-spe">(</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span></code>
 <code lineno="5">
 </code></pre>
@@ -4318,8 +4490,8 @@ storage, where only the starting and ending indexes are stored.</p>
 <code lineno="2"><span class="rx-lncm">-- U+FFFD Substitution of Maximal Subparts</span></code>
 <code lineno="3"><span class="rx-lncm">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064</span></code>
 <code lineno="4"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">F4 91 92 93 FF 41 80 BF 42</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cont">-</span></code>
-<code lineno="5"><span class="rx-ws">                                        </span><span class="rx-cm">/*startCodepointStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">4</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cont">-</span></code>
-<code lineno="6"><span class="rx-ws">                                        </span><span class="rx-cm">/*startGraphemeStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">2</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cont">-</span></code>
+<code lineno="5"><span class="rx-ws">                                        </span><span class="rx-cm">/*startGraphemeStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">2</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cont">-</span></code>
+<code lineno="6"><span class="rx-ws">                                        </span><span class="rx-cm">/*startCodepointStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">4</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cont">-</span></code>
 <code lineno="7"><span class="rx-ws">                                        </span><span class="rx-cm">/*startErrorStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">)</span></code>
 <code lineno="8"></code>
 <code lineno="9"><span class="rx-lncm">-- The specified start codepoint storage limit is 4</span></code>
@@ -4363,7 +4535,7 @@ storage, where only the starting and ending indexes are stored.</p>
 <code lineno="2"><span class="rx-lncm">-- Gets the five last grapheme indexes.</span></code>
 <code lineno="3"><span class="rx-lncm">-- In case of error, reports only the first error.</span></code>
 <code lineno="4"><span class="rx-var">string</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-xstr rx-oquo">"</span><span class="rx-xstr">F4 91 92 93 FF 41 80 BF 42</span><span class="rx-xstr rx-cquo">"</span><span class="rx-xstr rx-ssuf">x</span><span class="rx-ws"> </span><span class="rx-op">|</span><span class="rx-op">|</span><span class="rx-ws"> </span><span class="rx-str rx-oquo">"</span><span class="rx-str">Joyeux Noël 👨‍👩‍👧</span><span class="rx-str rx-cquo">"</span></code>
-<code lineno="5"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*startCodepointStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*startGraphemeStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*startErrorStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*endCodepointStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*endGraphemeStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">)</span></code>
+<code lineno="5"><span class="rx-var">indexer</span><span class="rx-ws"> </span><span class="rx-asg">=</span><span class="rx-ws"> </span><span class="rx-env">.RexxUnicodeStringIndexer</span><span class="rx-op">~</span><span class="rx-const rx-method">new</span><span class="rx-spe">(</span><span class="rx-var">string</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*startGraphemeStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*startCodepointStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*startErrorStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">1</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*endGraphemeStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">5</span><span class="rx-spe">,</span><span class="rx-ws"> </span><span class="rx-cm">/*endCodepointStorageLimit:*/</span><span class="rx-ws"> </span><span class="rx-int rx-ipart">0</span><span class="rx-spe">)</span></code>
 <code lineno="6"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">errorCount</span><span class="rx-spe">=</span><span class="rx-ws">                 </span><span class="rx-lncm">-- 7</span></code>
 <code lineno="7"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrorMessages</span><span class="rx-op">~</span><span class="rx-const rx-method">items</span><span class="rx-spe">=</span><span class="rx-ws">   </span><span class="rx-lncm">-- 1</span></code>
 <code lineno="8"><span class="rx-var">indexer</span><span class="rx-op">~</span><span class="rx-const rx-method">startErrorMessages</span><span class="rx-spe">[</span><span class="rx-int rx-ipart">1</span><span class="rx-spe">]</span><span class="rx-spe">=</span><span class="rx-ws">      </span><span class="rx-lncm">-- 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'</span></code>

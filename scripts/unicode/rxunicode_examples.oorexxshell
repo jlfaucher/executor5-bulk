@@ -1619,11 +1619,38 @@ do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); 
 */
 
 
+-- Binary search for codepoint indexes is working with incremental sparse storage
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1, 0, /*incremental:*/ .true)
+do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
+/*
+    1 : 1
+    2 : 2
+    3 : -2
+    4 : -2
+    5 : -2
+    6 : 3
+    7 : -3
+    8 : -3
+    9 : 4
+    10: -4
+    11: -4
+    12: -4
+    13: 5
+    14: -5
+    15: -5
+    16: 6
+    17: -6
+    18: -6
+    19: -6
+    20: 7
+*/
+
+
 --------------------------------------------------------------------------------
 -- aRexxUnicodeStringIndexer~endCodepointIndexes
 --------------------------------------------------------------------------------
 
-indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 5, 0, 0, 5)
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 5, 0, 0, 5)
 indexer~startCodepointIndexes=  -- [ 1, 2, 6, 9, 13]
 -- No overlap between the end and start storage: 13, 9, 6 are already stored in the start storage
 indexer~endCodepointIndexes=    -- [ 20, 16], not [ 20, 16, 13, 9, 6]
@@ -1665,7 +1692,7 @@ indexer~endErrorMessages==
 -- aRexxUnicodeStringIndexer~endGraphemeIndexes
 --------------------------------------------------------------------------------
 
-indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 5, 0, 0, 5)
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 5, 0, 0, 5, 0)
 indexer~startGraphemeIndexes=   -- [ 1, 2, 20]
 -- No overlap between the end and start storage: 20, 2, 1 are already stored in the start storage
 indexer~endCodepointIndexes=    -- an Array (no shape, 0 items), not [ 20, 2, 1]
@@ -1709,7 +1736,7 @@ indexer~graphemeIndexG(-19)=   -- 2
 
 
 -- Binary search for grapheme indexes cannot work with non-incremental sparse storage
-indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 1, 0, 0, 1, 0)
 do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
 /*
     1 : The NIL object
@@ -1735,6 +1762,33 @@ do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); e
 */
 
 
+-- Binary search for grapheme indexes is working with incremental sparse storage
+indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 1, 0, 0, 1, 0, 0, /*incremental:*/ .true)
+do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
+/*
+    1 : 1
+    2 : 2
+    3 : -2
+    4 : -2
+    5 : -2
+    6 : -2
+    7 : -2
+    8 : -2
+    9 : -2
+    10: -2
+    11: -2
+    12: -2
+    13: -2
+    14: -2
+    15: -2
+    16: -2
+    17: -2
+    18: -2
+    19: -2
+    20: 3
+*/
+
+
 --------------------------------------------------------------------------------
 -- .RexxUnicodeStringIndexer~init
 --------------------------------------------------------------------------------
@@ -1743,7 +1797,7 @@ do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); e
 -- Example 1
 -- If the identifier is a valid UTF-8 string and is made of just one codepoint then return this codepoint.
 identifier = "€"
-indexer = .RexxUnicodeStringIndexer~new(identifier, /*startCodepointStorageLimit:*/ 1, /*startGraphemeStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 0)
+indexer = .RexxUnicodeStringIndexer~new(identifier, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 1, /*startErrorStorageLimit:*/ 0)
 if indexer~errorCount == 0, indexer~codepointCount == 1 then say indexer~codepointAtIndexC(1)
 
 
@@ -1751,7 +1805,7 @@ if indexer~errorCount == 0, indexer~codepointCount == 1 then say indexer~codepoi
 -- Example 2
 -- U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
-indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x, /*startCodepointStorageLimit:*/ 4, /*startGraphemeStorageLimit:*/ 2, /*startErrorStorageLimit:*/ 1)
+indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x, /*startGraphemeStorageLimit:*/ 2, /*startCodepointStorageLimit:*/ 4, /*startErrorStorageLimit:*/ 1)
 
 -- The specified start codepoint storage limit is 4
 indexer~codepointCount=             -- 9
@@ -1790,7 +1844,7 @@ indexer~errorCount=         -- 7
 -- Gets the five last grapheme indexes.
 -- In case of error, reports only the first error.
 string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
-indexer = .RexxUnicodeStringIndexer~new(string, /*startCodepointStorageLimit:*/ 0, /*startGraphemeStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 1, /*endCodepointStorageLimit:*/ 0, /*endGraphemeStorageLimit:*/ 5)
+indexer = .RexxUnicodeStringIndexer~new(string, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 1, /*endGraphemeStorageLimit:*/ 5, /*endCodepointStorageLimit:*/ 0)
 indexer~errorCount=                 -- 7
 indexer~startErrorMessages~items=   -- 1
 indexer~startErrorMessages[1]=      -- 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'

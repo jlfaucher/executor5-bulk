@@ -6,19 +6,20 @@
 # Under Macos and Linux, make will use in priority GNUmakefile.
 # Under Windows, nmake will ignore GNUmakefile and use Makefile.
 
-# ooRexxShell scripts in the current directory
+# ooRexxShell scripts
 ooRexxShellFiles = diary_examples \
                    rxunicode_examples
 
-# ooRexx scripts in the current directory
+# ooRexx scripts
 scriptsFiles1= eastAsianWidthIsAmbiguous_test \
                enums_test \
                incorrect_character \
                RexxUnicode_test \
                RexxUnicodeServices_test \
+               StringIndexer_test \
                ../../main/trunk/interpreter/classes/support/Unicode/unicode-width/tests/tests
 
-# ooRexx scripts in the current directory, results impacted by ICU4C version
+# ooRexx scripts, results impacted by ICU4C version
 scriptsFiles2= charWidth_stringWidth_test \
                controlBoundary_test \
                width_printable_test

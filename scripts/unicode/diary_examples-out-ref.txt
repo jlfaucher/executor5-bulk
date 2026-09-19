@@ -5,6 +5,1075 @@ ooRexx> tutor off
 
 
 -- ===============================================================================
+-- 2026 Sept 17
+
+/*
+[Unicode]
+
+The following functionalities are documented as "advanced", without much detail.
+They are used to implement an incremental string indexer in the ooRexx language.
+The native string indexer will use a generic iterator with C++ lambdas instead
+of an observer that receives messages.
+
+Make the RexxUnicode suppliers closer to the native iterators.
+The native callbacks are implemented in ooRexx as a pair (observer, message).
+The observer and the messages to send are specified when the supplier is created.
+
+A RexxUnicode supplier can start at a specified indexB.
+The initial value of the supplier index can be specified with indexC or indexG.
+
+New arguments supported when creating a RexxUnicode supplier:
+
+    RexxUnicodeCodepointSupplier
+        observer=.nil
+        codepointAction=.nil        -- Message sent for each decoded codepoint.
+        indexB=1                    -- Initial byte index (1-based): the first codepoint to decode starts at this index.
+        indexC=1                    -- Codepoint count from the begining of the string. Initial value corresponding to the initial byte index.
+
+    RexxUnicodeGraphemeSupplier
+        observer=.nil
+        graphemeAction=.nil         -- Message sent for each decoded grapheme.
+        codepointAction=.nil        -- Message sent for each decoded codepoint.
+        indexB=1                    -- Initial byte index (1-based): the first grapheme to decode starts at this index.
+        indexG=1                    -- Grapheme count from the begining of the string. Initial value corresponding to the initial byte index.
+
+    RexxUnicodeReverseCodepointSupplier
+        observer=.nil
+        codepointAction=.nil        -- Message sent for each decoded codepoint.
+        indexB=(string~length + 1)  -- Initial byte index (1-based): the first codepoint to decode ends just before this index.
+        indexC=1                    -- Codepoint count from the end of the string. Initial value corresponding to the initial byte index.
+
+    RexxUnicodeReverseGraphemeSupplier
+        observer=.nil
+        graphemeAction=.nil         -- Message sent for each decoded grapheme.
+        codepointAction=.nil        -- Message sent for each decoded codepoint.
+        indexB=(string~length + 1)  -- Initial byte position (1-based): the first grapheme to decode ends just before this index.
+        indexG=1                    -- Grapheme count from the end of the string. Initial value corresponding to the initial byte index.
+
+Arguments of a codepoint message:
+    use strict arg error /* boolean */, -           -- .true if the codepoint byte sequence is invalid, .false otherwise
+                   indexB /* >0 */, -               -- index (1-based) of the first byte of the codepoint byte sequence
+                   sizeB, -                         -- size in bytes of the codepoint byte sequence
+                   codepoint /* whole number */, -  -- codepoint as a whole number value
+                   errorMsg=""                      -- error message when error is .true
+
+Arguments of a grapheme message:
+    use strict arg error /* boolean */, -           -- .true if the grapheme byte sequence is invalid, .false otherwise
+                   indexB /* >0 */, -               -- index (1-based) of the first byte of the grapheme byte sequence
+                   sizeB, -                         -- size in bytes of the grapheme byte sequence
+                   errorMsg=""                      -- error message when error is .true
+
+Examples
+*/
+
+-- `.MessageDisplayer` is a helper class provided by rxunicode.cls.
+-- `saySupplier` is a helper routine provided by rxunicode.cls.
+
+-- #01m Messages sent by a codepoint supplier
+ooRexx> string = "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x
+ooRexx> s = .RexxUnicodeCodepointSupplier~new(string, , "u", .MessageDisplayer, "codepointAction") ; call saySupplier s
+name= "CODEPOINTACTION" arguments= [ 1, 1, 1, 65533,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+1 : U+FFFD
+name= "CODEPOINTACTION" arguments= [ 1, 2, 1, 65533,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+2 : U+FFFD
+name= "CODEPOINTACTION" arguments= [ 0, 3, 1, 32,'']
+3 : U+0020
+name= "CODEPOINTACTION" arguments= [ 0, 4, 4, 127877,'']
+4 : U+1F385
+name= "CODEPOINTACTION" arguments= [ 0, 8, 1, 32,'']
+5 : U+0020
+name= "CODEPOINTACTION" arguments= [ 1, 9, 1, 65533,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+6 : U+FFFD
+name= "CODEPOINTACTION" arguments= [ 1, 10, 1, 65533,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+7 : U+FFFD
+name= "CODEPOINTACTION" arguments= [ 0, 11, 1, 32,'']
+8 : U+0020
+name= "CODEPOINTACTION" arguments= [ 0, 12, 4, 128104,'']
+9 : U+1F468
+name= "CODEPOINTACTION" arguments= [ 0, 16, 3, 8205,'']
+10 : U+200D
+name= "CODEPOINTACTION" arguments= [ 0, 19, 4, 128105,'']
+11 : U+1F469
+name= "CODEPOINTACTION" arguments= [ 0, 23, 3, 8205,'']
+12 : U+200D
+name= "CODEPOINTACTION" arguments= [ 0, 26, 4, 128103,'']
+13 : U+1F467
+name= "CODEPOINTACTION" arguments= [ 0, 30, 1, 32,'']
+14 : U+0020
+name= "CODEPOINTACTION" arguments= [ 1, 31, 1, 65533,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+15 : U+FFFD
+name= "CODEPOINTACTION" arguments= [ 1, 32, 1, 65533,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+16 : U+FFFD
+/*
+    name= "CODEPOINTACTION" arguments= [ 1, 1, 1, 65533,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+    1 : U+FFFD
+    name= "CODEPOINTACTION" arguments= [ 1, 2, 1, 65533,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    2 : U+FFFD
+    name= "CODEPOINTACTION" arguments= [ 0, 3, 1, 32,'']
+    3 : U+0020
+    name= "CODEPOINTACTION" arguments= [ 0, 4, 4, 127877,'']
+    4 : U+1F385
+    name= "CODEPOINTACTION" arguments= [ 0, 8, 1, 32,'']
+    5 : U+0020
+    name= "CODEPOINTACTION" arguments= [ 1, 9, 1, 65533,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+    6 : U+FFFD
+    name= "CODEPOINTACTION" arguments= [ 1, 10, 1, 65533,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    7 : U+FFFD
+    name= "CODEPOINTACTION" arguments= [ 0, 11, 1, 32,'']
+    8 : U+0020
+    name= "CODEPOINTACTION" arguments= [ 0, 12, 4, 128104,'']
+    9 : U+1F468
+    name= "CODEPOINTACTION" arguments= [ 0, 16, 3, 8205,'']
+    10 : U+200D
+    name= "CODEPOINTACTION" arguments= [ 0, 19, 4, 128105,'']
+    11 : U+1F469
+    name= "CODEPOINTACTION" arguments= [ 0, 23, 3, 8205,'']
+    12 : U+200D
+    name= "CODEPOINTACTION" arguments= [ 0, 26, 4, 128103,'']
+    13 : U+1F467
+    name= "CODEPOINTACTION" arguments= [ 0, 30, 1, 32,'']
+    14 : U+0020
+    name= "CODEPOINTACTION" arguments= [ 1, 31, 1, 65533,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+    15 : U+FFFD
+    name= "CODEPOINTACTION" arguments= [ 1, 32, 1, 65533,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    16 : U+FFFD
+*/
+
+
+-- #02m Messages sent by a reverse codepoint supplier
+ooRexx> string = "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x
+ooRexx> s = .RexxUnicodeReverseCodepointSupplier~new(string, , "u", .MessageDisplayer, "codepointAction") ; call saySupplier s
+name= "CODEPOINTACTION" arguments= [ 1, 32, 1, 65533,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+1 : U+FFFD
+name= "CODEPOINTACTION" arguments= [ 1, 31, 1, 65533,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+2 : U+FFFD
+name= "CODEPOINTACTION" arguments= [ 0, 30, 1, 32,'']
+3 : U+0020
+name= "CODEPOINTACTION" arguments= [ 0, 26, 4, 128103,'']
+4 : U+1F467
+name= "CODEPOINTACTION" arguments= [ 0, 23, 3, 8205,'']
+5 : U+200D
+name= "CODEPOINTACTION" arguments= [ 0, 19, 4, 128105,'']
+6 : U+1F469
+name= "CODEPOINTACTION" arguments= [ 0, 16, 3, 8205,'']
+7 : U+200D
+name= "CODEPOINTACTION" arguments= [ 0, 12, 4, 128104,'']
+8 : U+1F468
+name= "CODEPOINTACTION" arguments= [ 0, 11, 1, 32,'']
+9 : U+0020
+name= "CODEPOINTACTION" arguments= [ 1, 10, 1, 65533,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+10 : U+FFFD
+name= "CODEPOINTACTION" arguments= [ 1, 9, 1, 65533,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+11 : U+FFFD
+name= "CODEPOINTACTION" arguments= [ 0, 8, 1, 32,'']
+12 : U+0020
+name= "CODEPOINTACTION" arguments= [ 0, 4, 4, 127877,'']
+13 : U+1F385
+name= "CODEPOINTACTION" arguments= [ 0, 3, 1, 32,'']
+14 : U+0020
+name= "CODEPOINTACTION" arguments= [ 1, 2, 1, 65533,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+15 : U+FFFD
+name= "CODEPOINTACTION" arguments= [ 1, 1, 1, 65533,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+16 : U+FFFD
+/*
+    name= "CODEPOINTACTION" arguments= [ 1, 32, 1, 65533,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    1 : U+FFFD
+    name= "CODEPOINTACTION" arguments= [ 1, 31, 1, 65533,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+    2 : U+FFFD
+    name= "CODEPOINTACTION" arguments= [ 0, 30, 1, 32,'']
+    3 : U+0020
+    name= "CODEPOINTACTION" arguments= [ 0, 26, 4, 128103,'']
+    4 : U+1F467
+    name= "CODEPOINTACTION" arguments= [ 0, 23, 3, 8205,'']
+    5 : U+200D
+    name= "CODEPOINTACTION" arguments= [ 0, 19, 4, 128105,'']
+    6 : U+1F469
+    name= "CODEPOINTACTION" arguments= [ 0, 16, 3, 8205,'']
+    7 : U+200D
+    name= "CODEPOINTACTION" arguments= [ 0, 12, 4, 128104,'']
+    8 : U+1F468
+    name= "CODEPOINTACTION" arguments= [ 0, 11, 1, 32,'']
+    9 : U+0020
+    name= "CODEPOINTACTION" arguments= [ 1, 10, 1, 65533,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    10 : U+FFFD
+    name= "CODEPOINTACTION" arguments= [ 1, 9, 1, 65533,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+    11 : U+FFFD
+    name= "CODEPOINTACTION" arguments= [ 0, 8, 1, 32,'']
+    12 : U+0020
+    name= "CODEPOINTACTION" arguments= [ 0, 4, 4, 127877,'']
+    13 : U+1F385
+    name= "CODEPOINTACTION" arguments= [ 0, 3, 1, 32,'']
+    14 : U+0020
+    name= "CODEPOINTACTION" arguments= [ 1, 2, 1, 65533,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    15 : U+FFFD
+    name= "CODEPOINTACTION" arguments= [ 1, 1, 1, 65533,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+    16 : U+FFFD
+*/
+
+
+-- #03m Messages sent by a grapheme supplier: grapheme messages only
+ooRexx> string = "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x
+ooRexx> s = .RexxUnicodeGraphemeSupplier~new(string, , "\", .MessageDisplayer, "graphemeAction") ; call saySupplier s
+name= "GRAPHEMEACTION" arguments= [ 1, 1, 1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+1 : \xF4
+name= "GRAPHEMEACTION" arguments= [ 1, 2, 1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+2 : \x91
+name= "GRAPHEMEACTION" arguments= [ 0, 3, 1,'']
+3 :  
+name= "GRAPHEMEACTION" arguments= [ 0, 4, 4,'']
+4 : 🎅
+name= "GRAPHEMEACTION" arguments= [ 0, 8, 1,'']
+5 :  
+name= "GRAPHEMEACTION" arguments= [ 1, 9, 1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+6 : \xF4
+name= "GRAPHEMEACTION" arguments= [ 1, 10, 1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+7 : \x91
+name= "GRAPHEMEACTION" arguments= [ 0, 11, 1,'']
+8 :  
+name= "GRAPHEMEACTION" arguments= [ 0, 12, 18,'']
+9 : 👨\u200D👩\u200D👧
+name= "GRAPHEMEACTION" arguments= [ 0, 30, 1,'']
+10 :  
+name= "GRAPHEMEACTION" arguments= [ 1, 31, 1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+11 : \xF4
+name= "GRAPHEMEACTION" arguments= [ 1, 32, 1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+12 : \x91
+/*
+    name= "GRAPHEMEACTION" arguments= [ 1, 1, 1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+    1 : \xF4
+    name= "GRAPHEMEACTION" arguments= [ 1, 2, 1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    2 : \x91
+    name= "GRAPHEMEACTION" arguments= [ 0, 3, 1,'']
+    3 :
+    name= "GRAPHEMEACTION" arguments= [ 0, 4, 4,'']
+    4 : 🎅
+    name= "GRAPHEMEACTION" arguments= [ 0, 8, 1,'']
+    5 :
+    name= "GRAPHEMEACTION" arguments= [ 1, 9, 1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+    6 : \xF4
+    name= "GRAPHEMEACTION" arguments= [ 1, 10, 1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    7 : \x91
+    name= "GRAPHEMEACTION" arguments= [ 0, 11, 1,'']
+    8 :
+    name= "GRAPHEMEACTION" arguments= [ 0, 12, 18,'']
+    9 : 👨\u200D👩\u200D👧
+    name= "GRAPHEMEACTION" arguments= [ 0, 30, 1,'']
+    10 :
+    name= "GRAPHEMEACTION" arguments= [ 1, 31, 1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+    11 : \xF4
+    name= "GRAPHEMEACTION" arguments= [ 1, 32, 1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    12 : \x91
+*/
+
+
+-- #04m Messages sent by a reverse grapheme supplier: grapheme messages only
+ooRexx> string = "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x
+ooRexx> s = .RexxUnicodeReverseGraphemeSupplier~new(string, , "\", .MessageDisplayer, "graphemeAction") ; call saySupplier s
+name= "GRAPHEMEACTION" arguments= [ 1, 32, 1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+1 : \x91
+name= "GRAPHEMEACTION" arguments= [ 1, 31, 1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+2 : \xF4
+name= "GRAPHEMEACTION" arguments= [ 0, 30, 1,'']
+3 :  
+name= "GRAPHEMEACTION" arguments= [ 0, 12, 18,'']
+4 : 👨\u200D👩\u200D👧
+name= "GRAPHEMEACTION" arguments= [ 0, 11, 1,'']
+5 :  
+name= "GRAPHEMEACTION" arguments= [ 1, 10, 1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+6 : \x91
+name= "GRAPHEMEACTION" arguments= [ 1, 9, 1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+7 : \xF4
+name= "GRAPHEMEACTION" arguments= [ 0, 8, 1,'']
+8 :  
+name= "GRAPHEMEACTION" arguments= [ 0, 4, 4,'']
+9 : 🎅
+name= "GRAPHEMEACTION" arguments= [ 0, 3, 1,'']
+10 :  
+name= "GRAPHEMEACTION" arguments= [ 1, 2, 1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+11 : \x91
+name= "GRAPHEMEACTION" arguments= [ 1, 1, 1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+12 : \xF4
+/*
+    name= "GRAPHEMEACTION" arguments= [ 1, 32, 1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    1 : \x91
+    name= "GRAPHEMEACTION" arguments= [ 1, 31, 1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+    2 : \xF4
+    name= "GRAPHEMEACTION" arguments= [ 0, 30, 1,'']
+    3 :
+    name= "GRAPHEMEACTION" arguments= [ 0, 12, 18,'']
+    4 : 👨\u200D👩\u200D👧
+    name= "GRAPHEMEACTION" arguments= [ 0, 11, 1,'']
+    5 :
+    name= "GRAPHEMEACTION" arguments= [ 1, 10, 1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    6 : \x91
+    name= "GRAPHEMEACTION" arguments= [ 1, 9, 1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+    7 : \xF4
+    name= "GRAPHEMEACTION" arguments= [ 0, 8, 1,'']
+    8 :
+    name= "GRAPHEMEACTION" arguments= [ 0, 4, 4,'']
+    9 : 🎅
+    name= "GRAPHEMEACTION" arguments= [ 0, 3, 1,'']
+    10 :
+    name= "GRAPHEMEACTION" arguments= [ 1, 2, 1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    11 : \x91
+    name= "GRAPHEMEACTION" arguments= [ 1, 1, 1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+    12 : \xF4
+*/
+
+
+-- #05m Messages sent by a grapheme supplier: codepoint messages only
+ooRexx> string = "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x
+ooRexx> s = .RexxUnicodeGraphemeSupplier~new(string, , "\", .MessageDisplayer, /*graphemeAction:*/.nil, "codepointAction") ; call saySupplier s
+name= "CODEPOINTACTION" arguments= [ 1, 1, 1,-1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+name= "CODEPOINTACTION" arguments= [ 1, 2, 1,-1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+1 : \xF4
+name= "CODEPOINTACTION" arguments= [ 0, 3, 1, 32,'']
+2 : \x91
+name= "CODEPOINTACTION" arguments= [ 0, 4, 4, 127877,'']
+3 :  
+name= "CODEPOINTACTION" arguments= [ 0, 8, 1, 32,'']
+4 : 🎅
+name= "CODEPOINTACTION" arguments= [ 1, 9, 1,-1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+5 :  
+name= "CODEPOINTACTION" arguments= [ 1, 10, 1,-1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+6 : \xF4
+name= "CODEPOINTACTION" arguments= [ 0, 11, 1, 32,'']
+7 : \x91
+name= "CODEPOINTACTION" arguments= [ 0, 12, 4, 128104,'']
+8 :  
+name= "CODEPOINTACTION" arguments= [ 0, 16, 3, 8205,'']
+name= "CODEPOINTACTION" arguments= [ 0, 19, 4, 128105,'']
+name= "CODEPOINTACTION" arguments= [ 0, 23, 3, 8205,'']
+name= "CODEPOINTACTION" arguments= [ 0, 26, 4, 128103,'']
+name= "CODEPOINTACTION" arguments= [ 0, 30, 1, 32,'']
+9 : 👨\u200D👩\u200D👧
+name= "CODEPOINTACTION" arguments= [ 1, 31, 1,-1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+10 :  
+name= "CODEPOINTACTION" arguments= [ 1, 32, 1,-1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+11 : \xF4
+12 : \x91
+/*
+    name= "CODEPOINTACTION" arguments= [ 1, 1, 1,-1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+    name= "CODEPOINTACTION" arguments= [ 1, 2, 1,-1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    1 : \xF4
+    name= "CODEPOINTACTION" arguments= [ 0, 3, 1, 32,'']
+    2 : \x91
+    name= "CODEPOINTACTION" arguments= [ 0, 4, 4, 127877,'']
+    3 :
+    name= "CODEPOINTACTION" arguments= [ 0, 8, 1, 32,'']
+    4 : 🎅
+    name= "CODEPOINTACTION" arguments= [ 1, 9, 1,-1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+    5 :
+    name= "CODEPOINTACTION" arguments= [ 1, 10, 1,-1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    6 : \xF4
+    name= "CODEPOINTACTION" arguments= [ 0, 11, 1, 32,'']
+    7 : \x91
+    name= "CODEPOINTACTION" arguments= [ 0, 12, 4, 128104,'']
+    8 :
+    name= "CODEPOINTACTION" arguments= [ 0, 16, 3, 8205,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 19, 4, 128105,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 23, 3, 8205,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 26, 4, 128103,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 30, 1, 32,'']
+    9 : 👨\u200D👩\u200D👧
+    name= "CODEPOINTACTION" arguments= [ 1, 31, 1,-1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+    10 :
+    name= "CODEPOINTACTION" arguments= [ 1, 32, 1,-1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    11 : \xF4
+    12 : \x91
+*/
+
+
+-- #06m Messages sent by a reverse grapheme supplier: codepoint messages only
+ooRexx> string = "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x
+ooRexx> s = .RexxUnicodeReverseGraphemeSupplier~new(string, , "\", .MessageDisplayer, /*graphemeAction:*/.nil, "codepointAction") ; call saySupplier s
+name= "CODEPOINTACTION" arguments= [ 1, 32, 1,-1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+1 : \x91
+name= "CODEPOINTACTION" arguments= [ 1, 31, 1,-1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+2 : \xF4
+name= "CODEPOINTACTION" arguments= [ 0, 30, 1, 32,'']
+3 :  
+name= "CODEPOINTACTION" arguments= [ 0, 26, 4, 128103,'']
+name= "CODEPOINTACTION" arguments= [ 0, 23,-3, 8205,'']
+name= "CODEPOINTACTION" arguments= [ 0, 19,-4, 128105,'']
+name= "CODEPOINTACTION" arguments= [ 0, 16,-3, 8205,'']
+name= "CODEPOINTACTION" arguments= [ 0, 12,-4, 128104,'']
+4 : 👨\u200D👩\u200D👧
+name= "CODEPOINTACTION" arguments= [ 0, 11, 1, 32,'']
+5 :  
+name= "CODEPOINTACTION" arguments= [ 1, 10, 1,-1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+6 : \x91
+name= "CODEPOINTACTION" arguments= [ 1, 9, 1,-1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+7 : \xF4
+name= "CODEPOINTACTION" arguments= [ 0, 8, 1, 32,'']
+8 :  
+name= "CODEPOINTACTION" arguments= [ 0, 4, 4, 127877,'']
+9 : 🎅
+name= "CODEPOINTACTION" arguments= [ 0, 3, 1, 32,'']
+10 :  
+name= "CODEPOINTACTION" arguments= [ 1, 2, 1,-1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+11 : \x91
+name= "CODEPOINTACTION" arguments= [ 1, 1, 1,-1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+12 : \xF4
+/*
+    name= "CODEPOINTACTION" arguments= [ 1, 32, 1,-1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    1 : \x91
+    name= "CODEPOINTACTION" arguments= [ 1, 31, 1,-1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+    2 : \xF4
+    name= "CODEPOINTACTION" arguments= [ 0, 30, 1, 32,'']
+    3 :
+    name= "CODEPOINTACTION" arguments= [ 0, 26, 4, 128103,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 23,-3, 8205,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 19,-4, 128105,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 16,-3, 8205,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 12,-4, 128104,'']
+    4 : 👨\u200D👩\u200D👧
+    name= "CODEPOINTACTION" arguments= [ 0, 11, 1, 32,'']
+    5 :
+    name= "CODEPOINTACTION" arguments= [ 1, 10, 1,-1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    6 : \x91
+    name= "CODEPOINTACTION" arguments= [ 1, 9, 1,-1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+    7 : \xF4
+    name= "CODEPOINTACTION" arguments= [ 0, 8, 1, 32,'']
+    8 :
+    name= "CODEPOINTACTION" arguments= [ 0, 4, 4, 127877,'']
+    9 : 🎅
+    name= "CODEPOINTACTION" arguments= [ 0, 3, 1, 32,'']
+    10 :
+    name= "CODEPOINTACTION" arguments= [ 1, 2, 1,-1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    11 : \x91
+    name= "CODEPOINTACTION" arguments= [ 1, 1, 1,-1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+    12 : \xF4
+*/
+
+
+-- #07m Messages sent by a grapheme supplier: grapheme and codepoint messages
+ooRexx> string = "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x
+ooRexx> s = .RexxUnicodeGraphemeSupplier~new(string, , "\", .MessageDisplayer, "graphemeAction", "codepointAction") ; call saySupplier s
+name= "CODEPOINTACTION" arguments= [ 1, 1, 1,-1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+name= "CODEPOINTACTION" arguments= [ 1, 2, 1,-1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+name= "GRAPHEMEACTION" arguments= [ 1, 1, 1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+1 : \xF4
+name= "CODEPOINTACTION" arguments= [ 0, 3, 1, 32,'']
+name= "GRAPHEMEACTION" arguments= [ 1, 2, 1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+2 : \x91
+name= "CODEPOINTACTION" arguments= [ 0, 4, 4, 127877,'']
+name= "GRAPHEMEACTION" arguments= [ 0, 3, 1,'']
+3 :  
+name= "CODEPOINTACTION" arguments= [ 0, 8, 1, 32,'']
+name= "GRAPHEMEACTION" arguments= [ 0, 4, 4,'']
+4 : 🎅
+name= "CODEPOINTACTION" arguments= [ 1, 9, 1,-1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+name= "GRAPHEMEACTION" arguments= [ 0, 8, 1,'']
+5 :  
+name= "CODEPOINTACTION" arguments= [ 1, 10, 1,-1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+name= "GRAPHEMEACTION" arguments= [ 1, 9, 1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+6 : \xF4
+name= "CODEPOINTACTION" arguments= [ 0, 11, 1, 32,'']
+name= "GRAPHEMEACTION" arguments= [ 1, 10, 1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+7 : \x91
+name= "CODEPOINTACTION" arguments= [ 0, 12, 4, 128104,'']
+name= "GRAPHEMEACTION" arguments= [ 0, 11, 1,'']
+8 :  
+name= "CODEPOINTACTION" arguments= [ 0, 16, 3, 8205,'']
+name= "CODEPOINTACTION" arguments= [ 0, 19, 4, 128105,'']
+name= "CODEPOINTACTION" arguments= [ 0, 23, 3, 8205,'']
+name= "CODEPOINTACTION" arguments= [ 0, 26, 4, 128103,'']
+name= "CODEPOINTACTION" arguments= [ 0, 30, 1, 32,'']
+name= "GRAPHEMEACTION" arguments= [ 0, 12, 18,'']
+9 : 👨\u200D👩\u200D👧
+name= "CODEPOINTACTION" arguments= [ 1, 31, 1,-1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+name= "GRAPHEMEACTION" arguments= [ 0, 30, 1,'']
+10 :  
+name= "CODEPOINTACTION" arguments= [ 1, 32, 1,-1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+name= "GRAPHEMEACTION" arguments= [ 1, 31, 1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+11 : \xF4
+name= "GRAPHEMEACTION" arguments= [ 1, 32, 1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+12 : \x91
+/*
+    name= "CODEPOINTACTION" arguments= [ 1, 1, 1,-1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+    name= "CODEPOINTACTION" arguments= [ 1, 2, 1,-1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    name= "GRAPHEMEACTION" arguments= [ 1, 1, 1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+    1 : \xF4
+    name= "CODEPOINTACTION" arguments= [ 0, 3, 1, 32,'']
+    name= "GRAPHEMEACTION" arguments= [ 1, 2, 1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    2 : \x91
+    name= "CODEPOINTACTION" arguments= [ 0, 4, 4, 127877,'']
+    name= "GRAPHEMEACTION" arguments= [ 0, 3, 1,'']
+    3 :
+    name= "CODEPOINTACTION" arguments= [ 0, 8, 1, 32,'']
+    name= "GRAPHEMEACTION" arguments= [ 0, 4, 4,'']
+    4 : 🎅
+    name= "CODEPOINTACTION" arguments= [ 1, 9, 1,-1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+    name= "GRAPHEMEACTION" arguments= [ 0, 8, 1,'']
+    5 :
+    name= "CODEPOINTACTION" arguments= [ 1, 10, 1,-1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    name= "GRAPHEMEACTION" arguments= [ 1, 9, 1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+    6 : \xF4
+    name= "CODEPOINTACTION" arguments= [ 0, 11, 1, 32,'']
+    name= "GRAPHEMEACTION" arguments= [ 1, 10, 1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    7 : \x91
+    name= "CODEPOINTACTION" arguments= [ 0, 12, 4, 128104,'']
+    name= "GRAPHEMEACTION" arguments= [ 0, 11, 1,'']
+    8 :
+    name= "CODEPOINTACTION" arguments= [ 0, 16, 3, 8205,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 19, 4, 128105,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 23, 3, 8205,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 26, 4, 128103,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 30, 1, 32,'']
+    name= "GRAPHEMEACTION" arguments= [ 0, 12, 18,'']
+    9 : 👨\u200D👩\u200D👧
+    name= "CODEPOINTACTION" arguments= [ 1, 31, 1,-1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+    name= "GRAPHEMEACTION" arguments= [ 0, 30, 1,'']
+    10 :
+    name= "CODEPOINTACTION" arguments= [ 1, 32, 1,-1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    name= "GRAPHEMEACTION" arguments= [ 1, 31, 1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+    11 : \xF4
+    name= "GRAPHEMEACTION" arguments= [ 1, 32, 1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    12 : \x91
+*/
+
+
+-- #08m Messages sent by a reverse grapheme supplier: grapheme and codepoint messages
+ooRexx> string = "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x
+ooRexx> s = .RexxUnicodeReverseGraphemeSupplier~new(string, , "\", .MessageDisplayer, "graphemeAction", "codepointAction") ; call saySupplier s
+name= "CODEPOINTACTION" arguments= [ 1, 32, 1,-1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+name= "GRAPHEMEACTION" arguments= [ 1, 32, 1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+1 : \x91
+name= "CODEPOINTACTION" arguments= [ 1, 31, 1,-1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+name= "GRAPHEMEACTION" arguments= [ 1, 31, 1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+2 : \xF4
+name= "CODEPOINTACTION" arguments= [ 0, 30, 1, 32,'']
+name= "GRAPHEMEACTION" arguments= [ 0, 30, 1,'']
+3 :  
+name= "CODEPOINTACTION" arguments= [ 0, 26, 4, 128103,'']
+name= "CODEPOINTACTION" arguments= [ 0, 23,-3, 8205,'']
+name= "CODEPOINTACTION" arguments= [ 0, 19,-4, 128105,'']
+name= "CODEPOINTACTION" arguments= [ 0, 16,-3, 8205,'']
+name= "CODEPOINTACTION" arguments= [ 0, 12,-4, 128104,'']
+name= "GRAPHEMEACTION" arguments= [ 0, 12, 18,'']
+4 : 👨\u200D👩\u200D👧
+name= "CODEPOINTACTION" arguments= [ 0, 11, 1, 32,'']
+name= "GRAPHEMEACTION" arguments= [ 0, 11, 1,'']
+5 :  
+name= "CODEPOINTACTION" arguments= [ 1, 10, 1,-1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+name= "GRAPHEMEACTION" arguments= [ 1, 10, 1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+6 : \x91
+name= "CODEPOINTACTION" arguments= [ 1, 9, 1,-1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+name= "GRAPHEMEACTION" arguments= [ 1, 9, 1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+7 : \xF4
+name= "CODEPOINTACTION" arguments= [ 0, 8, 1, 32,'']
+name= "GRAPHEMEACTION" arguments= [ 0, 8, 1,'']
+8 :  
+name= "CODEPOINTACTION" arguments= [ 0, 4, 4, 127877,'']
+name= "GRAPHEMEACTION" arguments= [ 0, 4, 4,'']
+9 : 🎅
+name= "CODEPOINTACTION" arguments= [ 0, 3, 1, 32,'']
+name= "GRAPHEMEACTION" arguments= [ 0, 3, 1,'']
+10 :  
+name= "CODEPOINTACTION" arguments= [ 1, 2, 1,-1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+name= "GRAPHEMEACTION" arguments= [ 1, 2, 1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+11 : \x91
+name= "CODEPOINTACTION" arguments= [ 1, 1, 1,-1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+name= "GRAPHEMEACTION" arguments= [ 1, 1, 1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+12 : \xF4
+/*
+    name= "CODEPOINTACTION" arguments= [ 1, 32, 1,-1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    name= "GRAPHEMEACTION" arguments= [ 1, 32, 1,'start byte position 32 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    1 : \x91
+    name= "CODEPOINTACTION" arguments= [ 1, 31, 1,-1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+    name= "GRAPHEMEACTION" arguments= [ 1, 31, 1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point > U+10FFFF)']
+    2 : \xF4
+    name= "CODEPOINTACTION" arguments= [ 0, 30, 1, 32,'']
+    name= "GRAPHEMEACTION" arguments= [ 0, 30, 1,'']
+    3 :
+    name= "CODEPOINTACTION" arguments= [ 0, 26, 4, 128103,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 23,-3, 8205,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 19,-4, 128105,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 16,-3, 8205,'']
+    name= "CODEPOINTACTION" arguments= [ 0, 12,-4, 128104,'']
+    name= "GRAPHEMEACTION" arguments= [ 0, 12, 18,'']
+    4 : 👨\u200D👩\u200D👧
+    name= "CODEPOINTACTION" arguments= [ 0, 11, 1, 32,'']
+    name= "GRAPHEMEACTION" arguments= [ 0, 11, 1,'']
+    5 :
+    name= "CODEPOINTACTION" arguments= [ 1, 10, 1,-1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    name= "GRAPHEMEACTION" arguments= [ 1, 10, 1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    6 : \x91
+    name= "CODEPOINTACTION" arguments= [ 1, 9, 1,-1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+    name= "GRAPHEMEACTION" arguments= [ 1, 9, 1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point > U+10FFFF)']
+    7 : \xF4
+    name= "CODEPOINTACTION" arguments= [ 0, 8, 1, 32,'']
+    name= "GRAPHEMEACTION" arguments= [ 0, 8, 1,'']
+    8 :
+    name= "CODEPOINTACTION" arguments= [ 0, 4, 4, 127877,'']
+    name= "GRAPHEMEACTION" arguments= [ 0, 4, 4,'']
+    9 : 🎅
+    name= "CODEPOINTACTION" arguments= [ 0, 3, 1, 32,'']
+    name= "GRAPHEMEACTION" arguments= [ 0, 3, 1,'']
+    10 :
+    name= "CODEPOINTACTION" arguments= [ 1, 2, 1,-1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    name= "GRAPHEMEACTION" arguments= [ 1, 2, 1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
+    11 : \x91
+    name= "CODEPOINTACTION" arguments= [ 1, 1, 1,-1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+    name= "GRAPHEMEACTION" arguments= [ 1, 1, 1,'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)']
+    12 : \xF4
+*/
+
+
+/*
+Make RexxUnicodeStringIndexer incremental:
+- Add the `incremental` argument.
+- Add the undocumented `verbose` argument, used to trace the incremental updates.
+
+The incremental indexing relates to storage:
+- A limited storage can be completed on demand.
+- In incremental mode, the errors "Code point index is not stored" and "Grapheme
+  index is not stored" are no longer raised.
+- When a requested index is not stored, that index is stored, along with any
+  missing intermediate indexes.
+- The storage to be updated (start or end) is selected based on the smaller
+  number of intermediate indexes to be stored.
+
+Test cases:
+- c         start codepoint storage
+- _c        end codepoint storage
+- c_c       start codepoint storage + end codepoint storage: #01i #02i #03i #04i
+- g         start grapheme storage
+- _g        end grapheme storage
+- g_g       start grapheme storage + end grapheme storage: #01bsi #03bsi #05bsi #06bsi
+- cg        start codepoint storage + start grapheme storage
+- _cg       end codepoint storage + end grapheme storage
+- cg_cg     start codepoint storage + start grapheme storage + end codepoint storage + end grapheme storage: #02bsi #04bsi
+
+
+Examples
+*/
+
+-- Not using the verbose mode.
+
+-- Surround with ⦅ and ⦆ to validate that the next codepoint index is correctly calculated
+-- when storing initially just one codepoint.
+
+-- #01i Odd codepoint count, forward progression
+-- Verbose incremental codepoint indexer with limited codepoint storage: 1 start codepoint, 1 end codepoint
+ooRexx> string = "⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x || "⦆"
+ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, 0, 1, 0, 0, 1, 0, /*incremental:*/ .true)
+ooRexx> do i = 1 to indexer~codepointCount ; say i~left(2)":" indexer~codepointIndexB(i) ; end
+1 : 1
+2 : 4
+3 : -7
+4 : -8
+5 : 9
+6 : 10
+7 : 14
+8 : -15
+9 : -16
+10: 17
+11: 18
+12: 22
+13: 25
+14: 29
+15: 32
+16: 36
+17: -37
+18: -38
+19: 39
+ooRexx> indexer~startCodepointIndexes=      -- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32, 36,-37,-38]
+[ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32, 36,-37,-38]
+ooRexx> indexer~endCodepointIndexes=        -- [ 39]
+[ 39]
+
+
+-- #02i Odd codepoint count, backward progression
+-- Verbose incremental codepoint indexer with limited codepoint storage: 1 start codepoint, 1 end codepoint
+ooRexx> string = "⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x || "⦆"
+ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, 0, 1, 0, 0, 1, 0, /*incremental:*/ .true)
+ooRexx> do i = indexer~codepointCount to 1 by -1 ; say i~left(2)":" indexer~codepointIndexB(i) ; end
+19: 39
+18: -38
+17: -37
+16: 36
+15: 32
+14: 29
+13: 25
+12: 22
+11: 18
+10: 17
+9 : -16
+8 : -15
+7 : 14
+6 : 10
+5 : 9
+4 : -8
+3 : -7
+2 : 4
+1 : 1
+ooRexx> indexer~startCodepointIndexes=      -- [ 1, 4]
+[ 1, 4]
+ooRexx> indexer~endCodepointIndexes=        -- [ 39,-38,-37, 36, 32, 29, 25, 22, 18, 17,-16,-15, 14, 10, 9,-8,-7]
+[ 39,-38,-37, 36, 32, 29, 25, 22, 18, 17,-16,-15, 14, 10, 9,-8,-7]
+
+
+-- #03i Even codepoint count, forward progression
+-- Verbose incremental codepoint indexer with limited codepoint storage: 1 start codepoint, 1 end codepoint
+ooRexx> string = "⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x || "⦆⦆"
+ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, 0, 1, 0, 0, 1, 0, /*incremental:*/ .true)
+ooRexx> do i = 1 to indexer~codepointCount ; say i~left(2)":" indexer~codepointIndexB(i) ; end
+1 : 1
+2 : 4
+3 : -7
+4 : -8
+5 : 9
+6 : 10
+7 : 14
+8 : -15
+9 : -16
+10: 17
+11: 18
+12: 22
+13: 25
+14: 29
+15: 32
+16: 36
+17: -37
+18: -38
+19: 39
+20: 42
+ooRexx> indexer~startCodepointIndexes=      -- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32, 36,-37,-38, 39]
+[ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32, 36,-37,-38, 39]
+ooRexx> indexer~endCodepointIndexes=        -- [ 42]
+[ 42]
+
+
+-- #04i Even codepoint count, backward progression
+-- Verbose incremental codepoint indexer with limited codepoint storage: 1 start codepoint, 1 end codepoint
+ooRexx> string = "⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x || "⦆⦆"
+ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, 0, 1, 0, 0, 1, 0, /*incremental:*/ .true)
+ooRexx> do i = indexer~codepointCount to 1 by -1 ; say i~left(2)":" indexer~codepointIndexB(i) ; end
+20: 42
+19: 39
+18: -38
+17: -37
+16: 36
+15: 32
+14: 29
+13: 25
+12: 22
+11: 18
+10: 17
+9 : -16
+8 : -15
+7 : 14
+6 : 10
+5 : 9
+4 : -8
+3 : -7
+2 : 4
+1 : 1
+ooRexx> indexer~startCodepointIndexes=      -- [ 1, 4]
+[ 1, 4]
+ooRexx> indexer~endCodepointIndexes=        -- [ 42, 39,-38,-37, 36, 32, 29, 25, 22, 18, 17,-16,-15, 14, 10, 9,-8,-7]
+[ 42, 39,-38,-37, 36, 32, 29, 25, 22, 18, 17,-16,-15, 14, 10, 9,-8,-7]
+
+
+ooRexx>     /*****************/
+ooRexx>     /* Binary search */
+ooRexx>     /*****************/
+
+-- #01bsi Binary search for grapheme index with incremental sparse storage
+-- Odd string length, forward progression
+-- Verbose incremental grapheme indexer with limited grapheme storage: 1 start grapheme, 1 end grapheme
+ooRexx> string = "⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x || "⦆"
+ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, 1, 0, 0, 1, 0, 0, /*incremental:*/ .true)
+ooRexx> do i = 1 to indexer~string~length ; say i~left(2)":" indexer~graphemeIndexG(i) ; end
+1 : 1
+2 : -1
+3 : -1
+4 : 2
+5 : -2
+6 : -2
+7 : 3
+8 : 4
+9 : 5
+10: 6
+11: -6
+12: -6
+13: -6
+14: 7
+15: 8
+16: 9
+17: 10
+18: 11
+19: -11
+20: -11
+21: -11
+22: -11
+23: -11
+24: -11
+25: -11
+26: -11
+27: -11
+28: -11
+29: -11
+30: -11
+31: -11
+32: -11
+33: -11
+34: -11
+35: -11
+36: 12
+37: 13
+38: 14
+39: 15
+40: -15
+41: -15
+ooRexx> indexer~startGraphemeIndexes=       -- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18]
+[ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18]
+ooRexx> indexer~endGraphemeIndexes=         -- [ 39,-38,-37, 36]
+[ 39,-38,-37, 36]
+
+
+
+-- #02bsi Binary search for grapheme index with incremental sparse storage
+-- Odd string length, forward progression
+-- Verbose incremental grapheme indexer with limited codepoint and grapheme storage: 1 start codepoint and grapheme, 1 end codepoint and grapheme
+ooRexx> string = "⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x || "⦆"
+ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, 1, 1, 0, 1, 1, 0, /*incremental:*/ .true)
+ooRexx> do i = 1 to indexer~string~length ; say i~left(2)":" indexer~graphemeIndexG(i) ; end
+1 : 1
+2 : -1
+3 : -1
+4 : 2
+5 : -2
+6 : -2
+7 : 3
+8 : 4
+9 : 5
+10: 6
+11: -6
+12: -6
+13: -6
+14: 7
+15: 8
+16: 9
+17: 10
+18: 11
+19: -11
+20: -11
+21: -11
+22: -11
+23: -11
+24: -11
+25: -11
+26: -11
+27: -11
+28: -11
+29: -11
+30: -11
+31: -11
+32: -11
+33: -11
+34: -11
+35: -11
+36: 12
+37: 13
+38: 14
+39: 15
+40: -15
+41: -15
+ooRexx> indexer~startCodepointIndexes=      -- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32]
+[ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32]
+ooRexx> indexer~startGraphemeIndexes=       -- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18]
+[ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18]
+ooRexx> indexer~endCodepointIndexes=        -- [ 39,-38,-37, 36]
+[ 39,-38,-37, 36]
+ooRexx> indexer~endGraphemeIndexes=         -- [ 39,-38,-37, 36]
+[ 39,-38,-37, 36]
+
+
+-- #03bsi Binary search for grapheme index with incremental sparse storage
+-- Odd string length, backward progression
+-- Verbose incremental grapheme indexer with limited grapheme storage: 1 start grapheme, 1 end grapheme
+ooRexx> string = "⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x || "⦆"
+ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, 1, 0, 0, 1, 0, 0, /*incremental:*/ .true)
+ooRexx> do i = indexer~string~length to 1 by -1 ; say i~left(2)":" indexer~graphemeIndexG(i); end
+41: -15
+40: -15
+39: 15
+38: 14
+37: 13
+36: 12
+35: -11
+34: -11
+33: -11
+32: -11
+31: -11
+30: -11
+29: -11
+28: -11
+27: -11
+26: -11
+25: -11
+24: -11
+23: -11
+22: -11
+21: -11
+20: -11
+19: -11
+18: 11
+17: 10
+16: 9
+15: 8
+14: 7
+13: -6
+12: -6
+11: -6
+10: 6
+9 : 5
+8 : 4
+7 : 3
+6 : -2
+5 : -2
+4 : 2
+3 : -1
+2 : -1
+1 : 1
+ooRexx> indexer~startGraphemeIndexes=       -- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18]
+[ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18]
+ooRexx> indexer~endGraphemeIndexes=         -- [ 39,-38,-37, 36]
+[ 39,-38,-37, 36]
+
+
+-- #04bsi Binary search for grapheme index with incremental sparse storage
+-- Odd string length, backward progression
+-- Incremental grapheme indexer with limited codepoint and grapheme storage: 1 start codepoint and grapheme, 1 end codepoint and grapheme
+ooRexx> string = "⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x || "⦆"
+ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, 1, 1, 0, 1, 1, 0, /*incremental:*/ .true)
+ooRexx> do i = indexer~string~length to 1 by -1 ; indexer~graphemeIndexG(i); end
+ooRexx> indexer~startCodepointIndexes=      -- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32]
+[ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32]
+ooRexx> indexer~startGraphemeIndexes=       -- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18]
+[ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18]
+ooRexx> indexer~endCodepointIndexes=        -- [ 39,-38,-37, 36]
+[ 39,-38,-37, 36]
+ooRexx> indexer~endGraphemeIndexes=         -- [ 39,-38,-37, 36]
+[ 39,-38,-37, 36]
+
+
+-- #05bsi Binary search for grapheme index with incremental sparse storage
+-- Even string length, forward progression
+-- Verbose incremental grapheme indexer with limited grapheme storage: 1 start grapheme, 1 end grapheme
+ooRexx> string = "⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x || "⦆⦆"
+ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, 1, 0, 0, 1, 0, 0, /*incremental:*/ .true)
+ooRexx> do i = 1 to indexer~string~length ; say i~left(2)":" indexer~graphemeIndexG(i) ; end
+1 : 1
+2 : -1
+3 : -1
+4 : 2
+5 : -2
+6 : -2
+7 : 3
+8 : 4
+9 : 5
+10: 6
+11: -6
+12: -6
+13: -6
+14: 7
+15: 8
+16: 9
+17: 10
+18: 11
+19: -11
+20: -11
+21: -11
+22: -11
+23: -11
+24: -11
+25: -11
+26: -11
+27: -11
+28: -11
+29: -11
+30: -11
+31: -11
+32: -11
+33: -11
+34: -11
+35: -11
+36: 12
+37: 13
+38: 14
+39: 15
+40: -15
+41: -15
+42: 16
+43: -16
+44: -16
+ooRexx> indexer~startGraphemeIndexes=       -- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 36,-37,-38, 39]
+[ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 36,-37,-38, 39]
+ooRexx> indexer~endGraphemeIndexes=         -- [ 42]
+[ 42]
+
+
+-- #06bsi Binary search for grapheme index with incremental sparse storage
+-- Even string length, backward progression
+-- Verbose incremental grapheme indexer with limited grapheme storage: 1 start grapheme, 1 end grapheme
+ooRexx> string = "⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x || "⦆⦆"
+ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, 1, 0, 0, 1, 0, 0, /*incremental:*/ .true)
+ooRexx> do i = indexer~string~length to 1 by -1 ; say i~left(2)":" indexer~graphemeIndexG(i); end
+44: -16
+43: -16
+42: 16
+41: -15
+40: -15
+39: 15
+38: 14
+37: 13
+36: 12
+35: -11
+34: -11
+33: -11
+32: -11
+31: -11
+30: -11
+29: -11
+28: -11
+27: -11
+26: -11
+25: -11
+24: -11
+23: -11
+22: -11
+21: -11
+20: -11
+19: -11
+18: 11
+17: 10
+16: 9
+15: 8
+14: 7
+13: -6
+12: -6
+11: -6
+10: 6
+9 : 5
+8 : 4
+7 : 3
+6 : -2
+5 : -2
+4 : 2
+3 : -1
+2 : -1
+1 : 1
+ooRexx> indexer~startGraphemeIndexes=       -- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 36,-37,-38, 39]
+[ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 36,-37,-38, 39]
+ooRexx> indexer~endGraphemeIndexes=         -- [ 42]
+[ 42]
+
+
+-- ===============================================================================
 -- 2026 Sept 13
 
 /*
@@ -410,7 +1479,7 @@ an Array (shape [6], 6 items)
 ooRexx> string = "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x
 ooRexx> .RexxUnicode~stringInfo(string)=        -- '(not-ASCII, 12 graphemes, 16 codepoints, 32 bytes, 6 errors)'
 '(not-ASCII, 12 graphemes, 16 codepoints, 32 bytes, 6 errors)'
-ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, 4, 2, 1, 4, 2, 1)
+ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, 2, 4, 1, 2, 4, 1)
 
 -- Codepoints
 ooRexx> indexer~codepointCount=                 -- 16
@@ -3298,7 +4367,7 @@ Invalid byte index: 1 exceeds the byte string length 0.
 Error code= 88.900
 
 -- Binary search for codepoint indexes cannot work with non-incremental sparse storage
-ooRexx> indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 1, 0, 0, 1)
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
 ooRexx> do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
 1 : The NIL object
 2 : The NIL object
@@ -3412,7 +4481,7 @@ Invalid byte index: -100 exceeds the byte string length 20.
 Error code= 88.900
 
 -- Binary search for grapheme index cannot work with non-incremental sparse storage
-ooRexx> indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1)
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 1, 0, 0, 1, 0)
 ooRexx> do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
 1 : The NIL object
 2 : The NIL object
@@ -3534,27 +4603,29 @@ Update escapedHexdigits to use the shorter notation \xXX when applicable.
 .RexxUnicodeStringIndexer:
 
     Update .RexxUnicodeStringIndexer~init
+    2026.09.18 codepoint and grapheme arguments swapped
+
         Start storage limits can be specified when creating the indexer; the default is no limit:
-            - startCodepointStorageLimit
             - startGraphemeStorageLimit
+            - startCodepointStorageLimit
             - startErrorStorageLimit
 
         End storage limits can be specified when creating the indexer; the default is 0.
-            - endCodepointStorageLimit
             - endGraphemeStorageLimit
+            - endCodepointStorageLimit
             - endErrorStorageLimit
 
         .RexxUnicodeStringIndexer~init(
             string,
 
             -- Start storage limits
-            startCodepointStorageLimit = (.RexxInfo~internalMaxNumber),
             startGraphemeStorageLimit = (.RexxInfo~internalMaxNumber),
+            startCodepointStorageLimit = (.RexxInfo~internalMaxNumber),
             startErrorStorageLimit = (.RexxInfo~internalMaxNumber)
 
             -- End storage limits
-            endCodepointStorageLimit = 0,
             endGraphemeStorageLimit = 0,
+            endCodepointStorageLimit = 0,
             endErrorStorageLimit = 0
             )
 
@@ -3581,7 +4652,7 @@ Examples
 -- Specify limits when creating the indexer
 -- U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
-ooRexx> indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x, 4, 2, 1)
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x, 2, 4, 1)
 -- The specified start codepoint storage limit is 4
 ooRexx> indexer~codepointCount=             -- 9
  9
@@ -3632,7 +4703,7 @@ ooRexx> indexer~errorCount=         -- 7
 -- Gets the five last grapheme indexes.
 -- In case of error, reports only the first error.
 ooRexx> string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
-ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, /*startCodepointStorageLimit:*/ 0, /*startGraphemeStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 1, /*endCodepointStorageLimit:*/ 0, /*endGraphemeStorageLimit:*/ 5)
+ooRexx> indexer = .RexxUnicodeStringIndexer~new(string, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 1, /*endGraphemeStorageLimit:*/ 5, /*endCodepointStorageLimit:*/ 0)
 ooRexx> indexer~errorCount=                 -- 7
  7
 ooRexx> indexer~startErrorMessages~items=   -- 1
@@ -3757,195 +4828,195 @@ Invalid code point index: 6 exceeds the code point count 5.
 Error code= 88.900
 
 -- 5 codepoints, start storage limit 2, no end storage
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~startCodepointIndexes=    -- [ 1, 2]
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~startCodepointIndexes=    -- [ 1, 2]
 [ 1, 2]
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~endCodepointIndexes=      -- an Array (no shape, 0 items)
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~endCodepointIndexes=      -- an Array (no shape, 0 items)
 an Array (no shape, 0 items)
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~codepointAtIndexC(-6)=    -- Invalid code point index: -6 exceeds the code point count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~codepointAtIndexC(-6)=    -- Invalid code point index: -6 exceeds the code point count 5.
 Invalid code point index: -6 exceeds the code point count 5.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~codepointAtIndexC(-5)=    -- 97
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~codepointAtIndexC(-5)=    -- 97
  97
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~codepointAtIndexC(-4)=    -- 98
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~codepointAtIndexC(-4)=    -- 98
  98
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~codepointAtIndexC(-3)=    -- Code point index -3 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~codepointAtIndexC(-3)=    -- Code point index -3 is not stored.
 Code point index -3 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~codepointAtIndexC(-2)=    -- Code point index -2 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~codepointAtIndexC(-2)=    -- Code point index -2 is not stored.
 Code point index -2 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~codepointAtIndexC(-1)=    -- Code point index -1 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~codepointAtIndexC(-1)=    -- Code point index -1 is not stored.
 Code point index -1 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~codepointAtIndexC(0)=     -- Invalid code point index: 0.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~codepointAtIndexC(0)=     -- Invalid code point index: 0.
 Invalid code point index: 0.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~codepointAtIndexC(1)=     -- 97
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~codepointAtIndexC(1)=     -- 97
  97
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~codepointAtIndexC(2)=     -- 98
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~codepointAtIndexC(2)=     -- 98
  98
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~codepointAtIndexC(3)=     -- Code point index 3 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~codepointAtIndexC(3)=     -- Code point index 3 is not stored.
 Code point index 3 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~codepointAtIndexC(4)=     -- Code point index 4 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~codepointAtIndexC(4)=     -- Code point index 4 is not stored.
 Code point index 4 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~codepointAtIndexC(5)=     -- Code point index 5 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~codepointAtIndexC(5)=     -- Code point index 5 is not stored.
 Code point index 5 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~codepointAtIndexC(6)=     -- Invalid code point index: 6 exceeds the code point count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~codepointAtIndexC(6)=     -- Invalid code point index: 6 exceeds the code point count 5.
 Invalid code point index: 6 exceeds the code point count 5.
 Error code= 88.900
 
 -- 5 codepoints, start storage limit 2, end storage limit 1
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~startCodepointIndexes=         -- [ 1, 2]
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~startCodepointIndexes=         -- [ 1, 2]
 [ 1, 2]
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~endCodepointIndexes=           -- [ 5]
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~endCodepointIndexes=           -- [ 5]
 [ 5]
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~codepointAtIndexC(-6)=         -- Invalid code point index: -6 exceeds the code point count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~codepointAtIndexC(-6)=         -- Invalid code point index: -6 exceeds the code point count 5.
 Invalid code point index: -6 exceeds the code point count 5.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~codepointAtIndexC(-5)=         -- 97
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~codepointAtIndexC(-5)=         -- 97
  97
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~codepointAtIndexC(-4)=         -- 98
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~codepointAtIndexC(-4)=         -- 98
  98
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~codepointAtIndexC(-3)=         -- Code point index -3 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~codepointAtIndexC(-3)=         -- Code point index -3 is not stored.
 Code point index -3 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~codepointAtIndexC(-2)=         -- Code point index -2 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~codepointAtIndexC(-2)=         -- Code point index -2 is not stored.
 Code point index -2 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~codepointAtIndexC(-1)=         -- 101
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~codepointAtIndexC(-1)=         -- 101
  101
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~codepointAtIndexC(0)=          -- Invalid code point index: 0.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~codepointAtIndexC(0)=          -- Invalid code point index: 0.
 Invalid code point index: 0.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~codepointAtIndexC(1)=          -- 97
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~codepointAtIndexC(1)=          -- 97
  97
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~codepointAtIndexC(2)=          -- 98
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~codepointAtIndexC(2)=          -- 98
  98
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~codepointAtIndexC(3)=          -- Code point index 3 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~codepointAtIndexC(3)=          -- Code point index 3 is not stored.
 Code point index 3 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~codepointAtIndexC(4)=          -- Code point index 4 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~codepointAtIndexC(4)=          -- Code point index 4 is not stored.
 Code point index 4 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~codepointAtIndexC(5)=          -- 101
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~codepointAtIndexC(5)=          -- 101
  101
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~codepointAtIndexC(6)=          -- Invalid code point index: 6 exceeds the code point count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~codepointAtIndexC(6)=          -- Invalid code point index: 6 exceeds the code point count 5.
 Invalid code point index: 6 exceeds the code point count 5.
 Error code= 88.900
 
 -- 5 codepoints, start storage limit 2, end storage limit 3
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~startCodepointIndexes=         -- [ 1, 2]
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~startCodepointIndexes=         -- [ 1, 2]
 [ 1, 2]
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~endCodepointIndexes=           -- [ 5, 4, 3]
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~endCodepointIndexes=           -- [ 5, 4, 3]
 [ 5, 4, 3]
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~codepointAtIndexC(-6)=         -- Invalid code point index: -6 exceeds the code point count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~codepointAtIndexC(-6)=         -- Invalid code point index: -6 exceeds the code point count 5.
 Invalid code point index: -6 exceeds the code point count 5.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~codepointAtIndexC(-5)=         -- 97
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~codepointAtIndexC(-5)=         -- 97
  97
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~codepointAtIndexC(-4)=         -- 98
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~codepointAtIndexC(-4)=         -- 98
  98
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~codepointAtIndexC(-3)=         -- 99
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~codepointAtIndexC(-3)=         -- 99
  99
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~codepointAtIndexC(-2)=         -- 100
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~codepointAtIndexC(-2)=         -- 100
  100
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~codepointAtIndexC(-1)=         -- 101
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~codepointAtIndexC(-1)=         -- 101
  101
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~codepointAtIndexC(0)=          -- Invalid code point index: 0.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~codepointAtIndexC(0)=          -- Invalid code point index: 0.
 Invalid code point index: 0.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~codepointAtIndexC(1)=          -- 97
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~codepointAtIndexC(1)=          -- 97
  97
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~codepointAtIndexC(2)=          -- 98
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~codepointAtIndexC(2)=          -- 98
  98
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~codepointAtIndexC(3)=          -- 99
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~codepointAtIndexC(3)=          -- 99
  99
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~codepointAtIndexC(4)=          -- 100
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~codepointAtIndexC(4)=          -- 100
  100
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~codepointAtIndexC(5)=          -- 101
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~codepointAtIndexC(5)=          -- 101
  101
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~codepointAtIndexC(6)=          -- Invalid code point index: 6 exceeds the code point count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~codepointAtIndexC(6)=          -- Invalid code point index: 6 exceeds the code point count 5.
 Invalid code point index: 6 exceeds the code point count 5.
 Error code= 88.900
 
 -- 5 codepoints, start storage limit 10, end storage limit 10
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~startCodepointIndexes=       -- [ 1, 2, 3, 4, 5]
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~startCodepointIndexes=       -- [ 1, 2, 3, 4, 5]
 [ 1, 2, 3, 4, 5]
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~endCodepointIndexes=         -- an Array (no shape, 0 items)
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~endCodepointIndexes=         -- an Array (no shape, 0 items)
 an Array (no shape, 0 items)
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(-6)=       -- Invalid code point index: -6 exceeds the code point count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~codepointAtIndexC(-6)=       -- Invalid code point index: -6 exceeds the code point count 5.
 Invalid code point index: -6 exceeds the code point count 5.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(-5)=       -- 97
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~codepointAtIndexC(-5)=       -- 97
  97
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(-4)=       -- 98
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~codepointAtIndexC(-4)=       -- 98
  98
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(-3)=       -- 99
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~codepointAtIndexC(-3)=       -- 99
  99
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(-2)=       -- 100
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~codepointAtIndexC(-2)=       -- 100
  100
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(-1)=       -- 101
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~codepointAtIndexC(-1)=       -- 101
  101
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(0)=        -- Invalid code point index: 0.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~codepointAtIndexC(0)=        -- Invalid code point index: 0.
 Invalid code point index: 0.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(1)=        -- 97
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~codepointAtIndexC(1)=        -- 97
  97
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(2)=        -- 98
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~codepointAtIndexC(2)=        -- 98
  98
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(3)=        -- 99
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~codepointAtIndexC(3)=        -- 99
  99
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(4)=        -- 100
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~codepointAtIndexC(4)=        -- 100
  100
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(5)=        -- 101
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~codepointAtIndexC(5)=        -- 101
  101
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~codepointAtIndexC(6)=        -- Invalid code point index: 6 exceeds the code point count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~codepointAtIndexC(6)=        -- Invalid code point index: 6 exceeds the code point count 5.
 Invalid code point index: 6 exceeds the code point count 5.
 Error code= 88.900
 
 -- 26 codepoints, start storage limit 10, end storage limit 10
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~startCodepointIndexes=      -- [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~startCodepointIndexes=      -- [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~endCodepointIndexes=        -- [ 26, 25, 24, 23, 22, 21, 20, 19, 18, 17]
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~endCodepointIndexes=        -- [ 26, 25, 24, 23, 22, 21, 20, 19, 18, 17]
 [ 26, 25, 24, 23, 22, 21, 20, 19, 18, 17]
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~codepointAtIndexC(-27)=     -- Invalid code point index: -27 exceeds the code point count 26.
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~codepointAtIndexC(-27)=     -- Invalid code point index: -27 exceeds the code point count 26.
 Invalid code point index: -27 exceeds the code point count 26.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~codepointAtIndexC(-26)=     -- 97
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~codepointAtIndexC(-26)=     -- 97
  97
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~codepointAtIndexC(-17)=     -- 106
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~codepointAtIndexC(-17)=     -- 106
  106
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~codepointAtIndexC(-16)=     -- Code point index -16 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~codepointAtIndexC(-16)=     -- Code point index -16 is not stored.
 Code point index -16 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~codepointAtIndexC(-11)=     -- Code point index -11 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~codepointAtIndexC(-11)=     -- Code point index -11 is not stored.
 Code point index -11 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~codepointAtIndexC(-10)=     -- 113
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~codepointAtIndexC(-10)=     -- 113
  113
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~codepointAtIndexC(-1)=      -- 122.
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~codepointAtIndexC(-1)=      -- 122.
  122
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~codepointAtIndexC(0)=       -- Invalid code point index: 0.
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~codepointAtIndexC(0)=       -- Invalid code point index: 0.
 Invalid code point index: 0.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~codepointAtIndexC(1)=       -- 97
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~codepointAtIndexC(1)=       -- 97
  97
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~codepointAtIndexC(10)=      -- 106
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~codepointAtIndexC(10)=      -- 106
  106
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~codepointAtIndexC(11)=      -- Code point index 11 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~codepointAtIndexC(11)=      -- Code point index 11 is not stored.
 Code point index 11 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~codepointAtIndexC(16)=      -- Code point index 16 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~codepointAtIndexC(16)=      -- Code point index 16 is not stored.
 Code point index 16 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~codepointAtIndexC(17)=      -- 113
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~codepointAtIndexC(17)=      -- 113
  113
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~codepointAtIndexC(26)=      -- 122
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~codepointAtIndexC(26)=      -- 122
  122
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~codepointAtIndexC(27)=      -- Invalid code point index: 27 exceeds the code point count 26.
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~codepointAtIndexC(27)=      -- Invalid code point index: 27 exceeds the code point count 26.
 Invalid code point index: 27 exceeds the code point count 26.
 Error code= 88.900
 
@@ -4026,195 +5097,195 @@ Invalid grapheme index: 6 exceeds the grapheme count 5.
 Error code= 88.900
 
 -- 5 graphemes, start storage limit 2, no end storage
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~startGraphemeIndexes=   -- [ 1, 2]
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~startGraphemeIndexes=   -- [ 1, 2]
 [ 1, 2]
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~endGraphemeIndexes=     -- an Array (no shape, 0 items)
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~endGraphemeIndexes=     -- an Array (no shape, 0 items)
 an Array (no shape, 0 items)
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~graphemeAtIndexG(-6)=   -- Invalid grapheme index: -6 exceeds the grapheme count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~graphemeAtIndexG(-6)=   -- Invalid grapheme index: -6 exceeds the grapheme count 5.
 Invalid grapheme index: -6 exceeds the grapheme count 5.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~graphemeAtIndexG(-5)=   -- 'a'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~graphemeAtIndexG(-5)=   -- 'a'
 'a'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~graphemeAtIndexG(-4)=   -- 'b'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~graphemeAtIndexG(-4)=   -- 'b'
 'b'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~graphemeAtIndexG(-3)=   -- Grapheme index -3 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~graphemeAtIndexG(-3)=   -- Grapheme index -3 is not stored.
 Grapheme index -3 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~graphemeAtIndexG(-2)=   -- Grapheme index -2 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~graphemeAtIndexG(-2)=   -- Grapheme index -2 is not stored.
 Grapheme index -2 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~graphemeAtIndexG(-1)=   -- Grapheme index -1 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~graphemeAtIndexG(-1)=   -- Grapheme index -1 is not stored.
 Grapheme index -1 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~graphemeAtIndexG(0)=    -- Invalid grapheme index: 0.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~graphemeAtIndexG(0)=    -- Invalid grapheme index: 0.
 Invalid grapheme index: 0.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~graphemeAtIndexG(1)=    -- 'a'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~graphemeAtIndexG(1)=    -- 'a'
 'a'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~graphemeAtIndexG(2)=    -- 'b'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~graphemeAtIndexG(2)=    -- 'b'
 'b'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~graphemeAtIndexG(3)=    -- Grapheme index 3 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~graphemeAtIndexG(3)=    -- Grapheme index 3 is not stored.
 Grapheme index 3 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~graphemeAtIndexG(4)=    -- Grapheme index 4 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~graphemeAtIndexG(4)=    -- Grapheme index 4 is not stored.
 Grapheme index 4 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~graphemeAtIndexG(5)=    -- Grapheme index 5 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~graphemeAtIndexG(5)=    -- Grapheme index 5 is not stored.
 Grapheme index 5 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2)~graphemeAtIndexG(6)=    -- Invalid grapheme index: 6 exceeds the grapheme count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2)~graphemeAtIndexG(6)=    -- Invalid grapheme index: 6 exceeds the grapheme count 5.
 Invalid grapheme index: 6 exceeds the grapheme count 5.
 Error code= 88.900
 
 -- 5 graphemes, start storage limit 2, end storage limit 1
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~startGraphemeIndexes=    -- [ 1, 2]
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~startGraphemeIndexes=    -- [ 1, 2]
 [ 1, 2]
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~endGraphemeIndexes=      -- [ 5]
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~endGraphemeIndexes=      -- [ 5]
 [ 5]
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~graphemeAtIndexG(-6)=    -- Invalid grapheme index: -6 exceeds the grapheme count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~graphemeAtIndexG(-6)=    -- Invalid grapheme index: -6 exceeds the grapheme count 5.
 Invalid grapheme index: -6 exceeds the grapheme count 5.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~graphemeAtIndexG(-5)=    -- 'a'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~graphemeAtIndexG(-5)=    -- 'a'
 'a'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~graphemeAtIndexG(-4)=    -- 'b'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~graphemeAtIndexG(-4)=    -- 'b'
 'b'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~graphemeAtIndexG(-3)=    -- Grapheme index -3 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~graphemeAtIndexG(-3)=    -- Grapheme index -3 is not stored.
 Grapheme index -3 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~graphemeAtIndexG(-2)=    -- Grapheme index -2 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~graphemeAtIndexG(-2)=    -- Grapheme index -2 is not stored.
 Grapheme index -2 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~graphemeAtIndexG(-1)=    -- 'e'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~graphemeAtIndexG(-1)=    -- 'e'
 'e'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~graphemeAtIndexG(0)=     -- Invalid grapheme index: 0.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~graphemeAtIndexG(0)=     -- Invalid grapheme index: 0.
 Invalid grapheme index: 0.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~graphemeAtIndexG(1)=     -- 'a'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~graphemeAtIndexG(1)=     -- 'a'
 'a'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~graphemeAtIndexG(2)=     -- 'b'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~graphemeAtIndexG(2)=     -- 'b'
 'b'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~graphemeAtIndexG(3)=     -- grapheme index 3 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~graphemeAtIndexG(3)=     -- grapheme index 3 is not stored.
 Grapheme index 3 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~graphemeAtIndexG(4)=     -- Grapheme index 4 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~graphemeAtIndexG(4)=     -- Grapheme index 4 is not stored.
 Grapheme index 4 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~graphemeAtIndexG(5)=     -- 'e'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~graphemeAtIndexG(5)=     -- 'e'
 'e'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 1)~graphemeAtIndexG(6)=     -- Invalid grapheme index: 6 exceeds the grapheme count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 1)~graphemeAtIndexG(6)=     -- Invalid grapheme index: 6 exceeds the grapheme count 5.
 Invalid grapheme index: 6 exceeds the grapheme count 5.
 Error code= 88.900
 
 -- 5 graphemes, start storage limit 2, end storage limit 3
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~startGraphemeIndexes=    -- [ 1, 2]
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~startGraphemeIndexes=    -- [ 1, 2]
 [ 1, 2]
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~endGraphemeIndexes=      -- [ 5, 4, 3]
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~endGraphemeIndexes=      -- [ 5, 4, 3]
 [ 5, 4, 3]
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~graphemeAtIndexG(-6)=    -- Invalid grapheme index: -6 exceeds the grapheme count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~graphemeAtIndexG(-6)=    -- Invalid grapheme index: -6 exceeds the grapheme count 5.
 Invalid grapheme index: -6 exceeds the grapheme count 5.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~graphemeAtIndexG(-5)=    -- 'a'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~graphemeAtIndexG(-5)=    -- 'a'
 'a'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~graphemeAtIndexG(-4)=    -- 'b'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~graphemeAtIndexG(-4)=    -- 'b'
 'b'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~graphemeAtIndexG(-3)=    -- 'c'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~graphemeAtIndexG(-3)=    -- 'c'
 'c'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~graphemeAtIndexG(-2)=    -- 'd'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~graphemeAtIndexG(-2)=    -- 'd'
 'd'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~graphemeAtIndexG(-1)=    -- 'e'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~graphemeAtIndexG(-1)=    -- 'e'
 'e'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~graphemeAtIndexG(0)=     -- Invalid grapheme index: 0.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~graphemeAtIndexG(0)=     -- Invalid grapheme index: 0.
 Invalid grapheme index: 0.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~graphemeAtIndexG(1)=     -- 'a'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~graphemeAtIndexG(1)=     -- 'a'
 'a'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~graphemeAtIndexG(2)=     -- 'b'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~graphemeAtIndexG(2)=     -- 'b'
 'b'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~graphemeAtIndexG(3)=     -- 'c'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~graphemeAtIndexG(3)=     -- 'c'
 'c'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~graphemeAtIndexG(4)=     -- 'd'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~graphemeAtIndexG(4)=     -- 'd'
 'd'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~graphemeAtIndexG(5)=     -- 'e'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~graphemeAtIndexG(5)=     -- 'e'
 'e'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 2, , , 3)~graphemeAtIndexG(6)=     -- Invalid grapheme index: 6 exceeds the grapheme count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 2, , , 3)~graphemeAtIndexG(6)=     -- Invalid grapheme index: 6 exceeds the grapheme count 5.
 Invalid grapheme index: 6 exceeds the grapheme count 5.
 Error code= 88.900
 
 -- 5 graphemes, start storage limit 10, end storage limit 10
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~startGraphemeIndexes=  -- [ 1, 2, 3, 4, 5]
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~startGraphemeIndexes=  -- [ 1, 2, 3, 4, 5]
 [ 1, 2, 3, 4, 5]
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~endGraphemeIndexes=    -- an Array (no shape, 0 items)
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~endGraphemeIndexes=    -- an Array (no shape, 0 items)
 an Array (no shape, 0 items)
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(-6)=  -- Invalid grapheme index: -6 exceeds the grapheme count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~graphemeAtIndexG(-6)=  -- Invalid grapheme index: -6 exceeds the grapheme count 5.
 Invalid grapheme index: -6 exceeds the grapheme count 5.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(-5)=  -- 'a'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~graphemeAtIndexG(-5)=  -- 'a'
 'a'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(-4)=  -- 'b'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~graphemeAtIndexG(-4)=  -- 'b'
 'b'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(-3)=  -- 'c'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~graphemeAtIndexG(-3)=  -- 'c'
 'c'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(-2)=  -- 'd'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~graphemeAtIndexG(-2)=  -- 'd'
 'd'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(-1)=  -- 'e'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~graphemeAtIndexG(-1)=  -- 'e'
 'e'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(0)=   -- Invalid grapheme index: 0.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~graphemeAtIndexG(0)=   -- Invalid grapheme index: 0.
 Invalid grapheme index: 0.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(1)=   -- 'a'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~graphemeAtIndexG(1)=   -- 'a'
 'a'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(2)=   -- 'b'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~graphemeAtIndexG(2)=   -- 'b'
 'b'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(3)=   -- 'c'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~graphemeAtIndexG(3)=   -- 'c'
 'c'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(4)=   -- 'd'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~graphemeAtIndexG(4)=   -- 'd'
 'd'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(5)=   -- 'e'
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~graphemeAtIndexG(5)=   -- 'e'
 'e'
-ooRexx> .RexxUnicodeStringIndexer~new("abcde", , 10, , , 10)~graphemeAtIndexG(6)=   -- Invalid grapheme index: 6 exceeds the grapheme count 5.
+ooRexx> .RexxUnicodeStringIndexer~new("abcde", 10, , , 10)~graphemeAtIndexG(6)=   -- Invalid grapheme index: 6 exceeds the grapheme count 5.
 Invalid grapheme index: 6 exceeds the grapheme count 5.
 Error code= 88.900
 
 -- 26 graphemes, start storage limit 10, end storage limit 10
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~startGraphemeIndexes=     -- [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~startGraphemeIndexes=     -- [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~endGraphemeIndexes=       -- [ 26, 25, 24, 23, 22, 21, 20, 19, 18, 17]
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~endGraphemeIndexes=       -- [ 26, 25, 24, 23, 22, 21, 20, 19, 18, 17]
 [ 26, 25, 24, 23, 22, 21, 20, 19, 18, 17]
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~graphemeAtIndexG(-27)=    -- Invalid grapheme index: -27 exceeds the grapheme count 26.
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~graphemeAtIndexG(-27)=    -- Invalid grapheme index: -27 exceeds the grapheme count 26.
 Invalid grapheme index: -27 exceeds the grapheme count 26.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~graphemeAtIndexG(-26)=    -- 'a'
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~graphemeAtIndexG(-26)=    -- 'a'
 'a'
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~graphemeAtIndexG(-17)=    -- 'j'
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~graphemeAtIndexG(-17)=    -- 'j'
 'j'
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~graphemeAtIndexG(-16)=    -- Grapheme index -16 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~graphemeAtIndexG(-16)=    -- Grapheme index -16 is not stored.
 Grapheme index -16 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~graphemeAtIndexG(-11)=    -- Grapheme index -11 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~graphemeAtIndexG(-11)=    -- Grapheme index -11 is not stored.
 Grapheme index -11 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~graphemeAtIndexG(-10)=    -- 'q'
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~graphemeAtIndexG(-10)=    -- 'q'
 'q'
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~graphemeAtIndexG(-1)=     -- 'z'
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~graphemeAtIndexG(-1)=     -- 'z'
 'z'
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~graphemeAtIndexG(0)=      -- Invalid grapheme index: 0.
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~graphemeAtIndexG(0)=      -- Invalid grapheme index: 0.
 Invalid grapheme index: 0.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~graphemeAtIndexG(1)=      -- 'a'
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~graphemeAtIndexG(1)=      -- 'a'
 'a'
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~graphemeAtIndexG(10)=     -- 'j'
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~graphemeAtIndexG(10)=     -- 'j'
 'j'
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~graphemeAtIndexG(11)=     -- Grapheme index 11 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~graphemeAtIndexG(11)=     -- Grapheme index 11 is not stored.
 Grapheme index 11 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~graphemeAtIndexG(16)=     -- Grapheme index 16 is not stored.
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~graphemeAtIndexG(16)=     -- Grapheme index 16 is not stored.
 Grapheme index 16 is not stored.
 Error code= 88.900
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~graphemeAtIndexG(17)=     -- 'q'
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~graphemeAtIndexG(17)=     -- 'q'
 'q'
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~graphemeAtIndexG(26)=     -- 'z'
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~graphemeAtIndexG(26)=     -- 'z'
 'z'
-ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", , 10, , , 10)~graphemeAtIndexG(27)=     -- Invalid grapheme index: 27 exceeds the grapheme count 26.
+ooRexx> .RexxUnicodeStringIndexer~new("abcdefghijklmnopqrstuvwxyz", 10, , , 10)~graphemeAtIndexG(27)=     -- Invalid grapheme index: 27 exceeds the grapheme count 26.
 Invalid grapheme index: 27 exceeds the grapheme count 26.
 Error code= 88.900
 

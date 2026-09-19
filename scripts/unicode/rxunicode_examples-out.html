@@ -42,7 +42,7 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
 </span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 7 Sep 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: S139faQa19000540
+</span><span style="font-weight:bold;color:green;">Input queue name: Se9e9Qa19002ac0
 </span>
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">Examples in rxunicode.md
@@ -2463,11 +2463,58 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~stri
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
 
+<span style="font-weight:bold;color:blue;">-- Binary search for codepoint indexes is working with incremental sparse storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 0, 1, 0, 0, 1, 0, /*incremental:*/ .true)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~string~length; say i~left(2)&quot;:&quot; indexer~codepointIndexC(i); end</span>
+1 : 1
+2 : 2
+3 : -2
+4 : -2
+5 : -2
+6 : 3
+7 : -3
+8 : -3
+9 : 4
+10: -4
+11: -4
+12: -4
+13: 5
+14: -5
+15: -5
+16: 6
+17: -6
+18: -6
+19: -6
+20: 7
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    1 : 1
+</span><span style="font-weight:bold;color:blue;">    2 : 2
+</span><span style="font-weight:bold;color:blue;">    3 : -2
+</span><span style="font-weight:bold;color:blue;">    4 : -2
+</span><span style="font-weight:bold;color:blue;">    5 : -2
+</span><span style="font-weight:bold;color:blue;">    6 : 3
+</span><span style="font-weight:bold;color:blue;">    7 : -3
+</span><span style="font-weight:bold;color:blue;">    8 : -3
+</span><span style="font-weight:bold;color:blue;">    9 : 4
+</span><span style="font-weight:bold;color:blue;">    10: -4
+</span><span style="font-weight:bold;color:blue;">    11: -4
+</span><span style="font-weight:bold;color:blue;">    12: -4
+</span><span style="font-weight:bold;color:blue;">    13: 5
+</span><span style="font-weight:bold;color:blue;">    14: -5
+</span><span style="font-weight:bold;color:blue;">    15: -5
+</span><span style="font-weight:bold;color:blue;">    16: 6
+</span><span style="font-weight:bold;color:blue;">    17: -6
+</span><span style="font-weight:bold;color:blue;">    18: -6
+</span><span style="font-weight:bold;color:blue;">    19: -6
+</span><span style="font-weight:bold;color:blue;">    20: 7
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeStringIndexer~endCodepointIndexes
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 5, 0, 0, 5)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 0, 5, 0, 0, 5)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=  </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 6, 9, 13]</span>
 [ 1, 2, 6, 9, 13]
 <span style="font-weight:bold;color:blue;">-- No overlap between the end and start storage: 13, 9, 6 are already stored in the start storage
@@ -2520,7 +2567,7 @@ an Array (shape [2], 2 items)
 </span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeStringIndexer~endGraphemeIndexes
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 0, 5, 0, 0, 5)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 5, 0, 0, 5, 0)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=   </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 20]</span>
 [ 1, 2, 20]
 <span style="font-weight:bold;color:blue;">-- No overlap between the end and start storage: 20, 2, 1 are already stored in the start storage
@@ -2589,7 +2636,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeIndexG(-
 
 
 <span style="font-weight:bold;color:blue;">-- Binary search for grapheme indexes cannot work with non-incremental sparse storage
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 0, 1, 0, 0, 1)</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 1, 0, 0, 1, 0)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~string~length; say i~left(2)&quot;:&quot; indexer~graphemeIndexG(i); end</span>
 1 : The NIL object
 2 : The NIL object
@@ -2635,6 +2682,53 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~stri
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
 
+<span style="font-weight:bold;color:blue;">-- Binary search for grapheme indexes is working with incremental sparse storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 1, 0, 0, 1, 0, 0, /*incremental:*/ .true)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~string~length; say i~left(2)&quot;:&quot; indexer~graphemeIndexG(i); end</span>
+1 : 1
+2 : 2
+3 : -2
+4 : -2
+5 : -2
+6 : -2
+7 : -2
+8 : -2
+9 : -2
+10: -2
+11: -2
+12: -2
+13: -2
+14: -2
+15: -2
+16: -2
+17: -2
+18: -2
+19: -2
+20: 3
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    1 : 1
+</span><span style="font-weight:bold;color:blue;">    2 : 2
+</span><span style="font-weight:bold;color:blue;">    3 : -2
+</span><span style="font-weight:bold;color:blue;">    4 : -2
+</span><span style="font-weight:bold;color:blue;">    5 : -2
+</span><span style="font-weight:bold;color:blue;">    6 : -2
+</span><span style="font-weight:bold;color:blue;">    7 : -2
+</span><span style="font-weight:bold;color:blue;">    8 : -2
+</span><span style="font-weight:bold;color:blue;">    9 : -2
+</span><span style="font-weight:bold;color:blue;">    10: -2
+</span><span style="font-weight:bold;color:blue;">    11: -2
+</span><span style="font-weight:bold;color:blue;">    12: -2
+</span><span style="font-weight:bold;color:blue;">    13: -2
+</span><span style="font-weight:bold;color:blue;">    14: -2
+</span><span style="font-weight:bold;color:blue;">    15: -2
+</span><span style="font-weight:bold;color:blue;">    16: -2
+</span><span style="font-weight:bold;color:blue;">    17: -2
+</span><span style="font-weight:bold;color:blue;">    18: -2
+</span><span style="font-weight:bold;color:blue;">    19: -2
+</span><span style="font-weight:bold;color:blue;">    20: 3
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeStringIndexer~init
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
@@ -2643,7 +2737,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~stri
 </span><span style="font-weight:bold;color:blue;">-- Example 1
 </span><span style="font-weight:bold;color:blue;">-- If the identifier is a valid UTF-8 string and is made of just one codepoint then return this codepoint.
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">identifier = &quot;€&quot;</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(identifier, /*startCodepointStorageLimit:*/ 1, /*startGraphemeStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 0)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(identifier, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 1, /*startErrorStorageLimit:*/ 0)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">if indexer~errorCount == 0, indexer~codepointCount == 1 then say indexer~codepointAtIndexC(1)</span>
 8364
 
@@ -2652,7 +2746,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">if indexer~errorCount ==
 </span><span style="font-weight:bold;color:blue;">-- Example 2
 </span><span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts
 </span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, /*startCodepointStorageLimit:*/ 4, /*startGraphemeStorageLimit:*/ 2, /*startErrorStorageLimit:*/ 1)</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, /*startGraphemeStorageLimit:*/ 2, /*startCodepointStorageLimit:*/ 4, /*startErrorStorageLimit:*/ 1)</span>
 
 <span style="font-weight:bold;color:blue;">-- The specified start codepoint storage limit is 4
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointCount=             </span><span style="font-weight:bold;color:blue;">-- 9</span>
@@ -2710,7 +2804,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorCount=     
 </span><span style="font-weight:bold;color:blue;">-- Gets the five last grapheme indexes.
 </span><span style="font-weight:bold;color:blue;">-- In case of error, reports only the first error.
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;F4 91 92 93 FF 41 80 BF 42&quot;x || &quot;Joyeux Noël 👨‍👩‍👧&quot;</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(string, /*startCodepointStorageLimit:*/ 0, /*startGraphemeStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 1, /*endCodepointStorageLimit:*/ 0, /*endGraphemeStorageLimit:*/ 5)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(string, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 1, /*endGraphemeStorageLimit:*/ 5, /*endCodepointStorageLimit:*/ 0)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorCount=                 </span><span style="font-weight:bold;color:blue;">-- 7</span>
  7
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages~items=   </span><span style="font-weight:bold;color:blue;">-- 1</span>
