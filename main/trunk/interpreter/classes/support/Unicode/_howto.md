@@ -11,11 +11,17 @@ git clone https://github.com/JuliaLang/utf8proc
 
 #### Replace the existing files in `Unicode/utf8proc` by the new files from Github.
 
+Check if new files have been added, that should be vendored in the ooRexx implementation.
+
+
 #### Review `Unicode/UnicodeServices.cpp`
 
 `grapheme_break_simple` is a duplicate; update it if needed whenever utf8proc is updated.
 
 `grapheme_break_extended` is a duplicate; update it if needed whenever utf8proc is updated.
+
+`utf8proc_grapheme_break_backward` and its helpers implement complex rules that may be
+impacted by changes applied to utf8proc. This is the case with Unicode 18 for GB9c.
 
 Check whether the enum tables need to be updated (if new values have been added to `utf8proc.h`).
 
