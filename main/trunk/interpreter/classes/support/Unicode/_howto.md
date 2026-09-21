@@ -1,8 +1,8 @@
 ## How to upgrade Unicode files
 
-The updates are yearly, generally in oct/nov.
-
 ### utf8proc
+
+The updates are yearly, generally in oct/nov.
 
 ```
 cd any_directory
