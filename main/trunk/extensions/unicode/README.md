@@ -44,6 +44,11 @@ The `rxunicode` library provides additional classes built on the `RexxUnicodeSer
 
 ### Technical documentation
 
+- `rxunicode.cls`
+
+    - [Source code with TOC][rxunicode_source_code_html]  
+      <!-- The NBSP after this comment is intentional; it adds spacing between bullets in the generated HTML --> 
+
 - `utf8proc`
 
     - [Code review][_code_review_utf8proc_txt]  
@@ -90,6 +95,7 @@ If you don't have `ICU4C` installed and want to try it, follow the instructions 
 [rxunicode_documentation_examples]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/unicode/rxunicode_examples-out.html "rxunicode documentation examples"
 [rxunicode_documentation_md]: https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/rxunicode.md "rxunicode markdown documentation"
 [rxunicode_documentation_html]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/rxunicode.html "rxunicode HTML documentation"
+[rxunicode_source_code_html]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/main/trunk/extensions/unicode/rxunicode.cls.html "rxunicode source code with TOC"
 [unicode_diary_examples]: https://html-preview.github.io/?url=https://github.com/jlfaucher/executor5-bulk/blob/main/scripts/unicode/diary_examples-out.html "Unicode diary examples"
 [unicode_width]: https://github.com/unicode-rs/unicode-width "unicode-width"
 [utf8proc]: https://juliastrings.github.io/utf8proc/ "utf8proc"
