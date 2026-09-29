@@ -44,9 +44,10 @@ help:
 	@echo
 
 all:
-	@for f in $(ooRexxShellFiles); do make $$f; done
-	@for f in $(scriptsFiles1); do make $$f; done
-	@for f in $(scriptsFiles2); do make $$f; done
+	@set -e; \
+	for f in $(ooRexxShellFiles); do make $$f; done; \
+	for f in $(scriptsFiles1); do make $$f; done; \
+	for f in $(scriptsFiles2); do make $$f; done
 	@echo
 	@echo "To be launched separately: make html (needs asciinema and aha)"
 

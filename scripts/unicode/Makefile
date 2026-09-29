@@ -50,9 +50,9 @@ help:
 	@-for %%f in ($(scriptsFiles2)) do @echo nmake %%f
 
 all:
-	@-for %%f in ($(ooRexxShellFiles)) do @$(NMAKE) %%f
-	@-for %%f in ($(scriptsFiles1)) do @$(NMAKE) %%f
-	@-for %%f in ($(scriptsFiles2)) do @$(NMAKE) %%f
+	@for %%f in ($(ooRexxShellFiles)) do @$(NMAKE) %%f
+	@for %%f in ($(scriptsFiles1)) do @$(NMAKE) %%f
+	@for %%f in ($(scriptsFiles2)) do @$(NMAKE) %%f
 
 ooRexxShellFiles: $(ooRexxShellFiles)
 
