@@ -13,7 +13,7 @@ loop codepoint = 0 to .RexxUnicode~maxCodepoint
     width = .RexxUnicode~codepointCharWidth(codepoint)
     .RexxUnicode~codepointCategory(codepoint, >categoryCode)
 
-    -- Count the occurences of width per category
+    -- Count the occurrences of width per category
     categoryWidth.categoryCode.width += 1
 
     -- Cn Unassigned (reserved, noncharacters)     (width: 814730 x 1)
