@@ -1527,7 +1527,7 @@ indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
 indexer=                            -- (a👨‍👩‍👧b)
 indexer~startCodepointIndexes=      -- [ 1, 2, 6, 9, 13, 16, 20]
 indexer~startGraphemeIndexes=       -- [ 1, 2, 20]
-indexer~startErrorMessages=         -- an Array (no shape, 0 items)
+indexer~startErrorMessages=         -- []
 indexer~codepointAtIndexC(3)=       -- 8205
 .RexxUnicodeCharacter~new(8205)=    -- (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
 indexer~graphemeAtIndexG(3)=        -- 'b'
@@ -1554,6 +1554,208 @@ indexer~codepointAtIndexC(3)=       -- 65533
 .RexxUnicodeCharacter~new(65533)=   -- ("�" \x{EFBFBD} U+FFFD So Other_Symbol "REPLACEMENT CHARACTER")
 indexer~graphemeAtIndexG(3)~c2x=    -- 92 (use ~c2x to not display an invalid byte sequence)
 
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeStringIndexer~new
+--------------------------------------------------------------------------------
+
+-- Example 1
+-- If the identifier is a valid UTF-8 string and is made of just one codepoint then return this codepoint.
+identifier = "€"
+indexer = .RexxUnicodeStringIndexer~new(identifier, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 1, /*startErrorStorageLimit:*/ 0)
+if indexer~errorCount == 0, indexer~codepointCount == 1 then say indexer~codepointAtIndexC(1)   -- 8364
+
+
+-- Example 2
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x, /*startGraphemeStorageLimit:*/ 2, /*startCodepointStorageLimit:*/ 4, /*startErrorStorageLimit:*/ 1)
+
+-- The forward scan is a full scan to calculate the number of graphemes, codepoints and errors.
+indexer~graphemeCount=              -- 9
+indexer~codepointCount=             -- 9
+indexer~errorCount=                 -- 7
+
+-- The specified start grapheme storage limit is 2
+indexer~startGraphemeStorageCount=  -- 2
+indexer~startGraphemeIndexes=       -- [-1,-2]
+indexer~graphemeAtIndexG(2)~c2x=    -- 91 (use ~c2x to not display an invalid byte sequence)
+indexer~graphemeAtIndexG(3)~c2x=    -- Grapheme index 3 is not stored.
+
+-- The specified start codepoint storage limit is 4
+indexer~startCodepointStorageCount= -- 4
+indexer~startCodepointIndexes=      -- [-1,-2,-3,-4]
+indexer~codepointAtIndexC(3)=       -- 65533
+indexer~codepointAtIndexC(5)=       -- Code point index 5 is not stored.
+
+-- The specified start error storage limit is 1
+indexer~startErrorStorageCount=     -- 1
+indexer~startErrorMessages==
+/*
+    an Array (shape [1], 1 items)
+     1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
+*/
+
+
+-- Example 3
+-- Collect counters, no need to store indexes and errors
+string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
+indexer = .RexxUnicodeStringIndexer~new(string, 0, 0, 0)
+indexer~graphemeCount=      -- 22
+indexer~codepointCount=     -- 26
+indexer~errorCount=         -- 7
+
+
+-- Example 4
+-- Gets the five last grapheme indexes.
+-- In case of error, reports only the first error.
+string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
+indexer = .RexxUnicodeStringIndexer~new(string, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 1, /*endGraphemeStorageLimit:*/ 5, /*endCodepointStorageLimit:*/ 0)
+indexer~errorCount=                 -- 7
+indexer~startErrorMessages~items=   -- 1
+indexer~startErrorMessages==
+/*
+    an Array (shape [1], 1 items)
+     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+*/
+indexer~endGraphemeIndexes=         -- [ 23, 22, 21, 19, 18]
+-- Pass -endIndexG, where a negative index means "index from the end"
+do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~graphemeAtIndexG(-endIndexG); end
+/*
+    1: 👨‍👩‍👧
+    2:
+    3: l
+    4: ë
+    5: o
+*/
+
+
+--------------------------------------------------------------------------------
+-- .RexxUnicodeStringIndexer~newIncremental
+--------------------------------------------------------------------------------
+
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+indexer = .RexxUnicodeStringIndexer~newIncremental("F4 91 92 93 FF 41 80 BF 42"x, /*startGraphemeStorageLimit:*/ 2, /*startCodepointStorageLimit:*/ 4, /*startErrorStorageLimit:*/ 1)
+
+-----------------
+-- Initialization
+-----------------
+
+/*
+    (using the undocumented `verbose` argument: 7th argument of ~newIncremental)
+
+    append -1 to startCodepointIndexes
+    append start byte position 1 : Invalid continuation byte 145 ('91'x) at byte position 2 (code point > U+10FFFF) to startErrorMessages
+    append -2 to startCodepointIndexes
+    append start byte position 2 : Invalid start byte 145 ('91'x) (non-shortest form) to startErrorMessages
+    append -1 to startGraphemeIndexes
+    append -3 to startCodepointIndexes
+    append start byte position 3 : Invalid start byte 146 ('92'x) (non-shortest form) to startErrorMessages
+    append -2 to startGraphemeIndexes
+    append -4 to startCodepointIndexes
+    append start byte position 4 : Invalid start byte 147 ('93'x) (non-shortest form) to startErrorMessages
+    append -3 to startGraphemeIndexes
+*/
+
+-- The forward scan is a full scan to calculate the number of graphemes, codepoints and errors.
+indexer~graphemeCount=              -- 9
+indexer~codepointCount=             -- 9
+indexer~errorCount=                 -- 7
+
+-- The grapheme limit has been adjusted to avoid a gap with the codepoint storage.
+indexer~limits=                     -- [ 3, 4, 1, 0, 0, 0]
+
+indexer~startGraphemeStorageCount=  -- 3
+indexer~startGraphemeIndexes=       -- [-1,-2,-3]
+
+indexer~startCodepointStorageCount= -- 4
+indexer~startCodepointIndexes=      -- [-1,-2,-3,-4]
+
+indexer~startErrorStorageCount=     -- 4
+indexer~startErrorMessages==
+/*
+    a VerboseArray (shape [4], 4 items)
+     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+     3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+*/
+
+-------------------
+-- Query codepoints
+-------------------
+
+indexer~codepointAtIndexC(3)=       -- 65533
+indexer~codepointAtIndexC(5)=       -- 65533 (has been stored incrementally)
+/*
+    indexC 5 distanceFromStartLastItem = 1
+    indexC 5 distanceFromEndLastItem = 999999999999999999
+    append -5 to startCodepointIndexes
+    append start byte position 5 : Invalid start byte 255 ('FF'x) (code point > U+10FFFF) to startErrorMessages
+    append -4 to startGraphemeIndexes
+*/
+
+-- The grapheme storage has been updated to avoid a gap with the codepoint storage
+indexer~startGraphemeStorageCount=  -- 4
+indexer~startGraphemeIndexes=       -- [-1,-2,-3,-4]
+
+-- The codepoint storage has been updated to store the byte index of the 5th codepoint
+indexer~startCodepointStorageCount= -- 5
+indexer~startCodepointIndexes=      -- [-1,-2,-3,-4,-5]
+
+-- The error storage has been updated because the byte sequence of the 5th codepoint is invalid
+indexer~startErrorStorageCount=     -- 5
+indexer~startErrorMessages==
+/*
+    a VerboseArray (shape [5], 5 items)
+     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+     3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+     5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+*/
+
+------------------
+-- Query graphemes
+------------------
+
+indexer~graphemeAtIndexG(2)~c2x=    -- 91 (use ~c2x to not display an invalid byte sequence)
+indexer~graphemeAtIndexG(3)~c2x=    -- 92 instead of "Grapheme index 3 is not stored", because incremental (already stored).
+indexer~graphemeAtIndexG(6)=        -- 'A' (has been stored incrementally)
+/*
+    indexG 6 distanceFromStartLastItem = 2
+    indexG 6 distanceFromEndLastItem = 999999999999999999
+    append 6 to startCodepointIndexes
+    append -5 to startGraphemeIndexes
+    append -7 to startCodepointIndexes
+    append start byte position 7 : Invalid start byte 128 ('80'x) (non-shortest form) to startErrorMessages
+    append 6 to startGraphemeIndexes
+*/
+
+-- The grapheme storage has been updated to store the byte index of the 6th grapheme
+indexer~startGraphemeStorageCount=  -- 6
+indexer~startGraphemeIndexes=       -- [-1,-2,-3,-4,-5, 6]
+
+-- The codepoint storage has been updated to avoid a gap with the grapheme storage
+indexer~startCodepointStorageCount= -- 7
+indexer~startCodepointIndexes=      -- [-1,-2,-3,-4,-5, 6,-7]
+
+-- The error storage has been updated because an invalid byte sequence has been
+-- encountered while decoding the intermediate codepoint to reach the 6th grapheme
+-- and close it (one extra codepoint must be decoded to decide if the grapheme
+-- byte sequence is closed)
+indexer~startErrorStorageCount=     -- 6
+indexer~startErrorMessages==
+/*
+    a VerboseArray (shape [6], 6 items)
+     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+     3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+     5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+     6 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+*/
 
 --------------------------------------------------------------------------------
 -- aRexxUnicodeStringIndexer~codepointIndexC
@@ -1620,7 +1822,7 @@ do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); 
 
 
 -- Binary search for codepoint indexes is working with incremental sparse storage
-indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1, 0, /*incremental:*/ .true)
+indexer = .RexxUnicodeStringIndexer~newIncremental("a👨‍👩‍👧b", 0, 1, 0, 0, 1, 0)
 do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
 /*
     1 : 1
@@ -1674,18 +1876,8 @@ indexer~startErrorMessages==
 */
 
 
-indexer~endErrorMessages==
-/*
-    an Array (shape [2], 2 items)
-     1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
-     2 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
-
-    No overlap between the end and start storage.
-    The following error messages are already stored in the start storage:
-     3 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
-     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
-     5 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
-*/
+-- No error is stored because no codepoint is stored
+indexer~endErrorMessages=   -- []
 
 
 --------------------------------------------------------------------------------
@@ -1695,7 +1887,7 @@ indexer~endErrorMessages==
 indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 5, 0, 0, 5, 0)
 indexer~startGraphemeIndexes=   -- [ 1, 2, 20]
 -- No overlap between the end and start storage: 20, 2, 1 are already stored in the start storage
-indexer~endCodepointIndexes=    -- an Array (no shape, 0 items), not [ 20, 2, 1]
+indexer~endCodepointIndexes=    -- [], not [ 20, 2, 1]
 
 
 --------------------------------------------------------------------------------
@@ -1763,7 +1955,7 @@ do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); e
 
 
 -- Binary search for grapheme indexes is working with incremental sparse storage
-indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 1, 0, 0, 1, 0, 0, /*incremental:*/ .true)
+indexer = .RexxUnicodeStringIndexer~newIncremental("a👨‍👩‍👧b", 1, 0, 0, 1, 0, 0)
 do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
 /*
     1 : 1
@@ -1786,77 +1978,6 @@ do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); e
     18: -2
     19: -2
     20: 3
-*/
-
-
---------------------------------------------------------------------------------
--- .RexxUnicodeStringIndexer~init
---------------------------------------------------------------------------------
-
--- Modified for regression test
--- Example 1
--- If the identifier is a valid UTF-8 string and is made of just one codepoint then return this codepoint.
-identifier = "€"
-indexer = .RexxUnicodeStringIndexer~new(identifier, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 1, /*startErrorStorageLimit:*/ 0)
-if indexer~errorCount == 0, indexer~codepointCount == 1 then say indexer~codepointAtIndexC(1)
-
-
--- Modified for regression test
--- Example 2
--- U+FFFD Substitution of Maximal Subparts
--- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
-indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x, /*startGraphemeStorageLimit:*/ 2, /*startCodepointStorageLimit:*/ 4, /*startErrorStorageLimit:*/ 1)
-
--- The specified start codepoint storage limit is 4
-indexer~codepointCount=             -- 9
-indexer~startCodepointStorageCount= -- 4
-indexer~startCodepointIndexes=      -- [-1,-2,-3,-4]
-indexer~codepointAtIndexC(3)=       -- 65533
-indexer~codepointAtIndexC(5)=       -- Code point index 5 is not stored.
-
--- The specified start grapheme storage limit is 2
-indexer~graphemeCount=              -- 9
-indexer~startGraphemeStorageCount=  -- 2
-indexer~startGraphemeIndexes=       -- [-1,-2]
-indexer~graphemeAtIndexG(2)~c2x=    -- 91 (use ~c2x to not display an invalid byte sequence)
-indexer~graphemeAtIndexG(3)~c2x=    -- Grapheme index 3 is not stored.
-
--- The specified start error storage limit is 1
-indexer~errorCount=                 -- 7
-indexer~startErrorStorageCount=     -- 1
-indexer~startErrorMessages==
-/*
-    an Array (shape [1], 1 items)
-     1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
-*/
-
-
--- Example 3
--- Collect counters, no need to store indexes and errors
-string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
-indexer = .RexxUnicodeStringIndexer~new(string, 0, 0, 0)
-indexer~graphemeCount=      -- 22
-indexer~codepointCount=     -- 26
-indexer~errorCount=         -- 7
-
-
--- Example 4
--- Gets the five last grapheme indexes.
--- In case of error, reports only the first error.
-string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
-indexer = .RexxUnicodeStringIndexer~new(string, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 1, /*endGraphemeStorageLimit:*/ 5, /*endCodepointStorageLimit:*/ 0)
-indexer~errorCount=                 -- 7
-indexer~startErrorMessages~items=   -- 1
-indexer~startErrorMessages[1]=      -- 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point > U+10FFFF)'
-indexer~endGraphemeIndexes=         -- [ 23, 22, 21, 19, 18]
--- Pass -endIndexG, where a negative index means "index from the end"
-do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~graphemeAtIndexG(-endIndexG); end
-/*
-    1: 👨‍👩‍👧
-    2:
-    3: l
-    4: ë
-    5: o
 */
 
 

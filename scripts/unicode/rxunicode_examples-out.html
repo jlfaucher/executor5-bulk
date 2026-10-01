@@ -41,8 +41,8 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
-</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 7 Sep 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: Se9e9Qa19002ac0
+</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 24 Sep 2026
+</span><span style="font-weight:bold;color:green;">Input queue name: Sd63aQa1900cd80
 </span>
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">Examples in rxunicode.md
@@ -2311,8 +2311,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIn
 [ 1, 2, 6, 9, 13, 16, 20]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=       </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 20]</span>
 [ 1, 2, 20]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages=         </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items)</span>
-an Array (no shape, 0 items)
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages=         </span><span style="font-weight:bold;color:blue;">-- []</span>
+[]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointAtIndexC(3)=       </span><span style="font-weight:bold;color:blue;">-- 8205</span>
  8205
 ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeCharacter~new(8205)=    </span><span style="font-weight:bold;color:blue;">-- (&lt;?&gt; \x{E2808D} U+200D Cf Format &quot;ZERO WIDTH JOINER&quot;)</span>
@@ -2356,6 +2356,280 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeAtIndexG
  92
 
 
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeStringIndexer~new
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+<span style="font-weight:bold;color:blue;">-- Example 1
+</span><span style="font-weight:bold;color:blue;">-- If the identifier is a valid UTF-8 string and is made of just one codepoint then return this codepoint.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">identifier = &quot;€&quot;</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(identifier, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 1, /*startErrorStorageLimit:*/ 0)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">if indexer~errorCount == 0, indexer~codepointCount == 1 then say indexer~codepointAtIndexC(1)   </span><span style="font-weight:bold;color:blue;">-- 8364</span>
+8364
+
+
+<span style="font-weight:bold;color:blue;">-- Example 2
+</span><span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts
+</span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, /*startGraphemeStorageLimit:*/ 2, /*startCodepointStorageLimit:*/ 4, /*startErrorStorageLimit:*/ 1)</span>
+
+<span style="font-weight:bold;color:blue;">-- The forward scan is a full scan to calculate the number of graphemes, codepoints and errors.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeCount=              </span><span style="font-weight:bold;color:blue;">-- 9</span>
+ 9
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointCount=             </span><span style="font-weight:bold;color:blue;">-- 9</span>
+ 9
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorCount=                 </span><span style="font-weight:bold;color:blue;">-- 7</span>
+ 7
+
+<span style="font-weight:bold;color:blue;">-- The specified start grapheme storage limit is 2
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeStorageCount=  </span><span style="font-weight:bold;color:blue;">-- 2</span>
+ 2
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=       </span><span style="font-weight:bold;color:blue;">-- [-1,-2]</span>
+[-1,-2]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeAtIndexG(2)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 91 (use ~c2x to not display an invalid byte sequence)</span>
+ 91
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeAtIndexG(3)~c2x=    </span><span style="font-weight:bold;color:blue;">-- Grapheme index 3 is not stored.</span>
+<span style="font-weight:bold;color:red;">Grapheme index 3 is not stored.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>
+<span style="font-weight:bold;color:blue;">-- The specified start codepoint storage limit is 4
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointStorageCount= </span><span style="font-weight:bold;color:blue;">-- 4</span>
+ 4
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=      </span><span style="font-weight:bold;color:blue;">-- [-1,-2,-3,-4]</span>
+[-1,-2,-3,-4]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointAtIndexC(3)=       </span><span style="font-weight:bold;color:blue;">-- 65533</span>
+ 65533
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointAtIndexC(5)=       </span><span style="font-weight:bold;color:blue;">-- Code point index 5 is not stored.</span>
+<span style="font-weight:bold;color:red;">Code point index 5 is not stored.
+</span><span style="font-weight:bold;color:red;">Error code= 88.900
+</span>
+<span style="font-weight:bold;color:blue;">-- The specified start error storage limit is 1
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorStorageCount=     </span><span style="font-weight:bold;color:blue;">-- 1</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
+an Array (shape [1], 1 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    an Array (shape [1], 1 items)
+</span><span style="font-weight:bold;color:blue;">     1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">-- Example 3
+</span><span style="font-weight:bold;color:blue;">-- Collect counters, no need to store indexes and errors
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;F4 91 92 93 FF 41 80 BF 42&quot;x || &quot;Joyeux Noël 👨‍👩‍👧&quot;</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(string, 0, 0, 0)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeCount=      </span><span style="font-weight:bold;color:blue;">-- 22</span>
+ 22
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointCount=     </span><span style="font-weight:bold;color:blue;">-- 26</span>
+ 26
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorCount=         </span><span style="font-weight:bold;color:blue;">-- 7</span>
+ 7
+
+
+<span style="font-weight:bold;color:blue;">-- Example 4
+</span><span style="font-weight:bold;color:blue;">-- Gets the five last grapheme indexes.
+</span><span style="font-weight:bold;color:blue;">-- In case of error, reports only the first error.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;F4 91 92 93 FF 41 80 BF 42&quot;x || &quot;Joyeux Noël 👨‍👩‍👧&quot;</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(string, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 1, /*endGraphemeStorageLimit:*/ 5, /*endCodepointStorageLimit:*/ 0)</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorCount=                 </span><span style="font-weight:bold;color:blue;">-- 7</span>
+ 7
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages~items=   </span><span style="font-weight:bold;color:blue;">-- 1</span>
+ 1
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
+an Array (shape [1], 1 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    an Array (shape [1], 1 items)
+</span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endGraphemeIndexes=         </span><span style="font-weight:bold;color:blue;">-- [ 23, 22, 21, 19, 18]</span>
+[ 23, 22, 21, 19, 18]
+<span style="font-weight:bold;color:blue;">-- Pass -endIndexG, where a negative index means &quot;index from the end&quot;
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG&quot;:&quot; indexer~graphemeAtIndexG(-endIndexG); end</span>
+1: 👨‍👩‍👧
+2:  
+3: l
+4: ë
+5: o
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    1: 👨‍👩‍👧
+</span><span style="font-weight:bold;color:blue;">    2:
+</span><span style="font-weight:bold;color:blue;">    3: l
+</span><span style="font-weight:bold;color:blue;">    4: ë
+</span><span style="font-weight:bold;color:blue;">    5: o
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeStringIndexer~newIncremental
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+<span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts
+</span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~newIncremental(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, /*startGraphemeStorageLimit:*/ 2, /*startCodepointStorageLimit:*/ 4, /*startErrorStorageLimit:*/ 1)</span>
+
+<span style="font-weight:bold;color:blue;">-----------------
+</span><span style="font-weight:bold;color:blue;">-- Initialization
+</span><span style="font-weight:bold;color:blue;">-----------------
+</span>
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    (using the undocumented `verbose` argument: 7th argument of ~newIncremental)
+</span><span style="font-weight:bold;color:blue;">
+</span><span style="font-weight:bold;color:blue;">    append -1 to startCodepointIndexes
+</span><span style="font-weight:bold;color:blue;">    append start byte position 1 : Invalid continuation byte 145 ('91'x) at byte position 2 (code point &gt; U+10FFFF) to startErrorMessages
+</span><span style="font-weight:bold;color:blue;">    append -2 to startCodepointIndexes
+</span><span style="font-weight:bold;color:blue;">    append start byte position 2 : Invalid start byte 145 ('91'x) (non-shortest form) to startErrorMessages
+</span><span style="font-weight:bold;color:blue;">    append -1 to startGraphemeIndexes
+</span><span style="font-weight:bold;color:blue;">    append -3 to startCodepointIndexes
+</span><span style="font-weight:bold;color:blue;">    append start byte position 3 : Invalid start byte 146 ('92'x) (non-shortest form) to startErrorMessages
+</span><span style="font-weight:bold;color:blue;">    append -2 to startGraphemeIndexes
+</span><span style="font-weight:bold;color:blue;">    append -4 to startCodepointIndexes
+</span><span style="font-weight:bold;color:blue;">    append start byte position 4 : Invalid start byte 147 ('93'x) (non-shortest form) to startErrorMessages
+</span><span style="font-weight:bold;color:blue;">    append -3 to startGraphemeIndexes
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- The forward scan is a full scan to calculate the number of graphemes, codepoints and errors.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeCount=              </span><span style="font-weight:bold;color:blue;">-- 9</span>
+ 9
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointCount=             </span><span style="font-weight:bold;color:blue;">-- 9</span>
+ 9
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorCount=                 </span><span style="font-weight:bold;color:blue;">-- 7</span>
+ 7
+
+<span style="font-weight:bold;color:blue;">-- The grapheme limit has been adjusted to avoid a gap with the codepoint storage.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~limits=                     </span><span style="font-weight:bold;color:blue;">-- [ 3, 4, 1, 0, 0, 0]</span>
+[ 3, 4, 1, 0, 0, 0]
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeStorageCount=  </span><span style="font-weight:bold;color:blue;">-- 3</span>
+ 3
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=       </span><span style="font-weight:bold;color:blue;">-- [-1,-2,-3]</span>
+[-1,-2,-3]
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointStorageCount= </span><span style="font-weight:bold;color:blue;">-- 4</span>
+ 4
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=      </span><span style="font-weight:bold;color:blue;">-- [-1,-2,-3,-4]</span>
+[-1,-2,-3,-4]
+
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorStorageCount=     </span><span style="font-weight:bold;color:blue;">-- 4</span>
+ 4
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
+an Array (shape [4], 4 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+ 2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+ 3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+ 4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a VerboseArray (shape [4], 4 items)
+</span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-------------------
+</span><span style="font-weight:bold;color:blue;">-- Query codepoints
+</span><span style="font-weight:bold;color:blue;">-------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointAtIndexC(3)=       </span><span style="font-weight:bold;color:blue;">-- 65533</span>
+ 65533
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointAtIndexC(5)=       </span><span style="font-weight:bold;color:blue;">-- 65533 (has been stored incrementally)</span>
+ 65533
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    indexC 5 distanceFromStartLastItem = 1
+</span><span style="font-weight:bold;color:blue;">    indexC 5 distanceFromEndLastItem = 999999999999999999
+</span><span style="font-weight:bold;color:blue;">    append -5 to startCodepointIndexes
+</span><span style="font-weight:bold;color:blue;">    append start byte position 5 : Invalid start byte 255 ('FF'x) (code point &gt; U+10FFFF) to startErrorMessages
+</span><span style="font-weight:bold;color:blue;">    append -4 to startGraphemeIndexes
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- The grapheme storage has been updated to avoid a gap with the codepoint storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeStorageCount=  </span><span style="font-weight:bold;color:blue;">-- 4</span>
+ 4
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=       </span><span style="font-weight:bold;color:blue;">-- [-1,-2,-3,-4]</span>
+[-1,-2,-3,-4]
+
+<span style="font-weight:bold;color:blue;">-- The codepoint storage has been updated to store the byte index of the 5th codepoint
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointStorageCount= </span><span style="font-weight:bold;color:blue;">-- 5</span>
+ 5
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=      </span><span style="font-weight:bold;color:blue;">-- [-1,-2,-3,-4,-5]</span>
+[-1,-2,-3,-4,-5]
+
+<span style="font-weight:bold;color:blue;">-- The error storage has been updated because the byte sequence of the 5th codepoint is invalid
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorStorageCount=     </span><span style="font-weight:bold;color:blue;">-- 5</span>
+ 5
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
+an Array (shape [5], 5 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+ 2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+ 3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+ 4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+ 5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a VerboseArray (shape [5], 5 items)
+</span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">------------------
+</span><span style="font-weight:bold;color:blue;">-- Query graphemes
+</span><span style="font-weight:bold;color:blue;">------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeAtIndexG(2)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 91 (use ~c2x to not display an invalid byte sequence)</span>
+ 91
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeAtIndexG(3)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 92 instead of &quot;Grapheme index 3 is not stored&quot;, because incremental (already stored).</span>
+ 92
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeAtIndexG(6)=        </span><span style="font-weight:bold;color:blue;">-- 'A' (has been stored incrementally)</span>
+'A'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    indexG 6 distanceFromStartLastItem = 2
+</span><span style="font-weight:bold;color:blue;">    indexG 6 distanceFromEndLastItem = 999999999999999999
+</span><span style="font-weight:bold;color:blue;">    append 6 to startCodepointIndexes
+</span><span style="font-weight:bold;color:blue;">    append -5 to startGraphemeIndexes
+</span><span style="font-weight:bold;color:blue;">    append -7 to startCodepointIndexes
+</span><span style="font-weight:bold;color:blue;">    append start byte position 7 : Invalid start byte 128 ('80'x) (non-shortest form) to startErrorMessages
+</span><span style="font-weight:bold;color:blue;">    append 6 to startGraphemeIndexes
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+<span style="font-weight:bold;color:blue;">-- The grapheme storage has been updated to store the byte index of the 6th grapheme
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeStorageCount=  </span><span style="font-weight:bold;color:blue;">-- 6</span>
+ 6
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=       </span><span style="font-weight:bold;color:blue;">-- [-1,-2,-3,-4,-5, 6]</span>
+[-1,-2,-3,-4,-5, 6]
+
+<span style="font-weight:bold;color:blue;">-- The codepoint storage has been updated to avoid a gap with the grapheme storage
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointStorageCount= </span><span style="font-weight:bold;color:blue;">-- 7</span>
+ 7
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=      </span><span style="font-weight:bold;color:blue;">-- [-1,-2,-3,-4,-5, 6,-7]</span>
+[-1,-2,-3,-4,-5, 6,-7]
+
+<span style="font-weight:bold;color:blue;">-- The error storage has been updated because an invalid byte sequence has been
+</span><span style="font-weight:bold;color:blue;">-- encountered while decoding the intermediate codepoint to reach the 6th grapheme
+</span><span style="font-weight:bold;color:blue;">-- and close it (one extra codepoint must be decoded to decide if the grapheme
+</span><span style="font-weight:bold;color:blue;">-- byte sequence is closed)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorStorageCount=     </span><span style="font-weight:bold;color:blue;">-- 6</span>
+ 6
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
+an Array (shape [6], 6 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+ 2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+ 3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+ 4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+ 5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+ 6 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    a VerboseArray (shape [6], 6 items)
+</span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">     6 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeStringIndexer~codepointIndexC
 </span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
@@ -2464,7 +2738,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~stri
 </span>
 
 <span style="font-weight:bold;color:blue;">-- Binary search for codepoint indexes is working with incremental sparse storage
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 0, 1, 0, 0, 1, 0, /*incremental:*/ .true)</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~newIncremental(&quot;a👨‍👩‍👧b&quot;, 0, 1, 0, 0, 1, 0)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~string~length; say i~left(2)&quot;:&quot; indexer~codepointIndexC(i); end</span>
 1 : 1
 2 : 2
@@ -2546,22 +2820,10 @@ an Array (shape [5], 5 items)
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
 
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorMessages==</span>
-an Array (shape [2], 2 items)
- 1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
- 2 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
-<span style="font-weight:bold;color:blue;">/*
-</span><span style="font-weight:bold;color:blue;">    an Array (shape [2], 2 items)
-</span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
-</span><span style="font-weight:bold;color:blue;">     2 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
-</span><span style="font-weight:bold;color:blue;">
-</span><span style="font-weight:bold;color:blue;">    No overlap between the end and start storage.
-</span><span style="font-weight:bold;color:blue;">    The following error messages are already stored in the start storage:
-</span><span style="font-weight:bold;color:blue;">     3 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
-</span><span style="font-weight:bold;color:blue;">     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
-</span><span style="font-weight:bold;color:blue;">     5 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
-</span><span style="font-weight:bold;color:blue;">*/
-</span>
+<span style="font-weight:bold;color:blue;">-- No error is stored because no codepoint is stored
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorMessages=   </span><span style="font-weight:bold;color:blue;">-- []</span>
+[]
+
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeStringIndexer~endGraphemeIndexes
@@ -2571,8 +2833,8 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeSt
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=   </span><span style="font-weight:bold;color:blue;">-- [ 1, 2, 20]</span>
 [ 1, 2, 20]
 <span style="font-weight:bold;color:blue;">-- No overlap between the end and start storage: 20, 2, 1 are already stored in the start storage
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- an Array (no shape, 0 items), not [ 20, 2, 1]</span>
-an Array (no shape, 0 items)
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- [], not [ 20, 2, 1]</span>
+[]
 
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
@@ -2683,7 +2945,7 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~stri
 </span>
 
 <span style="font-weight:bold;color:blue;">-- Binary search for grapheme indexes is working with incremental sparse storage
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;a👨‍👩‍👧b&quot;, 1, 0, 0, 1, 0, 0, /*incremental:*/ .true)</span>
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~newIncremental(&quot;a👨‍👩‍👧b&quot;, 1, 0, 0, 1, 0, 0)</span>
 ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~string~length; say i~left(2)&quot;:&quot; indexer~graphemeIndexG(i); end</span>
 1 : 1
 2 : 2
@@ -2726,106 +2988,6 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~stri
 </span><span style="font-weight:bold;color:blue;">    18: -2
 </span><span style="font-weight:bold;color:blue;">    19: -2
 </span><span style="font-weight:bold;color:blue;">    20: 3
-</span><span style="font-weight:bold;color:blue;">*/
-</span>
-
-<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
-</span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeStringIndexer~init
-</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
-</span>
-<span style="font-weight:bold;color:blue;">-- Modified for regression test
-</span><span style="font-weight:bold;color:blue;">-- Example 1
-</span><span style="font-weight:bold;color:blue;">-- If the identifier is a valid UTF-8 string and is made of just one codepoint then return this codepoint.
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">identifier = &quot;€&quot;</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(identifier, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 1, /*startErrorStorageLimit:*/ 0)</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">if indexer~errorCount == 0, indexer~codepointCount == 1 then say indexer~codepointAtIndexC(1)</span>
-8364
-
-
-<span style="font-weight:bold;color:blue;">-- Modified for regression test
-</span><span style="font-weight:bold;color:blue;">-- Example 2
-</span><span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts
-</span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, /*startGraphemeStorageLimit:*/ 2, /*startCodepointStorageLimit:*/ 4, /*startErrorStorageLimit:*/ 1)</span>
-
-<span style="font-weight:bold;color:blue;">-- The specified start codepoint storage limit is 4
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointCount=             </span><span style="font-weight:bold;color:blue;">-- 9</span>
- 9
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointStorageCount= </span><span style="font-weight:bold;color:blue;">-- 4</span>
- 4
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=      </span><span style="font-weight:bold;color:blue;">-- [-1,-2,-3,-4]</span>
-[-1,-2,-3,-4]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointAtIndexC(3)=       </span><span style="font-weight:bold;color:blue;">-- 65533</span>
- 65533
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointAtIndexC(5)=       </span><span style="font-weight:bold;color:blue;">-- Code point index 5 is not stored.</span>
-<span style="font-weight:bold;color:red;">Code point index 5 is not stored.
-</span><span style="font-weight:bold;color:red;">Error code= 88.900
-</span>
-<span style="font-weight:bold;color:blue;">-- The specified start grapheme storage limit is 2
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeCount=              </span><span style="font-weight:bold;color:blue;">-- 9</span>
- 9
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeStorageCount=  </span><span style="font-weight:bold;color:blue;">-- 2</span>
- 2
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=       </span><span style="font-weight:bold;color:blue;">-- [-1,-2]</span>
-[-1,-2]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeAtIndexG(2)~c2x=    </span><span style="font-weight:bold;color:blue;">-- 91 (use ~c2x to not display an invalid byte sequence)</span>
- 91
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeAtIndexG(3)~c2x=    </span><span style="font-weight:bold;color:blue;">-- Grapheme index 3 is not stored.</span>
-<span style="font-weight:bold;color:red;">Grapheme index 3 is not stored.
-</span><span style="font-weight:bold;color:red;">Error code= 88.900
-</span>
-<span style="font-weight:bold;color:blue;">-- The specified start error storage limit is 1
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorCount=                 </span><span style="font-weight:bold;color:blue;">-- 7</span>
- 7
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorStorageCount=     </span><span style="font-weight:bold;color:blue;">-- 1</span>
- 1
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
-an Array (shape [1], 1 items)
- 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
-<span style="font-weight:bold;color:blue;">/*
-</span><span style="font-weight:bold;color:blue;">    an Array (shape [1], 1 items)
-</span><span style="font-weight:bold;color:blue;">     1 : 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point &gt; U+10FFFF)'
-</span><span style="font-weight:bold;color:blue;">*/
-</span>
-
-<span style="font-weight:bold;color:blue;">-- Example 3
-</span><span style="font-weight:bold;color:blue;">-- Collect counters, no need to store indexes and errors
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;F4 91 92 93 FF 41 80 BF 42&quot;x || &quot;Joyeux Noël 👨‍👩‍👧&quot;</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(string, 0, 0, 0)</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~graphemeCount=      </span><span style="font-weight:bold;color:blue;">-- 22</span>
- 22
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~codepointCount=     </span><span style="font-weight:bold;color:blue;">-- 26</span>
- 26
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorCount=         </span><span style="font-weight:bold;color:blue;">-- 7</span>
- 7
-
-
-<span style="font-weight:bold;color:blue;">-- Example 4
-</span><span style="font-weight:bold;color:blue;">-- Gets the five last grapheme indexes.
-</span><span style="font-weight:bold;color:blue;">-- In case of error, reports only the first error.
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">string = &quot;F4 91 92 93 FF 41 80 BF 42&quot;x || &quot;Joyeux Noël 👨‍👩‍👧&quot;</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(string, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 1, /*endGraphemeStorageLimit:*/ 5, /*endCodepointStorageLimit:*/ 0)</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~errorCount=                 </span><span style="font-weight:bold;color:blue;">-- 7</span>
- 7
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages~items=   </span><span style="font-weight:bold;color:blue;">-- 1</span>
- 1
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages[1]=      </span><span style="font-weight:bold;color:blue;">-- 'start byte-position 1 : Invalid continuation byte 145 (''91''x) at byte-position 2 (code point &gt; U+10FFFF)'</span>
-'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endGraphemeIndexes=         </span><span style="font-weight:bold;color:blue;">-- [ 23, 22, 21, 19, 18]</span>
-[ 23, 22, 21, 19, 18]
-<span style="font-weight:bold;color:blue;">-- Pass -endIndexG, where a negative index means &quot;index from the end&quot;
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG&quot;:&quot; indexer~graphemeAtIndexG(-endIndexG); end</span>
-1: 👨‍👩‍👧
-2:  
-3: l
-4: ë
-5: o
-<span style="font-weight:bold;color:blue;">/*
-</span><span style="font-weight:bold;color:blue;">    1: 👨‍👩‍👧
-</span><span style="font-weight:bold;color:blue;">    2:
-</span><span style="font-weight:bold;color:blue;">    3: l
-</span><span style="font-weight:bold;color:blue;">    4: ë
-</span><span style="font-weight:bold;color:blue;">    5: o
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
 

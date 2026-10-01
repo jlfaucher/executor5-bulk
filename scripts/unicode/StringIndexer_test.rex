@@ -142,6 +142,7 @@ call regressionTests '"⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" 
                                     say "--" counter1"."counter2"."counter3
                                     say "--" storageInfo(sg, sc, se, eg, ec, ee) incrementalText "forward binary search codepoints"
                                     indexer = newIndexer(expression, string, limits, incremental)
+                                    call displayIndexerInitializationInfo indexer
                                     say "do i = 1 to indexer~string~length; indexer~codepointIndexC(i); end"
                                          do i = 1 to indexer~string~length; indexer~codepointIndexC(i); end
                                     call displayIndexerInfo indexer
@@ -152,6 +153,7 @@ call regressionTests '"⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" 
                                     say "--" counter1"."counter2"."counter3
                                     say "--" storageInfo(sg, sc, se, eg, ec, ee) incrementalText "backward binary search codepoints"
                                     indexer = newIndexer(expression, string, limits, incremental)
+                                    call displayIndexerInitializationInfo indexer
                                     say "do i = indexer~string~length to 1 by -1; indexer~codepointIndexC(i); end"
                                          do i = indexer~string~length to 1 by -1; indexer~codepointIndexC(i); end
                                     call displayIndexerInfo indexer
@@ -162,6 +164,7 @@ call regressionTests '"⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" 
                                     say "--" counter1"."counter2"."counter3
                                     say "--" storageInfo(sg, sc, se, eg, ec, ee) incrementalText "forward binary search graphemes"
                                     indexer = newIndexer(expression, string, limits, incremental)
+                                    call displayIndexerInitializationInfo indexer
                                     say "do i = 1 to indexer~string~length; indexer~graphemeIndexG(i); end"
                                          do i = 1 to indexer~string~length; indexer~graphemeIndexG(i); end
                                     call displayIndexerInfo indexer
@@ -172,6 +175,7 @@ call regressionTests '"⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" 
                                     say "--" counter1"."counter2"."counter3
                                     say "--" storageInfo(sg, sc, se, eg, ec, ee) incrementalText "backward binary search graphemes"
                                     indexer = newIndexer(expression, string, limits, incremental)
+                                    call displayIndexerInitializationInfo indexer
                                     say "do i = indexer~string~length to 1 by -1; indexer~graphemeIndexG(i); end"
                                          do i = indexer~string~length to 1 by -1; indexer~graphemeIndexG(i); end
                                     call displayIndexerInfo indexer
@@ -288,8 +292,15 @@ call regressionTests '"⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" 
     eg = limits[4]
     ec = limits[5]
     ee = limits[6]
-    say "indexer = .RexxUnicodeStringIndexer~new("expression"," sg"," sc"," se"," eg"," ec"," ee"," incremental~?(".true", ".false")")"
-    return .RexxUnicodeStringIndexer~new(string, sg, sc, se, eg, ec, ee, incremental)
+    if incremental then do
+        -- In incremental mode, the error limits are boolean-ish (zero --> false, non-zero --> true)
+        say "indexer = .RexxUnicodeStringIndexer~newIncremental("expression"," sg"," sc"," se" \== 0," eg"," ec"," ee" \== 0)"
+        return .RexxUnicodeStringIndexer~newIncremental(string, sg, sc, se \== 0, eg, ec, ee \== 0)
+    end
+    else do
+        say "indexer = .RexxUnicodeStringIndexer~new("expression"," sg"," sc"," se"," eg"," ec"," ee")"
+        return .RexxUnicodeStringIndexer~new(string, sg, sc, se, eg, ec, ee)
+    end
 
 
 ::routine ppRepresentation
@@ -300,12 +311,12 @@ call regressionTests '"⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" 
 
 ::routine displayCollection
     use strict arg value
-    if .nil == value then say "--" value
-    else if \ value~isa(.Collection) then say "--" value
+    if .nil == value then say " --" value
+    else if \ value~isa(.Collection) then say " --" value
     else do
-        if value~items == 0 then say "--" ppRepresentation(value)
+        if value~items == 0 then say " --" ppRepresentation(value)
         else do
-            say
+            say "="
             say "/*"
             call dump2 value
             say "*/"
@@ -313,14 +324,24 @@ call regressionTests '"⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" 
     end
 
 
+::routine displayIndexerInitializationInfo
+    use strict arg indexer
+    say "indexer~limits= --" ppRepresentation(indexer~limits)
+    say "indexer~startGraphemeIndexes= --" ppRepresentation(indexer~startGraphemeIndexes)
+    say "indexer~startCodepointIndexes= --" ppRepresentation(indexer~startCodepointIndexes)
+    call charout , "indexer~startErrorMessages="; call displayCollection indexer~startErrorMessages
+    say "indexer~endGraphemeIndexes= --" ppRepresentation(indexer~endGraphemeIndexes)
+    say "indexer~endCodepointIndexes= --" ppRepresentation(indexer~endCodepointIndexes)
+    call charout , "indexer~endErrorMessages="; call displayCollection indexer~endErrorMessages
+
 ::routine displayIndexerInfo
     use strict arg indexer
     say "indexer~startGraphemeIndexes= --" ppRepresentation(indexer~startGraphemeIndexes)
     say "indexer~startCodepointIndexes= --" ppRepresentation(indexer~startCodepointIndexes)
-    call charout , "indexer~startErrorMessages== "; call displayCollection indexer~startErrorMessages
+    call charout , "indexer~startErrorMessages="; call displayCollection indexer~startErrorMessages
     say "indexer~endGraphemeIndexes= --" ppRepresentation(indexer~endGraphemeIndexes)
     say "indexer~endCodepointIndexes= --" ppRepresentation(indexer~endCodepointIndexes)
-    call charout , "indexer~endErrorMessages== "; call displayCollection indexer~endErrorMessages
+    call charout , "indexer~endErrorMessages="; call displayCollection indexer~endErrorMessages
 
 
 ::requires "rxunicode.cls"
@@ -331,7 +352,7 @@ call regressionTests '"⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" 
 /*
 Fixed:
 
--- indexer = .RexxUnicodeStringIndexer~new("⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x || "⦆⦆", 0, 1, 0, 1, 0, 0, .true)
+-- indexer = .RexxUnicodeStringIndexer~newIncremental("⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x || "⦆⦆", 0, 1, 0, 1, 0, 0)
   1764 *-*             supplierIndexG = startGraphemeIndexes~items + 1
   1882 *-*             item = self~incrementalCodepointIndexB(indexC)
    137 *-*                   indexer~codepointIndexC(i)

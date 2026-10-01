@@ -2554,7 +2554,7 @@ Returns a string providing information about the given UTF-8 string:
 - Error count
 
 If `indexer` is not provided, this method internally uses a zero-storage indexer that forwards to the native method [`.RexxUnicodeServices~utf8StringInfo`](#RexxUnicodeServices_utf8StringInfo).  
-Otherwise, `indexer` receives a default-storage `RexxUnicodeStringIndexer` instance.
+Otherwise, `indexer` receives an non-incremental default-storage `RexxUnicodeStringIndexer` instance.
 
 **Examples:**
 
@@ -3946,7 +3946,7 @@ Arguments of a codepoint message:
 
 <a id="RexxUnicodeReverseGraphemeSupplier_item"></a>
 
- 6.2.5.   item
+#### 6.2.5.   item
 
     aRexxUnicodeReverseGraphemeSupplier~item( type = defaultItemType )
 
@@ -3968,7 +3968,7 @@ The default item type is specified when the supplier is created.
 
 <a id="RexxUnicodeReverseGraphemeSupplier_next"></a>
 
-#### 6.2.5.   next
+#### 6.2.6.   next
 
     aRexxUnicodeReverseGraphemeSupplier~next
 
@@ -4006,7 +4006,8 @@ If the indexer is incremental, these methods may complete the storage on demand:
 
 By default, a `RexxUnicodeStringIndexer` instance is non-incremental.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 `::requires "rxunicode.cls"`
 
@@ -4018,7 +4019,7 @@ indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b")
 indexer=                            -- (a👨‍👩‍👧b)
 indexer~startCodepointIndexes=      -- [ 1, 2, 6, 9, 13, 16, 20]
 indexer~startGraphemeIndexes=       -- [ 1, 2, 20]
-indexer~startErrorMessages=         -- an Array (no shape, 0 items)
+indexer~startErrorMessages=         -- []
 indexer~codepointAtIndexC(3)=       -- 8205
 .RexxUnicodeCharacter~new(8205)=    -- (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
 indexer~graphemeAtIndexG(3)=        -- 'b'
@@ -4056,15 +4057,398 @@ indexer~graphemeAtIndexG(3)~c2x=    -- 92 (use ~c2x to not display an invalid by
 
 #### 7.1.1.   requestRexxUnicodeStringIndexer
 
-    requestRexxUnicodeStringIndexer( object )
+    requestRexxUnicodeStringIndexer( object, incremental = .false )
 
-Returns a `RexxUnicodeStringIndexer` instance created from `object`.
-If `object` is already a `RexxUnicodeStringIndexer` instance, returns it unchanged.
+Returns a `RexxUnicodeStringIndexer` instance created from `object`.  
+If `incremental` is .true, the created indexer is incremental.
+
+If `object` is already a `RexxUnicodeStringIndexer` instance, returns it unchanged.  
+In this case, `incremental` is ignored.
 
 
 ### 7.2.   Class methods
 
-The `RexxUnicodeStringIndexer` class defines no class methods of its own.
+<a id="RexxUnicodeStringIndexer_new"></a>
+
+#### 7.2.1.   new
+
+```
+RexxUnicodeStringIndexer~new(
+    string,
+
+    -- Start storage limits
+    startGraphemeStorageLimit = (.RexxInfo~internalMaxNumber),
+    startCodepointStorageLimit = (.RexxInfo~internalMaxNumber),
+    startErrorStorageLimit = (.RexxInfo~internalMaxNumber),
+    
+    -- End storage limits
+    endGraphemeStorageLimit = 0,
+    endCodepointStorageLimit = 0,
+    endErrorStorageLimit = 0
+    )
+```
+
+Creates a non-incremental indexer for the UTF-8 string `string`.
+
+Start storage limits can be specified when creating the indexer; by default, no limit is imposed:
+
+- `startGraphemeStorageLimit` determines how many grapheme indexes can be stored in the start storage.
+- `startCodepointStorageLimit` determines how many codepoint indexes can be stored in the start storage.
+- `startErrorStorageLimit` determines how many error messages can be stored in the start storage.
+
+End storage limits can be specified when creating the indexer; by default, no end storage is allocated (0).
+
+- `endGraphemeStorageLimit` determines how many grapheme indexes can be stored in the end storage.
+- `endCodepointStorageLimit` determines how many codepoint indexes can be stored in the end storage.
+- `endErrorStorageLimit` determines how many error messages can be stored in the end storage.
+
+The start and end storage limits allow fine-tuning of memory usage.
+
+End storage is useful when start storage is limited;
+it allows sparse storage, where only the starting and ending indexes are stored.
+Prefer start storage when possible, because it can be more efficient.
+
+**During initialization**
+
+- A full forward scan of the UTF-8 string is performed to calculate the number of graphemes, codepoints and errors.
+    - A grapheme supplier is always used, even if `startGraphemeStorageLimit == 0`, because the graphemes must be counted.
+    - The start storages are updated up to their specified limit.
+
+- A limited backward scan is performed if any end limit is non-zero.
+    - A reverse grapheme is always used, even if `endGraphemeStorageLimit == 0`, to be consistent with the forward scan.
+    - The specified end limits may be decreased to avoid any overlap between the start and end storages.
+    - The grapheme and codepoint end storages are updated up to their specified limit.
+    - An error is stored when a codepoint or grapheme index referencing an invalid byte sequence is appended,
+      provided that the error end limit has not been reached.
+    - The backward scan is stopped when both the codepoint and grapheme end limits are reached. 
+      The error end limit does not trigger further decoding.
+
+**After initialization**
+
+- The errors `"Code point index is not stored"` and `"Grapheme index is not stored"`
+  are raised when a requested index is not stored.
+
+**Note**
+
+To decode a grapheme, codepoints must be decoded until a grapheme break is detected.
+
+- When decoding forward, if the end of the string has not been reached, a codepoint beyond the grapheme's last codepoint will be decoded and stored, along with any related error.
+- When decoding backward, if the start of the string has not been reached, the codepoint immediately preceding the grapheme's first codepoint will be decoded and stored, along with any related error.
+
+This extra codepoint (and possibly extra error) is expected and safely handled without duplication.
+
+**Invariants**
+
+- At the end of initialization:
+    - The start codepoint storage ends on a grapheme boundary:
+      If the last index LI in the start codepoint storage is less than the string's length, LI is the byte index at which the next grapheme starts.
+    - The end codepoint storage ends on a grapheme boundary:
+      If the last index LI in the end codepoint storage is greater than 1, LI is the byte index at which the previous grapheme ends.
+
+**Examples**
+
+```rexx
+-- Example 1
+-- If the identifier is a valid UTF-8 string and is made of just one codepoint then return this codepoint.
+indexer = .RexxUnicodeStringIndexer~new(identifier, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 1, /*startErrorStorageLimit:*/ 0)
+if indexer~errorCount == 0, indexer~codepointCount == 1 then return indexer~codepointAtIndexC(1)    -- 8364
+
+```
+
+```rexx
+-- Example 2
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x, -
+                                        /*startGraphemeStorageLimit:*/ 2, -
+                                        /*startCodepointStorageLimit:*/ 4, -
+                                        /*startErrorStorageLimit:*/ 1)
+
+-- The forward scan is a full scan to calculate the number of graphemes, codepoints and errors.
+indexer~graphemeCount=              -- 9
+indexer~codepointCount=             -- 9
+indexer~errorCount=                 -- 7
+
+-- The specified start grapheme storage limit is 2
+indexer~startGraphemeStorageCount=  -- 2
+indexer~startGraphemeIndexes=       -- [-1,-2]
+indexer~graphemeAtIndexG(2)~c2x=    -- 91 (use ~c2x to not display an invalid byte sequence)
+indexer~graphemeAtIndexG(3)~c2x=    -- Grapheme index 3 is not stored.
+
+-- The specified start codepoint storage limit is 4
+indexer~startCodepointStorageCount= -- 4
+indexer~startCodepointIndexes=      -- [-1,-2,-3,-4]
+indexer~codepointAtIndexC(3)=       -- 65533
+indexer~codepointAtIndexC(5)=       -- Code point index 5 is not stored.
+
+-- The specified start error storage limit is 1
+indexer~startErrorStorageCount=     -- 1
+indexer~startErrorMessages==
+    /*
+        an Array (shape [1], 1 items)
+         1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+    */
+
+```
+
+```rexx
+-- Example 3
+-- Collect counters, no need to store indexes and errors
+string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
+indexer = .RexxUnicodeStringIndexer~new(string, 0, 0, 0)
+indexer~graphemeCount=      -- 22
+indexer~codepointCount=     -- 26
+indexer~errorCount=         -- 7
+
+```
+
+```rexx
+-- Example 4
+-- Gets the five last grapheme indexes.
+-- In case of error, reports only the first error.
+string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
+indexer = .RexxUnicodeStringIndexer~new(string, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 1, /*endGraphemeStorageLimit:*/ 5, /*endCodepointStorageLimit:*/ 0)
+indexer~errorCount=                 -- 7
+indexer~startErrorMessages~items=   -- 1
+indexer~startErrorMessages==
+    /*
+        an Array (shape [1], 1 items)
+         1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+    */
+indexer~endGraphemeIndexes=         -- [ 23, 22, 21, 19, 18]
+-- Pass -endIndexG, where a negative index means "index from the end"
+do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~graphemeAtIndexG(-endIndexG); end
+    /*
+        1: 👨‍👩‍👧
+        2:  
+        3: l
+        4: ë
+        5: o
+    */
+    
+```
+
+
+<a id="RexxUnicodeStringIndexer_newIncremental"></a>
+
+#### 7.2.2.   newIncremental
+
+```
+RexxUnicodeStringIndexer~newIncremental(
+    string,
+
+    -- Start storage adjustable limits
+    startGraphemeStorageAdjustableLimit = 1,
+    startCodepointStorageAdjustableLimit = 1,
+    startErrorStorage = .true,
+    
+    -- End storage adjustable limits
+    endGraphemeStorageAdjustableLimit = 0,
+    endCodepointStorageAdjustableLimit = 0,
+    endErrorStorage = .false
+    )
+```
+
+Creates an incremental indexer for the UTF-8 string `string`.
+
+Start storage adjustable limits can be specified when creating the indexer; by default, the limit is 1:
+
+- `startGraphemeStorageAdjustableLimit` determines the initial number of grapheme indexes that can be stored in the start storage.
+  This limit can be increased during initialization.
+- `startCodepointStorageAdjustableLimit` determines the initial number of codepoint indexes that can be stored in the start storage.
+  This limit can be increased during initialization.
+- `startErrorStorage` determines wether error messages are stored in the start storage.
+
+End storage adjustable limits can be specified when creating the indexer; by default, no end storage is allocated (0).
+
+- `endGraphemeStorageAdjustableLimit` determines the initial number of grapheme indexes that can be stored in the end storage.
+  This limit can be increased during initialization.
+- `endCodepointStorageAdjustableLimit` determines the initial number of codepoint indexes that can be stored in the end storage.
+  This limit can be increased during initialization.
+- `endErrorStorage` determines wether error messages are stored in the end storage.
+
+The start and end storage limits allow fine-tuning of memory usage.
+
+End storage is useful when start storage is limited;
+it allows sparse storage, where only the starting and ending indexes are stored.
+Prefer start storage when possible, because it can be more efficient.
+
+**During initialization**
+
+- A full forward scan of the UTF-8 string is performed to calculate the number of graphemes, codepoints and errors.
+    - A grapheme supplier is always used, even if `startGraphemeStorageAdjustableLimit == 0`, because the graphemes must be counted.
+    - The start limits are adjustable: They may be increased during the scan to ensure that no gap is created between
+      the stored grapheme and codepoint indexes.
+    - If the start error storage is enabled, an error is stored when a grapheme or codepoint index referencing an invalid byte sequence is appended.
+
+- A limited backward scan is performed if any end limit is non-zero.
+    - A reverse grapheme is always used, even if `endGraphemeStorageAdjustableLimit == 0`, to be consistent with the forward scan.
+    - The specified end limits may be decreased to avoid any overlap between start and end storages.
+    - The end limits are adjustable, following the same principles as for the forward scan:
+      the grapheme and codepoint limits may be increased as needed, and errors stored if the end error storage is enabled.
+    - The backward scan is stopped when both the codepoint and grapheme end limits are reached. 
+
+**After initialization**
+
+- Limited storages can be completed on demand.
+- If the error storage is enabled, it is updated each time an invalid byte sequence is encountered.
+- The errors `"Code point index is not stored"` and `"Grapheme index is not stored"` are not raised.
+- When a requested index is not yet stored, that index is stored, along with any
+  missing intermediate indexes. The requested index is therefore always made available
+  by extending the appropriate storage, rather than raising an error because the
+  index was not previously stored.
+- The storage to be updated (start or end) is selected based on which requires storing
+  fewer intermediate indexes. When the distance is the same, the start storage is used
+  because forward decoding is faster than backward decoding.
+
+**Note**
+
+To decode a grapheme, codepoints must be decoded until a grapheme break is detected.
+
+- When decoding forward, if the end of the string has not been reached, a codepoint beyond the grapheme's last codepoint will be decoded and stored, along with any related error.
+- When decoding backward, if the start of the string has not been reached, the codepoint immediately preceding the grapheme's first codepoint will be decoded and stored, along with any related error.
+
+This extra codepoint (and possibly extra error) is expected and safely handled without duplication.
+
+**Invariants**
+
+- At the end of initialization:
+    - The start codepoint storage ends on a grapheme boundary:
+      If the last index LI in the start codepoint storage is less than the string's length, LI is the byte index at which the next grapheme starts.
+    - The end codepoint storage ends on a grapheme boundary:
+      If the last index LI in the end codepoint storage is greater than 1, LI is the byte index at which the previous grapheme ends.
+- When the start error and start codepoint storages are enabled:
+    - `indexer~startErrorMessages~items == count of negative indexes in indexer~startCodepointIndexes`.
+- When the end error and end codepoint storages are enabled:
+    - `indexer~endErrorMessages~items == count of negative indexes in indexer~endCodepointIndexes`.
+
+**Examples**
+
+```rexx
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+indexer = .RexxUnicodeStringIndexer~newIncremental("F4 91 92 93 FF 41 80 BF 42"x, /*startGraphemeStorageLimit:*/ 2, /*startCodepointStorageLimit:*/ 4, /*startErrorStorageLimit:*/ 1)
+
+-----------------
+-- Initialization
+-----------------
+
+/*
+    (using the undocumented `verbose` argument: 7th argument of ~newIncremental)
+    
+    append -1 to startCodepointIndexes
+    append start byte position 1 : Invalid continuation byte 145 ('91'x) at byte position 2 (code point > U+10FFFF) to startErrorMessages
+    append -2 to startCodepointIndexes
+    append start byte position 2 : Invalid start byte 145 ('91'x) (non-shortest form) to startErrorMessages
+    append -1 to startGraphemeIndexes
+    append -3 to startCodepointIndexes
+    append start byte position 3 : Invalid start byte 146 ('92'x) (non-shortest form) to startErrorMessages
+    append -2 to startGraphemeIndexes
+    append -4 to startCodepointIndexes
+    append start byte position 4 : Invalid start byte 147 ('93'x) (non-shortest form) to startErrorMessages
+    append -3 to startGraphemeIndexes
+*/
+
+-- The forward scan is a full scan to calculate the number of graphemes, codepoints and errors.
+indexer~graphemeCount=              -- 9
+indexer~codepointCount=             -- 9
+indexer~errorCount=                 -- 7
+
+-- The grapheme limit has been adjusted to avoid a gap with the codepoint storage.
+indexer~limits=                     -- [ 3, 4, 1, 0, 0, 0]
+
+indexer~startGraphemeStorageCount=  -- 3
+indexer~startGraphemeIndexes=       -- [-1,-2,-3]
+
+indexer~startCodepointStorageCount= -- 4
+indexer~startCodepointIndexes=      -- [-1,-2,-3,-4]
+
+indexer~startErrorStorageCount=     -- 4
+indexer~startErrorMessages==
+    /*
+        a VerboseArray (shape [4], 4 items)
+         1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+         2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+         3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+         4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+    */
+
+-------------------
+-- Query codepoints
+-------------------
+
+indexer~codepointAtIndexC(3)=       -- 65533
+indexer~codepointAtIndexC(5)=       -- 65533 (has been stored incrementally)
+    /*
+        indexC 5 distanceFromStartLastItem = 1
+        indexC 5 distanceFromEndLastItem = 999999999999999999
+        append -5 to startCodepointIndexes
+        append start byte position 5 : Invalid start byte 255 ('FF'x) (code point > U+10FFFF) to startErrorMessages
+        append -4 to startGraphemeIndexes
+    */
+
+-- The grapheme storage has been updated to avoid a gap with the codepoint storage
+indexer~startGraphemeStorageCount=  -- 4
+indexer~startGraphemeIndexes=       -- [-1,-2,-3,-4]
+
+-- The codepoint storage has been updated to store the byte index of the 5th codepoint
+indexer~startCodepointStorageCount= -- 5
+indexer~startCodepointIndexes=      -- [-1,-2,-3,-4,-5]
+
+-- The error storage has been updated because the byte sequence of the 5th codepoint is invalid
+indexer~startErrorStorageCount=     -- 5
+indexer~startErrorMessages==
+    /*
+        a VerboseArray (shape [5], 5 items)
+         1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+         2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+         3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+         4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+         5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+    */
+
+------------------
+-- Query graphemes
+------------------
+
+indexer~graphemeAtIndexG(2)~c2x=    -- 91 (use ~c2x to not display an invalid byte sequence)
+indexer~graphemeAtIndexG(3)~c2x=    -- 92 instead of "Grapheme index 3 is not stored", because incremental (already stored).
+indexer~graphemeAtIndexG(6)=        -- 'A' (has been stored incrementally)
+    /*
+        indexG 6 distanceFromStartLastItem = 2
+        indexG 6 distanceFromEndLastItem = 999999999999999999
+        append 6 to startCodepointIndexes
+        append -5 to startGraphemeIndexes
+        append -7 to startCodepointIndexes
+        append start byte position 7 : Invalid start byte 128 ('80'x) (non-shortest form) to startErrorMessages
+        append 6 to startGraphemeIndexes
+    */
+
+-- The grapheme storage has been updated to store the byte index of the 6th grapheme
+indexer~startGraphemeStorageCount=  -- 6
+indexer~startGraphemeIndexes=       -- [-1,-2,-3,-4,-5, 6]
+
+-- The codepoint storage has been updated to avoid a gap with the grapheme storage
+indexer~startCodepointStorageCount= -- 7
+indexer~startCodepointIndexes=      -- [-1,-2,-3,-4,-5, 6,-7]
+
+-- The error storage has been updated because an invalid byte sequence has been
+-- encountered while decoding the intermediate codepoint to reach the 6th grapheme
+-- and close it (one extra codepoint must be decoded to decide if the grapheme
+-- byte sequence is closed)
+indexer~startErrorStorageCount=     -- 6
+indexer~startErrorMessages==
+    /*
+        a VerboseArray (shape [6], 6 items)
+         1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+         2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+         3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+         4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+         5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+         6 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
+    */
+
+```
 
 
 ### 7.3.   Instance methods
@@ -4085,7 +4469,8 @@ An error is raised when
 - `abs(indexC)` exceeds the codepoint count.
 - the requested index is not stored and the indexer is non-incremental.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 
 <a id="RexxUnicodeStringIndexer_codepointCount"></a>
@@ -4119,7 +4504,8 @@ If `raiseError` is `.true` (the default), an error is raised when:
 
 If `raiseError` is `.false`, `.nil` is returned in case of error.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 
 <a id="RexxUnicodeStringIndexer_codepointIndexC"></a>
@@ -4141,7 +4527,8 @@ Performs a binary search.
 With sparse storage, a binary search may fail if the requested index or any of 
 the intermediate indexes are not stored and the indexer is non-incremental.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 **Examples**
 
@@ -4213,7 +4600,7 @@ do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); 
 
 ```rexx
 -- Binary search for codepoint indexes is working with incremental sparse storage
-indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 1, 0, 0, 1, 0, /*incremental:*/ .true)
+indexer = .RexxUnicodeStringIndexer~newIncremental("a👨‍👩‍👧b", 0, 1, 0, 0, 1, 0)
 do i = 1 to indexer~string~length; say i~left(2)":" indexer~codepointIndexC(i); end
     /*
     1 : 1
@@ -4251,7 +4638,8 @@ Returns an array containing a copy of the codepoint indexes stored in the end st
 
 Codepoint indexes are stored in reverse order: the first item is the last codepoint index.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 Beware of the size of the returned array! The internal storage is optimized for
 memory usage, but ooRexx arrays are not. Moreover, a new array is created each time
@@ -4279,7 +4667,8 @@ Returns the count of codepoint indexes that are stored in the end storage.
 You can get the same value with `endCodepointIndexes~items`, but this method
 avoids creating an ooRexx array just to return the count.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 
 <a id="RexxUnicodeStringIndexer_endErrorMessages"></a>
@@ -4292,7 +4681,8 @@ Returns an array containing a copy of the error messages stored in the end stora
 
 Error messages are stored in reverse order: the first item corresponds to the last error encountered.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 Beware of the size of the returned array! The internal storage is optimized for
 memory usage, but ooRexx arrays are not. Moreover, a new array is created each time
@@ -4314,18 +4704,8 @@ indexer~startErrorMessages==
      5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
     */
 
-indexer~endErrorMessages==
-    /*
-    an Array (shape [2], 2 items)
-     1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
-     2 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
-
-    No overlap between the end and start storage.
-    The following error messages are already stored in the start storage:
-     3 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
-     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
-     5 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
-    */
+-- Empty because no codepoint is stored
+indexer~endErrorMessages=   -- []
 
 ```
 
@@ -4341,7 +4721,8 @@ Returns the count of error messages that are stored in the end storage.
 You can get the same value with `endErrorMessages~items`, but this method
 avoids creating an ooRexx array just to return the count.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 
 <a id="RexxUnicodeStringIndexer_endGraphemeIndexes"></a>
@@ -4354,7 +4735,8 @@ Returns an array containing a copy of the grapheme indexes stored in the end sto
 
 Grapheme indexes are stored in reverse order: the first item is the last grapheme index.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 Beware of the size of the returned array! The internal storage is optimized for
 memory usage, but ooRexx arrays are not. Moreover, a new array is created each time
@@ -4366,7 +4748,7 @@ this method is used.
 indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 5, 0, 0, 5, 0)
 indexer~startGraphemeIndexes=   -- [ 1, 2, 20]
 -- No overlap between the end and start storage: 20, 2, 1 are already stored in the start storage
-indexer~endCodepointIndexes=    -- an Array (no shape, 0 items), not [ 20, 2, 1]
+indexer~endCodepointIndexes=    -- [], not [ 20, 2, 1]
 
 ```
 
@@ -4382,7 +4764,8 @@ Returns the count of grapheme indexes that are stored in the end storage.
 You can get the same value with `endGraphemeIndexes~items`, but this method
 avoids creating an ooRexx array just to return the count.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 
 <a id="RexxUnicodeStringIndexer_errorCount"></a>
@@ -4412,7 +4795,8 @@ An error is raised when
 - `abs(indexG)` exceeds the grapheme count.  
 - the requested index is not stored and the indexer is non-incremental.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 
 <a id="RexxUnicodeStringIndexer_graphemeCount"></a>
@@ -4451,7 +4835,8 @@ If `raiseError` is `.true` (the default), an error is raised when:
 
 If `raiseError` is `.false`, `.nil` is returned in case of error.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 
 <a id="RexxUnicodeStringIndexer_graphemeIndexG"></a>
@@ -4473,7 +4858,8 @@ Performs a binary search.
 With sparse storage, a binary search may fail if the requested index or any of 
 the intermediate indexes are not stored and the indexer is non-incremental.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 **Examples**
 
@@ -4545,7 +4931,7 @@ do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); e
 
 ```rexx
 -- Binary search for grapheme indexes is working with incremental sparse storage
-indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 1, 0, 0, 1, 0, 0, /*incremental:*/ .true)
+indexer = .RexxUnicodeStringIndexer~newIncremental("a👨‍👩‍👧b", 1, 0, 0, 1, 0, 0)
 do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); end
     /*
     1 : 1
@@ -4608,147 +4994,54 @@ Returns a string providing information about the indexer's string:
 ```
 
 
-<a id="RexxUnicodeStringIndexer_init"></a>
+<a id="RexxUnicodeStringIndexer_isIncremental"></a>
 
-#### 7.3.17.   init
+#### 7.3.17.   isIncremental
 
-```
-aRexxUnicodeStringIndexer~init(
-    string,
+    aRexxUnicodeStringIndexer~isIncremental
 
-    -- Start storage limits
-    startGraphemeStorageLimit = (.RexxInfo~internalMaxNumber),
-    startCodepointStorageLimit = (.RexxInfo~internalMaxNumber),
-    startErrorStorageLimit = (.RexxInfo~internalMaxNumber),
-    
-    -- End storage limits
-    endGraphemeStorageLimit = 0,
-    endCodepointStorageLimit = 0,
-    endErrorStorageLimit = 0,
-    
-    incremental = .false
-    )
-```
+Returns `.true` if the indexer is incremental.
 
-Initializes a `RexxUnicodeStringIndexer` instance with the UTF-8 string `string`.
 
-Start storage limits can be specified when creating the indexer; by default, no limit is applied:
+<a id="RexxUnicodeStringIndexer_limits"></a>
 
-- `startGraphemeStorageLimit` determines how many grapheme indexes can be stored in the start storage.
-- `startCodepointStorageLimit` determines how many codepoint indexes can be stored in the start storage.
-- `startErrorStorageLimit` determines how many error messages can be stored in the start storage.
+#### 7.3.18.   limits
 
-End storage limits can be specified when creating the indexer; by default, no end storage is allocated (0).
+    aRexxUnicodeStringIndexer~limits
 
-- `endGraphemeStorageLimit` determines how many grapheme indexes can be stored in the end storage.
-- `endCodepointStorageLimit` determines how many codepoint indexes can be stored in the end storage.
-- `endErrorStorageLimit` determines how many error messages can be stored in the end storage.
+If the indexer is non-incremental, returns the limits at the end of initialization as an array.
 
-The start storage limits and end storage limits allow fine-tuning of memory usage.
-
-End storage is useful when start storage is limited;
-it allows sparse storage, where only the starting and ending indexes are stored.
-
-In incremental mode:
-
-- Limited storage can be completed on demand.
-- The errors `"Code point index is not stored"` and `"Grapheme index is not stored"`
-  are no longer raised.
-- When a requested index is not stored, that index is stored, along with any
-  missing intermediate indexes.
-- The storage to be updated (start or end) is selected based on the smaller
-  number of intermediate indexes to be stored. When the distance is the same,
-  the start storage is used because a forward decoding is faster than a backward
-  decoding.
-
-**Examples**
-
-```rexx
--- Example 1
--- If the identifier is a valid UTF-8 string and is made of just one codepoint then return this codepoint.
-indexer = .RexxUnicodeStringIndexer~new(identifier, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 1, /*startErrorStorageLimit:*/ 0)
-if indexer~errorCount == 0, indexer~codepointCount == 1 then return indexer~codepointAtIndexC(1)
+- The start limits are those passed when creating the indexer.
+- The end limits may be lower than those passed when creating the indexer.
 
 ```
-
-```rexx
--- Example 2
--- U+FFFD Substitution of Maximal Subparts
--- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
-indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x, -
-                                        /*startGraphemeStorageLimit:*/ 2, -
-                                        /*startCodepointStorageLimit:*/ 4, -
-                                        /*startErrorStorageLimit:*/ 1)
-
--- The specified start codepoint storage limit is 4
-indexer~codepointCount=             -- 9
-indexer~startCodepointStorageCount= -- 4
-indexer~startCodepointIndexes=      -- [-1,-2,-3,-4]
-indexer~codepointAtIndexC(3)=       -- 65533
-indexer~codepointAtIndexC(5)=       -- Code point index 5 is not stored.
-
--- The specified start grapheme storage limit is 2
-indexer~graphemeCount=              -- 9
-indexer~startGraphemeStorageCount=  -- 2
-indexer~startGraphemeIndexes=       -- [-1,-2]
-indexer~graphemeAtIndexG(2)~c2x=    -- 91 (use ~c2x to not display an invalid byte sequence)
-indexer~graphemeAtIndexG(3)~c2x=    -- Grapheme index 3 is not stored.
-
--- The specified start error storage limit is 1
-indexer~errorCount=                 -- 7
-indexer~startErrorStorageCount=     -- 1
-indexer~startErrorMessages==
-    /*
-    an Array (shape [1], 1 items)
-     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
-    */
-
+.array~of(startGraphemeStorageLimit, startCodepointStorageLimit, startErrorStorageLimit, -
+          endGraphemeStorageLimit,   endCodepointStorageLimit,   endErrorStorageLimit)
 ```
 
-```rexx
--- Example 3
--- Collect counters, no need to store indexes and errors
-string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
-indexer = .RexxUnicodeStringIndexer~new(string, 0, 0, 0)
-indexer~graphemeCount=      -- 22
-indexer~codepointCount=     -- 26
-indexer~errorCount=         -- 7
+If the indexer is incremental, returns the limits at the end of initialization,
+together with the error storage flags, as an array. The limits may be different
+from those passed when creating the indexer.
 
 ```
-
-```rexx
--- Example 4
--- Gets the five last grapheme indexes.
--- In case of error, reports only the first error.
-string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
-indexer = .RexxUnicodeStringIndexer~new(string, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 0, /*startErrorStorageLimit:*/ 1, /*endGraphemeStorageLimit:*/ 5, /*endCodepointStorageLimit:*/ 0)
-indexer~errorCount=                 -- 7
-indexer~startErrorMessages~items=   -- 1
-indexer~startErrorMessages[1]=      -- 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
-indexer~endGraphemeIndexes=         -- [ 23, 22, 21, 19, 18]
--- Pass -endIndexG, where a negative index means "index from the end"
-do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~graphemeAtIndexG(-endIndexG); end
-    /*
-    1: 👨‍👩‍👧
-    2:  
-    3: l
-    4: ë
-    5: o
-    */
-    
+.array~of(startGraphemeStorageLimit, startCodepointStorageLimit, startErrorStorageFlag, -
+          endGraphemeStorageLimit,   endCodepointStorageLimit,   endErrorStorageFlag)
 ```
 
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 
 <a id="RexxUnicodeStringIndexer_startCodepointIndexes"></a>
 
-#### 7.3.18.   startCodepointIndexes
+#### 7.3.19.   startCodepointIndexes
 
     aRexxUnicodeStringIndexer~startCodepointIndexes
 
 Returns an array containing a copy of the codepoint indexes stored in the start storage.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 Beware of the size of the returned array! The internal storage is optimized for
 memory usage, but ooRexx arrays are not. Moreover, a new array is created each time
@@ -4757,7 +5050,7 @@ this method is used.
 
 <a id="RexxUnicodeStringIndexer_startCodepointStorageCount"></a>
 
-#### 7.3.19.   startCodepointStorageCount
+#### 7.3.20.   startCodepointStorageCount
 
     aRexxUnicodeStringIndexer~startCodepointStorageCount
 
@@ -4766,18 +5059,20 @@ Returns the count of codepoint indexes that are stored in the start storage.
 You can get the same value with `startCodepointIndexes~items`, but this method
 avoids creating an ooRexx array just to return the count.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 
 <a id="RexxUnicodeStringIndexer_startErrorMessages"></a>
 
-#### 7.3.20.   startErrorMessages
+#### 7.3.21.   startErrorMessages
 
     aRexxUnicodeStringIndexer~startErrorMessages
 
 Returns an array containing a copy of the error messages stored in the start storage.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 Beware of the size of the returned array! The internal storage is optimized for
 memory usage, but ooRexx arrays are not. Moreover, a new array is created each time
@@ -4786,7 +5081,7 @@ this method is used.
 
 <a id="RexxUnicodeStringIndexer_startErrorStorageCount"></a>
 
-#### 7.3.21.   startErrorStorageCount
+#### 7.3.22.   startErrorStorageCount
 
     aRexxUnicodeStringIndexer~startErrorStorageCount
 
@@ -4795,18 +5090,20 @@ Returns the count of error messages that are stored in the start storage.
 You can get the same value with `startErrorMessages~items`, but this method
 avoids creating an ooRexx array just to return the count.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 
 <a id="RexxUnicodeStringIndexer_startGraphemeIndexes"></a>
 
-#### 7.3.22.   startGraphemeIndexes
+#### 7.3.23.   startGraphemeIndexes
 
     aRexxUnicodeStringIndexer~startGraphemeIndexes
 
 Returns an array containing a copy of the grapheme indexes stored in the start storage.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 Beware of the size of the returned array! The internal storage is optimized for
 memory usage, but ooRexx arrays are not. Moreover, a new array is created each time
@@ -4815,7 +5112,7 @@ this method is used.
 
 <a id="RexxUnicodeStringIndexer_startGraphemeStorageCount"></a>
 
-#### 7.3.23.   startGraphemeStorageCount
+#### 7.3.24.   startGraphemeStorageCount
 
     aRexxUnicodeStringIndexer~startGraphemeStorageCount
 
@@ -4824,12 +5121,13 @@ Returns the count of grapheme indexes that are stored in the start storage.
 You can get the same value with `startGraphemeIndexes~items`, but this method
 avoids creating an ooRexx array just to return the count.
 
-For an explanation of storage, see [`aRexxUnicodeStringIndexer~init`](#RexxUnicodeStringIndexer_init).
+For an explanation of storage, see [`RexxUnicodeStringIndexer~new`](#RexxUnicodeStringIndexer_new)
+and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newIncremental).
 
 
 <a id="RexxUnicodeStringIndexer_string"></a>
 
-#### 7.3.24.   string
+#### 7.3.25.   string
 
     aRexxUnicodeStringIndexer~string
 

@@ -160,8 +160,8 @@ Additional string services
     if arg() == 2 then use strict arg string, >indexer
                   else use strict arg string
     string = requestBaseString(string)
-    if arg() == 2 then indexer = .RexxUnicodeStringIndexer~new(string)          -- no limit, because indexer requested by user
-                  else indexer = .RexxUnicodeStringIndexer~new(string, 0, 0, 0) -- no need to store indexes and errors
+    if arg() == 2 then indexer = .RexxUnicodeStringIndexer~new(string)              -- indexer requested by user: non-incremental with default limits
+                  else indexer = .RexxUnicodeStringIndexer~new(string, 0, 0, 0)     -- no need to store indexes and errors
     return indexer~stringInfo
 
 
@@ -496,7 +496,7 @@ How other languages are supporting escape characters for Unicode:
 
 
 /******************************************************************************/
-::class MessageDisplayer public
+::class "MessageDisplayer" public
 /******************************************************************************/
 
 /*
@@ -883,14 +883,16 @@ Used for regression tests.
 
 ::method init
     expose isFirstStep string indexB indexG -
-           observer graphemeAction codepointAction
+           observer graphemeAction codepointAction -
+           verbose
 
     use strict arg string, defaultIndexType="", defaultItemType="", -
                    observer=.nil, -
                    graphemeAction=.nil, -       -- Message sent for each decoded grapheme.
                    codepointAction=.nil, -      -- Message sent for each decoded codepoint.
                    indexB=1, -                  -- Initial byte index (1-based): the first grapheme to decode starts at this index.
-                   indexG=1                     -- Grapheme count from the begining of the string. Initial value corresponding to the initial byte position.
+                   indexG=1, -                  -- Grapheme count from the begining of the string. Initial value corresponding to the initial byte position.
+                   verbose=.false
     string = requestBaseString(string, "string")
     self~setDefaultIndexType(defaultIndexType)
     self~setDefaultItemType(defaultItemType)
@@ -966,7 +968,8 @@ are the same operation - scanBoundary is used for both.
 --   pendingIndexB = -(byte position)         -> boundary at an invalid byte sequence; pendingError describes it
 ::method scanBoundary private
     expose string indexB previousCodepoint graphemeBreakState pendingIndexB pendingError -
-           observer codepointAction
+           observer codepointAction -
+           verbose
 
     use strict arg -- none
 
@@ -994,7 +997,10 @@ are the same operation - scanBoundary is used for both.
 
         -- graphemeBreak must NOT be called when previousCodepoint < 0 (nothing to compare against yet)
         if previousCodepoint < 0 then isBoundary = 1
-        else isBoundary = .RexxUnicode~graphemeBreak(previousCodepoint, codepoint, >graphemeBreakState)
+        else do
+            isBoundary = .RexxUnicode~graphemeBreak(previousCodepoint, codepoint, >graphemeBreakState)
+            if verbose then say "    graphemeBreak with previousCodepoint =" previousCodepoint", codepoint =" codepoint "returned" isBoundary
+        end
 
         boundaryHere = indexB
         previousCodepoint = codepoint
@@ -1038,7 +1044,9 @@ are the same operation - scanBoundary is used for both.
 
 ::method init
     expose string indexB indexG error -
-           observer graphemeAction codepointAction
+           observer graphemeAction codepointAction -
+           notifyNextCodepoint -
+           verbose
 
     -- indexB boundary (1-based): the grapheme to decode ends just before this
     -- indexG count from the end of the string
@@ -1047,13 +1055,16 @@ are the same operation - scanBoundary is used for both.
                    graphemeAction=.nil, -           -- Message sent for each decoded grapheme.
                    codepointAction=.nil, -          -- Message sent for each decoded codepoint.
                    indexB=(string~length + 1), -    -- Initial byte index (1-based): the first grapheme to decode ends just before this index.
-                   indexG=1                         -- Grapheme count from the end of the string. Initial value corresponding to the initial byte position.
+                   indexG=1, -                      -- Grapheme count from the end of the string. Initial value corresponding to the initial byte position.
+                   verbose=.false
     string = requestBaseString(string, "string")
     self~setDefaultIndexType(defaultIndexType)
     self~setDefaultItemType(defaultItemType)
 
     empty = .array~new(0) -- No need to create a copy, the string is immutable
     self~init:super(empty, empty)
+
+    notifyNextCodepoint = .true -- will be set to .false where appropriate to avoid duplicate notifications
 
     -- Unlike the reverse codepoint supplier, I don't use a variable named "boundaryIndexB".
     -- "indexB" can be used, because the grapheme byte position is managed with "graphemeIndexB".
@@ -1084,13 +1095,12 @@ are the same operation - scanBoundary is used for both.
 -- indexB's new left edge into graphemeIndexB. grapheme = .nil at start of text.
 ::method decodePrevious private
     expose string indexB grapheme graphemeIndexB error -
-           observer graphemeAction codepointAction
+           observer graphemeAction codepointAction -
+           notifyNextCodepoint -
+           verbose
 
     use strict arg -- none
 
-debug = .false -- keep it for the moment
-if debug then say
-if debug then say "Enter decodePrevious with indexB =" indexB
     error = ""
 
     -- ok, it's an alternative way to detect the beginning of string,
@@ -1098,13 +1108,11 @@ if debug then say "Enter decodePrevious with indexB =" indexB
     if indexB <= 1 then do
         grapheme = .nil
         graphemeIndexB = .nil
-if debug then say "Leave decodePrevious with graphemeIndexB =" graphemeIndexB", grapheme =" grapheme
         return
     end
 
     -- here, indexB is the index of the codepoint AFTER the codepoint to decode
     codepoint2 = .RexxUnicode~utf8DecodePreviousCodepoint(string, indexB, >sizeB, >errorCode, >errorMsg)
-if debug then say "    utf8DecodePreviousCodepoint with indexB =" indexB "returned codepoint2 =" codepoint2 "of size" sizeB
     cursor = indexB - abs(sizeB)      -- start of the rightmost scalar so far
 
     -- An ill-formed byte's maximal subpart is always its own grapheme cluster
@@ -1113,13 +1121,14 @@ if debug then say "    utf8DecodePreviousCodepoint with indexB =" indexB "return
         graphemeIndexB = -cursor -- same convention as .RexxUnicodeStringIndexer; a negative byte index indicates an invalid byte sequence
         grapheme = string~substr(cursor, indexB - cursor)
         error = "start byte position" cursor ":" errorMsg
-        if .nil \== observer, .nil \== codepointAction then observer~send(codepointAction, .true, cursor, -sizeB, codepoint2, error)
+        if .nil \== observer, .nil \== codepointAction, notifyNextCodepoint then observer~send(codepointAction, .true, cursor, -sizeB, codepoint2, error)
+        notifyNextCodepoint = .true -- reset to default value
         if .nil \== observer, .nil \== graphemeAction then observer~send(graphemeAction, .true, cursor, grapheme~length, error)
-if debug then say "Leave decodePrevious with graphemeIndexB =" graphemeIndexB", grapheme =" grapheme~c2x
         return
     end
     else do
-        if .nil \== observer, .nil \== codepointAction then observer~send(codepointAction, .false, cursor, sizeB, codepoint2, "")
+        if .nil \== observer, .nil \== codepointAction, notifyNextCodepoint then observer~send(codepointAction, .false, cursor, sizeB, codepoint2, "")
+        notifyNextCodepoint = .true -- reset to default value
     end
 
     loop
@@ -1127,17 +1136,31 @@ if debug then say "Leave decodePrevious with graphemeIndexB =" graphemeIndexB", 
 
         -- here, cursor is the index of the codepoint AFTER the codepoint to decode
         codepoint1 = .RexxUnicode~utf8DecodePreviousCodepoint(string, cursor, >sizeB1, >errorCode1, >errorMsg1)
-if debug then say "    utf8DecodePreviousCodepoint with cursor =" cursor "returned codepoint1 =" codepoint1 "of size" sizeB
         pos1 = cursor - abs(sizeB1)
 
-        if sizeB1 < 0 then leave    -- adjacent error is always its own cluster: break here
+         -- Notify now, to be aligned with the forward grapheme supplier.
+        -- The codepoint notifications are always before the closed grapheme notification.
+       if sizeB1 < 0 then do
+            error = "start byte position" pos1 ":" errorMsg1
+            if .nil \== observer, .nil \== codepointAction then observer~send(codepointAction, .true, pos1, -sizeB1, codepoint1, error)
+        end
+        else do
+            if .nil \== observer, .nil \== codepointAction then observer~send(codepointAction, .false, pos1, -sizeB1, codepoint1, "")
+        end
+
+        if sizeB1 < 0 then do
+            notifyNextCodepoint = .false -- because it will be this codepoint, already notified
+            leave    -- adjacent error is always its own cluster: break here
+        end
 
         graphemeBreakBackward = .RexxUnicode~graphemeBreakBackward(string, pos1, codepoint1, codepoint2)
-if debug then say "    graphemeBreakBackward with pos1 =" pos1", codepoint1 =" codepoint1", codepoint2 =" codepoint2 "returned" graphemeBreakBackward
-        if graphemeBreakBackward then leave
+        if verbose then say "    graphemeBreakBackward with pos1 =" pos1", codepoint1 =" codepoint1", codepoint2 =" codepoint2 "returned" graphemeBreakBackward
+        if graphemeBreakBackward then do
+            notifyNextCodepoint = .false -- because it will be this codepoint, already notified
+            leave
+        end
 
         -- No break: extend the grapheme leftward and keep going
-        if .nil \== observer, .nil \== codepointAction then observer~send(codepointAction, .false, pos1, -sizeB1, codepoint1, "")
         cursor = pos1
         codepoint2 = codepoint1
         prop2 = prop1
@@ -1147,11 +1170,10 @@ if debug then say "    graphemeBreakBackward with pos1 =" pos1", codepoint1 =" c
     grapheme = string~substr(cursor, indexB - cursor)
     error = ""
     if .nil \== observer, .nil \== graphemeAction then observer~send(graphemeAction, .false, cursor, grapheme~length, "")
-if debug then say "Leave decodePrevious with graphemeIndexB =" graphemeIndexB", grapheme =" grapheme~c2x
 
 
 /******************************************************************************/
-::class VerboseArray private subclass Array
+::class "VerboseArray" private subclass Array
 /******************************************************************************/
 
 /*
@@ -1189,7 +1211,56 @@ Same memory usage for the native codepoint indexer.
 The memory usage of the invalid byte flags will be between 0% and 12.5% of the string size (bit vector).
 */
 
+::method new class
+    use strict arg string, -
+                   startGraphemeStorageLimit = (.RexxInfo~internalMaxNumber), startCodepointStorageLimit = (.RexxInfo~internalMaxNumber), startErrorStorageLimit = (.RexxInfo~internalMaxNumber), -
+                   endGraphemeStorageLimit = 0, endCodepointStorageLimit = 0, endErrorStorageLimit = 0, -
+                   verbose = .false, trace = ""
+
+    .Validate~classType("string", string, .string)
+    .Validate~nonNegativeWholeNumber("startGraphemeStorageLimit", startGraphemeStorageLimit, 18)
+    .Validate~nonNegativeWholeNumber("startCodepointStorageLimit", startCodepointStorageLimit, 18)
+    .Validate~nonNegativeWholeNumber("startErrorStorageLimit", startErrorStorageLimit, 18)
+    .Validate~nonNegativeWholeNumber("endGraphemeStorageLimit", endGraphemeStorageLimit, 18)
+    .Validate~nonNegativeWholeNumber("endCodepointStorageLimit", endCodepointStorageLimit, 18)
+    .Validate~nonNegativeWholeNumber("endErrorStorageLimit", endErrorStorageLimit, 18)
+    .Validate~logical("verbose", verbose)
+    .Validate~classType("trace", trace, .string)
+
+    -- Pass incremental = .false
+    self~new:super(string, -
+                   startGraphemeStorageLimit, startCodepointStorageLimit, startErrorStorageLimit, -
+                   endGraphemeStorageLimit, endCodepointStorageLimit, endErrorStorageLimit, -
+                   /*incremental:*/ .false, verbose, trace)
+    return result
+
+
+::method newIncremental class
+    use strict arg string, -
+                   startGraphemeStorageAdjustableLimit = 1, startCodepointStorageAdjustableLimit = 1, startErrorStorage = .true, -
+                   endGraphemeStorageAdjustableLimit = 0, endCodepointStorageAdjustableLimit = 0, endErrorStorage = .false, -
+                   verbose = .false, trace = ""
+
+    .Validate~classType("string", string, .string)
+    .Validate~nonNegativeWholeNumber("startGraphemeStorageAdjustableLimit", startGraphemeStorageAdjustableLimit, 18)
+    .Validate~nonNegativeWholeNumber("startCodepointStorageAdjustableLimit", startCodepointStorageAdjustableLimit, 18)
+    .Validate~logical("startErrorStorage", startErrorStorage)
+    .Validate~nonNegativeWholeNumber("endGraphemeStorageAdjustableLimit", endGraphemeStorageAdjustableLimit, 18)
+    .Validate~nonNegativeWholeNumber("endCodepointStorageAdjustableLimit", endCodepointStorageAdjustableLimit, 18)
+    .Validate~logical("endErrorStorage", endErrorStorage)
+    .Validate~logical("verbose", verbose)
+    .Validate~classType("trace", trace, .string)
+
+    -- Pass incremental = .true
+    self~new:super(string, -
+                   startGraphemeStorageAdjustableLimit, startCodepointStorageAdjustableLimit, startErrorStorage, -
+                   endGraphemeStorageAdjustableLimit, endCodepointStorageAdjustableLimit, endErrorStorage, -
+                   /*incremental:*/ .true, verbose, trace)
+    return result
+
+
 ::attribute string get
+::attribute isIncremental get
 ::attribute codepointCount get          -- count after full scan, not impacted by the start storage limits
 ::attribute graphemeCount get           -- count after full scan, not impacted by the start storage limits
 ::attribute errorCount get              -- count after full scan, not impacted by the start storage limits
@@ -1200,7 +1271,7 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     -- Currently, the internal storage `startCodepointIndexes` (the exposed variable) is an ooRexx array,
     -- but it will be replaced by a C++ bitVector + summaryTable.
     -- The external representation `startCodepointIndexes` (this method) will always return a copy of the internal storage as an array.
-    if .nil == startCodepointIndexes then return .array~new
+    if .nil == startCodepointIndexes then return .array~new(0)
     return startCodepointIndexes~copy
 
 
@@ -1215,7 +1286,7 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     -- Currently, the internal storage `endCodepointIndexes` (the exposed variable) is an ooRexx array,
     -- but it will be replaced by a C++ bitVector + summaryTable.
     -- The external representation `endCodepointIndexes` (this method) will always return a copy of the internal storage as an array.
-    if .nil == endCodepointIndexes then return .array~new
+    if .nil == endCodepointIndexes then return .array~new(0)
     return endCodepointIndexes~copy
 
 
@@ -1230,7 +1301,7 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     -- Currently, the internal storage `startGraphemeIndexes` (the exposed variable) is an ooRexx array,
     -- but it will be replaced by a C++ bitVector + summaryTable.
     -- The external representation `startGraphemeIndexes` (this method) will always return a copy of the internal storage as an array.
-    if .nil == startGraphemeIndexes then return .array~new
+    if .nil == startGraphemeIndexes then return .array~new(0)
     return startGraphemeIndexes~copy
 
 
@@ -1245,7 +1316,7 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     -- Currently, the internal storage `endGraphemeIndexes` (the exposed variable) is an ooRexx array,
     -- but it will be replaced by a C++ bitVector + summaryTable.
     -- The external representation `endGraphemeIndexes` (this method) will always return a copy of the internal storage as an array.
-    if .nil == endGraphemeIndexes then return .array~new
+    if .nil == endGraphemeIndexes then return .array~new(0)
     return endGraphemeIndexes~copy
 
 
@@ -1260,7 +1331,7 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     -- Currently, the internal storage `startErrorMessages` (the exposed variable) is an ooRexx array,
     -- but it will be replaced by a C++ bitVector + table of error messages.
     -- The external representation `startErrorMessages` (this method) will always return a copy of the internal storage as an array.
-    if .nil == startErrorMessages then return .array~new
+    if .nil == startErrorMessages then return .array~new(0)
     return startErrorMessages~copy
 
 
@@ -1275,7 +1346,7 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     -- Currently, the internal storage `endErrorMessages` (the exposed variable) is an ooRexx array,
     -- but it will be replaced by a C++ bitVector + table of error messages.
     -- The external representation `endErrorMessages` (this method) will always return a copy of the internal storage as an array.
-    if .nil == endErrorMessages then return .array~new
+    if .nil == endErrorMessages then return .array~new(0)
     return endErrorMessages~copy
 
 
@@ -1295,12 +1366,20 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
            graphemeCount -
            startErrorMessages endErrorMessages -
            errorCount -
-           incremental verbose
+           incremental verbose trace-
+           -    -- Fix gaps and duplicates in incremental mode, by Claude Sonnet 5 medium
+           startNextCodepointB endNextCodepointEndB -
+           startCodepointErrorCount startGraphemeErrorCount -
+           endCodepointErrorCount endGraphemeErrorCount
 
+    -- The default values are defined by ~new and ~newIncremental.
+    -- In incremental mode, startErrorStorageLimit and endErrorStorageLimit is boolean-ish:
+    -- 0 is .false, and any non-zero value is .true; the actual value is ignored.
     use strict arg string, -
-                   startGraphemeStorageLimit = (.RexxInfo~internalMaxNumber), startCodepointStorageLimit = (.RexxInfo~internalMaxNumber), startErrorStorageLimit = (.RexxInfo~internalMaxNumber), -
-                   endGraphemeStorageLimit = 0, endCodepointStorageLimit = 0, endErrorStorageLimit = 0, -
-                   incremental = .false, verbose = .false
+                   startGraphemeStorageLimit, startCodepointStorageLimit, startErrorStorageLimit, -
+                   endGraphemeStorageLimit, endCodepointStorageLimit, endErrorStorageLimit, -
+                   incremental, verbose, trace
+    trace value trace -- retro trace not possible here
     string = requestBaseString(string)
 
     codepointCount = 0
@@ -1314,6 +1393,14 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     -- Extra index to let calculate the grapheme's length of the grapheme at startGraphemeStorageLimit.
     -- This index is not put in startGraphemeIndexes to keep startGraphemeIndexes's items <= startGraphemeStorageLimit.
     startLastGraphemeNextIndexB = string~length + 1 -- will be updated during the scan
+
+    -- Used to fix gaps and duplicates in incremental mode
+    startNextCodepointB = 1
+    endNextCodepointEndB = string~length + 1
+    startCodepointErrorCount = 0    -- errors inside the stored start codepoints
+    startGraphemeErrorCount = 0     -- errors inside the stored start graphemes
+    endCodepointErrorCount = 0      -- errors inside the stored end codepoints
+    endGraphemeErrorCount = 0       -- errors inside the stored end graphemes
 
     /*
     Remember:
@@ -1340,347 +1427,897 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
         return
     end
 
-    if startGraphemeStorageLimit ==0, endGraphemeStorageLimit == 0 then do
+    /**********************/
+    /* Forward indexation */
+    /**********************/
 
-        /************************************/
-        /* Fast path if no grapheme storage */
-        /************************************/
-
-
-        /**********************/
-        /* Forward indexation */
-        /**********************/
-
-        if verbose then do
-            if startCodepointStorageLimit > 0 then startCodepointIndexes = .VerboseArray~new("startCodepointIndexes")
-            if startErrorStorageLimit > 0 then startErrorMessages = .VerboseArray~new("startErrorMessages")
-        end
-        else do
-            if startCodepointStorageLimit > 0 then startCodepointIndexes = .array~new
-            if startErrorStorageLimit > 0 then startErrorMessages = .array~new
-        end
-
-        s = .RexxUnicodeCodepointSupplier~new(string, , , -
-                                              self, "startCodepointInitializationAction")
-        do while s~available
-            -- full scan
-            s~next
-        end
-
-        /***********************/
-        /* Backward indexation */
-        /***********************/
-
-        /*
-            startCodepointStorageLimit      endCodepointStorageLimit    codepointCount      adjusted endCodepointStorageLimit
-            max                             any                         any                 N/A
-            0                               max                         any                 codepointCount
-            10                              10                          5                   N/A
-            10                              10                          15                  5
-            10                              2                           15                  2
-        */
-        if startCodepointStorageLimit < codepointCount then do
-            -- Some codepoints indexes are not stored
-            endCodepointStorageLimit = min(endCodepointStorageLimit, codepointCount - startCodepointStorageLimit)
-            if endCodepointStorageLimit > 0 then do
-                if verbose then endCodepointIndexes = .VerboseArray~new("endCodepointIndexes", endCodepointStorageLimit)
-                           else endCodepointIndexes = .array~new(endCodepointStorageLimit)
-            end
-        end
-
-        if startErrorStorageLimit < errorCount then do
-            -- Some errors are not stored
-            endErrorStorageLimit = min(endErrorStorageLimit, errorCount - startErrorStorageLimit)
-            if endErrorStorageLimit > 0 then do
-                if verbose then endErrorMessages = .VerboseArray~new("endErrorMessages", endErrorStorageLimit)
-                           else endErrorMessages = .array~new(endErrorStorageLimit)
-            end
-        end
-
-        s = .RexxUnicodeReverseCodepointSupplier~new(string, , , -
-                                                     self, "endCodepointInitializationAction")
-        do while s~available
-            -- stop when all end storages are full
-            full = .true
-            if .nil \== endCodepointIndexes, endCodepointIndexes~items < endCodepointStorageLimit then full = .false
-            if full, .nil \== endErrorMessages, endErrorMessages~items < endErrorStorageLimit then full = .false
-            if full then leave
-
-            s~next
-        end
-
+    if verbose then do
+        if startCodepointStorageLimit > 0 then startCodepointIndexes = .VerboseArray~new("startCodepointIndexes", 0)
+        if startGraphemeStorageLimit > 0 then startGraphemeIndexes = .VerboseArray~new("startGraphemeIndexes", 0)
+        if startErrorStorageLimit > 0 then startErrorMessages = .VerboseArray~new("startErrorMessages", 0)
     end
     else do
+        if startCodepointStorageLimit > 0 then startCodepointIndexes = .array~new(0)
+        if startGraphemeStorageLimit > 0 then startGraphemeIndexes = .array~new(0)
+        if startErrorStorageLimit > 0 then startErrorMessages = .array~new(0)
+    end
 
-        /**********************/
-        /* Forward indexation */
-        /**********************/
+    -- Must always use a grapheme supplier, even if the grapheme storage is disabled, to count the graphemes.
+    self~startStoragesClearUpdatedFlags
+    if verbose then do
+        say
+        say "******************** init - Initialization Forward Grapheme Supplier"
+        say
+    end
+    s = .RexxUnicodeGraphemeSupplier~new(string, , , -
+                                         self, "startGraphemeInitializationAction", "startCodepointInitializationAction", -
+                                         , , verbose)
+    do while s~available
+        if incremental then do
+            self~startStoragesAdjustLimits
+            self~startStoragesClearUpdatedFlags
+        end
+        -- full scan
+        if verbose then do
+            say
+            say "******************** init - Initialization Forward Grapheme Supplier"
+            say
+        end
+        s~next
+    end
+
+    /***********************/
+    /* Backward indexation */
+    /***********************/
+
+    /*
+        startCodepointStorageLimit      endCodepointStorageLimit    codepointCount      adjusted endCodepointStorageLimit
+        max                             any                         any                 N/A
+        0                               max                         any                 codepointCount
+        10                              10                          5                   N/A
+        10                              10                          15                  5
+        10                              2                           15                  2
+    */
+    startItems = 0
+    if .nil \== startCodepointIndexes then startItems = startCodepointIndexes~items
+    endCodepointStorageLimit = min(endCodepointStorageLimit, codepointCount - startItems)
+    if endCodepointStorageLimit > 0 then do
+        if verbose then endCodepointIndexes = .VerboseArray~new("endCodepointIndexes", 0 /*endCodepointStorageLimit*/)
+                   else endCodepointIndexes = .array~new(0 /*endCodepointStorageLimit*/)
+    end
+
+    startItems = 0
+    if .nil \== startGraphemeIndexes then startItems = startGraphemeIndexes~items
+    endGraphemeStorageLimit = min(endGraphemeStorageLimit, graphemeCount - startItems)
+    if endGraphemeStorageLimit > 0 then do
+        if verbose then endGraphemeIndexes = .VerboseArray~new("endGraphemeIndexes", 0 /*endGraphemeStorageLimit*/)
+                   else endGraphemeIndexes = .array~new(0 /*endGraphemeStorageLimit*/)
+    end
+
+    startItems = 0
+    if .nil \== startErrorMessages then startItems = startErrorMessages~items
+    if incremental then do
+        -- boolean-ish
+        if startItems == errorCount then endErrorStorageLimit = .false -- all errors already stored
+    end
+    else do
+        -- real limit
+        endErrorStorageLimit = min(endErrorStorageLimit, errorCount - startItems)
+    end
+    if endErrorStorageLimit > 0 then do -- if .true or positive
+        if verbose then endErrorMessages = .VerboseArray~new("endErrorMessages", 0 /*endErrorStorageLimit*/)
+                   else endErrorMessages = .array~new(0 /*endErrorStorageLimit*/)
+    end
+
+    -- Could use a reverse codepoint supplier when the end grapheme storage is disabled.
+    -- But that would be inconsistent with the forward indexing, because the end codepoint storage would not be aligned on graphemes boundaries.
+    self~endStoragesClearUpdatedFlags
+    if verbose then do
+        say
+        say "******************** init - Initialization Backward Grapheme Supplier"
+        say
+    end
+    s = .RexxUnicodeReverseGraphemeSupplier~new(string, , , -
+                                                self, "endGraphemeInitializationAction", "endCodepointInitializationAction", -
+                                                , , verbose)
+    do while s~available
+        -- stop when all end storages are full
+        if self~endStoragesLimitsReached then leave
+        if incremental then do
+            self~endStoragesAdjustLimits
+            self~endStoragesClearUpdatedFlags
+        end
 
         if verbose then do
-            if startCodepointStorageLimit > 0 then startCodepointIndexes = .VerboseArray~new("startCodepointIndexes")
-            if startGraphemeStorageLimit > 0 then startGraphemeIndexes = .VerboseArray~new("startGraphemeIndexes")
-            if startErrorStorageLimit > 0 then startErrorMessages = .VerboseArray~new("startErrorMessages")
+            say
+            say "******************** init - Initialization Backward Grapheme Supplier"
+            say
         end
-        else do
-            if startCodepointStorageLimit > 0 then startCodepointIndexes = .array~new
-            if startGraphemeStorageLimit > 0 then startGraphemeIndexes = .array~new
-            if startErrorStorageLimit > 0 then startErrorMessages = .array~new
+        s~next
+    end
+
+
+-- For validation.
+-- Having access to these limits (maybe updated during initialization) help validate the storages
+::method limits
+    expose startCodepointStorageLimit startGraphemeStorageLimit startErrorStorageLimit -
+           endCodepointStorageLimit endGraphemeStorageLimit endErrorStorageLimit
+
+    return startGraphemeStorageLimit, startCodepointStorageLimit, startErrorStorageLimit, -
+           endGraphemeStorageLimit, endCodepointStorageLimit, endErrorStorageLimit
+
+
+-- Initialization
+::method startStoragesClearUpdatedFlags private
+    expose startCodepointIndexesUpdated startGraphemeIndexesUpdated startErrorMessagesUpdated
+
+    startCodepointIndexesUpdated = .false
+    startGraphemeIndexesUpdated = .false
+    startErrorMessagesUpdated = .false
+
+
+-- Initialization
+::method endStoragesClearUpdatedFlags private
+    expose endCodepointIndexesUpdated endGraphemeIndexesUpdated endErrorMessagesUpdated
+
+    endCodepointIndexesUpdated = .false
+    endGraphemeIndexesUpdated = .false
+    endErrorMessagesUpdated = .false
+
+
+-- Initialization
+::method startStoragesAdjustLimits private
+    expose incremental -
+           startCodepointIndexes startCodepointIndexesUpdated startCodepointStorageLimit -
+           startGraphemeIndexes startGraphemeIndexesUpdated startGraphemeStorageLimit -
+           startErrorMessages startErrorMessagesUpdated startErrorStorageLimit -
+           verbose trace
+
+    trace value trace
+
+    if verbose then do
+        say
+        say "startStoragesAdjustLimits:"
+    end
+
+    if startGraphemeIndexesUpdated then do
+        if startGraphemeIndexes~items > startGraphemeStorageLimit then do
+            if verbose then say "    startGraphemeStorageLimit" startGraphemeStorageLimit "-->" startGraphemeIndexes~items
+            startGraphemeStorageLimit = startGraphemeIndexes~items
+        end
+    end
+    else if verbose then say "    startGraphemeIndexes was not updated"
+
+    if startCodepointIndexesUpdated then do
+        if startCodepointIndexes~items > startCodepointStorageLimit then do
+            if verbose then say "    startCodepointStorageLimit" startCodepointStorageLimit "-->" startCodepointIndexes~items
+            startCodepointStorageLimit = startCodepointIndexes~items
+        end
+    end
+    else if verbose then say "    startCodepointIndexes was not updated"
+
+    -- In incremental mode, startErrorStorageLimit is boolean-ish, not candidate for adjustment
+    if incremental then nop
+    else if startErrorMessagesUpdated, startErrorMessages~items > startErrorStorageLimit then startErrorStorageLimit = startErrorMessages~items
+
+
+-- Initialization
+::method endStoragesAdjustLimits private
+    expose incremental -
+           endCodepointIndexes endCodepointIndexesUpdated endCodepointStorageLimit -
+           endGraphemeIndexes endGraphemeIndexesUpdated endGraphemeStorageLimit -
+           endErrorMessages endErrorMessagesUpdated endErrorStorageLimit -
+           verbose trace
+
+    trace value trace
+
+    if verbose then do
+        say
+        say "endStoragesAdjustLimits:"
+    end
+
+    if endGraphemeIndexesUpdated then do
+        if endGraphemeIndexes~items > endGraphemeStorageLimit then do
+            if verbose then say "    endGraphemeStorageLimit" endGraphemeStorageLimit "-->" endGraphemeIndexes~items
+            endGraphemeStorageLimit = endGraphemeIndexes~items
+        end
+    end
+    else if verbose then say "    endGraphemeIndexes was not updated"
+
+    if endCodepointIndexesUpdated then do
+        if endCodepointIndexes~items > endCodepointStorageLimit then do
+            if verbose then say "    endCodepointStorageLimit" endCodepointStorageLimit "-->" endCodepointIndexes~items
+            endCodepointStorageLimit = endCodepointIndexes~items
+        end
+    end
+    else if verbose then say "    endCodepointIndexes was not updated"
+
+    -- In incremental mode, endErrorStorageLimit is boolean-ish, not candidate for adjustment
+    if incremental then nop
+    else if endErrorMessagesUpdated, endErrorMessages~items > endErrorStorageLimit then endErrorStorageLimit = endErrorMessages~items
+
+
+-- Initialization
+::method startStoragesLimitsReached private
+    expose incremental -
+           startCodepointIndexes startCodepointStorageLimit -
+           startGraphemeIndexes startGraphemeStorageLimit -
+           startErrorMessages startErrorStorageLimit -
+           startCodepointIndexesUpdated startGraphemeIndexesUpdated startErrorMessagesUpdated -
+           verbose trace
+
+    trace value trace
+
+    -- If update in progress, allow more updates (typical case: after codepoint storage update, allow error storage update)
+    if incremental, startCodepointIndexesUpdated | startGraphemeIndexesUpdated /*| startErrorMessagesUpdated*/ then return .false
+
+    if .nil \== startCodepointIndexes, startCodepointIndexes~items < startCodepointStorageLimit then return .false
+    if .nil \== startGraphemeIndexes, startGraphemeIndexes~items < startGraphemeStorageLimit then return .false
+
+    -- An error limit will not trigger further decoding.
+    -- if .nil \== startErrorMessages, startErrorMessages~items < startErrorStorageLimit then return .false
+
+    if verbose then do
+        say "startStoragesLimitsReached is true:"
+        say "    startCodepointIndexesUpdated =" startCodepointIndexesUpdated
+        say "    startGraphemeIndexesUpdated =" startGraphemeIndexesUpdated
+
+        if .nil \== startCodepointIndexes, startCodepointIndexes~items >= startCodepointStorageLimit then do
+            say "    startCodepointIndexes~items >= startCodepointStorageLimit" "(" startCodepointIndexes~items ">=" startCodepointStorageLimit ")"
+        end
+        else say "    startCodepointIndexes =" startCodepointIndexes
+
+        if .nil \== startGraphemeIndexes, startGraphemeIndexes~items >= startGraphemeStorageLimit then do
+            say "    startGraphemeIndexes~items >= startGraphemeStorageLimit" "(" startGraphemeIndexes~items ">=" startGraphemeStorageLimit ")"
+        end
+        else say "    startGraphemeIndexes =" startGraphemeIndexes
+    end
+
+    return .true
+
+
+-- Initialization
+::method endStoragesLimitsReached private
+    expose incremental -
+           endCodepointIndexes endCodepointStorageLimit -
+           endGraphemeIndexes endGraphemeStorageLimit -
+           endErrorMessages endErrorStorageLimit -
+           endCodepointIndexesUpdated endGraphemeIndexesUpdated endErrorMessagesUpdated -
+           verbose trace
+
+    trace value trace
+
+    -- If update in progress, allow more updates (typical case: after codepoint storage update, allow error storage update)
+    if incremental, endCodepointIndexesUpdated | endGraphemeIndexesUpdated /*| endErrorMessagesUpdated*/ then return .false
+
+    if .nil \== endCodepointIndexes, endCodepointIndexes~items < endCodepointStorageLimit then return .false
+    if .nil \== endGraphemeIndexes, endGraphemeIndexes~items < endGraphemeStorageLimit then return .false
+
+    -- An error limit will not trigger further decoding.
+    -- if .nil \== endErrorMessages, endErrorMessages~items < endErrorStorageLimit then return .false
+
+    if verbose then do
+        say "endStoragesLimitsReached is true:"
+        say "    endCodepointIndexesUpdated =" endCodepointIndexesUpdated
+        say "    endGraphemeIndexesUpdated =" endGraphemeIndexesUpdated
+
+        if .nil \== endCodepointIndexes, endCodepointIndexes~items >= endCodepointStorageLimit then do
+            say "    endCodepointIndexes~items >= endCodepointStorageLimit" "(" endCodepointIndexes~items ">=" endCodepointStorageLimit ")"
+        end
+        else say "    endCodepointIndexes =" endCodepointIndexes
+
+        if .nil \== endGraphemeIndexes, endGraphemeIndexes~items >= endGraphemeStorageLimit then do
+            say "    endGraphemeIndexes~items >= endGraphemeStorageLimit" "(" endGraphemeIndexes~items ">=" endGraphemeStorageLimit ")"
+        end
+        else say "    endGraphemeIndexes =" endGraphemeIndexes
+    end
+
+    return .true
+
+
+-- Initialization
+::method startGraphemeIndexesUpdatable private
+    expose incremental -
+           startGraphemeIndexes startGraphemeStorageLimit -
+           endGraphemeIndexes -
+           graphemeCount -
+           verbose trace
+
+    trace value trace
+
+    if .nil == startGraphemeIndexes then return .false
+
+    if incremental then do
+        -- Adjustable limit
+        if self~startStoragesLimitsReached then do
+            if verbose then say "startGraphemeIndexesUpdatable is false because startStoragesLimitsReached"
+            return .false
         end
 
-        s = .RexxUnicodeGraphemeSupplier~new(string, , , self, -
-                                             "startGraphemeInitializationAction", "startCodepointInitializationAction")
-        do while s~available
-            -- full scan
-            s~next
+        -- Never overlap the end storage
+        endItems = 0
+        if .nil \== endGraphemeIndexes then endItems = endGraphemeIndexes~items
+        if startGraphemeIndexes~items + endItems >= graphemeCount then do
+            if verbose then say "startGraphemeIndexesUpdatable is false because would overlap the end storage"
+            return .false
         end
 
-        /***********************/
-        /* Backward indexation */
-        /***********************/
-
-        /*
-            startCodepointStorageLimit      endCodepointStorageLimit    codepointCount      adjusted endCodepointStorageLimit
-            max                             any                         any                 N/A
-            0                               max                         any                 codepointCount
-            10                              10                          5                   N/A
-            10                              10                          15                  5
-            10                              2                           15                  2
-        */
-        if startCodepointStorageLimit < codepointCount then do
-            -- Some codepoints indexes are not stored
-            endCodepointStorageLimit = min(endCodepointStorageLimit, codepointCount - startCodepointStorageLimit)
-            if endCodepointStorageLimit > 0 then do
-                if verbose then endCodepointIndexes = .VerboseArray~new("endCodepointIndexes", endCodepointStorageLimit)
-                           else endCodepointIndexes = .array~new(endCodepointStorageLimit)
-            end
-        end
-
-        if startGraphemeStorageLimit < graphemeCount then do
-            -- Some graphemes indexes are not stored
-            endGraphemeStorageLimit = min(endGraphemeStorageLimit, graphemeCount - startGraphemeStorageLimit)
-            if endGraphemeStorageLimit > 0 then do
-                if verbose then endGraphemeIndexes = .VerboseArray~new("endGraphemeIndexes", endGraphemeStorageLimit)
-                           else endGraphemeIndexes = .array~new(endGraphemeStorageLimit)
-            end
-        end
-
-        if startErrorStorageLimit < errorCount then do
-            -- Some errors are not stored
-            endErrorStorageLimit = min(endErrorStorageLimit, errorCount - startErrorStorageLimit)
-            if endErrorStorageLimit > 0 then do
-                if verbose then endErrorMessages = .VerboseArray~new("endErrorMessages", endErrorStorageLimit)
-                           else endErrorMessages = .array~new(endErrorStorageLimit)
-            end
-        end
-
-        s = .RexxUnicodeReverseGraphemeSupplier~new(string, , , -
-                                                    self, "endGraphemeInitializationAction", "endCodepointInitializationAction")
-        do while s~available
-            -- stop when all end storages are full
-            full = .true
-            if .nil \== endCodepointIndexes, endCodepointIndexes~items < endCodepointStorageLimit then full = .false
-            if full, .nil \== endGraphemeIndexes, endGraphemeIndexes~items < endGraphemeStorageLimit then full = .false
-            if full, .nil \== endErrorMessages, endErrorMessages~items < endErrorStorageLimit then full = .false
-            if full then leave
-
-            s~next
-        end
-
+        return .true
+    end
+    else do
+        -- Strict limit
+        if startGraphemeIndexes~items < startGraphemeStorageLimit then return .true
+        if verbose then say "startGraphemeIndexesUpdatable is false because the limit is reached"
+        return .false
     end
 
 
 -- Initialization
--- codepointAction called by a codepoint supplier or by a grapheme supplier
+::method startCodepointIndexesUpdatable private
+    expose incremental -
+           startCodepointIndexes startCodepointStorageLimit -
+           endCodepointIndexes -
+           codepointCount -
+           verbose trace
+
+    trace value trace
+
+    if .nil == startCodepointIndexes then return .false
+
+    if incremental then do
+        -- Adjustable limit
+        if self~startStoragesLimitsReached then do
+            if verbose then say "startCodepointIndexesUpdatable is false because startStoragesLimitsReached"
+            return .false
+        end
+
+        -- Never overlap the end storage
+        endItems = 0
+        if .nil \== endCodepointIndexes then endItems = endCodepointIndexes~items
+        if startCodepointIndexes~items + endItems >= codepointCount then do
+            if verbose then say "startCodepointIndexesUpdatable is false because would overlap the end storage"
+            return .false
+        end
+
+        return .true
+    end
+    else do
+        -- Strict limit
+        if startCodepointIndexes~items < startCodepointStorageLimit then return .true
+        if verbose then say "startCodepointIndexesUpdatable is false because the limit is reached"
+        return .false
+    end
+
+
+-- Initialization
+::method startErrorMessagesUpdatable private
+    expose incremental -
+           startErrorMessages startErrorStorageLimit -
+           endErrorMessages -
+           errorCount-
+           trace
+
+    trace value trace
+
+    if .nil == startErrorMessages then return .false
+
+    if incremental then do
+        -- Adjustable limit
+        if self~startStoragesLimitsReached then return .false
+
+        -- Never overlap the end storage
+        endItems = 0
+        if .nil \== endErrorMessages then endItems = endErrorMessages~items
+        if startErrorMessages~items + endItems >= errorCount then return .false
+
+        return .true
+    end
+    else do
+        -- Strict limit
+        if startErrorMessages~items < startErrorStorageLimit then return .true
+    end
+
+    return .false
+
+
+-- Initialization
+::method endGraphemeIndexesUpdatable private
+    expose incremental -
+           endGraphemeIndexes endGraphemeStorageLimit -
+           startGraphemeIndexes -
+           graphemeCount -
+           verbose trace
+
+    trace value trace
+
+    if .nil == endGraphemeIndexes then return .false
+
+    if incremental then do
+        -- Adjustable limit
+        if self~endStoragesLimitsReached then do
+            if verbose then say "endGraphemeIndexesUpdatable is false because endStoragesLimitsReached"
+            return .false
+        end
+
+        -- Never overlap the start storage
+        startItems = 0
+        if .nil \== startGraphemeIndexes then startItems = startGraphemeIndexes~items
+        if startItems + endGraphemeIndexes~items >= graphemeCount then do
+            if verbose then say "endGraphemeIndexesUpdatable is false because would overlap the start storage"
+            return .false
+        end
+
+        return .true
+    end
+    else do
+        -- Strict limit
+        if endGraphemeIndexes~items < endGraphemeStorageLimit then return .true
+        if verbose then say "endGraphemeIndexesUpdatable is false because the limit is reached"
+        return .false
+    end
+
+
+-- Initialization
+::method endCodepointIndexesUpdatable private
+    expose incremental -
+           endCodepointIndexes endCodepointStorageLimit -
+           startCodepointIndexes -
+           codepointCount -
+           verbose trace
+
+    trace value trace
+
+    if .nil == endCodepointIndexes then return .false
+
+    if incremental then do
+        -- Adjustable limit
+        if self~endStoragesLimitsReached then do
+            if verbose then say "endCodepointIndexesUpdatable is false because endStoragesLimitsReached"
+            return .false
+        end
+
+        -- Never overlap the start storage
+        startItems = 0
+        if .nil \== startCodepointIndexes then startItems = startCodepointIndexes~items
+        if startItems + endCodepointIndexes~items >= codepointCount then do
+            if verbose then say "endCodepointIndexesUpdatable is false because would overlap the start storage"
+            return .false
+        end
+
+        return .true
+    end
+    else do
+        -- Strict limit
+        if endCodepointIndexes~items < endCodepointStorageLimit then return .true
+        if verbose then say "endGraphemeIndexesUpdatable is false because the limit is reached"
+        return .false
+    end
+
+
+-- Initialization
+::method endErrorMessagesUpdatable private
+    expose incremental -
+           endErrorMessages endErrorStorageLimit -
+           startErrorMessages -
+           errorCount -
+           trace
+
+    trace value trace
+
+    if .nil == endErrorMessages then return .false
+
+    if incremental then do
+        -- Adjustable limit
+        if self~endStoragesLimitsReached then return .false
+
+        -- Never overlap the end storage
+        startItems = 0
+        if .nil \== startErrorMessages then startItems = startErrorMessages~items
+        if endErrorMessages~items + startItems >= errorCount then return .false
+
+        return .true
+    end
+    else do
+        -- Strict limit
+        if endErrorMessages~items < endErrorStorageLimit then return .true
+    end
+
+    return .false
+
+
+/*
+rank is the number of errors in the storage that received the item, including
+this one, so it is the rank of the error in the string.
+
+The same error can reach the storage through both the codepoint action and the
+grapheme action. Both compute the same rank, so the second call is skipped by
+the rank \== items + 1 test.
+*/
+
+-- Appends the message only if this error is the next one the start error storage needs:
+-- rank <= items: already stored (initial scan, or the other kind of storage)
+-- rank > items + 1: a gap.
+::method completeStartErrorMessages private
+    expose startErrorMessages endErrorMessages errorCount -
+           startErrorMessagesUpdated -
+           trace
+
+    trace value trace
+    use strict arg rank, errorMsg
+
+    if .nil == startErrorMessages then return                    -- no start error storage
+    if rank \== startErrorMessages~items + 1 then return
+    endItems = 0
+    if .nil \== endErrorMessages then endItems = endErrorMessages~items
+    if startErrorMessages~items + endItems >= errorCount then return  -- never overlap the end storage
+    startErrorMessages~append(errorMsg)
+    startErrorMessagesUpdated = .true
+
+
+-- Appends the message only if this error is the next one the end error storage needs:
+-- rank <= items: already stored (initial scan, or the other kind of storage)
+-- rank > items + 1: a gap.
+::method completeEndErrorMessages private
+    expose startErrorMessages endErrorMessages errorCount -
+           endErrorMessagesUpdated -
+           trace
+
+    trace value trace
+    use strict arg rank, errorMsg
+
+    if .nil == endErrorMessages then return                      -- no end error storage
+    if rank \== endErrorMessages~items + 1 then return
+    startItems = 0
+    if .nil \== startErrorMessages then startItems = startErrorMessages~items
+    if startItems + endErrorMessages~items >= errorCount then return
+    endErrorMessages~append(errorMsg)
+    endErrorMessagesUpdated = .true
+
+
+-- Initialization
+-- codepointAction called by a grapheme supplier
 -- for every valid codepoint and every invalid byte sequence
 ::method startCodepointInitializationAction package
     expose codepointCount -
            startCodepointStorageLimit startCodepointIndexes -
            errorCount -
-           startErrorStorageLimit startErrorMessages
-    -- trace i
+           startErrorMessages -
+           startCodepointErrorCount -
+           startCodepointIndexesUpdated startErrorMessagesUpdated -
+           verbose trace -
+           -    -- Used to fix gaps and duplicates in incremental mode
+           startNextCodepointB
+
+    trace value trace
     use strict arg error /* boolean */, indexB /* >0 */, sizeB, codepoint /* whole number */, errorMsg=""
+
+    if verbose then do
+        say
+        say "startCodepointInitializationAction(error =" error", indexB =" indexB", sizeB =" sizeB", codepoint =" codepoint")"
+    end
 
     if error then do
         -- The byte sequence is invalid
         errorCount += 1
-        if .nil \== startErrorMessages, startErrorMessages~items < startErrorStorageLimit then startErrorMessages~append(errorMsg)
 
-        -- stopAtFirstError is not supported by a supplier, but is supported by a native iterator
-        -- stopAtFirstError is not applicable here
         codepointCount += 1
-        if .nil \== startCodepointIndexes, startCodepointIndexes~items < startCodepointStorageLimit then startCodepointIndexes~append(-indexB) -- a negative index means "error"
+        if self~startCodepointIndexesUpdatable then do
+            startCodepointIndexes~append(-indexB) -- a negative index means "error"
+            startCodepointIndexesUpdated = .true
+            startCodepointErrorCount += 1
+            if self~startErrorMessagesUpdatable then do
+                self~completeStartErrorMessages(startCodepointErrorCount, errorMsg)
+            end
+            startNextCodepointB = indexB + abs(sizeB)
+        end
+        else do
+            if self~startErrorMessagesUpdatable then do
+                startErrorMessages~append(errorMsg)
+                startErrorMessagesUpdated = .true
+            end
+        end
     end
     else do
         codepointCount += 1
-        if .nil \== startCodepointIndexes, startCodepointIndexes~items < startCodepointStorageLimit then startCodepointIndexes~append(indexB)
+        if self~startCodepointIndexesUpdatable then do
+            startCodepointIndexes~append(indexB)
+            startCodepointIndexesUpdated = .true
+            startNextCodepointB = indexB + abs(sizeB) -- todo: remove abs
+        end
     end
 
 
 -- Incremental update
 -- codepointAction called by a codepoint supplier or by a grapheme supplier
--- for every valid codepoint  and every invalid byte sequence
+-- for every valid codepoint and every invalid byte sequence
 ::method startCodepointIncrementalAction package
     expose startCodepointIndexes startErrorMessages -
-           endCodepointIndexes
-    -- trace i
+           endCodepointIndexes -
+           startCodepointIndexesUpdated -
+           verbose trace -
+           -    -- Used to fix gaps and duplicates in incremental mode
+           codepointCount -
+           startNextCodepointB startCodepointErrorCount
+
+    trace value trace
     use strict arg error /* boolean */, indexB /* >0 */, sizeB, codepoint /* whole number */, errorMsg=""
 
-    -- When called by a grapheme supplier, a codepoint can be:
-    -- - either the codepoint that break (close) the current grapheme
-    -- - or the first codepoint of the next grapheme.
-    -- So the same codepoint can be notified twice.
-    -- We must check that this codepoint index is not already stored.
-    -- Since the incremental update is sequential, we have just to test the last item in the start and end storage.
-    if .nil \== startCodepointIndexes, startCodepointIndexes~items \== 0, abs(startCodepointIndexes~lastItem) == indexB then return
-    if .nil \== endCodepointIndexes, endCodepointIndexes~items \== 0, abs(endCodepointIndexes~lastItem) == indexB then return
+    if verbose then do
+        say
+        say "startCodepointIncrementalAction(error =" error", indexB =" indexB", sizeB =" sizeB", codepoint =" codepoint")"
+    end
+
+    if .nil == startCodepointIndexes then return
+
+    -- Append only the codepoint that is exactly the next one for the start storage:
+    -- an earlier position is already stored (a grapheme supplier notifies some codepoints twice),
+    -- a later position would leave a gap.
+    if indexB \== startNextCodepointB then return
+
+    -- Never overlap the end storage
+    endItems = 0
+    if .nil \== endCodepointIndexes then endItems = endCodepointIndexes~items
+    if startCodepointIndexes~items + endItems >= codepointCount then return
 
     if error then do
         -- The byte sequence is invalid
-        if .nil \== startErrorMessages then startErrorMessages~append(errorMsg)
-
-        -- stopAtFirstError is not supported by a supplier, but is supported by a native iterator
-        -- stopAtFirstError is not applicable here
-        if .nil \== startCodepointIndexes then startCodepointIndexes~append(-indexB) -- a negative index means "error"
+        startCodepointIndexes~append(-indexB) -- a negative index means "error"
+        startCodepointIndexesUpdated = .true
+        startCodepointErrorCount += 1
+        if self~startErrorMessagesUpdatable then self~completeStartErrorMessages(startCodepointErrorCount, errorMsg)
     end
     else do
-        if .nil \== startCodepointIndexes then startCodepointIndexes~append(indexB)
+        startCodepointIndexes~append(indexB)
+        startCodepointIndexesUpdated = .true
     end
+    startNextCodepointB = indexB + abs(sizeB) -- todo: move in else branch and remove abs
+
 
 -- Initialization
--- Called by a grapheme supplier for every grapheme  and every invalid byte sequence
+-- Called by a grapheme supplier for every grapheme and every invalid byte sequence
 ::method startGraphemeInitializationAction package
     expose graphemeCount -
-           startGraphemeStorageLimit startGraphemeIndexes startLastGraphemeNextIndexB
-    -- trace i
+           startGraphemeStorageLimit startGraphemeIndexes startLastGraphemeNextIndexB -
+           startGraphemeIndexesUpdated -
+           verbose trace -
+           -   -- Used to fix gaps and duplicates in incremental mode
+           startGraphemeErrorCount
+
+    trace value trace
     use strict arg error /* boolean */, indexB /* >0 */, sizeB, errorMsg=""
+
+    if verbose then do
+        say
+        say "startGraphemeInitializationAction(error =" error", indexB =" indexB", sizeB =" sizeB")"
+    end
 
     if error then do
         -- The byte sequence is invalid
-        -- stopAtFirstError is not supported by a supplier, but is supported by a native iterator
-        -- stopAtFirstError is not applicable here
         graphemeCount += 1
-        if .nil \== startGraphemeIndexes, startGraphemeIndexes~items < startGraphemeStorageLimit then do
+        if self~startGraphemeIndexesUpdatable then do
             startGraphemeIndexes~append(-indexB) -- a negative index means "error"
+            startGraphemeIndexesUpdated = .true
             startLastGraphemeNextIndexB = indexB + sizeB
+            startGraphemeErrorCount += 1
+            if self~startErrorMessagesUpdatable then self~completeStartErrorMessages(startGraphemeErrorCount, errorMsg)
         end
     end
     else do
         graphemeCount += 1
-        if .nil \== startGraphemeIndexes, startGraphemeIndexes~items < startGraphemeStorageLimit then do
+        if self~startGraphemeIndexesUpdatable then do
             startGraphemeIndexes~append(indexB)
+            startGraphemeIndexesUpdated = .true
             startLastGraphemeNextIndexB = indexB + sizeB
         end
     end
 
 
 -- Incremental
--- Called by a grapheme supplier for every grapheme  and every invalid byte sequence
+-- Called by a grapheme supplier for every grapheme and every invalid byte sequence
 ::method startGraphemeIncrementalAction package
-    expose startGraphemeIndexes startLastGraphemeNextIndexB
-    -- trace i
+    expose startGraphemeIndexes startLastGraphemeNextIndexB -
+           startGraphemeIndexesUpdated -
+           verbose trace -
+           -   -- Used to fix gaps and duplicates in incremental mode
+           endGraphemeIndexes graphemeCount startGraphemeErrorCount
+
+    trace value trace
     use strict arg error /* boolean */, indexB /* >0 */, sizeB, errorMsg=""
+
+    if verbose then do
+        say
+        say "startGraphemeIncrementalAction(error =" error", indexB =" indexB", sizeB =" sizeB")"
+    end
+
+    if .nil == startGraphemeIndexes then return
+
+    -- The supplier starts at startLastGraphemeNextIndexB and is sequential: only the overlap must be prevented
+    endItems = 0
+    if .nil \== endGraphemeIndexes then endItems = endGraphemeIndexes~items
+    if startGraphemeIndexes~items + endItems >= graphemeCount then return
 
     if error then do
         -- The byte sequence is invalid
-        -- stopAtFirstError is not supported by a supplier, but is supported by a native iterator
-        -- stopAtFirstError is not applicable here
-        if .nil \== startGraphemeIndexes then do
-            startGraphemeIndexes~append(-indexB) -- a negative index means "error"
-            startLastGraphemeNextIndexB = indexB + sizeB
-        end
+        startGraphemeIndexes~append(-indexB) -- a negative index means "error"
+        startGraphemeIndexesUpdated = .true
+        startGraphemeErrorCount += 1
+        if self~startErrorMessagesUpdatable then self~completeStartErrorMessages(startGraphemeErrorCount, errorMsg)
     end
     else do
-        if .nil \== startGraphemeIndexes then do
-            startGraphemeIndexes~append(indexB)
-            startLastGraphemeNextIndexB = indexB + sizeB
-        end
+        startGraphemeIndexes~append(indexB)
+        startGraphemeIndexesUpdated = .true
     end
+    startLastGraphemeNextIndexB = indexB + sizeB
 
 
 -- Initialization
--- Called by a reverse codepoint supplier or by a reverse grapheme supplier
--- for every valid codepoint  and every invalid byte sequence
+-- Called by a reverse grapheme supplier
+-- for every valid codepoint and every invalid byte sequence
 ::method endCodepointInitializationAction package
     expose endCodepointStorageLimit endCodepointIndexes -
-           endErrorStorageLimit endErrorMessages
-    -- trace i
+           endErrorMessages -
+           endCodepointErrorCount -
+           incremental -
+           endCodepointIndexesUpdated endErrorMessagesUpdated -
+           verbose trace -
+           -    -- Used to fix gaps and duplicates in incremental mode
+           endNextCodepointEndB
+
+    trace value trace
     use strict arg error /* boolean */, indexB /* >0 */, sizeB, codepoint /* whole number */, errorMsg=""
 
-    if error then do
+     if verbose then do
+        say
+        say "endCodepointInitializationAction(error =" error", indexB =" indexB", sizeB =" sizeB", codepoint =" codepoint")"
+    end
+
+   if error then do
         -- The byte sequence is invalid
-        if .nil \== endErrorMessages, endErrorMessages~items < endErrorStorageLimit then endErrorMessages~append(errorMsg)
-        -- stopAtFirstError is not supported by a supplier, but is supported by a native iterator
-        -- stopAtFirstError is not applicable here
-        if .nil \== endCodepointIndexes, endCodepointIndexes~items < endCodepointStorageLimit then endCodepointIndexes~append(-indexB) -- a negative index means "error"
+        if self~endCodepointIndexesUpdatable then do
+            endCodepointIndexes~append(-indexB) -- a negative index means "error"
+            endCodepointIndexesUpdated = .true
+            endCodepointErrorCount += 1
+            if self~endErrorMessagesUpdatable then self~completeEndErrorMessages(endCodepointErrorCount, errorMsg)
+            endNextCodepointEndB = indexB
+        end
+        /*
+        -- Backward scan rule: An error is stored when a codepoint or grapheme index
+        -- referencing an invalid byte sequence is appended, provided that the error
+        -- end limit has not been reached.
+        -- Here, the codepoint has not been stored, so the error must not be stored either.
+        else do
+            if self~endErrorMessagesUpdatable then do
+                endErrorMessages~append(errorMsg)
+                endErrorMessagesUpdated = .true
+            end
+        end
+        */
     end
     else do
-        if .nil \== endCodepointIndexes, endCodepointIndexes~items < endCodepointStorageLimit then endCodepointIndexes~append(indexB)
+        if self~endCodepointIndexesUpdatable then do
+            endCodepointIndexes~append(indexB)
+            endCodepointIndexesUpdated = .true
+            endNextCodepointEndB = indexB
+        end
     end
 
 
 -- Incremental update
 -- Called by a reverse codepoint supplier or by a reverse grapheme supplier
--- for every valid codepoint  and every invalid byte sequence
+-- for every valid codepoint and every invalid byte sequence
 ::method endCodepointIncrementalAction package
     expose endCodepointIndexes endErrorMessages -
-           startCodepointIndexes
-    -- trace i
+           startCodepointIndexes -
+           endCodepointIndexesUpdated -
+           verbose trace -
+           -    -- Used to fix gaps and duplicates in incremental mode
+           codepointCount -
+           endNextCodepointEndB endCodepointErrorCount
+
+    trace value trace
     use strict arg error /* boolean */, indexB /* >0 */, sizeB, codepoint /* whole number */, errorMsg=""
 
-    -- When called by a grapheme supplier, a codepoint can be:
-    -- - either the codepoint that break (close) the current grapheme
-    -- - or the first codepoint of the next grapheme.
-    -- So the same codepoint can be notified twice.
-    -- We must check that this codepoint index is not already stored.
-    -- Since the incremental update is sequential, we have just to test the last item in the start and end storage.
-    if .nil \== startCodepointIndexes, startCodepointIndexes~items \== 0, abs(startCodepointIndexes~lastItem) == indexB then return
-    if .nil \== endCodepointIndexes, endCodepointIndexes~items \== 0, abs(endCodepointIndexes~lastItem) == indexB then return
+     if verbose then do
+        say
+        say "endCodepointIncrementalAction(error =" error", indexB =" indexB", sizeB =" sizeB", codepoint =" codepoint")"
+    end
+
+    if .nil == endCodepointIndexes then return
+
+    -- Append only the codepoint that ends exactly where the end storage begins
+    -- - A codepoint that ends after this position is already stored (or is the codepoint
+    --   notified twice by a grapheme supplier): skip it.
+    -- - A codepoint that ends before this position would leave a gap: skip it.
+    if indexB + abs(sizeB) \== endNextCodepointEndB then return
+
+    -- Never overlap the start storage
+    startItems = 0
+    if .nil \== startCodepointIndexes then startItems = startCodepointIndexes~items
+    if startItems + endCodepointIndexes~items >= codepointCount then return
 
     if error then do
         -- The byte sequence is invalid
-        if .nil \== endErrorMessages then endErrorMessages~append(errorMsg)
-        -- stopAtFirstError is not supported by a supplier, but is supported by a native iterator
-        -- stopAtFirstError is not applicable here
-        if .nil \== endCodepointIndexes then endCodepointIndexes~append(-indexB) -- a negative index means "error"
+        endCodepointIndexes~append(-indexB) -- a negative index means "error"
+        endCodepointIndexesUpdated = .true
+        endCodepointErrorCount += 1
+        if self~endErrorMessagesUpdatable then self~completeEndErrorMessages(endCodepointErrorCount, errorMsg)
     end
     else do
-        if .nil \== endCodepointIndexes then endCodepointIndexes~append(indexB)
+        endCodepointIndexes~append(indexB)
+        endCodepointIndexesUpdated = .true
     end
+    endNextCodepointEndB = indexB
 
 
 -- Initialization
--- Called by a reverse grapheme supplier for every grapheme  and every invalid byte sequence
+-- Called by a reverse grapheme supplier for every grapheme and every invalid byte sequence
 ::method endGraphemeInitializationAction package
-    expose endGraphemeStorageLimit endGraphemeIndexes
-    -- trace i
+    expose endGraphemeStorageLimit endGraphemeIndexes -
+           endGraphemeIndexesUpdated -
+           verbose trace -
+           -    -- Used to fix gaps and duplicates in incremental mode
+           endGraphemeErrorCount
+
+    trace value trace
     use strict arg error /* boolean */, indexB /* >0 */, sizeB, errorMsg=""
+
+     if verbose then do
+        say
+        say "endGraphemeInitializationAction(error =" error", indexB =" indexB", sizeB =" sizeB")"
+    end
 
     if error then do
         -- The byte sequence is invalid
-        -- stopAtFirstError is not supported by a supplier, but is supported by a native iterator
-        -- stopAtFirstError is not applicable here
-        if .nil \== endGraphemeIndexes, endGraphemeIndexes~items < endGraphemeStorageLimit then endGraphemeIndexes~append(-indexB) -- a negative index means "error"
+        if self~endGraphemeIndexesUpdatable then do
+            endGraphemeIndexes~append(-indexB) -- a negative index means "error"
+            endGraphemeIndexesUpdated = .true
+            endGraphemeErrorCount += 1
+            if self~endErrorMessagesUpdatable then self~completeEndErrorMessages(endGraphemeErrorCount, errorMsg)
+        end
     end
     else do
-        if .nil \== endGraphemeIndexes, endGraphemeIndexes~items < endGraphemeStorageLimit then endGraphemeIndexes~append(indexB)
+        if self~endGraphemeIndexesUpdatable then do
+            endGraphemeIndexes~append(indexB)
+            endGraphemeIndexesUpdated = .true
+        end
     end
 
 
 -- Incremental update
--- Called by a reverse grapheme supplier for every grapheme  and every invalid byte sequence
+-- Called by a reverse grapheme supplier for every grapheme and every invalid byte sequence
 ::method endGraphemeIncrementalAction package
-    expose endGraphemeIndexes
-    -- trace i
+    expose endGraphemeIndexes -
+           endGraphemeIndexesUpdated -
+           verbose trace -
+           -   -- Used to fix gaps and duplicates in incremental mode
+           startGraphemeIndexes endGraphemeIndexes graphemeCount -
+           endGraphemeErrorCount
+
+    trace value trace
     use strict arg error /* boolean */, indexB /* >0 */, sizeB, errorMsg=""
+
+     if verbose then do
+        say
+        say "endGraphemeIncrementalAction(error =" error", indexB =" indexB", sizeB =" sizeB")"
+    end
+
+    if .nil == endGraphemeIndexes then return
+
+    -- only the overlap with the start storage must be prevented
+    startItems = 0
+    if .nil \== startGraphemeIndexes then startItems = startGraphemeIndexes~items
+    if startItems + endGraphemeIndexes~items >= graphemeCount then return
 
     if error then do
         -- The byte sequence is invalid
-        -- stopAtFirstError is not supported by a supplier, but is supported by a native iterator
-        -- stopAtFirstError is not applicable here
-        if .nil \== endGraphemeIndexes then endGraphemeIndexes~append(-indexB) -- a negative index means "error"
+        endGraphemeIndexes~append(-indexB) -- a negative index means "error"
+        endGraphemeIndexesUpdated = .true
+        endGraphemeErrorCount += 1
+        if self~endErrorMessagesUpdatable then self~completeEndErrorMessages(endGraphemeErrorCount, errorMsg)
     end
     else do
-        if .nil \== endGraphemeIndexes then endGraphemeIndexes~append(indexB)
+        endGraphemeIndexes~append(indexB)
+        endGraphemeIndexesUpdated = .true
     end
 
 
@@ -1691,8 +2328,11 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
            codepointCount -
            startCodepointIndexes endCodepointIndexes -
            startGraphemeIndexes startLastGraphemeNextIndexB endGraphemeIndexes -
-           verbose
+           verbose trace -
+           -    -- Used to fix gaps and duplicates in incremental mode
+           startNextCodepointB endNextCodepointEndB
 
+    trace value trace
     use strict arg indexC
 
     if indexC < 1 | indexC > codepointCount then return .nil -- invalid index
@@ -1719,13 +2359,13 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
         -- Forward indexation
         if .nil == startGraphemeIndexes then do
             -- Fast path: No grapheme storage, use a codepoint supplier
-            supplierIndexB = 1
-            if startCodepointIndexes~items \== 0 then do
-                supplierIndexB = abs(startCodepointIndexes~lastItem)
-                .RexxUnicodeServices~utf8DecodeCodepoint(string, supplierIndexB, >sizeB)
-                supplierIndexB += abs(sizeB) -- byte index of next codepoint
-            end
+            supplierIndexB = startNextCodepointB
             supplierIndexC = startCodepointIndexes~items + 1
+            if verbose then do
+                say
+                say "******************** incrementalCodepointIndexB - Incremental Forward Codepoint Supplier - fast path"
+                say
+            end
             s = .RexxUnicodeCodepointSupplier~new(string, , , -
                                                   self, "startCodepointIncrementalAction", -
                                                   supplierIndexB, supplierIndexC)
@@ -1733,21 +2373,61 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
                 -- stopIteration is true when the specified indexC has a stored byte index
                 indexB = startCodepointIndexes[indexC]
                 if .nil \== indexB then return indexB
+                if verbose then do
+                    say
+                    say "******************** incrementalCodepointIndexB - Incremental Forward Codepoint Supplier - fast path"
+                    say
+                end
                 s~next
             end
         end
         else do
             -- Here, we need to iterate over the graphemes because there is a grapheme storage to update.
             -- The codepoint storage is also updated, and the stopIteration is based on the codepoint storage.
+
+            if startNextCodepointB < startLastGraphemeNextIndexB then do
+                -- The codepoint storage lags behind the grapheme storage: catch up with a codepoint supplier
+                if verbose then do
+                    say
+                    say "******************** incrementalCodepointIndexB - Incremental Forward Codepoint Supplier - to reduce lag with grapheme storage"
+                    say
+                end
+                s = .RexxUnicodeCodepointSupplier~new(string, , , -
+                                                      self, "startCodepointIncrementalAction", -
+                                                      startNextCodepointB, startCodepointIndexes~items + 1)
+                do while s~available
+                    indexB = startCodepointIndexes[indexC]
+                    if .nil \== indexB then return indexB
+                    if startNextCodepointB >= startLastGraphemeNextIndexB then leave
+                    if verbose then do
+                        say
+                        say "******************** incrementalCodepointIndexB - Incremental Forward Codepoint Supplier - to reduce lag with grapheme storage"
+                        say
+                    end
+                    s~next
+                end
+            end
+
             supplierIndexB = startLastGraphemeNextIndexB
             supplierIndexG = startGraphemeIndexes~items + 1
+            if verbose then do
+                say
+                say "******************** incrementalCodepointIndexB - Incremental Forward Grapheme Supplier"
+                say
+            end
             s = .RexxUnicodeGraphemeSupplier~new(string, , , -
                                                  self, "startGraphemeIncrementalAction", "startCodepointIncrementalAction", -
-                                                 supplierIndexB, supplierIndexG)
+                                                 supplierIndexB, supplierIndexG, -
+                                                 verbose)
             do while s~available
                 -- stopIteration is true when the specified indexC has a stored byte index
                 indexB = startCodepointIndexes[indexC]
                 if .nil \== indexB then return indexB
+                if verbose then do
+                    say
+                    say "******************** incrementalCodepointIndexB - Incremental Forward Grapheme Supplier"
+                    say
+                end
                 s~next
             end
         end
@@ -1756,9 +2436,13 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
         -- Backward indexation
         if .nil == endGraphemeIndexes then do
             -- Fast path: No grapheme storage, use a codepoint supplier
-            supplierIndexB = string~length + 1
-            if endCodepointIndexes~items \== 0 then supplierIndexB = abs(endCodepointIndexes~lastItem)
+            supplierIndexB = endNextCodepointEndB
             supplierIndexC = endCodepointIndexes~items + 1
+            if verbose then do
+                say
+                say "******************** incrementalCodepointIndexB - Incremental Backward Codepoint Supplier - fast path"
+                say
+            end
             s = .RexxUnicodeReverseCodepointSupplier~new(string, , , -
                                                          self, "endCodepointIncrementalAction", -
                                                          supplierIndexB, supplierIndexC)
@@ -1766,21 +2450,64 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
                 -- stopIteration is true when endIndexC (derived from the specified indexC) has a stored byte index
                 indexB = endCodepointIndexes[endIndexC]
                 if .nil \== indexB then return indexB
+                if verbose then do
+                    say
+                    say "******************** incrementalCodepointIndexB - Incremental Backward Codepoint Supplier - fast path"
+                    say
+                end
                 s~next
             end
         end
         else do
             -- Here, we need to iterate over the graphemes because there is a grapheme storage to update.
             -- The codepoint storage is also updated, and the stopIteration is based on the codepoint storage.
-            supplierIndexB = abs(endGraphemeIndexes~lastItem)
+
+            endGraphemeFrontierB = abs(endGraphemeIndexes~lastItem) -- left edge of the end grapheme storage
+
+            if endNextCodepointEndB > endGraphemeFrontierB then do
+                -- The codepoint storage lags behind the grapheme storage: catch up with a codepoint supplier
+                if verbose then do
+                    say
+                    say "******************** incrementalCodepointIndexB - Incremental Backward Codepoint Supplier - to reduce lag with grapheme storage"
+                    say
+                end
+                s = .RexxUnicodeReverseCodepointSupplier~new(string, , , -
+                                                             self, "endCodepointIncrementalAction", -
+                                                             endNextCodepointEndB, endCodepointIndexes~items + 1)
+                do while s~available
+                    -- stopIteration is true when endIndexC (derived from the specified indexC) has a stored byte index
+                    indexB = endCodepointIndexes[endIndexC]
+                    if .nil \== indexB then return indexB
+                    if endNextCodepointEndB <= endGraphemeFrontierB then leave
+                    if verbose then do
+                        say
+                        say "******************** incrementalCodepointIndexB - Incremental Backward Codepoint Supplier - to reduce lag with grapheme storage"
+                        say
+                    end
+                    s~next
+                end
+            end
+
+            supplierIndexB = endGraphemeFrontierB
             supplierIndexG = endGraphemeIndexes~items + 1
+            if verbose then do
+                say
+                say "******************** incrementalCodepointIndexB - Incremental Backward Grapheme Supplier"
+                say
+            end
             s = .RexxUnicodeReverseGraphemeSupplier~new(string, , , -
                                                         self, "endGraphemeIncrementalAction", "endCodepointIncrementalAction", -
-                                                        supplierIndexB, supplierIndexG)
+                                                        supplierIndexB, supplierIndexG, -
+                                                        verbose)
             do while s~available
                 -- stopIteration is true when endIndexC (derived from the specified indexC) has a stored byte index
                 indexB = endCodepointIndexes[endIndexC]
                 if .nil \== indexB then return indexB
+                if verbose then do
+                    say
+                    say "******************** incrementalCodepointIndexB - Incremental Backward Grapheme Supplier"
+                    say
+                end
                 s~next
             end
         end
@@ -1792,7 +2519,10 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 
 -- Converts a codepoint index to a byte index
 ::method codepointIndexB
-    expose string startCodepointIndexes endCodepointIndexes codepointCount incremental
+    expose string startCodepointIndexes endCodepointIndexes codepointCount incremental -
+           trace
+
+    trace value trace
     use strict arg indexC, raiseError=.true
 
     signedIndexC = indexC -- used in error messages
@@ -1847,7 +2577,10 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 -- Performs a binary search.
 -- Supports negative byte indexes and sparse storage.
 ::method codepointIndexC
-    expose startCodepointIndexes endCodepointIndexes codepointCount incremental
+    expose startCodepointIndexes endCodepointIndexes codepointCount incremental -
+           trace
+
+    trace value trace
     use strict arg indexB
 
     signedIndexB = indexB -- used in error messages
@@ -1894,8 +2627,12 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 
 -- Returns the codepoint at position indexC
 ::method codepointAtIndexC
-    expose string startCodepointIndexes
+    expose string startCodepointIndexes -
+           trace
+
+    trace value trace
     use strict arg indexC
+
     startB = self~codepointIndexB(indexC, /*raiseError:*/ .true)
     if startB < 0 then return "FFFD"~x2d -- the current byte sequence is invalid, return the replacement character
     return .RexxUnicode~utf8DecodeCodepoint(string, startB) -- yes, must decode to return the codepoint as a whole number
@@ -1903,12 +2640,16 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 
 -- Converts a grapheme indexG to a maybe-not-yet-stored grapheme indexB.
 -- Here, indexG can't be negative (precondition: negative from-end index already converted to positive from-start index)
+-- It needs no catch-up pass, because a lagging codepoint storage is simply skipped by the guard in the codepoint action.
 ::method incrementalGraphemeIndexB private
     expose string -
            graphemeCount -
            startGraphemeIndexes startLastGraphemeNextIndexB endGraphemeIndexes -
-           verbose
+           verbose trace -
+           - -- Used to fix gaps in incremental mode
+           startCodepointIndexes endCodepointIndexes startNextCodepointB endNextCodepointEndB
 
+    trace value trace
     use strict arg indexG
 
     if indexG < 1 | indexG > graphemeCount then return .nil -- invalid index
@@ -1933,29 +2674,99 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 
     if distanceFromStartLastItem <= distanceFromEndLastItem then do
         -- Forward indexation
+
+        -- Fill any gap left between the codepoint storage's frontier and the grapheme storage's
+        -- frontier by an earlier pass that stopped the codepoint storage at its limit while the
+        -- grapheme (or error) storage kept going. Without this, a codepoint in that gap is never
+        -- produced again by a supplier that starts at the (now further along) grapheme frontier.
+        if .nil \== startCodepointIndexes, startNextCodepointB < startLastGraphemeNextIndexB then do
+            if verbose then do
+                say
+                say "******************** incrementalGraphemeIndexB - Incremental Forward Codepoint Supplier - to reduce lag with grapheme storage"
+                say
+            end
+        s = .RexxUnicodeCodepointSupplier~new(string, , , -
+                                                  self, "startCodepointIncrementalAction", -
+                                                  startNextCodepointB, startCodepointIndexes~items + 1)
+            do while s~available
+                if startNextCodepointB >= startLastGraphemeNextIndexB then leave
+                if verbose then do
+                    say
+                    say "******************** incrementalGraphemeIndexB - Incremental Forward Codepoint Supplier - to reduce lag with grapheme storage"
+                    say
+                end
+                s~next
+            end
+        end
+
         supplierIndexB = startLastGraphemeNextIndexB -- abs not needed
         supplierIndexG = startGraphemeIndexes~items + 1
+        if verbose then do
+            say
+            say "******************** incrementalGraphemeIndexB - Incremental Forward Grapheme Supplier"
+            say
+        end
         s = .RexxUnicodeGraphemeSupplier~new(string, , , -
                                              self, "startGraphemeIncrementalAction", "startCodepointIncrementalAction", -
-                                             supplierIndexB, supplierIndexG)
+                                             supplierIndexB, supplierIndexG, -
+                                             verbose)
         do while s~available
             -- stopIteration is true when the specified indexG has a stored byte index
             indexB = startGraphemeIndexes[indexG]
             if .nil \== indexB then return indexB
+            if verbose then do
+                say
+                say "******************** incrementalGraphemeIndexB - Incremental Forward Grapheme Supplier"
+                say
+            end
             s~next
         end
     end
     else do
         -- Backward indexation
-        supplierIndexB = abs(endGraphemeIndexes~lastItem)
+
+        endGraphemeFrontierB = abs(endGraphemeIndexes~lastItem) -- left edge of the end grapheme storage
+
+        if .nil \== endCodepointIndexes, endNextCodepointEndB > endGraphemeFrontierB then do
+            if verbose then do
+                say
+                say "******************** incrementalGraphemeIndexB - Incremental Backward Codepoint Supplier - to reduce lag with grapheme storage"
+                say
+            end
+            s = .RexxUnicodeReverseCodepointSupplier~new(string, , , -
+                                                         self, "endCodepointIncrementalAction", -
+                                                         endNextCodepointEndB, endCodepointIndexes~items + 1)
+            do while s~available
+                if endNextCodepointEndB <= endGraphemeFrontierB then leave
+                if verbose then do
+                    say
+                    say "******************** incrementalGraphemeIndexB - Incremental Backward Codepoint Supplier - to reduce lag with grapheme storage"
+                    say
+                end
+                s~next
+            end
+        end
+
+        supplierIndexB = endGraphemeFrontierB
         supplierIndexG = endGraphemeIndexes~items + 1
+         if verbose then do
+            say
+            say "******************** incrementalGraphemeIndexB - Incremental Backward Grapheme Supplier"
+            say
+        end
         s = .RexxUnicodeReverseGraphemeSupplier~new(string, , , -
                                                     self, "endGraphemeIncrementalAction", "endCodepointIncrementalAction", -
-                                                    supplierIndexB, supplierIndexG)
+                                                    supplierIndexB, supplierIndexG, -
+                                                    verbose)
         do while s~available
-            -- stopIteration is true when endIndexG (derived from the specified indexG) has a stored byte index
+           -- stopIteration is true when endIndexG (derived from the specified indexG) has a stored byte index
             indexB = endGraphemeIndexes[endIndexG]
             if .nil \== indexB then return indexB
+             if verbose then do
+                say
+                say "******************** incrementalGraphemeIndexB - Incremental Backward Grapheme Supplier"
+                say
+            end
             s~next
         end
     end
@@ -1969,7 +2780,10 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 -- different from asking the byte index of indexG + 1, because indexG + 1 may be
 -- considered too large).
 ::method graphemeIndexB
-    expose string startGraphemeIndexes startLastGraphemeNextIndexB endGraphemeIndexes graphemeCount incremental
+    expose string startGraphemeIndexes startLastGraphemeNextIndexB endGraphemeIndexes graphemeCount incremental -
+           trace
+
+    trace value trace
     use strict arg indexG, next = .false, raiseError=.true
 
     signedIndexG = indexG -- used in error messages
@@ -2015,11 +2829,17 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 
     -- Here, no end storage (either because not requested, or because the string is empty), or end storage not applicable for the requested index
 
-    items = 0
-    if .nil \== startGraphemeIndexes then items = startGraphemeIndexes~items
+    -- If not incremental, it's ok to raise an error if no start and no end storage.
+    -- BUT it's not ok to return now if incremental because the end storage can be updated
+    if .nil == startGraphemeIndexes, \ incremental then signal grapheme_index_is_not_stored
 
-    -- This special case can happen when `next` is .true
-    if indexG == (items + 1) then return startLastGraphemeNextIndexB
+    items = 0
+    if .nil \== startGraphemeIndexes then do
+        items = startGraphemeIndexes~items
+
+        -- This special case can happen when `next` is .true
+        if indexG == (items + 1), .nil \== startGraphemeIndexes then return startLastGraphemeNextIndexB
+    end
 
     if indexG <= items then return startGraphemeIndexes[indexG]
     if incremental then return self~incrementalGraphemeIndexB(indexG)
@@ -2037,7 +2857,10 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 -- Performs a binary search.
 -- Supports negative byte indexes and sparse storage.
 ::method graphemeIndexG
-    expose startGraphemeIndexes endGraphemeIndexes graphemeCount incremental
+    expose startGraphemeIndexes endGraphemeIndexes graphemeCount incremental -
+           trace
+
+    trace value trace
     use strict arg indexB
 
     signedIndexB = indexB -- used in error messages
@@ -2081,8 +2904,12 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 
 -- Returns the grapheme at position indexG
 ::method graphemeAtIndexG
-    expose string
+    expose string -
+           trace
+
+    trace value trace
     use strict arg indexG
+
     startB = self~graphemeIndexB(indexG, /*next*/ .false, /*raiseError:*/ .true)
     nextB = self~graphemeIndexB(indexG, /*next*/ .true, /*raiseError:*/ .true)
     absStartB = abs(startB) -- startB can be negative (meaning current byte sequence is invalid)
@@ -2109,12 +2936,16 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
     return info
 
 
--- Returns a RexxUnicodeStringIndexer instance created from `object`.
--- If `object` is already a RexxUnicodeStringIndexer instance, returns it unchanged.
+-- Returns a `RexxUnicodeStringIndexer` instance created from `object`.
+-- If `incremental` is .true, the created instance is incremental.
+--
+-- If `object` is already a `RexxUnicodeStringIndexer` instance, returns it unchanged.
+-- In this case, `incremental` is ignored.
 ::routine requestRexxUnicodeStringIndexer public
-    use strict arg object
+    use strict arg object, incremental=.false
 
     if object~isA(.RexxUnicodeStringIndexer) then return object
+    if incremental then return .RexxUnicodeStringIndexer~newIncremental(object)
     return .RexxUnicodeStringIndexer~new(object)
 
 
@@ -2589,6 +3420,20 @@ Other helpers
     return number singularPlural(number, singularText, pluralText)
 
 
+-- Ensure that a string is a .String instance, not an instance of a subclass of .String.
+-- No attempt is made to obtain a string from the object.
+-- This check is intended to detect accidental mixing of Unicode-aware objects with byte strings.
+::routine requestBaseString private
+    use strict arg object, argumentName="string"
+
+    -- Permissive
+    -- return object~string
+
+    -- Strict
+    if object~class == .String then return object
+    raise syntax 88.900 array ("Argument" argumentName "class: expected String, found" object~class~id)
+    --raise syntax 88.914 array (argumentName, .String~id)
+
 /*******************************************************************************
 Subclasses of .String are not allowed
 *******************************************************************************/
@@ -2638,17 +3483,3 @@ graphemeAtIndexG(s, 3, g) calculates
     absNextB = abs(nextB)               --> 4, instead of 21
     return s~substr(absStartB, absNextB - absStartB) --> should be substr(s, 20, 1), but becomes substr(s, 20, -16)
 */
-
--- Ensure that a string is a .String instance, not an instance of a subclass of .String.
--- No attempt is made to obtain a string from the object.
--- This check is intended to detect accidental mixing of Unicode-aware objects with byte strings.
-::routine requestBaseString private
-    use strict arg object, argumentName="string"
-
-    -- Permissive
-    -- return object~string
-
-    -- Strict
-    if object~class == .String then return object
-    raise syntax 88.900 array ("Argument" argumentName "class: expected String, found" object~class~id)
-    --raise syntax 88.914 array (argumentName, .String~id)
