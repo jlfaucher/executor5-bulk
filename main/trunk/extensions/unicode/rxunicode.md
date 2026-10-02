@@ -4115,7 +4115,7 @@ Prefer start storage when possible, because it can be more efficient.
     - The start storages are updated up to their specified limit.
 
 - A limited backward scan is performed if any end limit is non-zero.
-    - A reverse grapheme is always used, even if `endGraphemeStorageLimit == 0`, to be consistent with the forward scan.
+    - A reverse grapheme supplier is always used, even if `endGraphemeStorageLimit == 0`, to be consistent with the forward scan.
     - The specified end limits may be decreased to avoid any overlap between the start and end storages.
     - The grapheme and codepoint end storages are updated up to their specified limit.
     - An error is stored when a codepoint or grapheme index referencing an invalid byte sequence is appended,
@@ -4282,7 +4282,7 @@ Prefer start storage when possible, because it can be more efficient.
     - If the start error storage is enabled, an error is stored when a grapheme or codepoint index referencing an invalid byte sequence is appended.
 
 - A limited backward scan is performed if any end limit is non-zero.
-    - A reverse grapheme is always used, even if `endGraphemeStorageAdjustableLimit == 0`, to be consistent with the forward scan.
+    - A reverse grapheme supplier is always used, even if `endGraphemeStorageAdjustableLimit == 0`, to be consistent with the forward scan.
     - The specified end limits may be decreased to avoid any overlap between start and end storages.
     - The end limits are adjustable, following the same principles as for the forward scan:
       the grapheme and codepoint limits may be increased as needed, and errors stored if the end error storage is enabled.

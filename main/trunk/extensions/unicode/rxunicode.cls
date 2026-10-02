@@ -1145,7 +1145,7 @@ are the same operation - scanBoundary is used for both.
             if .nil \== observer, .nil \== codepointAction then observer~send(codepointAction, .true, pos1, -sizeB1, codepoint1, error)
         end
         else do
-            if .nil \== observer, .nil \== codepointAction then observer~send(codepointAction, .false, pos1, -sizeB1, codepoint1, "")
+            if .nil \== observer, .nil \== codepointAction then observer~send(codepointAction, .false, pos1, sizeB1, codepoint1, "")
         end
 
         if sizeB1 < 0 then do
@@ -1762,30 +1762,52 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 
     trace value trace
 
+    use strict arg duringInitialization
+
     if .nil == startCodepointIndexes then return .false
 
-    if incremental then do
-        -- Adjustable limit
-        if self~startStoragesLimitsReached then do
-            if verbose then say "startCodepointIndexesUpdatable is false because startStoragesLimitsReached"
+    if duringInitialization then do
+        if incremental then do
+            -- Adjustable limit
+            if self~startStoragesLimitsReached then do
+                if verbose then say "startCodepointIndexesUpdatable is false because startStoragesLimitsReached"
+                return .false
+            end
+
+            -- Never overlap the end storage
+            endItems = 0
+            if .nil \== endCodepointIndexes then endItems = endCodepointIndexes~items
+            if startCodepointIndexes~items + endItems >= codepointCount then do
+                if verbose then say "startCodepointIndexesUpdatable is false because would overlap the end storage"
+                return .false
+            end
+
+            return .true
+        end
+        else do
+            -- Strict limit
+            if startCodepointIndexes~items < startCodepointStorageLimit then return .true
+            if verbose then say "startCodepointIndexesUpdatable is false because the limit is reached"
             return .false
         end
-
-        -- Never overlap the end storage
-        endItems = 0
-        if .nil \== endCodepointIndexes then endItems = endCodepointIndexes~items
-        if startCodepointIndexes~items + endItems >= codepointCount then do
-            if verbose then say "startCodepointIndexesUpdatable is false because would overlap the end storage"
-            return .false
-        end
-
-        return .true
     end
     else do
-        -- Strict limit
-        if startCodepointIndexes~items < startCodepointStorageLimit then return .true
-        if verbose then say "startCodepointIndexesUpdatable is false because the limit is reached"
-        return .false
+        -- After initialization
+        if incremental then do
+            -- Never overlap the end storage
+            endItems = 0
+            if .nil \== endCodepointIndexes then endItems = endCodepointIndexes~items
+            if startCodepointIndexes~items + endItems >= codepointCount then do
+                if verbose then say "startCodepointIndexesUpdatable is false because would overlap the end storage"
+                return .false
+            end
+
+            return .true
+        end
+        else do
+            -- No update if non-incremental
+            return .false
+        end
     end
 
 
@@ -1867,30 +1889,52 @@ The memory usage of the invalid byte flags will be between 0% and 12.5% of the s
 
     trace value trace
 
+    use strict arg duringInitialization
+
     if .nil == endCodepointIndexes then return .false
 
-    if incremental then do
-        -- Adjustable limit
-        if self~endStoragesLimitsReached then do
-            if verbose then say "endCodepointIndexesUpdatable is false because endStoragesLimitsReached"
+    if duringInitialization then do
+        if incremental then do
+            -- Adjustable limit
+            if self~endStoragesLimitsReached then do
+                if verbose then say "endCodepointIndexesUpdatable is false because endStoragesLimitsReached"
+                return .false
+            end
+
+            -- Never overlap the start storage
+            startItems = 0
+            if .nil \== startCodepointIndexes then startItems = startCodepointIndexes~items
+            if startItems + endCodepointIndexes~items >= codepointCount then do
+                if verbose then say "endCodepointIndexesUpdatable is false because would overlap the start storage"
+                return .false
+            end
+
+            return .true
+        end
+        else do
+            -- Strict limit
+            if endCodepointIndexes~items < endCodepointStorageLimit then return .true
+            if verbose then say "endGraphemeIndexesUpdatable is false because the limit is reached"
             return .false
         end
-
-        -- Never overlap the start storage
-        startItems = 0
-        if .nil \== startCodepointIndexes then startItems = startCodepointIndexes~items
-        if startItems + endCodepointIndexes~items >= codepointCount then do
-            if verbose then say "endCodepointIndexesUpdatable is false because would overlap the start storage"
-            return .false
-        end
-
-        return .true
     end
     else do
-        -- Strict limit
-        if endCodepointIndexes~items < endCodepointStorageLimit then return .true
-        if verbose then say "endGraphemeIndexesUpdatable is false because the limit is reached"
-        return .false
+        -- After initialization
+        if incremental then do
+            -- Never overlap the start storage
+            startItems = 0
+            if .nil \== startCodepointIndexes then startItems = startCodepointIndexes~items
+            if startItems + endCodepointIndexes~items >= codepointCount then do
+                if verbose then say "endCodepointIndexesUpdatable is false because would overlap the start storage"
+                return .false
+            end
+
+            return .true
+        end
+        else do
+            -- No update when non-incremental
+            return .false
+        end
     end
 
 
@@ -1945,7 +1989,17 @@ the rank \== items + 1 test.
     trace value trace
     use strict arg rank, errorMsg
 
-    if .nil == startErrorMessages then return                    -- no start error storage
+    if .nil == startErrorMessages then return                   -- no start error storage
+    -- next test is true when registering a grapheme error for which the codepoint error was already registered
+    -- (the codepoints of a grapheme are always notified before the grapheme)
+    /*
+        -- oops1
+        -- "ge_" Incremental forward binary search graphemes
+        .RexxUnicodeStringIndexer~newIncremental("⦅⦅" || "F4 91"x "🎅" "F4"x "👨‍👩‍👧" "F4 91"x || "⦆⦆", 3, 0, 1 \== 0, 0, 0, 0 \== 0)
+        startCodepointIncrementalAction(error = 1, indexB = 8, sizeB = 1, codepoint = -1)
+        startCodepointIncrementalAction(error = 0, indexB = 9, sizeB = 1, codepoint = 32)
+        startGraphemeIncrementalAction(error = 1, indexB = 8, sizeB = 1)
+    */
     if rank \== startErrorMessages~items + 1 then return
     endItems = 0
     if .nil \== endErrorMessages then endItems = endErrorMessages~items
@@ -2001,7 +2055,7 @@ the rank \== items + 1 test.
         errorCount += 1
 
         codepointCount += 1
-        if self~startCodepointIndexesUpdatable then do
+        if self~startCodepointIndexesUpdatable(/*duringInitialization:*/ .true) then do
             startCodepointIndexes~append(-indexB) -- a negative index means "error"
             startCodepointIndexesUpdated = .true
             startCodepointErrorCount += 1
@@ -2019,7 +2073,7 @@ the rank \== items + 1 test.
     end
     else do
         codepointCount += 1
-        if self~startCodepointIndexesUpdatable then do
+        if self~startCodepointIndexesUpdatable(/*duringInitialization:*/ .true) then do
             startCodepointIndexes~append(indexB)
             startCodepointIndexesUpdated = .true
             startNextCodepointB = indexB + abs(sizeB) -- todo: remove abs
@@ -2050,8 +2104,31 @@ the rank \== items + 1 test.
     if .nil == startCodepointIndexes then return
 
     -- Append only the codepoint that is exactly the next one for the start storage:
-    -- an earlier position is already stored (a grapheme supplier notifies some codepoints twice),
+    -- an earlier position is already stored,
     -- a later position would leave a gap.
+    --
+    -- Next test is still needed despite the adjustable limits, because the grapheme storage
+    -- is always one codepoint behind the codepoint storage (the extra codepoint needed
+    -- to detect grapheme break)
+    /*
+        -- oops2
+        -- "gc_" Incremental forward binary search codepoints
+        .RexxUnicodeStringIndexer~newIncremental("⦅⦅" || "F4 91"x "🎅" "F4"x "👨‍👩‍👧" "F4 91"x || "⦆⦆", 1, 1, 0 \== 0, 0, 0, 0 \== 0)
+        startCodepointInitializationAction(error = 0, indexB = 1, sizeB = 3, codepoint = 10629)
+        append 1 to startCodepointIndexes
+        startCodepointInitializationAction(error = 0, indexB = 4, sizeB = 3, codepoint = 10629)
+        append 4 to startCodepointIndexes
+        startGraphemeInitializationAction(error = 0, indexB = 1, sizeB = 3)
+        append 1 to startGraphemeIndexes
+        -- end of initialization
+        -- startCodepointIndexes = [ 1, 4]
+        -- startGraphemeIndexes = [ 1]      -- startLastGraphemeNextIndexB == 4
+
+        -- Called from incrementalCodepointIndexB - Incremental Forward Grapheme Supplier.
+        -- The grapheme iteration starts at startLastGraphemeNextIndexB == 4, which is the byte
+        -- index of the extra codepoint already stored in startCodepointIndexes.
+        startCodepointIncrementalAction(error = 0, indexB = 4, sizeB = 3, codepoint = 10629)
+    */
     if indexB \== startNextCodepointB then return
 
     -- Never overlap the end storage
@@ -2173,7 +2250,7 @@ the rank \== items + 1 test.
 
    if error then do
         -- The byte sequence is invalid
-        if self~endCodepointIndexesUpdatable then do
+        if self~endCodepointIndexesUpdatable(/*duringInitialization:*/ .true) then do
             endCodepointIndexes~append(-indexB) -- a negative index means "error"
             endCodepointIndexesUpdated = .true
             endCodepointErrorCount += 1
@@ -2194,7 +2271,7 @@ the rank \== items + 1 test.
         */
     end
     else do
-        if self~endCodepointIndexesUpdatable then do
+        if self~endCodepointIndexesUpdatable(/*duringInitialization:*/ .true) then do
             endCodepointIndexes~append(indexB)
             endCodepointIndexesUpdated = .true
             endNextCodepointEndB = indexB
@@ -2225,9 +2302,32 @@ the rank \== items + 1 test.
     if .nil == endCodepointIndexes then return
 
     -- Append only the codepoint that ends exactly where the end storage begins
-    -- - A codepoint that ends after this position is already stored (or is the codepoint
-    --   notified twice by a grapheme supplier): skip it.
+    -- - A codepoint that ends after this position is already stored: skip it.
     -- - A codepoint that ends before this position would leave a gap: skip it.
+    --
+    -- Next test is still needed despite the adjustable limits, because the grapheme storage
+    -- is always one codepoint behind the codepoint storage (the extra codepoint needed
+    -- to detect grapheme break)
+    /*
+        -- oops3
+        -- "_gc" Incremental forward binary search codepoints
+        .RexxUnicodeStringIndexer~newIncremental("⦅⦅" || "F4 91"x "🎅" "F4"x "👨‍👩‍👧" "F4 91"x || "⦆⦆", 0, 0, 0 \== 0, 1, 1, 0 \== 0)
+        endCodepointInitializationAction(error = 0, indexB = 41, sizeB = 3, codepoint = 10630)
+        append 41 to endCodepointIndexes
+        endCodepointInitializationAction(error = 0, indexB = 38, sizeB = 3, codepoint = 10630)
+        append 38 to endCodepointIndexes
+        endGraphemeInitializationAction(error = 0, indexB = 41, sizeB = 3)
+        append 41 to endGraphemeIndexes
+        -- end of initialization
+        -- endCodepointIndexes = [ 41, 38]  -- endNextCodepointEndB == 38
+        -- endGraphemeIndexes = [ 41]
+
+        -- Called from incrementalCodepointIndexB - Incremental Backward Grapheme Supplier.
+        -- The reverse grapheme iteration starts at endGraphemeFrontierB = abs(endGraphemeIndexes~lastItem) == 41,
+        -- which is the byte index of the grapheme whose first byte is immediately after (in byte order)
+        -- the last byte of the extra codepoint already stored in startCodepointIndexes.
+        endCodepointIncrementalAction(error = 0, indexB = 38, sizeB = 3, codepoint = 10630)
+    */
     if indexB + abs(sizeB) \== endNextCodepointEndB then return
 
     -- Never overlap the start storage
@@ -2385,7 +2485,9 @@ the rank \== items + 1 test.
             -- Here, we need to iterate over the graphemes because there is a grapheme storage to update.
             -- The codepoint storage is also updated, and the stopIteration is based on the codepoint storage.
 
-            if startNextCodepointB < startLastGraphemeNextIndexB then do
+            -- if startNextCodepointB < startLastGraphemeNextIndexB then do
+            if self~startCodepointIndexesUpdatable(/*duringInitialization:*/ .false), startNextCodepointB < startLastGraphemeNextIndexB then do
+                say "OOPS4! incrementalCodepointIndexB: startNextCodepointB =" startNextCodepointB ", startLastGraphemeNextIndexB =" startLastGraphemeNextIndexB
                 -- The codepoint storage lags behind the grapheme storage: catch up with a codepoint supplier
                 if verbose then do
                     say
@@ -2464,7 +2566,9 @@ the rank \== items + 1 test.
 
             endGraphemeFrontierB = abs(endGraphemeIndexes~lastItem) -- left edge of the end grapheme storage
 
-            if endNextCodepointEndB > endGraphemeFrontierB then do
+            -- if endNextCodepointEndB > endGraphemeFrontierB then do
+            if self~endCodepointIndexesUpdatable(/*duringInitialization:*/ .false), endNextCodepointEndB > endGraphemeFrontierB then do
+                say "OOPS5! incrementalCodepointIndexB: endNextCodepointEndB =" endNextCodepointEndB ", endGraphemeFrontierB =" endGraphemeFrontierB
                 -- The codepoint storage lags behind the grapheme storage: catch up with a codepoint supplier
                 if verbose then do
                     say
@@ -2679,15 +2783,29 @@ the rank \== items + 1 test.
         -- frontier by an earlier pass that stopped the codepoint storage at its limit while the
         -- grapheme (or error) storage kept going. Without this, a codepoint in that gap is never
         -- produced again by a supplier that starts at the (now further along) grapheme frontier.
-        if .nil \== startCodepointIndexes, startNextCodepointB < startLastGraphemeNextIndexB then do
+
+        /*
+            -- oops6
+            -- "gc_c" Incremental forward binary search graphemes
+            .RexxUnicodeStringIndexer~newIncremental("⦅⦅" || "F4 91"x "🎅" "F4"x "👨‍👩‍👧" "F4 91"x || "⦆⦆", 1, 1, 0 \== 0, 0, 1, 0 \== 0)
+
+           That happens because the stat codepoint storage is limited to not overlap with the end codepoint storage.
+
+            do i = 1 to indexer~string~length; say "#"i ":" indexer~graphemeIndexG(i); end
+            OOPS6! incrementalGraphemeIndexB: startNextCodepointB = 38 , startLastGraphemeNextIndexB = 41                 #39
+        */
+
+        -- if .nil \== startCodepointIndexes, startNextCodepointB < startLastGraphemeNextIndexB then do
+        if self~startCodepointIndexesUpdatable(/*duringInitialization:*/ .false), startNextCodepointB < startLastGraphemeNextIndexB then do
+            say "OOPS6! incrementalGraphemeIndexB: startNextCodepointB =" startNextCodepointB ", startLastGraphemeNextIndexB =" startLastGraphemeNextIndexB
             if verbose then do
                 say
                 say "******************** incrementalGraphemeIndexB - Incremental Forward Codepoint Supplier - to reduce lag with grapheme storage"
                 say
             end
-        s = .RexxUnicodeCodepointSupplier~new(string, , , -
-                                                  self, "startCodepointIncrementalAction", -
-                                                  startNextCodepointB, startCodepointIndexes~items + 1)
+            s = .RexxUnicodeCodepointSupplier~new(string, , , -
+                                                      self, "startCodepointIncrementalAction", -
+                                                      startNextCodepointB, startCodepointIndexes~items + 1)
             do while s~available
                 if startNextCodepointB >= startLastGraphemeNextIndexB then leave
                 if verbose then do
@@ -2727,7 +2845,9 @@ the rank \== items + 1 test.
 
         endGraphemeFrontierB = abs(endGraphemeIndexes~lastItem) -- left edge of the end grapheme storage
 
-        if .nil \== endCodepointIndexes, endNextCodepointEndB > endGraphemeFrontierB then do
+        -- if .nil \== endCodepointIndexes, endNextCodepointEndB > endGraphemeFrontierB then do
+        if self~endCodepointIndexesUpdatable(/*duringInitialization:*/ .false), endNextCodepointEndB > endGraphemeFrontierB then do
+            say "OOPS7! incrementalGraphemeIndexB: endNextCodepointEndB =" endNextCodepointEndB ", endGraphemeFrontierB =" endGraphemeFrontierB
             if verbose then do
                 say
                 say "******************** incrementalGraphemeIndexB - Incremental Backward Codepoint Supplier - to reduce lag with grapheme storage"
