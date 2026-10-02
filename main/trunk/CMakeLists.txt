@@ -695,10 +695,9 @@ create_install_symlink(rexxapi)
 
 ##################### utf8proc ###########################
 
-if (WIN32)
-    # To avoid warning LNK4217
-    add_definitions(/DUTF8PROC_STATIC)
-endif ()
+# To avoid warning LNK4217 on Windows
+# To avoid warning: ‘visibility’ attribute ignored [-Wattributes] on Linux
+add_definitions(/DUTF8PROC_STATIC)
 
 
 #################### librexx.so ##########################
@@ -725,9 +724,7 @@ set (classes_support_sources ${build_classes_support_dir}/HashCollection.cpp
             ${build_classes_support_dir}/Unicode/unicode-width/src-cpp/gen/tables.cpp
             ${build_classes_support_dir}/Unicode/unicode-width/src-cpp/gen/width_info.cpp
             ${build_classes_support_dir}/Unicode/unicode-width/src-cpp/lookup.cpp
-            ${build_classes_support_dir}/Unicode/unicode-width/src-cpp/props.cpp
-            # utf8proc
-            ${build_classes_support_dir}/Unicode/utf8proc/utf8proc.c)
+            ${build_classes_support_dir}/Unicode/unicode-width/src-cpp/props.cpp)
 set (classes_sources ${build_classes_dir}/ArrayClass.cpp
             ${build_classes_dir}/BagClass.cpp
             ${build_classes_dir}/BufferClass.cpp

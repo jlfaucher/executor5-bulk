@@ -16,16 +16,13 @@ Check if new files have been added, that should be vendored in the ooRexx implem
 
 #### Review `Unicode/UnicodeServices.cpp`
 
-`grapheme_break_simple` is a duplicate; update it if needed whenever utf8proc is updated.
-
-`grapheme_break_extended` is a duplicate; update it if needed whenever utf8proc is updated.
-
 `utf8proc_grapheme_break_backward` and its helpers implement complex rules that may be
 impacted by changes applied to utf8proc. This is the case with Unicode 18 for GB9c.
 
 Check whether the enum tables need to be updated (if new values have been added to `utf8proc.h`).
 
 ```
+enum short/long label                enum code
 UnicodeServices.cpp                  utf8proc.h
 -------------------                  ----------
 General_Category[]                   utf8proc_category_t
