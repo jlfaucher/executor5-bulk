@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1693,8 +1693,9 @@ BUILTIN(XRANGE)
 
             length = 1 + (endchar < startchar ? 256 - startchar + endchar : endchar - startchar);
 
-            // just two args?  we can finish this early
-            if (mode == CALC_LENGTH && argcount <= 2)
+            // return early only if this is the first and only sequence
+            // two args can also be a character class followed by a start byte
+            if (mode == CALC_LENGTH && argcount <= 2 && XRANGE_arg == 2)
             {
                 // create a new string to build the result
                 result = raw_string(length);
