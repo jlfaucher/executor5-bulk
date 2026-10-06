@@ -61,7 +61,9 @@ return testResult
   expose thisLocation executableLocation  -- save this program's location for loading/saving files
   parse source . . thisPath
   thisLocation=filespec('location',thisPath)
-  executableLocation=filespec('location',.rexxInfo~executable)
+  executableLocation=""  -- .RexxInfo~executable may be .nil (OpenBSD, browser)
+  if .rexxInfo~executable \= .nil then
+    executableLocation=filespec('location',.rexxInfo~executable)
   forward class (super) -- let superclass initialize
 
 
