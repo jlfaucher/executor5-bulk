@@ -2032,8 +2032,12 @@ void SysFileIterator::findNextEntry()
     while (fnmatch(patternSpec, testName, flags) != 0)
     {
 #ifndef HAVE_FNM_CASEFOLD
-        // free the uppercase copy of the last test
-        free((void *)testName);
+        // free the uppercase copy of the last test (only a caseless
+        // search made one; otherwise testName is the readdir() entry)
+        if (caseLess)
+        {
+            free((void *)testName);
+        }
 #endif
         entry = readdir(handle);
         if (entry == NULL)
@@ -2045,14 +2049,20 @@ void SysFileIterator::findNextEntry()
         }
         testName = entry->d_name;
 #ifndef HAVE_FNM_CASEFOLD
-        char *upperName = strdup(testName);
-        Utilities::strupper(upperName);
-        testName = upperName;
+        if (caseLess)
+        {
+            char *upperName = strdup(testName);
+            Utilities::strupper(upperName);
+            testName = upperName;
+        }
 #endif
     }
 #ifndef HAVE_FNM_CASEFOLD
     // free the uppercase copy of the last test
-    free((void *)testName);
+    if (caseLess)
+    {
+        free((void *)testName);
+    }
 #endif
     // we need to perform the stat64() using the fully resolved name.
     // if there is an allocation error here, we have limited ability to raise
