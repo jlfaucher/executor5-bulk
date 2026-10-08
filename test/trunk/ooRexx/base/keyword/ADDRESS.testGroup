@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2025 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -853,6 +853,13 @@ a.3 = "Line3"
 
 -- now same variants using a stem
 address "" self~inputToOutputNoBlanks with input stem a. output stem a.
+self~assertSame(2, a.0)
+self~assertSame("Line1", a.1)
+self~assertSame("Line3", a.2)
+
+-- test source input, and target error
+-- [bugs:#2087] ADDRESS WITH: ERROR target same as INPUT is not buffered
+address "" self~inputToError with input stem a. error stem a.
 self~assertSame(2, a.0)
 self~assertSame("Line1", a.1)
 self~assertSame("Line3", a.2)
