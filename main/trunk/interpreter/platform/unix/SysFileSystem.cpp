@@ -1482,12 +1482,15 @@ This new filename must be freed when no longer needed.
 */
 char* temporaryFilename(const char *filename, int &errInfo)
 {
+    // the callers test errInfo, not the result
+    errInfo = 0;
     // allocate a buffer large enough to hold the file name plus the extra characters
     // we add to the end.
     size_t fullLength = strlen(filename) + 8;
     char *tempFileName = (char *)malloc(fullLength);
     if (tempFileName == NULL)
     {
+        errInfo = ENOMEM;
         return NULL;
     }
 
@@ -1495,14 +1498,13 @@ char* temporaryFilename(const char *filename, int &errInfo)
     srand((int)time(NULL));
     size_t num = rand();
     // we only handle the lower six digits
-    num = num % 6;
+    num = num % 1000000;
     size_t start = num;
 
     while (true)
     {
-        char numstr[8];
         // append 6 random digits to the base file name
-        snprintf(tempFileName, sizeof(numstr), "%s%06zu", filename, num);
+        snprintf(tempFileName, fullLength, "%s%06zu", filename, num);
 
         // if there's no matching file, we're finished.
         if (!SysFileSystem::fileExists(tempFileName))
@@ -1511,11 +1513,13 @@ char* temporaryFilename(const char *filename, int &errInfo)
         }
 
         // generate a new number for filling in the name
-        num = (num + 1) % 6;
+        num = (num + 1) % 1000000;
 
         // if we've wrapped around to where we started, time to give up
         if (num == start)
         {
+            free(tempFileName);
+            errInfo = EEXIST;
             return NULL;
         }
     }
