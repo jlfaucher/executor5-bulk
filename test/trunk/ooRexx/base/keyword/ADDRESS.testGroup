@@ -731,6 +731,12 @@ address "" "" with input using "This is a test"
 
 address "" "" with input using "This is a test"
 
+-- empty input should work
+-- [bugs:#2086] ADDRESS WITH INPUT STEM hangs when stem has 0 elements
+in.0 = 0
+address "" self~inputToOutput with input stem in. output stem out.
+self~assertSame(0, out.0)
+
 -- using an uninitialized stem variable
 address "" self~inputToOutput with input using "This is a test" output stem a.
 self~assertSame(1, a.0)
