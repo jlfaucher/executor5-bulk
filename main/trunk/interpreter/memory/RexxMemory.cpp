@@ -285,8 +285,12 @@ void MemoryObject::checkUninit()
     {
         RexxInternalObject *uninitObject = iterator.value();
 
-        // was this object not marked by the last sweep operation?
-        if (uninitObject != OREF_NULL && uninitObject->isObjectDead(markWord))
+        // was this object not marked by the last sweep operation?  An object
+        // that is already waiting for its uninit method is not counted again:
+        // it stays unreferenced (only the uninit table holds it) until
+        // runUninits() removes it, so every collection in between would count
+        // it once more, and pendingUninits would never return to zero.
+        if (uninitObject != OREF_NULL && uninitObject->isObjectDead(markWord) && !uninitObject->isReadyForUninit())
         {
             // mark this as ready for uninit
             uninitObject->setReadyForUninit();
