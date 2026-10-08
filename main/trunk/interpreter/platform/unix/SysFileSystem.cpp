@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2025 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -78,89 +78,6 @@ const char SysFileSystem::CarriageReturn = '\r';
 // .DateTime~new(1970, 1, 1) - .DateTime~new(1, 1, 1)~totalSeconds
 const int64_t StatEpoch = 62135596800;           // seconds between 0001-01-01 and 1970-01-01
 const int64_t NoTimeStamp = -999999999999999999; // invalid file time
-
-/**
- * Search for a given filename, returning the fully
- * resolved name if it is found.
- *
- * @param name     The original name.
- * @param fullName A pointer to the buffer where the resolved name is returned.
- *
- * @return True if the file was found, false otherwise.
- */
-bool SysFileSystem::searchFileName(const char *name, FileNameBuffer &fullName)
-{
-    size_t nameLength = strlen(name);
-
-    /* does the filename already have a path? */
-    /* or does it start with "~" ? */
-    /* (beware, don't test "." because files like ".hidden" alone are candidate for search in PATH */
-    if (strstr(name, "/") != NULL || name[0] == '~' || name[0] == '.')
-    {
-        bool done = canonicalizeName(fullName);
-        if (done == false || fileExists(fullName) == false)
-        {
-            fullName.at(0) = '\0';
-            return false;
-        }
-        return true;
-    }
-
-    // Get the current working directory
-    if (!getCurrentDirectory(fullName))
-    {
-        return false;
-    }
-    // now add on to the front of the name
-    fullName += '/';
-    fullName += name;
-
-    // if the file exists, then return it
-    if (fileExists(fullName))
-    {
-        return true;
-    }
-
-    // it was not in the current directory so search the PATH
-    const char *currentPath = getenv("PATH");
-    if (currentPath == NULL)
-    {
-        fullName = "";
-        return false;
-    }
-
-    const char *sep = strchr(currentPath, ':');
-    while (sep != NULL)
-    {
-        /* try each entry in the PATH */
-        int i = sep - currentPath;
-        fullName.set(currentPath, i);
-        fullName += '/';
-        fullName += name;
-        if (fileExists(fullName) == true)
-        {
-            return true;
-        }
-        currentPath = sep + 1;
-        sep = strchr(currentPath, ':');
-    }
-
-    /* the last entry in the PATH might not be terminated by a colon */
-    if (*currentPath != '\0')
-    {
-        fullName = currentPath;
-        fullName += currentPath;
-        fullName += name;
-        if (fileExists(fullName) == true)
-        {
-            return true;
-        }
-    }
-
-    // not found, return a null string
-    fullName = "";
-    return false;
-}
 
 
 /**
