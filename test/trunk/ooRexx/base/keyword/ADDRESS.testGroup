@@ -804,17 +804,18 @@ self~assertSame("This is another test", array[2])
 
 ::method test_file_input
 
-temp = .TemporaryTestFile~new(self, 'testinput')
-temp~create(("Line1","","Line3"))
+in = .TemporaryTestFile~new(self, self~temporaryFilename)
+lines = "Line1", "", "Line3"
+in~create(lines)
 
-array = .array~new
-address "" self~inputToOutput with input stream (temp~fullName) output using (array)
-self~assertSame(3, array~items)
-self~assertSame("Line1", array[1])
-self~assertSame("", array[2])
-self~assertSame("Line3", array[3])
+out = .Array~new
+address "" self~inputToOutput with input stream (in~fullName) output using (out)
+self~assertSameList(lines, out)
 
-temp~delete
+address "" self~inputToOutput with input using (.File~new(in~fullName)) output using (out)
+self~assertSameList(lines, out)
+
+in~delete
 
 -- test non-destructive buffering when source and target are the same
 ::method test_buffering
