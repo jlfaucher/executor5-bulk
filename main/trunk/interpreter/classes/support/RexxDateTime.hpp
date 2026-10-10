@@ -140,8 +140,6 @@ public:
     bool setSeconds(wholenumber_t s);
     bool setMinutes(wholenumber_t m);
     bool adjustTimeZone(int64_t o);
-    void formatBaseTime(char *buffer);
-    void formatUnixTime(char *buffer);
     void formatEuropeanDate(char *buffer, wholenumber_t bufferSize, const char *sep);
     void formatMonthName(char *buffer);
     size_t formatDate(char *buffer, size_t bufferSize, int style, const char *sep, size_t sepLength);
@@ -154,7 +152,6 @@ public:
     void formatCivilTime(char *buffer, wholenumber_t bufferSize);
     void formatLongTime(char *buffer, wholenumber_t bufferSize);
     void formatNormalTime(char *buffer, wholenumber_t bufferSize);
-    void formatTimeZone(char *buffer);
     inline void setTimeZoneOffset(int64_t o) { timeZoneOffset = o; }
     inline int64_t getTimeZoneOffset() { return timeZoneOffset; }
 

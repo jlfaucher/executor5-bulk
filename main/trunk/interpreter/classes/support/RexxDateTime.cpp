@@ -1299,28 +1299,6 @@ bool RexxDateTime::getNumber(const char *input, size_t length, int *target, int 
 
 
 /**
- * Format a base time into human readable form.
- *
- * @param buffer The target buffer for the output.
- */
-void RexxDateTime::formatBaseTime(char *buffer)
-{
-    Numerics::formatInt64(getBaseTime(), (char *)buffer);
-}
-
-
-/**
- * Format a unix time into human readable form.
- *
- * @param buffer The target buffer for the output.
- */
-void RexxDateTime::formatUnixTime(char *buffer)
-{
-    Numerics::formatInt64(getUnixTime(), (char *)buffer);
-}
-
-
-/**
  * Format a date in 'E'uropean format.
  *
  * @param buffer The target buffer for the output.
@@ -1544,16 +1522,4 @@ void RexxDateTime::formatLongTime(char *buffer, wholenumber_t bufferSize)
 void RexxDateTime::formatNormalTime(char *buffer, wholenumber_t bufferSize)
 {
     snprintf(buffer, bufferSize, "%2.2d:%2.2d:%2.2d", hours, minutes, seconds);
-}
-
-
-/**
- * Format a the time zone offset value
- *
- * @param buffer The target buffer for the output.
- */
-void RexxDateTime::formatTimeZone(char *buffer)
-{
-    // the time zone is a sized value
-    Numerics::formatInt64(timeZoneOffset, (char *)buffer);
 }

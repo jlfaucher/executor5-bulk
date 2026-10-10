@@ -1234,29 +1234,19 @@ BUILTIN(DATE)
     {
 
         case 'B':
-            // always return RexxInteger instead of String
+            // always return as RexxInteger
             return new_integer(timestamp.getBaseDate());
 
         case 'F':
-            // if possible, return RexxInteger instead of String
-#ifdef __REXX64__
-            return new_integer(timestamp.getBaseTime());
-#else
-            timestamp.formatBaseTime(work);
-            break;
-#endif
+            // return as RexxInteger, or as NumberString if too large
+            return Numerics::int64ToObject(timestamp.getBaseTime());
 
         case 'T':
-            // if possible, return RexxInteger instead of String
-#ifdef __REXX64__
-            return new_integer(timestamp.getUnixTime());
-#else
-            timestamp.formatUnixTime(work);
-            break;
-#endif
+            // return as RexxInteger, or as NumberString if too large
+            return Numerics::int64ToObject(timestamp.getUnixTime());
 
         case 'D':
-            // always return RexxInteger instead of String
+            // always return as RexxInteger
             return new_integer(timestamp.getYearDay());
 
 
@@ -1482,7 +1472,7 @@ BUILTIN(TIME)
             break;
 
         case 'H':                         // 'Hours'
-            // always return RexxInteger instead of String
+            // always return as RexxInteger
             return new_integer(timestamp.hours);
 
         case 'L':                         // 'L'ong format
@@ -1490,7 +1480,7 @@ BUILTIN(TIME)
             break;
 
         case 'M':                         // 'M'inutes format
-            // always return RexxInteger instead of String
+            // always return as RexxInteger
             return new_integer(timestamp.hours * MINUTES_IN_HOUR + timestamp.minutes);
 
         case 'N':                         // 'N'ormal format...the default
@@ -1498,35 +1488,20 @@ BUILTIN(TIME)
             break;
 
         case 'S':                         // 'S'econds format...total seconds
-            // always return RexxInteger instead of String
+            // always return as RexxInteger
             return new_integer((timestamp.hours * MINUTES_IN_HOUR + timestamp.minutes) * SECONDS_IN_MINUTE + timestamp.seconds);
 
         case 'F':                          // 'F'ull
-            // if possible, return RexxInteger instead of String
-#ifdef __REXX64__
-            return new_integer(timestamp.getBaseTime());
-#else
-            timestamp.formatBaseTime(work);
-            break;
-#endif
+            // return as RexxInteger, or as NumberString if too large
+            return Numerics::int64ToObject(timestamp.getBaseTime());
 
         case 'T':                          // 'T'icks
-            // if possible, return RexxInteger instead of String
-#ifdef __REXX64__
-            return new_integer(timestamp.getUnixTime());
-#else
-            timestamp.formatUnixTime(work);
-            break;
-#endif
+            // return as RexxInteger, or as NumberString if too large
+            return Numerics::int64ToObject(timestamp.getUnixTime());
 
         case 'O':                          // 'O'ffset.  microseconds offset from UTC
-            // if possible, return RexxInteger instead of String
-#ifdef __REXX64__
-            return new_integer(timestamp.timeZoneOffset);
-#else
-            timestamp.formatTimeZone(work);
-            break;
-#endif
+            // return as RexxInteger, or as NumberString if too large
+            return Numerics::int64ToObject(timestamp.timeZoneOffset);
 
         // unknown output format
         default:
@@ -1949,7 +1924,7 @@ BUILTIN(SIGN)
     // do this on the string value
     if (isInteger(argument))
     {
-        return((RexxInteger *)argument)->sign();
+        return ((RexxInteger *)argument)->sign();
     }
     else if (isNumberString(argument))
     {
@@ -1997,7 +1972,7 @@ BUILTIN(MAX)
     // do this on the string value
     if (isInteger(argument))
     {
-        return((RexxInteger *)argument)->Max(stack->arguments(argcount - 1), argcount - 1);
+        return ((RexxInteger *)argument)->Max(stack->arguments(argcount - 1), argcount - 1);
     }
     else if (isNumberString(argument))
     {
@@ -2026,7 +2001,7 @@ BUILTIN(MIN)
     // do this on the string value
     if (isInteger(argument))
     {
-        return((RexxInteger *)argument)->Min(stack->arguments(argcount - 1), argcount - 1);
+        return ((RexxInteger *)argument)->Min(stack->arguments(argcount - 1), argcount - 1);
     }
     else if (isNumberString(argument))
     {
