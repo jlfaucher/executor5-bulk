@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2017-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2017-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,19 +35,16 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . fileSpec
+parse source . . s
 
-  group = .TestGroup~new(fileSpec)
-  group~add(.RexxInteger.testGroup)
+group = .TestGroup~new(s)
+group~add(.RexxInteger.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
-  if group~isAutomatedTest then return group
-
-  testResult = group~suite~execute~~print
-
-return testResult
--- End of entry point.
-
-::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires 'ooTest.frm'
 
 
 ::class "RexxInteger.testGroup" subclass ooTestCase public
@@ -133,7 +130,7 @@ Below tests verify that
   return self~class~digits
 
 
--- all integer constans should be RexxIntegers, not NumberStrings
+-- all integer constants should be RexxIntegers, not NumberStrings
 ::method test_integer_constant
   do integer over self~integers
     self~assertTrue(isInteger(integer), integer "should be a RexxInteger")
@@ -245,7 +242,7 @@ Below tests verify that
 
 -- power result should be a RexxInteger
 ::method test_integer_power
-  -- inrease numeric digits to make a comparison like 1000000000 > 999999999 work
+  -- increase numeric digits to make a comparison like 1000000000 > 999999999 work
   numeric digits self~digits + 1
   max = .RexxInfo~internalMaxNumber
   do base = -1000 to 1000
@@ -380,6 +377,8 @@ Below tests verify that
     else
       self~assertFalse(isInteger(result), "date('"option"') shouldn't return a RexxInteger")
   end
+  self~assertTrue(isInteger(date("full", 999999999, "full")))
+  self~assertTrue(isInteger(date("ticks", 999999999, "ticks")))
 
 
 -- TIME() BIF with option F, H, M, O, S, T should return a RexxInteger
@@ -392,6 +391,9 @@ Below tests verify that
     else
       self~assertFalse(isInteger(result), "time('"option"') shouldn't return a RexxInteger")
   end
+  self~assertTrue(isInteger(time("full", 999999999, "full")))
+  self~assertTrue(isInteger(time("ticks", 999999999, "ticks")))
+  self~assertTrue(isInteger(time("offset", 999999999, "offset")))
 
 
 
@@ -415,4 +417,4 @@ Below tests verify that
   return \number~min~contains("E")
 
 
-::options novalue error
+::options all syntax lostdigits condition

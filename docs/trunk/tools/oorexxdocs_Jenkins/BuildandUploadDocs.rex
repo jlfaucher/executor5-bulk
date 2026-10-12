@@ -2,7 +2,7 @@
 /*
 # -----------------------------------------------------------------------------
 #
-# Copyright (c) 2022-2026, Rexx Language Association. All rights reserved.
+# Copyright (c) 2022-2026 Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -48,6 +48,7 @@
 #    use existing build script
 # 4: Upload the newly built documents to sourceforge
 #
+# Change 2026-09-05 Update the script to use highligher and 5.3.0beta default
 # Change 2025-06-05 Update the script to set 5.2.0beta as default;
 # both parameters should be set on commandline or a new release will fail
 # Change 2025-05-27 ootest and oorexxbuild included in build and upload again
@@ -70,7 +71,7 @@
 --  sfdocfolder = '/home/frs/project/oorexx/oorexx-docs/5.1.1
 
 --  real path for Sourceforge, create manually and delete after test (staged 3 days)
---  sfdocfolder = '/home/frs/project/oorexx/oorexx-docs/5.2.0beta'
+--  sfdocfolder = '/home/frs/project/oorexx/oorexx-docs/5.3.0beta'
 
   parse arg input1 input2
 
@@ -81,7 +82,7 @@
 
 /* Here is where we upload the built documentation on sourceforge	*/
 /* Should be given as input to the script, fallback if not		*/
-  if input2 = '' then sfdocfolder = '/home/frs/project/oorexx/oorexx-docs/5.2.0beta'
+  if input2 = '' then sfdocfolder = '/home/frs/project/oorexx/oorexx-docs/5.3.0beta'
   else sfdocfolder = input2~strip
 
 say 'Debug sfRoot' sfRoot
@@ -113,7 +114,7 @@ say 'Debug sfdocfolder' sfdocfolder
 /* ootest and oorexxbuild included in upload again 2025-05-27 */
 /* Change 2025-05-27 ootest and oorexxbuild included in build and upload again */
 
-/* to enable add this to list below and to DocRevisions.txt     */
+/* to enable add this to list below and to DocRevisions.txt IMPORTANT     */
    outArray = .array~of("readme r1", "rexxref r1", "rexxapi r1", "rexxextensions r1", "rexxpg r1", "rxftp r1", "rxmath r1", "rxsock r1", "unixextensions r1", "winextensions r1", "oodguide r1", "oodialog r1", "oosqlite r1", "orxncurses r1", "ootest r1", "oorexxbuild r1")
 
 /* These are the unix command used with full path           */
@@ -163,15 +164,18 @@ say 'Debug sfdocfolder' sfdocfolder
   res = q~arrayout(outArray)
   q~close
 
+-- DEBUG Trace from here to see error message from /usr/bin/scp when upload fail
+-- trace r
+
   if buildArray~items > 0 then
   do
 -- *3* Build those docs that needs rebuilding:
 -- *4* Upload the newly built docs to sourceforge
     if rexxReqs() then  -- Rexx programs are available to build documents
       do a_doc over buildArray
-        call doc2pdf a_doc
+        call hldoc2pdf a_doc
         address '' scpcmd pdfpath || .file~separator || a_doc || '.pdf' sfuser || '@' || sfIP || sfdocfolder
-        call doc2html   -- no argument means the same document
+        call hldoc2html   -- no argument means the same document
         zip_source = htmlpath || .file~separator || a_doc || .file~separator
         call sysfileDelete zip_source || '.DS_Store'
         address '' zipcmd zippath || .file~separator || a_doc || '-html.zip' zip_source'.'
@@ -246,4 +250,8 @@ docprep.rex
 doc_props.rex
 fo2pdf.rex
 getdocrev.rex
+hldoc2fo.rex
+hldoc2HTML.rex
+hldoc2pdf.rex
+hldocprep.rex
 ::END

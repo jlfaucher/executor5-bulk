@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,17 +35,16 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . s
-  group = .TestGroup~new(s)
-  group~add(.getbuffersize.testGroup)
+parse source . . s
 
-  if group~isAutomatedTest then return group
+group = .TestGroup~new(s)
+group~add(.getBufferSize.testGroup)
+if group~isAutomatedTest then
+  return group
+else
+  return group~suite~execute~~print
 
-  testResult = group~suite~execute~~print
-
-return testResult
-
-::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires 'ooTest.frm'
 
 ::class "getbuffersize.testGroup" subclass ooTestCase public
 
@@ -57,5 +56,45 @@ return testResult
    b~append("  ")
    self~assertEquals(2, b~getBufferSize, "Buffer size incorrect 3")
 
+::method test_getBufferSize_too_many_args
+  m = .MutableBuffer~new
+  self~expectSyntax(93.902) -- Too many arguments in invocation
+  m~getBufferSize(0)
 
-::options novalue error
+::method test_bracketsEqual
+  m = .MutableBuffer~new("1234", 5)
+  self~assertEquals(5, m~getBufferSize)
+  m[5] = "5"
+  self~assertEquals("12345", m~string)
+  self~assertEquals(5, m~getBufferSize)
+
+::method test_replaceAt
+  m = .MutableBuffer~new("1234", 5)
+  self~assertEquals(5, m~getBufferSize)
+  m~replaceAt("5", 5)
+  self~assertEquals("12345", m~string)
+  self~assertEquals(5, m~getBufferSize)
+
+::method test_overlay
+  m = .MutableBuffer~new("1234", 5)
+  self~assertEquals(5, m~getBufferSize)
+  m~overlay("5", 5)
+  self~assertEquals("12345", m~string)
+  self~assertEquals(5, m~getBufferSize)
+
+::method test_changeStr
+  m = .MutableBuffer~new("1234", 5)
+  self~assertEquals(5, m~getBufferSize)
+  m~changeStr("4", "45")
+  self~assertEquals("12345", m~string)
+  self~assertEquals(5, m~getBufferSize)
+
+::method test_caselessChangeStr
+  m = .MutableBuffer~new("123a", 5)
+  self~assertEquals(5, m~getBufferSize)
+  m~caselessChangeStr("A", "45")
+  self~assertEquals("12345", m~string)
+  self~assertEquals(5, m~getBufferSize)
+
+
+::options all syntax

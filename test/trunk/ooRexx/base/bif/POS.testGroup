@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -63,29 +63,10 @@ return testResult
     a = 'abcd'
     self~assertSame('0', pos('',a))
 
-::method 'test005'
-    a. = 'efgh'
-    self~assertSame('0', pos('',a.))
-
 ::method 'test006'
     a. = 'efgh'
     i = 3
     self~assertSame('0', pos('',a.i))
-
-::method 'test007'
-    self~assertSame(0, pos('',nov.))
-
-::method 'test008'
-    self~assertSame('0', pos('',nov))
-
-::method 'test009'
-    self~assertSame('0', pos('',nov.))
-
-::method 'test010'
-    self~assertSame('0', pos('',nov.3))
-
-::method 'test011'
-    self~assertSame('0', pos('',a.nov))
 
 ::method 'test012'
     self~assertSame('0', pos('','abcde' 'fghij'))
@@ -109,29 +90,10 @@ return testResult
     a = 'abcd'
     self~assertSame('1', pos('a',a))
 
-::method 'test019'
-    a. = 'efgh'
-    self~assertSame('2', pos('f',a.))
-
 ::method 'test020'
     a.3 = '333333'
     i = 3
     self~assertSame('1', pos('3',a.i))
-
-::method 'test021'
-    self~assertSame(0, pos('4',nov.))
-
-::method 'test022'
-    self~assertSame('0', pos('o',nov))
-
-::method 'test023'
-    self~assertSame('0', pos('n',nov.))
-
-::method 'test024'
-    self~assertSame('5', pos('3',nov.3))
-
-::method 'test025'
-    self~assertSame('0', pos('a',a.nov))
 
 ::method 'test026'
     self~assertSame('5', pos('e','abcde' 'fghij'))
@@ -155,26 +117,10 @@ return testResult
     a = 'abcd'
     self~assertSame('0', pos('z',a))
 
-::method 'test033'
-    a. = 'efgh'
-    self~assertSame('0', pos('z',a.))
-
 ::method 'test034'
     a.3 = '333333'
     i = 3
     self~assertSame('0', pos('z',a.i))
-
-::method 'test035'
-    self~assertSame('0', pos('z',nov))
-
-::method 'test036'
-    self~assertSame('0', pos('z',nov.))
-
-::method 'test037'
-    self~assertSame('0', pos('z',nov.3))
-
-::method 'test038'
-    self~assertSame('0', pos('z',a.nov))
 
 ::method 'test039'
     self~assertSame('0', pos('z','abcde' 'fghij'))
@@ -266,103 +212,33 @@ return testResult
     self~assertSame('0', pos('.',.h,1.e5))
 
 ::method 'test067'
-    .local~remove(h)
-    .local~s0 = ''
-    .local~s1 = 'a'
-    .local~s30 = copies('6',30)||'...'
-    .local~s255 = copies('*',255)||'1234e+3'
-    .local~s32768 = copies('ab',16383)||'abcde'
-    .local~s500000 = copies('.',500000)||'zzzzzzz'
+    s0 = ''
+    s1 = 'a'
+    s30 = copies('6',30)||'...'
+    s255 = copies('*',255)||'1234e+3'
+    s32768 = copies('ab',16383)||'abcde'
+    s500000 = copies('.',500000)||'zzzzzzz'
 
-::method 'test068'
-    self~assertSame(0, pos('a',.s))
-
-::method 'test069'
-    self~assertSame(1, pos('a',.s1))
-
-::method 'test070'
-    self~assertSame(30, pos('6.',.s30))
-
-::method 'test071'
-    self~assertSame(255, pos('*1',.s255))
-
-::method 'test072'
-    self~assertSame(32767, pos('abc',.s32768))
-
-::method 'test073'
-    self~assertSame(32768, pos('bc',.s32768))
-
-::method 'test074'
-    self~assertSame(32769, pos('cde',.s32768))
-
-::method 'test075'
-    self~assertSame(500001, pos('zzzz',.s500000))
-
-::method 'test076'
-    .local~remove(s0)
-    .local~remove(s1)
-    .local~remove(s30)
-    .local~remove(s255)
-    .local~remove(s32768)
-    .local~remove(s500000)
+    self~assertSame(1, pos('a', s1))
+    self~assertSame(30, pos('6.', s30))
+    self~assertSame(255, pos('*1', s255))
+    self~assertSame(32767, pos('abc', s32768))
+    self~assertSame(32768, pos('bc', s32768))
+    self~assertSame(32769, pos('cde', s32768))
+    self~assertSame(500001, pos('zzzz', s500000))
 
 ::method 'test077'
     self~expectSyntax(40.12)
-    xre = pos('34','123456789',nov)
-
-::method 'test078'
-    .local~start1 = 5
-    .local~start2 = 5.00
-    .local~start3 = 5.00+0
-    .local~start4 = 4+1
-    .local~s = 1
+    call pos '34', '123456789', ''
 
 ::method 'test079'
     self~assertSame('3', pos('34','123456789',2))
-
-::method 'test080'
     self~assertSame('3', pos('34','123456789',0.02e+2))
-
-::method 'test081'
     self~assertSame('8', pos('89','123456789',.2*30))
-
-::method 'test082'
-    self~assertSame('8', pos('89','123456789',.start1))
-
-::method 'test083'
-    self~assertSame('8', pos('89','123456789',.start2))
-
-::method 'test084'
-    self~assertSame('8', pos('89','123456789',.start3))
-
-::method 'test085'
-    self~assertSame('8', pos('89','123456789',.start4))
-
-::method 'test086'
-    self~assertSame('3', pos("wuv","uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw",.s))
-
-::method 'test087'
-    s. = 12
-    self~assertSame('12', pos("wuv","uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw",s.))
-
-::method 'test088'
-    s.3 = 13
-    self~assertSame('15', pos("wuv","uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw",s.3))
-
-::method 'test089'
-    s.s.s.s = 1
-    self~assertSame('3', pos("wuv","uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw",s.s.s.s))
-
-::method 'test090'
-    s.s.s.s = 1
-    self~assertSame('3', pos("wuv","uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw",s.s.s.s + .s + 1))
-
-::method 'test091'
-    .local~remove(start1)
-    .local~remove(start2)
-    .local~remove(start3)
-    .local~remove(start4)
-    .local~remove(s)
+    self~assertSame('3', pos("wuv","uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw", 1))
+    self~assertSame('12', pos("wuv","uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw", 12))
+    self~assertSame('15', pos("wuv","uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw", 13))
+    self~assertSame('3', pos("wuv","uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw", 1))
 
 ::method 'test092'
     self~expectSyntax(93.924)
@@ -424,3 +300,33 @@ return testResult
     self~expectSyntax(40.12)
     xre = pos('-','--------',1,0.5)
 
+
+-- [bugs:#2083] POS arg four does not bound the search
+::method test_bug2083_length
+  self~assertEquals(0, pos("an", "axan", 1, 3))
+  self~assertEquals(0, pos("an", "zxan", 1, 3))
+  self~assertEquals(3, pos("an", "axan", 1, 4))
+
+  self~assertEquals(0, pos("abc", "axxabc", 1, 5))
+  self~assertEquals(0, pos("abc", "zxxabc", 1, 5))
+  self~assertEquals(4, pos("abc", "axxabc", 1, 6))
+
+  self~assertEquals(0, pos("an", "axaxan", 1, 4))
+  self~assertEquals(0, pos("an", "axaxan", 1, 5))
+  self~assertEquals(5, pos("an", "axaxan", 1, 6))
+
+::method test_bug2083_terminator
+  needle = "a" || '00'x
+  self~assertEquals(0, pos(needle, "aa"))
+  self~assertEquals(0, countstr(needle, "aa"))
+  self~assertEquals("aa", changestr(needle, "aa", "ZZZ"))
+
+::method test_bug2083_nul
+  needle = "a" ||  '00'x
+  haystack = "aa" ||  '00'x
+  self~assertEquals(2, pos(needle, haystack))
+  self~assertEquals(1, countstr(needle, haystack))
+  self~assertEquals("aZZZ", changestr(needle, haystack, "ZZZ"))
+
+
+::options all syntax

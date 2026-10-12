@@ -179,6 +179,149 @@ say yaml
 </programlisting>
 
 <!-- ================================================================== -->
+<!--  Parse errors                                                      -->
+<!-- ================================================================== -->
+
+<section id="yamlErrors"><title>Parse Errors</title>
+<indexterm><primary>yaml.cls</primary><secondary>parse errors</secondary></indexterm>
+
+<para>Invalid YAML raises a <literal>SYNTAX</literal> condition with code
+<literal>93.900</literal>.  Its additional information is the
+<methodname>makeString</methodname> of a <xref linkend="clsYamlError"
+xrefstyle="select:title"/>, split at its line end: the first item is
+<literal>YamlError: </literal>, the message and, when known, the line
+number in the form <literal>(line N)</literal>; the second item, when
+present, is the offending line, preceded by two blanks and
+<literal>&gt;</literal>.</para>
+
+<programlisting language="rexx">
+signal on syntax
+doc = .Yaml~new~parseString("a: 1" || "0a"x || "title: A: B")
+...
+syntax:
+  info = condition("O")["ADDITIONAL"]
+  say info[1]   -- YamlError: Mapping value is not allowed in this context: A: B (line 2)
+  say info[2]   --   > title: A: B
+
+::requires "yaml.cls"
+</programlisting>
+
+<para>The line number is that of the line where the offending text is
+(ooRexx 5.3.0; ooRexx 5.2.0 gave, for most errors, the number of the
+following line).  For a construct left open, such as a flow collection
+without its closing bracket or a quoted string without its closing quote,
+it is the line where the construct begins.  The methods that read a
+front-matter block (<xref linkend="mthYamlParseFrontMatter"
+xrefstyle="select:title"/>, <xref linkend="mthYamlParseFrontMatterFile"
+xrefstyle="select:title"/>) number the lines of the whole document, the
+opening <literal>---</literal> being line 1; all other methods number the
+lines of the YAML text they are given.</para>
+</section>
+
+<!-- ================================================================== -->
+<!--  Pitfalls                                                          -->
+<!-- ================================================================== -->
+
+<section id="yamlPitfalls"><title>Pitfalls</title>
+<indexterm><primary>yaml.cls</primary><secondary>pitfalls</secondary></indexterm>
+
+<para>YAML is designed to be pleasant to write by hand, and part of the
+price is a number of values that do not mean what they seem to mean.  The
+following are the ones most likely to surprise a reader or a
+program.</para>
+
+<variablelist>
+ <varlistentry><term>Some words are booleans</term>
+ <listitem><para><literal>true</literal>, <literal>yes</literal>,
+ <literal>on</literal> and <literal>false</literal>, <literal>no</literal>,
+ <literal>off</literal> (in lower case, capitalized, or all capitals) are
+ read as <classname>YamlBoolean</classname> values, not as text.  The
+ classic victim is a country code: <literal>country: NO</literal> is
+ <literal>.false</literal>.  A value that must stay a word has to be quoted:
+ <literal>country: "NO"</literal>, <literal>answer: 'yes'</literal>.</para>
+ </listitem></varlistentry>
+
+ <varlistentry><term>A boolean compares as 1 or 0, not as a word</term>
+ <listitem><para>A <classname>YamlBoolean</classname> is equal to
+ <literal>1</literal> (or <literal>0</literal>), but not to the word it was
+ written with: <literal>.YamlBoolean~true = "true"</literal> is
+ <literal>0</literal>.  Test it as a logical value
+ (<literal>if value then</literal>), compare it with <literal>1</literal>
+ or <literal>0</literal>, or check <literal>value~isA(.YamlBoolean)</literal>.
+ Use <literal>=</literal>, not <literal>==</literal>:
+ <literal>.YamlBoolean~true == 1</literal> is <literal>0</literal>, because
+ <literal>==</literal> compares the objects themselves.</para>
+ </listitem></varlistentry>
+
+ <varlistentry><term>Integers are normalized</term>
+ <listitem><para>An integer is returned in its canonical form:
+ <literal>012</literal> is <literal>12</literal>, <literal>0x1F</literal> is
+ <literal>31</literal>, <literal>0o17</literal> is <literal>15</literal>,
+ <literal>+5</literal> is <literal>5</literal>, and <literal>1e3</literal>
+ is <literal>1000</literal>.  Other decimal numbers keep their spelling
+ (<literal>1.10</literal>, <literal>1.0</literal>).  A version number, a
+ postal code or an identifier with leading zeros must be quoted to keep its
+ exact text: <literal>zip: "08012"</literal>.</para>
+ </listitem></varlistentry>
+
+ <varlistentry><term>An empty value is null</term>
+ <listitem><para><literal>key:</literal> with nothing after it, like
+ <literal>key: ~</literal> and <literal>key: null</literal>, gives
+ <literal>.nil</literal>, and the key is present in the mapping:
+ <literal>hasIndex("key")</literal> is <literal>1</literal>.  Test the value,
+ not only the index.</para>
+ </listitem></varlistentry>
+
+ <varlistentry><term>A colon and a blank inside a plain value</term>
+ <listitem><para>In an unquoted value, <literal>": "</literal> would start a
+ mapping, and is an error: <literal>title: Rexx: The Language</literal> is
+ rejected.  Quote such values: <literal>title: "Rexx: The
+ Language"</literal>.  A colon not followed by a blank is ordinary text
+ (<literal>time: 12:30</literal>, <literal>url: https://...</literal>).
+ Note that YAML 1.2 has no sexagesimal numbers: <literal>12:30</literal>
+ stays the string <literal>12:30</literal>.</para>
+ </listitem></varlistentry>
+
+ <varlistentry><term>A comment needs a blank before its "#"</term>
+ <listitem><para><literal>color: red #1</literal> is <literal>red</literal>
+ followed by a comment, but <literal>color: red#1</literal> is the text
+ <literal>red#1</literal>.  Inside quotes, <literal>#</literal> is always
+ text.</para>
+ </listitem></varlistentry>
+
+ <varlistentry><term>Some characters cannot start a plain value</term>
+ <listitem><para><literal>@</literal> and <literal>`</literal> are reserved,
+ and <literal>%</literal> introduces a directive: none of them may start an
+ unquoted scalar, whether a value, a key, or a sequence item
+ (<literal>handle: @rexx</literal> is an error).  Quote the value:
+ <literal>handle: "@rexx"</literal>.  In ooRexx 5.2.0 such values were
+ accepted as text in some positions.</para>
+ </listitem></varlistentry>
+
+ <varlistentry><term>Tabs cannot indent</term>
+ <listitem><para>Indentation is made of blanks only.  A tab may separate
+ (<literal>key:&lt;tab&gt;value</literal> is valid), but a tab in the
+ indentation is an error.</para>
+ </listitem></varlistentry>
+
+ <varlistentry><term>A duplicate key is not reported</term>
+ <listitem><para>YAML requires the keys of a mapping to be unique, but the
+ parser does not check it: when a key appears twice, the last value is
+ kept and the first one is silently lost.</para>
+ </listitem></varlistentry>
+
+ <varlistentry><term>Mappings are Tables</term>
+ <listitem><para>A mapping is returned as a <classname>Table</classname>:
+ its keys are case-sensitive (<literal>doc["Title"]</literal> is not
+ <literal>doc["title"]</literal>), and it is not a
+ <classname>StringTable</classname> or a <classname>Directory</classname>,
+ so a test such as <literal>value~isA(.StringTable)</literal> is always
+ false.  Use <literal>value~isA(.Table)</literal>.</para>
+ </listitem></varlistentry>
+</variablelist>
+</section>
+
+<!-- ================================================================== -->
 <!--  Yaml Class                                                        -->
 <!-- ================================================================== -->
 <section id="clsYaml"><title>&added52; Yaml Class</title>
@@ -567,7 +710,12 @@ representing the parsed document.</para>
 
 <para>Extracts and parses the YAML front-matter block from a text that uses
 the <literal>---</literal> / <literal>---</literal> convention (for example,
-Jekyll, Hugo, or Markdown documents).</para>
+Jekyll, Hugo, or Markdown documents).  The block must start on the first
+line of <emphasis role="italic">input</emphasis> and ends with the next
+<literal>---</literal> or <literal>...</literal> line.  The line numbers of
+parse errors are lines of the whole <emphasis role="italic">input</emphasis>,
+the opening <literal>---</literal> being line 1 (ooRexx 5.3.0; see <xref
+linkend="yamlErrors" xrefstyle="select:title"/>).</para>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
@@ -592,7 +740,9 @@ found.</para>
 </imageobject>
 </mediaobject>
 
-<para>Extracts and parses YAML front-matter from a file.</para>
+<para>Extracts and parses YAML front-matter from a file.  The line numbers
+of parse errors are lines of the file, as for <xref
+linkend="mthYamlParseFrontMatter" xrefstyle="select:title"/>.</para>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
@@ -1513,8 +1663,9 @@ This is a read-write attribute.</para>
 <indexterm><primary>contextLine attribute</primary>
 <secondary>of YamlError class</secondary></indexterm>
 
-<para>The source line that triggered the error (empty string if unavailable).
-This is a read-write attribute.</para>
+<para>The text of the line given by <xref linkend="mthYamlErrorLineNumber"
+xrefstyle="select:title"/> (empty string if unavailable).  This is a
+read-write attribute.</para>
 </section>
 
 <!-- init -->
@@ -1548,8 +1699,12 @@ This is a read-write attribute.</para>
 <indexterm><primary>lineNumber attribute</primary>
 <secondary>of YamlError class</secondary></indexterm>
 
-<para>The 1-based line number where the error was detected (0 if unknown).
-This is a read-write attribute.</para>
+<para>The 1-based number of the line where the offending text is (0 if
+unknown).  For a construct left open (an unterminated flow collection or
+quoted string), it is the line where the construct begins; for a
+front-matter block, it is a line of the whole document.  See <xref
+linkend="yamlErrors" xrefstyle="select:title"/>.  This is a read-write
+attribute.</para>
 </section>
 
 <!-- makeString -->

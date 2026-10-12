@@ -9,15 +9,17 @@ amended. Further instructions and requirements are embedded in the script.
 
 Once launched the script will set up its own working environment. 
 
-As of 27.12.2023 the script can use the universal rexx build scripts from
+As of 2023-12-27 the script can use the universal rexx build scripts from
 bldoc_orx folder rather than the shell scripts originally used.
 
 As of 2024-09-15 the script accepts two parameters on the command line:
 Parameter 1 = sfRoot the root folder for the documentation in svn repository
 Parameter 2 = sfdocfolder where to upload the built documentation on source forge
 
+As of 2026-09-06 the script has been modified to use syntax highlighting for code samples
+
 To use the rexx scripts rather than the shell scripts simply copy the
-content of the entire folder bldoc_orx to the DocBuild folder.
+content of the entire folder bldoc_orx to the DocBuild folder. Please note that the documents copied from bldoc_orx have Windows line endings, on MacOS or Linux this might have to be changed manually.
 
 Please note that on macOS a number of actions is necessary to install the
 necessary tools. See Readme.txt in the oorexxdocs_macOS folder for details.
@@ -35,7 +37,7 @@ With "Jenkins" is meant the Web service for building & testing used, to be found
 
 https://build.oorexx.org/
 
-Currently the documentation is built on macOS Sonoma (14.6.1), the utilities in this folder are used on top of what is installed from oorexxdocs_macOS folder
+Currently the documentation is built on macOS Sequoia (15.7.9), the utilities in this folder are used on top of what is installed from oorexxdocs_macOS folder
 
 Should there be a need to move to another platform this can serve as a template.
 
@@ -56,20 +58,15 @@ SETUP
 
 5. In Jenkins, create a "Project" called ooRexxdocs-build
 
-6. In Jenkins use this url for the svn plugin
-   https://svn.code.sf.net/p/oorexx/code-0/docs/trunk oorexxdocTEMP
-   NOTE: the svn plugin is used merely to start the build, the build script
-   then uses svn from the command line
+6. In Jenkins use this url for svn
+   https://svn.code.sf.net/p/oorexx/code-0/docs/trunk oorexxdocSVN
+   For a Release version use this (or similar)
+   https://svn.code.sf.net/p/oorexx/code-0/docs/branches/5.0.0
 
-7. The Jenkins Build Steps use the rexx script BuildandUploadDocs.rex
-   In the Build Steps then use
-   svn.code.sf.net/p/oorexx/code-0/docs/trunk for a build from trunk.
-   For a release version use this (or similar)
-   svn.code.sf.net/p/oorexx/code-0/docs/branches/5.0/trunk
-   svn.code.sf.net/p/oorexx/code-0/docs/branches/5.0.0/trunk
-   BuildandUploadDocs.rex will build the ooRexx documentation
+7. The Jenkins build steps use the rexx script BuildandUploadDocs.rex
+   - The script will build the ooRexx documentation
    - Only books that have been changed will be built
-   - PDF and HTML versions of each book are built
+   - PDF and HTML versions of each book is built
 
 8. BuildandUploadDocs.rex uses scp to upload the documentation to Sourceforge
    - The user must have R/W (admin) rights on Sourceforge.

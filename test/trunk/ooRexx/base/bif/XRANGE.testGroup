@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -289,6 +289,8 @@ myxrange:
 ::method test_xrange_class_hex
     self~assertSame(self~sequence("alpha"), xrange("upper", "a", "z"))
     self~assertSame(self~sequence("UPPER") || " ", xrange("upper", " ", " "))
+    self~assertSame(self~sequence("blank") || 'fe ff'x, xrange("blank", 'fe'x))
+    self~assertSame(self~sequence("cntrl") || '00 01'x, xrange("Cntrl", , '01'x))
 
 
 -- test two ranges: hex range, hex range
@@ -314,6 +316,9 @@ myxrange:
     digit = "DIGIT"
     upper = "UPPER"
     lower = "LOWER"
+    alpha = "ALPHA"
+    self~assertSame(self~sequence("alnum") || 'fe ff'x, xrange(digit, alpha, 'fe'x))
+    self~assertSame(self~sequence("alnum") || '00 01'x, xrange(digit, alpha, , '01'x))
     self~assertSame(self~sequence("alnum"), xrange(0, 9,  "A", "Z", "a", "z"))
     self~assertSame(self~sequence("alnum"), xrange(digit, "A", "Z", "a", "z"))
     self~assertSame(self~sequence("alnum"), xrange(0, 9,  upper,    "a", "z"))

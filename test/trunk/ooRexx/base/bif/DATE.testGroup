@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2022 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -82,6 +82,7 @@ else
   self~expectSyntax((40.43, "DATE", 4)) -- DATE argument 4 must be a single non-alphanumeric character or the null string; found "a"
   call date , , , "a"
 
+-- output separator is only valid for "E", "I", "N", "O", "S", and "U"
 ::method test_args_four_one_incompatible
   self~expectSyntax((40.44, "DATE", 1, "B", 4)) -- DATE argument 1, "B", is a format incompatible with the separator specified in argument 4
   call date "b", , , ""
@@ -102,6 +103,17 @@ else
 ::method test_args_six_too_many
   self~expectSyntax((40.4, "DATE", 5)) -- Too many arguments in invocation of DATE; maximum expected is 5
   call date , , , , , ""
+
+-- [bugs:#2082] DATE accepts day-of-year 0
+::method test_format_d_0_invalid
+  self~expectSyntax(40.19) -- DATE argument 2, "0", is not in the format described by argument 3, "D"
+  call date , 0, "D"
+
+::method test_format_d_366_invalid
+  parse value date() with . . yyyy
+  days = date("D" , '31 Dec' yyyy) -- 365 or 366
+  self~expectSyntax(40.19) -- DATE argument 2, "366", is not in the format described by argument 3, "D"
+  call date , days + 1, "D"
 
 
 -- an output separator is only valid for options EINOSU
@@ -238,6 +250,8 @@ else
   self~assertSame("20230101", date("s", "1 Jan 2023"))
   self~assertSame("20231231", date("S", "31 Dec 2023"))
   -- with output separator
+  nul = '00'x
+  self~assertSame(year || nul || month || nul || day, date("S", , , nul))
   self~assertSame(year||month||day, date("Std", , , ""))
   self~assertSame(year"="month"="day, date("s", , , "="))
   self~assertSame(date("iso"), date("standard", , , "-"))
@@ -284,6 +298,35 @@ else
   do option over self~optionsArg3~makeArray("")
     self~assertSame(date(option), date(option, date(option), option), "DATE("option") should be DATE("option", DATE("option")," option")")
   end
+
+::method test_output_separator_valid
+  call date , , , ""
+  call date , , , "-"
+  call date , , , ":"
+  call date , , , " "
+  call date , , , .String~tab
+  call date , , , "|"
+  call date , , , "\"
+  call date , , , 'ff'x
+  call date , , , '00'x
+
+-- conversion forms
+
+::method test_conversion_days_invalid_too_low
+  self~expectSyntax(40.19) -- DATE argument 2, "0", is not in the format described by argument 3, "D"
+  call date , 0, "days"
+
+::method test_conversion_days
+  self~assertSame("January", date("month", 1, "days"))
+
+::method test_conversion_base
+  self~assertSame("00010101", date("s", 0, "base"))
+
+::method test_conversion_full
+  self~assertSame("00010101", date("s", 0, "full"))
+
+::method test_conversion_ticks
+  self~assertSame("19700101", date("s", 0, "ticks"))
 
 
 -- Methods taken directly from Rick's generated testGroup

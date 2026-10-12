@@ -1,7 +1,7 @@
 #!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2025 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2026 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -745,6 +745,12 @@ address "" "" with input using "This is a test"
 
 address "" "" with input using "This is a test"
 
+-- empty input should work
+-- [bugs:#2086] ADDRESS WITH INPUT STEM hangs when stem has 0 elements
+in.0 = 0
+address "" self~inputToOutput with input stem in. output stem out.
+self~assertSame(0, out.0)
+
 -- using an uninitialized stem variable
 address "" self~inputToOutput with input using "This is a test" output stem a.
 self~assertSame(1, a.0)
@@ -812,17 +818,18 @@ self~assertSame("This is another test", array[2])
 
 ::method test_file_input
 
-temp = .TemporaryTestFile~new(self, 'testinput')
-temp~create(("Line1","","Line3"))
+in = .TemporaryTestFile~new(self, self~temporaryFilename)
+lines = "Line1", "", "Line3"
+in~create(lines)
 
-array = .array~new
-address "" self~inputToOutput with input stream (temp~fullName) output using (array)
-self~assertSame(3, array~items)
-self~assertSame("Line1", array[1])
-self~assertSame("", array[2])
-self~assertSame("Line3", array[3])
+out = .Array~new
+address "" self~inputToOutput with input stream (in~fullName) output using (out)
+self~assertSameList(lines, out)
 
-temp~delete
+address "" self~inputToOutput with input using (.File~new(in~fullName)) output using (out)
+self~assertSameList(lines, out)
+
+in~delete
 
 -- test non-destructive buffering when source and target are the same
 ::method test_buffering
@@ -867,6 +874,13 @@ a.3 = "Line3"
 
 -- now same variants using a stem
 address "" self~inputToOutputNoBlanks with input stem a. output stem a.
+self~assertSame(2, a.0)
+self~assertSame("Line1", a.1)
+self~assertSame("Line3", a.2)
+
+-- test source input, and target error
+-- [bugs:#2087] ADDRESS WITH: ERROR target same as INPUT is not buffered
+address "" self~inputToError with input stem a. error stem a.
 self~assertSame(2, a.0)
 self~assertSame("Line1", a.1)
 self~assertSame("Line3", a.2)
