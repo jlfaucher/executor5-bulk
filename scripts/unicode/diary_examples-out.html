@@ -41,8 +41,8 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
-</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 24 Sep 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: Sd602Qa1900cd80
+</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 3 Oct 2026
+</span><span style="font-weight:bold;color:green;">Input queue name: Sa8fbQb1502e040
 </span>
 <span style="font-weight:bold;color:blue;">-- Unicode Regression Tests
 </span>
@@ -459,14 +459,14 @@ an Array (shape [1], 1 items)
 </span><span style="font-weight:bold;color:blue;">-- The start error storage is driven by the start codepoint storage:
 </span><span style="font-weight:bold;color:blue;">-- since no codepoint is read, startErrorMessages is empty at the end of initialization.
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~newIncremental(&quot;⦅⦅&quot; || &quot;F4 91&quot;x &quot;🎅&quot; &quot;F4&quot;x &quot;👨‍👩‍👧&quot; &quot;F4 91&quot;x || &quot;⦆⦆&quot;, 0, 0, 1, 0, 1, 1)</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~limits=                 </span><span style="font-weight:bold;color:blue;">-- [ 0, 0, 1, 0, 2, 1]</span>
-[ 0, 0, 1, 0, 2, 1]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~limits=                 </span><span style="font-weight:bold;color:blue;">-- [ 0, 0, 1, 0, 1, 1]</span>
+[ 0, 0, 1, 0, 1, 1]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=  </span><span style="font-weight:bold;color:blue;">-- []</span>
 []
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages=     </span><span style="font-weight:bold;color:blue;">-- []</span>
 []
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 41, 38]</span>
-[ 41, 38]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 41]</span>
+[ 41]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorMessages=       </span><span style="font-weight:bold;color:blue;">-- []</span>
 []
 <span style="font-weight:bold;color:blue;">--
@@ -545,8 +545,8 @@ an Array (shape [5], 5 items)
 <span style="font-weight:bold;color:blue;">-- The start error storage is driven by the start codepoint storage:
 </span><span style="font-weight:bold;color:blue;">-- must read at least 3 codepoints to have a start error at the end of initialization.
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~newIncremental(&quot;⦅⦅&quot; || &quot;F4 91&quot;x &quot;🎅&quot; &quot;F4&quot;x &quot;👨‍👩‍👧&quot; &quot;F4 91&quot;x || &quot;⦆⦆&quot;, 0, 3, 1, 0, 1, 1)</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~limits=                 </span><span style="font-weight:bold;color:blue;">-- [ 0, 3, 1, 0, 2, 1]</span>
-[ 0, 3, 1, 0, 2, 1]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~limits=                 </span><span style="font-weight:bold;color:blue;">-- [ 0, 3, 1, 0, 1, 1]</span>
+[ 0, 3, 1, 0, 1, 1]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=  </span><span style="font-weight:bold;color:blue;">-- [ 1, 4,-7]</span>
 [ 1, 4,-7]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
@@ -556,8 +556,8 @@ an Array (shape [1], 1 items)
 </span><span style="font-weight:bold;color:blue;">    an Array (shape [1], 1 items)
 </span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 7 : Invalid continuation byte 145 (''91''x) at byte position 8 (code point &gt; U+10FFFF)'
 </span><span style="font-weight:bold;color:blue;">*/
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 41, 38]</span>
-[ 41, 38]
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 41]</span>
+[ 41]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorMessages=       </span><span style="font-weight:bold;color:blue;">-- []</span>
 []
 <span style="font-weight:bold;color:blue;">--
@@ -588,17 +588,17 @@ an Array (shape [2], 2 items)
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
 
-<span style="font-weight:bold;color:blue;">-- The end codepoint limit is increased to remain aligned with a grapheme boundary
+<span style="font-weight:bold;color:blue;">-- The end codepoint limit does not need an adjustment because the end grapheme storage is not enabled
 </span><span style="font-weight:bold;color:blue;">-- Now we have stored errors. The end error limit is increased to store all the errors encountered when decoding the codepoints
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~newIncremental(&quot;⦅⦅&quot; || &quot;F4 91&quot;x &quot;🎅&quot; &quot;F4&quot;x &quot;👨‍👩‍👧&quot; &quot;F4 91&quot;x || &quot;⦆⦆&quot;, 0, 0, 1, 0, 7, 1)</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~limits=                 </span><span style="font-weight:bold;color:blue;">-- [ 0, 0, 1, 0, 11, 1]</span>
-[ 0, 0, 1, 0, 11, 1]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~limits=                 </span><span style="font-weight:bold;color:blue;">-- [ 0, 0, 1, 0, 7, 1]</span>
+[ 0, 0, 1, 0, 7, 1]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=  </span><span style="font-weight:bold;color:blue;">-- []</span>
 []
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages=     </span><span style="font-weight:bold;color:blue;">-- []</span>
 []
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 41, 38,-37,-36, 35, 31, 28, 24, 21, 17, 16]</span>
-[ 41, 38,-37,-36, 35, 31, 28, 24, 21, 17, 16]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 41, 38,-37,-36, 35, 31, 28]</span>
+[ 41, 38,-37,-36, 35, 31, 28]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorMessages==</span>
 an Array (shape [2], 2 items)
  1 : 'start byte position 37 : Invalid start byte 145 (''91''x) (non-shortest form)'
@@ -634,10 +634,10 @@ an Array (shape [5], 5 items)
 </span>
 
 <span style="font-weight:bold;color:blue;">-- The start codepoint limit is unchanged, because it's aligned with a grapheme boundary
-</span><span style="font-weight:bold;color:blue;">-- The end codepoint limit is increased to remain aligned with a grapheme boundary
+</span><span style="font-weight:bold;color:blue;">-- The end codepoint limit does not need an adjustment because the end grapheme storage is not enabled
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~newIncremental(&quot;⦅⦅&quot; || &quot;F4 91&quot;x &quot;🎅&quot; &quot;F4&quot;x &quot;👨‍👩‍👧&quot; &quot;F4 91&quot;x || &quot;⦆⦆&quot;, 0, 8, 1, 0, 7, 1)</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~limits=                 </span><span style="font-weight:bold;color:blue;">-- [ 0, 8, 1, 0, 11, 1]</span>
-[ 0, 8, 1, 0, 11, 1]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~limits=                 </span><span style="font-weight:bold;color:blue;">-- [ 0, 8, 1, 0, 7, 1]</span>
+[ 0, 8, 1, 0, 7, 1]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=  </span><span style="font-weight:bold;color:blue;">-- [ 1, 4,-7,-8, 9, 10, 14,-15]</span>
 [ 1, 4,-7,-8, 9, 10, 14,-15]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
@@ -651,8 +651,8 @@ an Array (shape [3], 3 items)
 </span><span style="font-weight:bold;color:blue;">     2 : 'start byte position 8 : Invalid start byte 145 (''91''x) (non-shortest form)'
 </span><span style="font-weight:bold;color:blue;">     3 : 'start byte position 15 : Invalid continuation byte 32 (''20''x) at byte position 16'
 </span><span style="font-weight:bold;color:blue;">*/
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 41, 38,-37,-36, 35, 31, 28, 24, 21, 17, 16]</span>
-[ 41, 38,-37,-36, 35, 31, 28, 24, 21, 17, 16]
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 41, 38,-37,-36, 35, 31, 28]</span>
+[ 41, 38,-37,-36, 35, 31, 28]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorMessages==</span>
 an Array (shape [2], 2 items)
  1 : 'start byte position 37 : Invalid start byte 145 (''91''x) (non-shortest form)'
@@ -664,8 +664,8 @@ an Array (shape [2], 2 items)
 </span><span style="font-weight:bold;color:blue;">*/
 </span><span style="font-weight:bold;color:blue;">--
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~string~length; indexer~codepointIndexC(i); end</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=  </span><span style="font-weight:bold;color:blue;">-- [ 1, 4,-7,-8, 9, 10, 14,-15]</span>
-[ 1, 4,-7,-8, 9, 10, 14,-15]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=  </span><span style="font-weight:bold;color:blue;">-- [ 1, 4,-7,-8, 9, 10, 14,-15, 16, 17, 21]</span>
+[ 1, 4,-7,-8, 9, 10, 14,-15, 16, 17, 21]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
 an Array (shape [3], 3 items)
  1 : 'start byte position 7 : Invalid continuation byte 145 (''91''x) at byte position 8 (code point &gt; U+10FFFF)'
@@ -677,8 +677,8 @@ an Array (shape [3], 3 items)
 </span><span style="font-weight:bold;color:blue;">     2 : 'start byte position 8 : Invalid start byte 145 (''91''x) (non-shortest form)'
 </span><span style="font-weight:bold;color:blue;">     3 : 'start byte position 15 : Invalid continuation byte 32 (''20''x) at byte position 16'
 </span><span style="font-weight:bold;color:blue;">*/
-</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 41, 38,-37,-36, 35, 31, 28, 24, 21, 17, 16]</span>
-[ 41, 38,-37,-36, 35, 31, 28, 24, 21, 17, 16]
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=    </span><span style="font-weight:bold;color:blue;">-- [ 41, 38,-37,-36, 35, 31, 28, 24]</span>
+[ 41, 38,-37,-36, 35, 31, 28, 24]
 ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorMessages==</span>
 an Array (shape [2], 2 items)
  1 : 'start byte position 37 : Invalid start byte 145 (''91''x) (non-shortest form)'
@@ -1195,13 +1195,13 @@ name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 32, 1,-1,'start byte position 
 name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 31, 1,-1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point &gt; U+10FFFF)']
 2 : \xF4
 name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 30, 1, 32,'']
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 26,-4, 128103,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 26, 4, 128103,'']
 3 :  
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 23,-3, 8205,'']
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 19,-4, 128105,'']
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 16,-3, 8205,'']
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 12,-4, 128104,'']
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 11,-1, 32,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 23, 3, 8205,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 19, 4, 128105,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 16, 3, 8205,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 12, 4, 128104,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 11, 1, 32,'']
 4 : 👨\u200D👩\u200D👧
 name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 10, 1,-1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
 5 :  
@@ -1209,9 +1209,9 @@ name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 10, 1,-1,'start byte position 
 name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 9, 1,-1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point &gt; U+10FFFF)']
 7 : \xF4
 name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 8, 1, 32,'']
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 4,-4, 127877,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 4, 4, 127877,'']
 8 :  
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 3,-1, 32,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 3, 1, 32,'']
 9 : 🎅
 name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 2, 1,-1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
 10 :  
@@ -1224,13 +1224,13 @@ name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 1, 1,-1,'start byte position 1
 </span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 31, 1,-1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point &gt; U+10FFFF)']
 </span><span style="font-weight:bold;color:blue;">    2 : \xF4
 </span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 30, 1, 32,'']
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 26,-4, 128103,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 26, 4, 128103,'']
 </span><span style="font-weight:bold;color:blue;">    3 :
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 23,-3, 8205,'']
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 19,-4, 128105,'']
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 16,-3, 8205,'']
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 12,-4, 128104,'']
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 11,-1, 32,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 23, 3, 8205,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 19, 4, 128105,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 16, 3, 8205,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 12, 4, 128104,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 11, 1, 32,'']
 </span><span style="font-weight:bold;color:blue;">    4 : 👨\u200D👩\u200D👧
 </span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 10, 1,-1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
 </span><span style="font-weight:bold;color:blue;">    5 :
@@ -1238,9 +1238,9 @@ name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 1, 1,-1,'start byte position 1
 </span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 9, 1,-1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point &gt; U+10FFFF)']
 </span><span style="font-weight:bold;color:blue;">    7 : \xF4
 </span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 8, 1, 32,'']
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 4,-4, 127877,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 4, 4, 127877,'']
 </span><span style="font-weight:bold;color:blue;">    8 :
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 3,-1, 32,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 3, 1, 32,'']
 </span><span style="font-weight:bold;color:blue;">    9 : 🎅
 </span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 2, 1,-1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
 </span><span style="font-weight:bold;color:blue;">    10 :
@@ -1347,14 +1347,14 @@ name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 31, 1,-1,'start byte position 
 name= &quot;GRAPHEMEACTION&quot; arguments= [ 1, 31, 1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point &gt; U+10FFFF)']
 2 : \xF4
 name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 30, 1, 32,'']
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 26,-4, 128103,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 26, 4, 128103,'']
 name= &quot;GRAPHEMEACTION&quot; arguments= [ 0, 30, 1,'']
 3 :  
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 23,-3, 8205,'']
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 19,-4, 128105,'']
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 16,-3, 8205,'']
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 12,-4, 128104,'']
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 11,-1, 32,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 23, 3, 8205,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 19, 4, 128105,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 16, 3, 8205,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 12, 4, 128104,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 11, 1, 32,'']
 name= &quot;GRAPHEMEACTION&quot; arguments= [ 0, 12, 18,'']
 4 : 👨\u200D👩\u200D👧
 name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 10, 1,-1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
@@ -1366,10 +1366,10 @@ name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 9, 1,-1,'start byte position 9
 name= &quot;GRAPHEMEACTION&quot; arguments= [ 1, 9, 1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point &gt; U+10FFFF)']
 7 : \xF4
 name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 8, 1, 32,'']
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 4,-4, 127877,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 4, 4, 127877,'']
 name= &quot;GRAPHEMEACTION&quot; arguments= [ 0, 8, 1,'']
 8 :  
-name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 3,-1, 32,'']
+name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 3, 1, 32,'']
 name= &quot;GRAPHEMEACTION&quot; arguments= [ 0, 4, 4,'']
 9 : 🎅
 name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 2, 1,-1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
@@ -1388,14 +1388,14 @@ name= &quot;GRAPHEMEACTION&quot; arguments= [ 1, 1, 1,'start byte position 1 : I
 </span><span style="font-weight:bold;color:blue;">    name= &quot;GRAPHEMEACTION&quot; arguments= [ 1, 31, 1,'start byte position 31 : Invalid continuation byte 145 (''91''x) at byte position 32 (code point &gt; U+10FFFF)']
 </span><span style="font-weight:bold;color:blue;">    2 : \xF4
 </span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 30, 1, 32,'']
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 26,-4, 128103,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 26, 4, 128103,'']
 </span><span style="font-weight:bold;color:blue;">    name= &quot;GRAPHEMEACTION&quot; arguments= [ 0, 30, 1,'']
 </span><span style="font-weight:bold;color:blue;">    3 :
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 23,-3, 8205,'']
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 19,-4, 128105,'']
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 16,-3, 8205,'']
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 12,-4, 128104,'']
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 11,-1, 32,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 23, 3, 8205,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 19, 4, 128105,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 16, 3, 8205,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 12, 4, 128104,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 11, 1, 32,'']
 </span><span style="font-weight:bold;color:blue;">    name= &quot;GRAPHEMEACTION&quot; arguments= [ 0, 12, 18,'']
 </span><span style="font-weight:bold;color:blue;">    4 : 👨\u200D👩\u200D👧
 </span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 10, 1,-1,'start byte position 10 : Invalid start byte 145 (''91''x) (non-shortest form)']
@@ -1407,10 +1407,10 @@ name= &quot;GRAPHEMEACTION&quot; arguments= [ 1, 1, 1,'start byte position 1 : I
 </span><span style="font-weight:bold;color:blue;">    name= &quot;GRAPHEMEACTION&quot; arguments= [ 1, 9, 1,'start byte position 9 : Invalid continuation byte 145 (''91''x) at byte position 10 (code point &gt; U+10FFFF)']
 </span><span style="font-weight:bold;color:blue;">    7 : \xF4
 </span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 8, 1, 32,'']
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 4,-4, 127877,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 4, 4, 127877,'']
 </span><span style="font-weight:bold;color:blue;">    name= &quot;GRAPHEMEACTION&quot; arguments= [ 0, 8, 1,'']
 </span><span style="font-weight:bold;color:blue;">    8 :
-</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 3,-1, 32,'']
+</span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 0, 3, 1, 32,'']
 </span><span style="font-weight:bold;color:blue;">    name= &quot;GRAPHEMEACTION&quot; arguments= [ 0, 4, 4,'']
 </span><span style="font-weight:bold;color:blue;">    9 : 🎅
 </span><span style="font-weight:bold;color:blue;">    name= &quot;CODEPOINTACTION&quot; arguments= [ 1, 2, 1,-1,'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)']
@@ -1483,10 +1483,10 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~code
 17: -37
 18: -38
 19: 39
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=      </span><span style="font-weight:bold;color:blue;">-- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32, 36,-37]</span>
-[ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32, 36,-37]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=        </span><span style="font-weight:bold;color:blue;">-- [ 39, -38]</span>
-[ 39,-38]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=      </span><span style="font-weight:bold;color:blue;">-- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32, 36,-37,-38]]</span>
+[ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32, 36,-37,-38]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=        </span><span style="font-weight:bold;color:blue;">-- [ 39]</span>
+[ 39]
 
 
 <span style="font-weight:bold;color:blue;">-- #02i Odd codepoint count, backward progression
@@ -1544,10 +1544,10 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~code
 18: -38
 19: 39
 20: 42
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=      </span><span style="font-weight:bold;color:blue;">-- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32, 36,-37,-38]</span>
-[ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32, 36,-37,-38]
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=        </span><span style="font-weight:bold;color:blue;">-- [ 42, 39]</span>
-[ 42, 39]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIndexes=      </span><span style="font-weight:bold;color:blue;">-- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32, 36,-37,-38, 39]</span>
+[ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32, 36,-37,-38, 39]
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endCodepointIndexes=        </span><span style="font-weight:bold;color:blue;">-- [ 42]</span>
+[ 42]
 
 
 <span style="font-weight:bold;color:blue;">-- #04i Even codepoint count, backward progression

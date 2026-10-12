@@ -16,11 +16,20 @@ scriptsFiles1= eastAsianWidthIsAmbiguous_test \
                incorrect_character \
                RexxUnicode_test \
                RexxUnicodeServices_test \
-               StringIndexer_test \
                ../../main/trunk/interpreter/classes/support/Unicode/unicode-width/tests/tests
 
+# ooRexx scripts, StringIndexer
+scriptsFiles2= StringIndexer_test1 \
+               StringIndexer_test2 \
+               StringIndexer_test3 \
+               StringIndexer_test4 \
+               StringIndexer_test5 \
+               StringIndexer_test6 \
+               StringIndexer_test7 \
+               StringIndexer_test8
+
 # ooRexx scripts, results impacted by ICU4C version
-scriptsFiles2= charWidth_stringWidth_test \
+scriptsFiles3= charWidth_stringWidth_test \
                controlBoundary_test \
                width_printable_test
 
@@ -36,18 +45,23 @@ help:
 	@echo "---------- scriptsFiles1"
 	@for f in $(scriptsFiles1); do echo "make" $$f; done
 	@echo
-	@echo "---------- scriptsFiles2, results impacted by ICU4C version"
+	@echo "---------- scriptsFiles2, StringIndexer"
 	@for f in $(scriptsFiles2); do echo "make" $$f; done
+	@echo
+	@echo "---------- scriptsFiles3, results impacted by ICU4C version"
+	@for f in $(scriptsFiles3); do echo "make" $$f; done
 	@echo
 	@echo "---------- html (needs asciinema and aha)"
 	@for f in $(ooRexxShellFiles); do echo "make" $$f-out.html; done
 	@echo
 
+# Keep set -e and the backslash to stop immediately at the first error
 all:
 	@set -e; \
 	for f in $(ooRexxShellFiles); do make $$f; done; \
 	for f in $(scriptsFiles1); do make $$f; done; \
-	for f in $(scriptsFiles2); do make $$f; done
+	for f in $(scriptsFiles2); do make $$f; done; \
+	for f in $(scriptsFiles3); do make $$f; done
 	@echo
 	@echo "To be launched separately: make html (needs asciinema and aha)"
 
@@ -61,15 +75,19 @@ ooRexxShellFiles: $(ooRexxShellFiles)
 $(ooRexxShellFiles):
 	rm -f $@-out.txt
 	bash -i -c '( cat $@.oorexxshell ; echo RC = 0 ) | oorexxshell test regression > $@-out.txt 2>&1'
+	# diff -q $@-out.txt $@-out-ref.txt
 	diff -q $@-out-ref.txt $@-out.txt
 
 scriptsFiles1: $(scriptsFiles1)
 
-scriptsFiles2: $(scriptsFiles2)
+scriptsFiles2 StringIndexer: $(scriptsFiles2)
 
-$(scriptsFiles1) $(scriptsFiles2):
+scriptsFiles3: $(scriptsFiles3)
+
+$(scriptsFiles1) $(scriptsFiles2) $(scriptsFiles3):
 	rm -f $@-out.txt
 	bash -i -c 'rexx $@.rex  --testRegression > $@-out.txt 2>&1'
+	# diff -q $@-out.txt $@-out-ref.txt
 	diff -q $@-out-ref.txt $@-out.txt
 
 %.cast: %.oorexxshell
@@ -84,6 +102,7 @@ clean:
 	@#for f in $(ooRexxShellFiles); do rm -f $$f-out.html; done
 	@for f in $(scriptsFiles1); do rm -f $$f-out.txt; done
 	@for f in $(scriptsFiles2); do rm -f $$f-out.txt; done
+	@for f in $(scriptsFiles3); do rm -f $$f-out.txt; done
 
 
 # bash -i -c 'command" is a trick to bypass the SIP hell:

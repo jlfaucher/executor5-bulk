@@ -41,8 +41,8 @@
 </span><span style="font-weight:bold;color:green;">loadPackage OK for rxunicode.cls
 </span><span style="font-weight:bold;color:green;">loadPackage OK for icu4oorexx.cls
 </span><span style="font-weight:bold;color:green;">
-</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 24 Sep 2026
-</span><span style="font-weight:bold;color:green;">Input queue name: Sd63aQa1900cd80
+</span><span style="font-weight:bold;color:green;">REXX-ooRexx_5.3.0(MT)_64-bit 6.06 3 Oct 2026
+</span><span style="font-weight:bold;color:green;">Input queue name: Sa932Qb1502e100
 </span>
 <span style="font-weight:bold;color:blue;">/*
 </span><span style="font-weight:bold;color:blue;">Examples in rxunicode.md
@@ -2803,26 +2803,34 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startCodepointIn
 <span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts
 </span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, 0, 0, 5, 0, 0, 5)</span>
-ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
-an Array (shape [5], 5 items)
- 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
- 2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
- 3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
- 4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
- 5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
-<span style="font-weight:bold;color:blue;">/*
-</span><span style="font-weight:bold;color:blue;">    an Array (shape [5], 5 items)
-</span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
-</span><span style="font-weight:bold;color:blue;">     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
-</span><span style="font-weight:bold;color:blue;">     3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
-</span><span style="font-weight:bold;color:blue;">     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
-</span><span style="font-weight:bold;color:blue;">     5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
-</span><span style="font-weight:bold;color:blue;">*/
-</span>
 
-<span style="font-weight:bold;color:blue;">-- No error is stored because no codepoint is stored
+<span style="font-weight:bold;color:blue;">-- Empty because no grapheme/codepoint index is stored.
 </span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorMessages=   </span><span style="font-weight:bold;color:blue;">-- []</span>
 []
+
+
+<span style="font-weight:bold;color:blue;">-- In incremental mode, the error limit is replaced by a boolean (disable/enable storage).
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~newIncremental(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, 0, 0, .true, 0, 0, .true)</span>
+
+<span style="font-weight:bold;color:blue;">-- Empty because no grapheme/codepoint index is stored.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorMessages=   </span><span style="font-weight:bold;color:blue;">-- []</span>
+[]
+
+
+<span style="font-weight:bold;color:blue;">-- Incremental mode with limited grapheme storage and error storage enabled.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~newIncremental(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, 1, 0, .true, 2, 0, .true)</span>
+
+<span style="font-weight:bold;color:blue;">-- Error stored because a grapheme index referencing an invalid byte sequence is stored.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endErrorMessages==</span>
+an Array (shape [1], 1 items)
+ 1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    an Array (shape [1], 1 items)
+</span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~endGraphemeIndexes=     </span><span style="font-weight:bold;color:blue;">-- [ 9,-8]</span>
+[ 9,-8]
 
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
@@ -2990,6 +2998,84 @@ ooRexx&gt; <span style="font-weight:bold;color:purple;">do i = 1 to indexer~stri
 </span><span style="font-weight:bold;color:blue;">    20: 3
 </span><span style="font-weight:bold;color:blue;">*/
 </span>
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeStringIndexer~startErrorMessages
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+<span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts
+</span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~new(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, 0, 0, 5, 0, 0, 5)</span>
+
+<span style="font-weight:bold;color:blue;">-- In non-incremental mode, start errors are stored up to the limit, even if no grapheme/codepoint index is stored.
+</span><span style="font-weight:bold;color:blue;">-- This is because:
+</span><span style="font-weight:bold;color:blue;">-- - a full forward scan is performed, independently of the specified limits.
+</span><span style="font-weight:bold;color:blue;">-- - each limit is a target to reach and does not depend on the other limits.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
+an Array (shape [5], 5 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+ 2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+ 3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+ 4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+ 5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    an Array (shape [5], 5 items)
+</span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+</span><span style="font-weight:bold;color:blue;">     5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+
+<span style="font-weight:bold;color:blue;">-- In incremental mode, the error limit is replaced by a boolean (disable/enable storage).
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~newIncremental(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, 0, 0, .true, 0, 0, .true)</span>
+
+<span style="font-weight:bold;color:blue;">-- Empty because no grapheme/codepoint index is stored.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages= </span><span style="font-weight:bold;color:blue;">-- []</span>
+[]
+
+
+<span style="font-weight:bold;color:blue;">-- Incremental mode with limited grapheme storage and error storage enabled.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer = .RexxUnicodeStringIndexer~newIncremental(&quot;F4 91 92 93 FF 41 80 BF 42&quot;x, 1, 0, .true, 2, 0, .true)</span>
+
+<span style="font-weight:bold;color:blue;">-- Error stored because a grapheme index referencing an invalid byte sequence is stored.
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startErrorMessages==</span>
+an Array (shape [1], 1 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+<span style="font-weight:bold;color:blue;">/*
+</span><span style="font-weight:bold;color:blue;">    an Array (shape [1], 1 items)
+</span><span style="font-weight:bold;color:blue;">     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point &gt; U+10FFFF)'
+</span><span style="font-weight:bold;color:blue;">*/
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">indexer~startGraphemeIndexes=   </span><span style="font-weight:bold;color:blue;">-- [-1]</span>
+[-1]
+
+
+<span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span><span style="font-weight:bold;color:blue;">-- aRexxUnicodeStringIndexer~stringInfo
+</span><span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
+</span>
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;&quot;)~stringInfo=       </span><span style="font-weight:bold;color:blue;">-- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'</span>
+'(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;e&quot;)~stringInfo=      </span><span style="font-weight:bold;color:blue;">-- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'</span>
+'(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;é&quot;)~stringInfo=      </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'</span>
+'(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;€&quot;)~stringInfo=      </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'</span>
+'(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;🎅&quot;)~stringInfo=     </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'</span>
+'(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;👨‍👩‍👧&quot;)~stringInfo=     </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'</span>
+'(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+
+
+<span style="font-weight:bold;color:blue;">-- Invalid string
+</span><span style="font-weight:bold;color:blue;">-- U+FFFD Substitution of Maximal Subparts
+</span><span style="font-weight:bold;color:blue;">-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+</span>ooRexx&gt; <span style="font-weight:bold;color:purple;">.RexxUnicodeStringIndexer~new(&quot;E1 80 E2 F0 91 92 F1 BF 41&quot;x)~stringInfo=    </span><span style="font-weight:bold;color:blue;">-- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'</span>
+'(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+
 
 <span style="font-weight:bold;color:blue;">--------------------------------------------------------------------------------
 </span><span style="font-weight:bold;color:blue;">-- .RexxUnicodeCharacter~properties

@@ -290,7 +290,7 @@ ooRexx> string = "noël👩‍👨‍👩‍👧🎅"
 
 -- A reverse codepoint supplier does not depend on `graphemeBreakBackward`
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new(string, "b", .RexxUnicodeCharacter)==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  31 : ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
  27 : ("👧" \x{F09F91A7} U+1F467 So Other_Symbol "GIRL")
  24 : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
@@ -321,7 +321,7 @@ a RexxUnicodeReverseCodepointSupplier
 
 -- A reverse grapheme supplier depends on `graphemeBreakBackward`
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "\")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  31 : '🎅'
  6  : '👩\u200D👨\u200D👩\u200D👧'
  5  : 'l'
@@ -853,7 +853,7 @@ ooRexx> string = "\N{<control-0007>}Le\N{IDEOGRAPHIC SPACE}\N{OGHAM SPACE MARK}\
 ooRexx> string = .RexxUnicode~stringUnescape(string)
 
 ooRexx> .RexxUnicodeCodepointSupplier~new(string, , .RexxUnicodeCharacter)==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1  : (<?> \x07 U+0007 Cc Control "<control-0007>")
  2  : ("L" \x4C U+004C Lu Uppercase_Letter "LATIN CAPITAL LETTER L")
  3  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
@@ -1011,7 +1011,7 @@ ooRexx> tstring=; .RexxUnicode~C2U(tstring)=
 -- 'U+006C U+0065 U+0020 U+0020 U+0070 U+0065 U+0072 U+0065 U+0020 U+002D U+002D U+002D U+006E U+006F U+0065 U+006C U+0020'
 
 ooRexx> .RexxUnicodeCodepointSupplier~new(tstring, , .RexxUnicodeCharacter)==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1  : ("l" \x6C U+006C Ll Lowercase_Letter "LATIN SMALL LETTER L")
  2  : ("e" \x65 U+0065 Ll Lowercase_Letter "LATIN SMALL LETTER E")
  3  : (" " \x20 U+0020 Zs Space_Separator "SPACE")
@@ -1551,7 +1551,7 @@ Error code= 22.900
 -- the default index type is the codepoint index
 -- the default item type is the codepoint as a whole number
 ooRexx> .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1  :  110
  2  :  111
  3  :  235
@@ -1581,7 +1581,7 @@ a RexxUnicodeCodepointSupplier
 -- It's possible to get other types of index and item
 -- Here, we request the byte index and the codepoint byte sequence as hex digits
 ooRexx> .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", "b", "x")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1  : '\x6E'
  2  : '\x6F'
  3  : '\x{C3AB}'
@@ -1610,7 +1610,7 @@ a RexxUnicodeCodepointSupplier
 -- Example 3
 -- Codepoint supplier providing the default index and returning the codepoint escaped string
 ooRexx> .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , "\")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1  : 'n'
  2  : 'o'
  3  : 'ë'
@@ -1639,7 +1639,7 @@ a RexxUnicodeCodepointSupplier
 -- Example 4
 -- Codepoint supplier providing the default index and returning the codepoint in U+ notation
 ooRexx> .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , "u")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1  : 'U+006E'
  2  : 'U+006F'
  3  : 'U+00EB'
@@ -1668,7 +1668,7 @@ a RexxUnicodeCodepointSupplier
 -- Example 5
 -- Codepoint supplier providing the default index and returning the codepoint as a RexxUnicodeCharacter
 ooRexx> .RexxUnicodeCodepointSupplier~new("noël👨‍👩‍👧🎅", , .RexxUnicodeCharacter)==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1  : ("n" \x6E U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
  2  : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
  3  : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")
@@ -1700,7 +1700,7 @@ a RexxUnicodeCodepointSupplier
 
 -- Codepoint supplier providing the codepoint index and returning the codepoint as a whole number
 ooRexx> .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x)==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1 :  65533
  2 :  65533
  3 :  65533
@@ -1720,7 +1720,7 @@ a RexxUnicodeCodepointSupplier
 -- Codepoint supplier providing the byte index and returning the codepoint escaped string
 -- A negative byte index indicates an invalid byte sequence
 ooRexx> .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
 -1 : '\x{E180}'
 -3 : '\xE2'
 -4 : '\x{F09192}'
@@ -1739,7 +1739,7 @@ a RexxUnicodeCodepointSupplier
 -- Example 8
 -- Codepoint supplier providing the byte index and returning the error message
 ooRexx> .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
 -1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
 -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
 -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
@@ -1763,7 +1763,7 @@ a RexxUnicodeCodepointSupplier
 -- the default index type is the grapheme index
 -- the default item type is the grapheme as a string
 ooRexx> .RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'n'
  2 : 'o'
  3 : 'ë'
@@ -1784,7 +1784,7 @@ a RexxUnicodeGraphemeSupplier
 -- Example 2
 -- Grapheme supplier providing the byte index and returning the grapheme byte sequence as hex digits
 ooRexx> .RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", "b", "x")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1  : '\x6E'
  2  : '\x6F'
  3  : '\x{C3AB}'
@@ -1805,7 +1805,7 @@ a RexxUnicodeGraphemeSupplier
 -- Example 3
 -- Grapheme supplier providing the default index and returning the grapheme escaped string
 ooRexx> .RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", , "\")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'n'
  2 : 'o'
  3 : 'ë'
@@ -1826,7 +1826,7 @@ a RexxUnicodeGraphemeSupplier
 -- Example 4
 -- Grapheme supplier providing the default index and returning the grapheme codepoints in U+ notation
 ooRexx> .RexxUnicodeGraphemeSupplier~new("noël👨‍👩‍👧🎅", , "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+006E'
  2 : 'U+006F'
  3 : 'U+00EB'
@@ -1850,7 +1850,7 @@ a RexxUnicodeGraphemeSupplier
 
 -- Grapheme supplier providing the grapheme index and returning the grapheme escaped string
 ooRexx> .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, , "\")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : '\x{E180}'
  2 : '\xE2'
  3 : '\x{F09192}'
@@ -1870,7 +1870,7 @@ a RexxUnicodeGraphemeSupplier
 -- Grapheme supplier providing the byte index and returning the grapheme escaped string
 -- A negative byte index indicates an invalid byte sequence
 ooRexx> .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
 -1 : '\x{E180}'
 -3 : '\xE2'
 -4 : '\x{F09192}'
@@ -1889,7 +1889,7 @@ a RexxUnicodeGraphemeSupplier
 -- Example 7
 -- Grapheme supplier providing the byte index and returning the error message
 ooRexx> .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
 -1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
 -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
 -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
@@ -1913,7 +1913,7 @@ a RexxUnicodeGraphemeSupplier
 -- the default index type is the codepoint index
 -- the default item type is the codepoint as a whole number
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("noël👨‍👩‍👧🎅")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  1  :  127877
  2  :  128103
  3  :  8205
@@ -1942,7 +1942,7 @@ a RexxUnicodeReverseCodepointSupplier
 -- It's possible to get other types of index and item
 -- Here, we request the byte index and the codepoint byte sequence as hex digits
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("noël👨‍👩‍👧🎅", "b", "x")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  24 : '\x{F09F8E85}'
  20 : '\x{F09F91A7}'
  17 : '\x{E2808D}'
@@ -1970,7 +1970,7 @@ a RexxUnicodeReverseCodepointSupplier
 -- Example 3
 -- Codepoint supplier providing the default index and returning the codepoint escaped string
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("noël👨‍👩‍👧🎅", , "\")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  1  : '🎅'
  2  : '👧'
  3  : '\u200D'
@@ -1998,7 +1998,7 @@ a RexxUnicodeReverseCodepointSupplier
 -- Example 4
 -- Codepoint supplier providing the default index and returning the codepoint in U+ notation
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("noël👨‍👩‍👧🎅", , "u")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  1  : 'U+1F385'
  2  : 'U+1F467'
  3  : 'U+200D'
@@ -2026,7 +2026,7 @@ a RexxUnicodeReverseCodepointSupplier
 -- Example 5
 -- Codepoint supplier providing the default index and returning the codepoint as a RexxUnicodeCharacter
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("noël👨‍👩‍👧🎅", , .RexxUnicodeCharacter)==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  1  : ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
  2  : ("👧" \x{F09F91A7} U+1F467 So Other_Symbol "GIRL")
  3  : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
@@ -2057,7 +2057,7 @@ a RexxUnicodeReverseCodepointSupplier
 
 -- Codepoint supplier providing the codepoint index and returning the codepoint as a whole number
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x)==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  1 :  65
  2 :  65533
  3 :  65533
@@ -2076,7 +2076,7 @@ a RexxUnicodeReverseCodepointSupplier
 -- Codepoint supplier providing the byte index and returning the codepoint escaped string
 -- A negative byte index indicates an invalid byte sequence
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  9 : 'A'
 -7 : '\x{F1BF}'
 -4 : '\x{F09192}'
@@ -2094,7 +2094,7 @@ a RexxUnicodeReverseCodepointSupplier
 -- Example 8
 -- Codepoint supplier providing the byte index and returning the error message
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  9 : ''
 -7 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
 -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
@@ -2118,7 +2118,7 @@ a RexxUnicodeReverseCodepointSupplier
 -- the default index type is the grapheme index
 -- the default item type is the grapheme as a string
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("noël👨‍👩‍👧🎅")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : '🎅'
  2 : '👨‍👩‍👧'
  3 : 'l'
@@ -2138,7 +2138,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- Example 2
 -- Grapheme supplier providing the byte index and returning the grapheme byte sequence as hex digits
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("noël👨‍👩‍👧🎅", "b", "x")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  24 : '\x{F09F8E85}'
  6  : '\x{F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
  5  : '\x6C'
@@ -2158,7 +2158,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- Example 3
 -- Grapheme supplier providing the default index and returning the grapheme escaped string
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("noël👨‍👩‍👧🎅", , "\")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : '🎅'
  2 : '👨\u200D👩\u200D👧'
  3 : 'l'
@@ -2178,7 +2178,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- Example 4
 -- Grapheme supplier providing the default index and returning the grapheme codepoints in U+ notation
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("noël👨‍👩‍👧🎅", , "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+1F385'
  2 : 'U+1F468 U+200D U+1F469 U+200D U+1F467'
  3 : 'U+006C'
@@ -2201,7 +2201,7 @@ a RexxUnicodeReverseGraphemeSupplier
 
 -- Grapheme supplier providing the grapheme index and returning the grapheme escaped string
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, , "\")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'A'
  2 : '\x{F1BF}'
  3 : '\x{F09192}'
@@ -2220,7 +2220,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- Grapheme supplier providing the byte index and returning the grapheme escaped string
 -- A negative byte index indicates an invalid byte sequence
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  9 : 'A'
 -7 : '\x{F1BF}'
 -4 : '\x{F09192}'
@@ -2238,7 +2238,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- Example 7
 -- Grapheme supplier providing the byte index and returning the error message
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  9 : ''
 -7 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
 -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
@@ -2403,7 +2403,7 @@ ooRexx> indexer~endGraphemeIndexes=         -- [ 23, 22, 21, 19, 18]
 -- Pass -endIndexG, where a negative index means "index from the end"
 ooRexx> do endIndexG=1 to indexer~endGraphemeIndexes~items; say endIndexG":" indexer~graphemeAtIndexG(-endIndexG); end
 1: 👨‍👩‍👧
-2:  
+2:
 3: l
 4: ë
 5: o
@@ -2758,26 +2758,34 @@ ooRexx> indexer~endCodepointIndexes=    -- [ 20, 16], not [ 20, 16, 13, 9, 6]
 -- U+FFFD Substitution of Maximal Subparts
 -- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
 ooRexx> indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x, 0, 0, 5, 0, 0, 5)
-ooRexx> indexer~startErrorMessages==
-an Array (shape [5], 5 items)
- 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
- 2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
- 3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
- 4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
- 5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
-/*
-    an Array (shape [5], 5 items)
-     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
-     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
-     3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
-     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
-     5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
-*/
 
-
--- No error is stored because no codepoint is stored
+-- Empty because no grapheme/codepoint index is stored.
 ooRexx> indexer~endErrorMessages=   -- []
 []
+
+
+-- In incremental mode, the error limit is replaced by a boolean (disable/enable storage).
+ooRexx> indexer = .RexxUnicodeStringIndexer~newIncremental("F4 91 92 93 FF 41 80 BF 42"x, 0, 0, .true, 0, 0, .true)
+
+-- Empty because no grapheme/codepoint index is stored.
+ooRexx> indexer~endErrorMessages=   -- []
+[]
+
+
+-- Incremental mode with limited grapheme storage and error storage enabled.
+ooRexx> indexer = .RexxUnicodeStringIndexer~newIncremental("F4 91 92 93 FF 41 80 BF 42"x, 1, 0, .true, 2, 0, .true)
+
+-- Error stored because a grapheme index referencing an invalid byte sequence is stored.
+ooRexx> indexer~endErrorMessages==
+an Array (shape [1], 1 items)
+ 1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+/*
+    an Array (shape [1], 1 items)
+     1 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
+*/
+
+ooRexx> indexer~endGraphemeIndexes=     -- [ 9,-8]
+[ 9,-8]
 
 
 --------------------------------------------------------------------------------
@@ -2947,6 +2955,84 @@ ooRexx> do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeInde
 
 
 --------------------------------------------------------------------------------
+-- aRexxUnicodeStringIndexer~startErrorMessages
+--------------------------------------------------------------------------------
+
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68064
+ooRexx> indexer = .RexxUnicodeStringIndexer~new("F4 91 92 93 FF 41 80 BF 42"x, 0, 0, 5, 0, 0, 5)
+
+-- In non-incremental mode, start errors are stored up to the limit, even if no grapheme/codepoint index is stored.
+-- This is because:
+-- - a full forward scan is performed, independently of the specified limits.
+-- - each limit is a target to reach and does not depend on the other limits.
+ooRexx> indexer~startErrorMessages==
+an Array (shape [5], 5 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+ 2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+ 3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+ 4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+ 5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+/*
+    an Array (shape [5], 5 items)
+     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+     2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+     3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
+     4 : 'start byte position 4 : Invalid start byte 147 (''93''x) (non-shortest form)'
+     5 : 'start byte position 5 : Invalid start byte 255 (''FF''x) (code point > U+10FFFF)'
+*/
+
+
+-- In incremental mode, the error limit is replaced by a boolean (disable/enable storage).
+ooRexx> indexer = .RexxUnicodeStringIndexer~newIncremental("F4 91 92 93 FF 41 80 BF 42"x, 0, 0, .true, 0, 0, .true)
+
+-- Empty because no grapheme/codepoint index is stored.
+ooRexx> indexer~startErrorMessages= -- []
+[]
+
+
+-- Incremental mode with limited grapheme storage and error storage enabled.
+ooRexx> indexer = .RexxUnicodeStringIndexer~newIncremental("F4 91 92 93 FF 41 80 BF 42"x, 1, 0, .true, 2, 0, .true)
+
+-- Error stored because a grapheme index referencing an invalid byte sequence is stored.
+ooRexx> indexer~startErrorMessages==
+an Array (shape [1], 1 items)
+ 1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+/*
+    an Array (shape [1], 1 items)
+     1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+*/
+
+ooRexx> indexer~startGraphemeIndexes=   -- [-1]
+[-1]
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeStringIndexer~stringInfo
+--------------------------------------------------------------------------------
+
+ooRexx> .RexxUnicodeStringIndexer~new("")~stringInfo=       -- '(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
+'(ASCII, 0 grapheme, 0 codepoint, 0 byte, 0 error)'
+ooRexx> .RexxUnicodeStringIndexer~new("e")~stringInfo=      -- '(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+'(ASCII, 1 grapheme, 1 codepoint, 1 byte, 0 error)'
+ooRexx> .RexxUnicodeStringIndexer~new("é")~stringInfo=      -- '(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
+'(not-ASCII, 1 grapheme, 1 codepoint, 2 bytes, 0 error)'
+ooRexx> .RexxUnicodeStringIndexer~new("€")~stringInfo=      -- '(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
+'(not-ASCII, 1 grapheme, 1 codepoint, 3 bytes, 0 error)'
+ooRexx> .RexxUnicodeStringIndexer~new("🎅")~stringInfo=     -- '(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+'(not-ASCII, 1 grapheme, 1 codepoint, 4 bytes, 0 error)'
+ooRexx> .RexxUnicodeStringIndexer~new("👨‍👩‍👧")~stringInfo=     -- '(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+'(not-ASCII, 1 grapheme, 5 codepoints, 18 bytes, 0 error)'
+
+
+-- Invalid string
+-- U+FFFD Substitution of Maximal Subparts
+-- https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G68202
+ooRexx> .RexxUnicodeStringIndexer~new("E1 80 E2 F0 91 92 F1 BF 41"x)~stringInfo=    -- '(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+'(not-ASCII, 5 graphemes, 5 codepoints, 9 bytes, 4 errors)'
+
+
+--------------------------------------------------------------------------------
 -- .RexxUnicodeCharacter~properties
 --------------------------------------------------------------------------------
 
@@ -3033,7 +3119,7 @@ indicConjunctBreak: None
 isLower: 0
 isUpper: 0
 name: EURO SIGN
-nameAlias: 
+nameAlias:
 toLower: 8364
 toTitle: 8364
 toUpper: 8364

@@ -22,6 +22,39 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 
 
 ===============================================================================
+2026 Oct 12
+
+[Unicode]
+
+Fix a bug in this documentation example:
+    indexer = .RexxUnicodeStringIndexer~newIncremental("F4 91 92 93 FF 41 80 BF 42"x, 1, 0, .true, 2, 0, .true)
+    indexer~startErrorMessages==
+        /*
+        an Array (shape [2], 2 items)
+         1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
+         2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
+        */
+Must return one error, not two, because only one negative index is stored.
+    indexer~endGraphemeIndexes=     -- [ 9,-8]
+
+Modify the requirement for the limited backward scan performed during initialization:
+old
+    - A reverse grapheme supplier is always used, even if `endGraphemeStorageAdjustableLimit == 0`,
+      to be consistent with the forward scan.
+new
+    - A reverse grapheme supplier is used when the end grapheme storage is enabled;
+      otherwise a reverse codepoint supplier is used.
+The impacted examples in this diary have been updated.
+
+Update the invariants of RexxUnicodeStringIndexer.
+
+Add invariant tests in StringIndexer_test.rex.
+
+Split the output of StringIndexer_test in several output files, because the
+size of StringIndexer_test-out.txt became too large (17,9 MB).
+
+
+===============================================================================
 2026 Oct 02
 
 [Unicode]
@@ -29,6 +62,7 @@ mutex level, will not be applied to Executor5-bulk. And vice-versa.
 Fix bug in decodePrevious of RexxUnicodeReverseGraphemeSupplier
 A negative size was notified via codepointAction
 
+RexxUnicodeStringIndexer:
 I use the "oops1" to "oops7" strings to identify the portions of source code
 that were added to support strict limits. I want to see if they are still needed
 with the adjustable limits.
@@ -324,10 +358,10 @@ Updated results
     -- The start error storage is driven by the start codepoint storage:
     -- since no codepoint is read, startErrorMessages is empty at the end of initialization.
     indexer = .RexxUnicodeStringIndexer~newIncremental("⦅⦅" || "F4 91"x "🎅" "F4"x "👨‍👩‍👧" "F4 91"x || "⦆⦆", 0, 0, 1, 0, 1, 1)
-    indexer~limits=                 -- [ 0, 0, 1, 0, 2, 1]
+    indexer~limits=                 -- [ 0, 0, 1, 0, 1, 1]
     indexer~startCodepointIndexes=  -- []
     indexer~startErrorMessages=     -- []
-    indexer~endCodepointIndexes=    -- [ 41, 38]
+    indexer~endCodepointIndexes=    -- [ 41]
     indexer~endErrorMessages=       -- []
     --
     -- All the codepoint indexes are stored in endCodepointIndexes because startCodepointIndexes is disabled.
@@ -394,12 +428,12 @@ Updated results
     -- The start error storage is driven by the start codepoint storage:
     -- must read at least 3 codepoints to have a start error at the end of initialization.
     indexer = .RexxUnicodeStringIndexer~newIncremental("⦅⦅" || "F4 91"x "🎅" "F4"x "👨‍👩‍👧" "F4 91"x || "⦆⦆", 0, 3, 1, 0, 1, 1)
-    indexer~limits=                 -- [ 0, 3, 1, 0, 2, 1]
+    indexer~limits=                 -- [ 0, 3, 1, 0, 1, 1]
     indexer~startCodepointIndexes=  -- [ 1, 4,-7]
     indexer~startErrorMessages==
         an Array (shape [1], 1 items)
          1 : 'start byte position 7 : Invalid continuation byte 145 (''91''x) at byte position 8 (code point > U+10FFFF)'
-    indexer~endCodepointIndexes=    -- [ 41, 38]
+    indexer~endCodepointIndexes=    -- [ 41]
     indexer~endErrorMessages=       -- []
     --
     do i = 1 to indexer~string~length; indexer~codepointIndexC(i); end
@@ -416,13 +450,13 @@ Updated results
          2 : 'start byte position 36 : Invalid continuation byte 145 (''91''x) at byte position 37 (code point > U+10FFFF)'
 
 
-    -- The end codepoint limit is increased to remain aligned with a grapheme boundary
+    -- The end codepoint limit does not need an adjustment because the end grapheme storage is not enabled
     -- Now we have stored errors. The end error limit is increased to store all the errors encountered when decoding the codepoints
     indexer = .RexxUnicodeStringIndexer~newIncremental("⦅⦅" || "F4 91"x "🎅" "F4"x "👨‍👩‍👧" "F4 91"x || "⦆⦆", 0, 0, 1, 0, 7, 1)
-    indexer~limits=                 -- [ 0, 0, 1, 0, 11, 1]
+    indexer~limits=                 -- [ 0, 0, 1, 0, 7, 1]
     indexer~startCodepointIndexes=  -- []
     indexer~startErrorMessages=     -- []
-    indexer~endCodepointIndexes=    -- [ 41, 38,-37,-36, 35, 31, 28, 24, 21, 17, 16]
+    indexer~endCodepointIndexes=    -- [ 41, 38,-37,-36, 35, 31, 28]
     indexer~endErrorMessages==
         an Array (shape [2], 2 items)
          1 : 'start byte position 37 : Invalid start byte 145 (''91''x) (non-shortest form)'
@@ -442,29 +476,29 @@ Updated results
 
 
     -- The start codepoint limit is unchanged, because it's aligned with a grapheme boundary
-    -- The end codepoint limit is increased to remain aligned with a grapheme boundary
+    -- The end codepoint limit does not need an adjustment because the end grapheme storage is not enabled
     indexer = .RexxUnicodeStringIndexer~newIncremental("⦅⦅" || "F4 91"x "🎅" "F4"x "👨‍👩‍👧" "F4 91"x || "⦆⦆", 0, 8, 1, 0, 7, 1)
-    indexer~limits=                 -- [ 0, 8, 1, 0, 11, 1]
+    indexer~limits=                 -- [ 0, 8, 1, 0, 7, 1]
     indexer~startCodepointIndexes=  -- [ 1, 4,-7,-8, 9, 10, 14,-15]
     indexer~startErrorMessages==
         an Array (shape [3], 3 items)
          1 : 'start byte position 7 : Invalid continuation byte 145 (''91''x) at byte position 8 (code point > U+10FFFF)'
          2 : 'start byte position 8 : Invalid start byte 145 (''91''x) (non-shortest form)'
          3 : 'start byte position 15 : Invalid continuation byte 32 (''20''x) at byte position 16'
-    indexer~endCodepointIndexes=    -- [ 41, 38,-37,-36, 35, 31, 28, 24, 21, 17]
+    indexer~endCodepointIndexes=    -- [ 41, 38,-37,-36, 35, 31, 28]
     indexer~endErrorMessages==
         an Array (shape [2], 2 items)
          1 : 'start byte position 37 : Invalid start byte 145 (''91''x) (non-shortest form)'
          2 : 'start byte position 36 : Invalid continuation byte 145 (''91''x) at byte position 37 (code point > U+10FFFF)'
     --
     do i = 1 to indexer~string~length; indexer~codepointIndexC(i); end
-    indexer~startCodepointIndexes=  -- [ 1, 4,-7,-8, 9, 10, 14,-15]
+    indexer~startCodepointIndexes=  -- [ 1, 4,-7,-8, 9, 10, 14,-15, 16, 17, 21]
     indexer~startErrorMessages==
         an Array (shape [3], 3 items)
          1 : 'start byte position 7 : Invalid continuation byte 145 (''91''x) at byte position 8 (code point > U+10FFFF)'
          2 : 'start byte position 8 : Invalid start byte 145 (''91''x) (non-shortest form)'
          3 : 'start byte position 15 : Invalid continuation byte 32 (''20''x) at byte position 16'
-    indexer~endCodepointIndexes=    -- [ 41, 38,-37,-36, 35, 31, 28, 24, 21, 17, 16]
+    indexer~endCodepointIndexes=    -- [ 41, 38,-37,-36, 35, 31, 28, 24]
     indexer~endErrorMessages==
         an Array (shape [2], 2 items)
          1 : 'start byte position 37 : Invalid start byte 145 (''91''x) (non-shortest form)'
@@ -1056,8 +1090,8 @@ Examples
         append 42 to endCodepointIndexes
     do i = 1 to indexer~codepointCount ; say i~left(2)":" indexer~codepointIndexB(i) ; end
         <cut>
-    indexer~startCodepointIndexes=      -- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32, 36,-37,-38]
-    indexer~endCodepointIndexes=        -- [ 42, 39]
+    indexer~startCodepointIndexes=      -- [ 1, 4,-7,-8, 9, 10, 14,-15,-16, 17, 18, 22, 25, 29, 32, 36,-37,-38, 39]
+    indexer~endCodepointIndexes=        -- [ 42]
 
 
     -- #04i Even codepoint count, backward progression
