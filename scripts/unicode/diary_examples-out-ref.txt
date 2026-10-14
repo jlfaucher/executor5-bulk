@@ -2614,7 +2614,7 @@ ooRexx> .RexxUnicode~stringIsASCII(10)=         --  1
  1
 
 ooRexx> .RexxUnicodeCodepointSupplier~new(-1)== -- (was Invalid position argument specified; found "1".)
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1 :  45
  2 :  49
 /*
@@ -2623,14 +2623,14 @@ a RexxUnicodeCodepointSupplier
      2 :  49
 */
 ooRexx> .RexxUnicodeCodepointSupplier~new(0)==  -- (was a RexxUnicodeCodepointSupplier (nothing available))
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1 :  48
 /*
     a RexxUnicodeCodepointSupplier
      1 :  48
 */
 ooRexx> .RexxUnicodeCodepointSupplier~new(1)==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1 :  49
 /*
     a RexxUnicodeCodepointSupplier
@@ -2641,7 +2641,7 @@ a RexxUnicodeCodepointSupplier
     */
 */
 ooRexx> .RexxUnicodeCodepointSupplier~new(10)==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1 :  49
  2 :  48
 /*
@@ -2936,7 +2936,7 @@ ooRexx> say string; say "^"~copies(width)
 -- East Asian context
 ooRexx> string = "“𘀀”"
 ooRexx> .RexxUnicodeCodepointSupplier~new(string, , .RexxUnicodeCharacter)==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1 : ("“" \x{E2809C} U+201C Pi Initial_Punctuation "LEFT DOUBLE QUOTATION MARK")
  2 : ("𘀀" \x{F0988080} U+18000 Lo Other_Letter "TANGUT IDEOGRAPH-18000")
  3 : ("”" \x{E2809D} U+201D Pf Final_Punctuation "RIGHT DOUBLE QUOTATION MARK")
@@ -3354,7 +3354,7 @@ ooRexx> refState=                                                   -- 1
 
 ooRexx> string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0041'
  2 : 'U+000D U+000A'
  4 : 'U+0042'
@@ -3374,7 +3374,7 @@ a RexxUnicodeGraphemeSupplier
 -- the default index type is the codepoint index
 -- the default item type is the codepoint as a whole number
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  1  :  127877
  2  :  128103
  3  :  8205
@@ -3407,7 +3407,7 @@ a RexxUnicodeReverseCodepointSupplier
 -- the default index type is the grapheme index
 -- the default item type is the grapheme as a string
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : '🎅'
  2 : '👩‍👨‍👩‍👧'
  3 : 'l'
@@ -3428,7 +3428,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- It's possible to get other types of index and item
 -- Here, we request the byte index and the codepoint byte sequence as hex digits
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", "b", "x")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  31 : '\x{F09F8E85}'
  27 : '\x{F09F91A7}'
  24 : '\x{E2808D}'
@@ -3459,7 +3459,7 @@ a RexxUnicodeReverseCodepointSupplier
 
 -- Reverse grapheme supplier providing the byte index and returning the grapheme byte sequence as hex digits
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", "b", "x")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  31 : '\x{F09F8E85}'
  6  : '\x{F09F91A9 E2808D F09F91A8 E2808D F09F91A9 E2808D F09F91A7}'
  5  : '\x6C'
@@ -3478,7 +3478,7 @@ a RexxUnicodeReverseGraphemeSupplier
 
 -- Reverse codepoint supplier providing the default index and returning the codepoint escaped string
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", , "\")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  1  : '🎅'
  2  : '👧'
  3  : '\u200D'
@@ -3509,7 +3509,7 @@ a RexxUnicodeReverseCodepointSupplier
 
 -- Reverse grapheme supplier providing the default index and returning the grapheme escaped string
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", , "\")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : '🎅'
  2 : '👩\u200D👨\u200D👩\u200D👧'
  3 : 'l'
@@ -3528,7 +3528,7 @@ a RexxUnicodeReverseGraphemeSupplier
 
 -- Reverse codepoint supplier providing the default index and returning the codepoint in U+ notation
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", , "u")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  1  : 'U+1F385'
  2  : 'U+1F467'
  3  : 'U+200D'
@@ -3559,7 +3559,7 @@ a RexxUnicodeReverseCodepointSupplier
 
 -- Reverse grapheme supplier providing the default index and returning the grapheme codepoints in U+ notation
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", , "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+1F385'
  2 : 'U+1F469 U+200D U+1F468 U+200D U+1F469 U+200D U+1F467'
  3 : 'U+006C'
@@ -3578,7 +3578,7 @@ a RexxUnicodeReverseGraphemeSupplier
 
 -- Reverse codepoint supplier providing the default index and returning the codepoint as a RexxUnicodeCharacter
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", , .RexxUnicodeCharacter)==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  1  : ("🎅" \x{F09F8E85} U+1F385 So Other_Symbol "FATHER CHRISTMAS")
  2  : ("👧" \x{F09F91A7} U+1F467 So Other_Symbol "GIRL")
  3  : (<?> \x{E2808D} U+200D Cf Format "ZERO WIDTH JOINER")
@@ -3615,7 +3615,7 @@ a RexxUnicodeReverseCodepointSupplier
 
 -- Reverse codepoint supplier providing the codepoint index and returning the codepoint as a whole number
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("F4 91 92 93 FF 41 80 BF 42"x)==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  1 :  66
  2 :  65533
  3 :  65533
@@ -3641,7 +3641,7 @@ a RexxUnicodeReverseCodepointSupplier
 -- Reverse grapheme supplier providing the grapheme index and returning the grapheme escaped string
 -- (don't display directly the graphemes because the output would be invalid UTF-8)
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, , "\")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'B'
  2 : '\xBF'
  3 : '\x80'
@@ -3667,7 +3667,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- Reverse codepoint supplier providing the byte index and returning the codepoint escaped string
 -- A negative byte index indicates an invalid byte sequence
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "\")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  9 : 'B'
 -8 : '\xBF'
 -7 : '\x80'
@@ -3693,7 +3693,7 @@ a RexxUnicodeReverseCodepointSupplier
 -- Reverse grapheme supplier providing the byte index and returning the grapheme escaped string
 -- A negative byte index indicates an invalid byte sequence
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "\")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  9 : 'B'
 -8 : '\xBF'
 -7 : '\x80'
@@ -3718,7 +3718,7 @@ a RexxUnicodeReverseGraphemeSupplier
 
 -- Reverse codepoint supplier providing the byte index and returning the error message
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "e")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  9 : ''
 -8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
 -7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
@@ -3743,7 +3743,7 @@ a RexxUnicodeReverseCodepointSupplier
 
 -- Reverse grapheme supplier providing the byte index and returning the error message
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "e")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  9 : ''
 -8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
 -7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
@@ -3768,7 +3768,7 @@ a RexxUnicodeReverseGraphemeSupplier
 
 -- Reverse test case: the last codepoint byte sequence is invalid
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("F4 91 92 93 FF 41 80 BF"x, "b", "e")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
 -8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
 -7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
  6 : ''
@@ -3791,7 +3791,7 @@ a RexxUnicodeReverseCodepointSupplier
 
 -- Reverse test case: the last grapheme byte sequence is invalid
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF"x, "b", "e")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
 -8 : 'start byte position 8 : Invalid start byte 191 (''BF''x) (non-shortest form)'
 -7 : 'start byte position 7 : Invalid start byte 128 (''80''x) (non-shortest form)'
  6 : ''
@@ -3819,7 +3819,7 @@ a RexxUnicodeReverseGraphemeSupplier
 
 -- Reverse codepoint supplier providing the codepoint index and returning the codepoint as a whole number
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x)==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  1 :  65
  2 :  65533
  3 :  65533
@@ -3837,7 +3837,7 @@ a RexxUnicodeReverseCodepointSupplier
 -- Reverse grapheme supplier providing the grapheme index and returning the grapheme escaped string
 -- (don't display directly the graphemes because the output would be invalid UTF-8)
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, , "\")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'A'
  2 : '\x{F1BF}'
  3 : '\x{F09192}'
@@ -3855,7 +3855,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- Reverse codepoint supplier providing the byte index and returning the codepoint escaped string
 -- A negative byte index indicates an invalid byte sequence
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  9 : 'A'
 -7 : '\x{F1BF}'
 -4 : '\x{F09192}'
@@ -3873,7 +3873,7 @@ a RexxUnicodeReverseCodepointSupplier
 -- Reverse grapheme supplier providing the byte index and returning the grapheme escaped string
 -- A negative byte index indicates an invalid byte sequence
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  9 : 'A'
 -7 : '\x{F1BF}'
 -4 : '\x{F09192}'
@@ -3890,7 +3890,7 @@ a RexxUnicodeReverseGraphemeSupplier
 
 -- Reverse codepoint supplier providing the byte index and returning the error message
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  9 : ''
 -7 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
 -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
@@ -3907,7 +3907,7 @@ a RexxUnicodeReverseCodepointSupplier
 
 -- Reverse grapheme supplier providing the byte index and returning the error message
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  9 : ''
 -7 : 'start byte position 7 : Invalid continuation byte 65 (''41''x) at byte position 9'
 -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
@@ -3924,7 +3924,7 @@ a RexxUnicodeReverseGraphemeSupplier
 
 -- Reverse test case: the last codepoint byte sequence is invalid
 ooRexx> .RexxUnicodeReverseCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF"x, "b", "e")==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
 -7 : 'start byte position 7 : Truncated, expected 4 bytes'
 -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
 -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
@@ -3939,7 +3939,7 @@ a RexxUnicodeReverseCodepointSupplier
 
 -- Reverse test case: the last grapheme byte sequence is invalid
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF"x, "b", "e")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
 -7 : 'start byte position 7 : Truncated, expected 4 bytes'
 -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
 -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
@@ -3959,14 +3959,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB1/GB2 — start/end of text
 ooRexx> string = .RexxUnicode~U2C("U+0041")
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0041'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+0041'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+0041'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -3977,14 +3977,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB3 #1 — CR × LF
 ooRexx> string = .RexxUnicode~U2C("U+000D U+000A")
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+000D U+000A'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+000D U+000A'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+000D U+000A'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -3994,7 +3994,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB3 #2 — CR × LF
 ooRexx> string = .RexxUnicode~U2C("U+0041 U+000D U+000A U+0042")
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0041'
  2 : 'U+000D U+000A'
  4 : 'U+0042'
@@ -4005,7 +4005,7 @@ a RexxUnicodeGraphemeSupplier
      4 : 'U+0042'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  4 : 'U+0042'
  2 : 'U+000D U+000A'
  1 : 'U+0041'
@@ -4020,7 +4020,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB4/GB5 #1 — breaks around Control
 ooRexx> string = .RexxUnicode~U2C("U+0041 U+0000 U+0042")
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0041'
  2 : 'U+0000'
  3 : 'U+0042'
@@ -4031,7 +4031,7 @@ a RexxUnicodeGraphemeSupplier
      3 : 'U+0042'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  3 : 'U+0042'
  2 : 'U+0000'
  1 : 'U+0041'
@@ -4045,7 +4045,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB4/GB5 #2 — breaks around Control
 ooRexx> string = .RexxUnicode~U2C("U+0041 U+2028 U+0042")
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0041'
  2 : 'U+2028'
  5 : 'U+0042'
@@ -4056,7 +4056,7 @@ a RexxUnicodeGraphemeSupplier
      5 : 'U+0042'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  5 : 'U+0042'
  2 : 'U+2028'
  1 : 'U+0041'
@@ -4071,14 +4071,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB6/GB7/GB8 #1 — Hangul
 ooRexx> string = .RexxUnicode~U2C("U+1100 U+1100")          -- (L × L)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+1100 U+1100'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+1100 U+1100'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+1100 U+1100'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4088,14 +4088,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB6/GB7/GB8 #2 — Hangul
 ooRexx> string = .RexxUnicode~U2C("U+1100 U+1161 U+11A8")   -- (L V T)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+1100 U+1161 U+11A8'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+1100 U+1161 U+11A8'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+1100 U+1161 U+11A8'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4105,14 +4105,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB6/GB7/GB8 #3 — Hangul
 ooRexx> string = .RexxUnicode~U2C("U+AC00 U+11A8")          -- (LV × T)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+AC00 U+11A8'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+AC00 U+11A8'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+AC00 U+11A8'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4122,14 +4122,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB6/GB7/GB8 #4 — Hangul
 ooRexx> string = .RexxUnicode~U2C("U+AC00 U+1161")          -- (LV × V)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+AC00 U+1161'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+AC00 U+1161'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+AC00 U+1161'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4139,14 +4139,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB6/GB7/GB8 #5 — Hangul
 ooRexx> string = .RexxUnicode~U2C("U+AC01 U+11A8")          -- (LVT × T)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+AC01 U+11A8'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+AC01 U+11A8'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+AC01 U+11A8'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4156,14 +4156,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB6/GB7/GB8 #6 — Hangul
 ooRexx> string = .RexxUnicode~U2C("U+11A8 U+11A8")          -- (T × T)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+11A8 U+11A8'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+11A8 U+11A8'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+11A8 U+11A8'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4174,14 +4174,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB9 #1 — Extend / ZWJ, generic
 ooRexx> string = .RexxUnicode~U2C("U+0067 U+0308")          -- (g + combining diaeresis)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0067 U+0308'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+0067 U+0308'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+0067 U+0308'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4191,14 +4191,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB9 #2 — Extend / ZWJ, generic
 ooRexx> string = .RexxUnicode~U2C("U+0065 U+0301 U+0327")   -- (stacked combining marks)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0065 U+0301 U+0327'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+0065 U+0301 U+0327'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+0065 U+0301 U+0327'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4208,7 +4208,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB9 #3 — Extend / ZWJ, generic
 ooRexx> string = .RexxUnicode~U2C("U+0041 U+200D U+0042")   -- (ZWJ with non-pictographic neighbor — tests that GB9 still holds no-break before ZWJ even though GB11 won't apply after it)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0041 U+200D'
  5 : 'U+0042'
 /*
@@ -4217,7 +4217,7 @@ a RexxUnicodeGraphemeSupplier
      5 : 'U+0042'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  5 : 'U+0042'
  1 : 'U+0041 U+200D'
 /*
@@ -4230,14 +4230,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB9a #1 — SpacingMark
 ooRexx> string = .RexxUnicode~U2C("U+0BA8 U+0BBF")          -- (Tamil na + vowel sign i)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0BA8 U+0BBF'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+0BA8 U+0BBF'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+0BA8 U+0BBF'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4247,14 +4247,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB9a #2 — SpacingMark
 ooRexx> string = .RexxUnicode~U2C("U+0937 U+093F")          -- (Devanagari ssa + vowel sign i)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0937 U+093F'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+0937 U+093F'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+0937 U+093F'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4265,14 +4265,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB9b #1 — Prepend
 ooRexx> string = .RexxUnicode~U2C("U+0600 U+0041")          -- (Arabic number sign + A)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0600 U+0041'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+0600 U+0041'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+0600 U+0041'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4282,7 +4282,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB9b #2 — Prepend
 ooRexx> string = .RexxUnicode~U2C("U+0600 U+0000")          -- (Prepend before Control — GB4/5 should still force a break here)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0600'
  3 : 'U+0000'
 /*
@@ -4291,7 +4291,7 @@ a RexxUnicodeGraphemeSupplier
      3 : 'U+0000'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  3 : 'U+0000'
  1 : 'U+0600'
 /*
@@ -4304,14 +4304,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB9c #1 — Indic conjunct (InCB)
 ooRexx> string = .RexxUnicode~U2C("U+0915 U+094D U+0937 U+093F")            -- (ka + virama + ssa + vowel sign i — the "kshi" example, also exercises GB9a on the tail)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0915 U+094D U+0937 U+093F'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+0915 U+094D U+0937 U+093F'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+0915 U+094D U+0937 U+093F'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4321,14 +4321,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB9c #2 — Indic conjunct (InCB)
 ooRexx> string = .RexxUnicode~U2C("U+0915 U+0951 U+094D U+0951 U+0915")     -- (consonant, Extend, Linker, Extend, consonant — Extend on both sides of the linker)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0915 U+0951 U+094D U+0951 U+0915'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+0915 U+0951 U+094D U+0951 U+0915'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+0915 U+0951 U+094D U+0951 U+0915'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4338,7 +4338,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB9c #3 — Indic conjunct (InCB)
 ooRexx> string = .RexxUnicode~U2C("U+0915 U+0951 U+0915")                   -- (consonant, Extend, consonant — no linker present: should break, negative test for the lookback)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0915 U+0951'
  7 : 'U+0915'
 /*
@@ -4347,7 +4347,7 @@ a RexxUnicodeGraphemeSupplier
      7 : 'U+0915'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  7 : 'U+0915'
  1 : 'U+0915 U+0951'
 /*
@@ -4360,14 +4360,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB11 #1 — emoji ZWJ sequences
 ooRexx> string = .RexxUnicode~U2C("U+1F468 U+200D U+1F469 U+200D U+1F467")  -- (multi-hop ZWJ chain: man-woman-girl family)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+1F468 U+200D U+1F469 U+200D U+1F467'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+1F468 U+200D U+1F469 U+200D U+1F467'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+1F468 U+200D U+1F469 U+200D U+1F467'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4377,14 +4377,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB11 #2 — emoji ZWJ sequences
 ooRexx> string = .RexxUnicode~U2C("U+1F468 U+1F3FB U+200D U+1F469")         -- (pictographic + Extend modifier + ZWJ + pictographic — tests walking past Extend to find the pictographic)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+1F468 U+1F3FB U+200D U+1F469'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+1F468 U+1F3FB U+200D U+1F469'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+1F468 U+1F3FB U+200D U+1F469'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4394,14 +4394,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB11 #3 — emoji ZWJ sequences
 ooRexx> string = .RexxUnicode~U2C("U+1F468 U+1F3FB U+1F3FB U+200D U+1F469") -- (two stacked Extend modifiers before ZWJ)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+1F468 U+1F3FB U+1F3FB U+200D U+1F469'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+1F468 U+1F3FB U+1F3FB U+200D U+1F469'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+1F468 U+1F3FB U+1F3FB U+200D U+1F469'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4411,7 +4411,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB11 #4 — emoji ZWJ sequences
 ooRexx> string = .RexxUnicode~U2C("U+0041 U+200D U+1F600")                  -- (ZWJ preceded by non-pictographic — negative test, should break before the emoji)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0041 U+200D'
  5 : 'U+1F600'
 /*
@@ -4420,7 +4420,7 @@ a RexxUnicodeGraphemeSupplier
      5 : 'U+1F600'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  5 : 'U+1F600'
  1 : 'U+0041 U+200D'
 /*
@@ -4433,14 +4433,14 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB12/GB13 #1 — regional indicators (flags)
 ooRexx> string = .RexxUnicode~U2C("U+1F1EB U+1F1F7")                                    -- (single flag, count=2, even)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+1F1EB U+1F1F7'
 /*
     a RexxUnicodeGraphemeSupplier
      1 : 'U+1F1EB U+1F1F7'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1 : 'U+1F1EB U+1F1F7'
 /*
     a RexxUnicodeReverseGraphemeSupplier
@@ -4450,7 +4450,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB12/GB13 #2 — regional indicators (flags)
 ooRexx> string = .RexxUnicode~U2C("U+1F1EB U+1F1F7 U+1F1E9 U+1F1EA")                    -- (two flags back to back, count=4)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+1F1EB U+1F1F7'
  9 : 'U+1F1E9 U+1F1EA'
 /*
@@ -4459,7 +4459,7 @@ a RexxUnicodeGraphemeSupplier
      9 : 'U+1F1E9 U+1F1EA'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  9 : 'U+1F1E9 U+1F1EA'
  1 : 'U+1F1EB U+1F1F7'
 /*
@@ -4471,7 +4471,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB12/GB13 #3 — regional indicators (flags)
 ooRexx> string = .RexxUnicode~U2C("U+1F1EB U+1F1F7 U+1F1E9")                            -- (odd run of 3 — tests parity edge case)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+1F1EB U+1F1F7'
  9 : 'U+1F1E9'
 /*
@@ -4480,7 +4480,7 @@ a RexxUnicodeGraphemeSupplier
      9 : 'U+1F1E9'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  9 : 'U+1F1E9'
  1 : 'U+1F1EB U+1F1F7'
 /*
@@ -4492,7 +4492,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB12/GB13 #4 — regional indicators (flags)
 ooRexx> string = .RexxUnicode~U2C("U+1F1EB U+1F1F7 U+1F1E9 U+1F1EA U+1F1EE U+1F1F9")    -- (three flags, count=6)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1  : 'U+1F1EB U+1F1F7'
  9  : 'U+1F1E9 U+1F1EA'
  17 : 'U+1F1EE U+1F1F9'
@@ -4503,7 +4503,7 @@ a RexxUnicodeGraphemeSupplier
      17 : 'U+1F1EE U+1F1F9'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  17 : 'U+1F1EE U+1F1F9'
  9  : 'U+1F1E9 U+1F1EA'
  1  : 'U+1F1EB U+1F1F7'
@@ -4517,7 +4517,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB12/GB13 #5 — regional indicators (flags)
 ooRexx> string = .RexxUnicode~U2C("U+1F1EB U+1F1F7 U+1F1E9 U+1F1EA U+1F1EE")            -- (five RI, odd — stresses longer backward lookback)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1  : 'U+1F1EB U+1F1F7'
  9  : 'U+1F1E9 U+1F1EA'
  17 : 'U+1F1EE'
@@ -4528,7 +4528,7 @@ a RexxUnicodeGraphemeSupplier
      17 : 'U+1F1EE'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  17 : 'U+1F1EE'
  9  : 'U+1F1E9 U+1F1EA'
  1  : 'U+1F1EB U+1F1F7'
@@ -4542,7 +4542,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB12/GB13 #6 — regional indicators (flags)
 ooRexx> string = .RexxUnicode~U2C("U+0041 U+1F1EB U+1F1F7 U+0042")                      -- (RI run bounded by non-RI on both sides — tests run-boundary detection)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1  : 'U+0041'
  2  : 'U+1F1EB U+1F1F7'
  10 : 'U+0042'
@@ -4553,7 +4553,7 @@ a RexxUnicodeGraphemeSupplier
      10 : 'U+0042'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  10 : 'U+0042'
  2  : 'U+1F1EB U+1F1F7'
  1  : 'U+0041'
@@ -4568,7 +4568,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB999 #1 — default break
 ooRexx> string = .RexxUnicode~U2C("U+0041 U+0042")
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0041'
  2 : 'U+0042'
 /*
@@ -4577,7 +4577,7 @@ a RexxUnicodeGraphemeSupplier
      2 : 'U+0042'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  2 : 'U+0042'
  1 : 'U+0041'
 /*
@@ -4589,7 +4589,7 @@ a RexxUnicodeReverseGraphemeSupplier
 -- GB999 #2 — default break
 ooRexx> string = .RexxUnicode~U2C("U+0041 U+0301 U+0042 U+0301")    -- (two independent base+Extend graphemes back to back — checks that a GB9 no-break doesn't bleed into the next cluster)
 ooRexx> .RexxUnicodeGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+0041 U+0301'
  4 : 'U+0042 U+0301'
 /*
@@ -4598,7 +4598,7 @@ a RexxUnicodeGraphemeSupplier
      4 : 'U+0042 U+0301'
 */
 ooRexx> .RexxUnicodeReverseGraphemeSupplier~new(string, "b", "u")==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  4 : 'U+0042 U+0301'
  1 : 'U+0041 U+0301'
 /*
@@ -4645,7 +4645,7 @@ Error code= 88.900
 ooRexx> string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
 ooRexx> reverseCodepointSupplier = .RexxUnicodeReverseCodepointSupplier~new(string)
 ooRexx> reverseCodepointSupplier==
-a RexxUnicodeReverseCodepointSupplier 
+a RexxUnicodeReverseCodepointSupplier
  1  :  128103
  2  :  8205
  3  :  128105
@@ -4736,7 +4736,7 @@ Error code= 88.900
 ooRexx> string = "F4 91 92 93 FF 41 80 BF 42"x || "Joyeux Noël 👨‍👩‍👧"
 ooRexx> reverseGraphemeSupplier = .RexxUnicodeReverseGraphemeSupplier~new(string, "", "\")
 ooRexx> reverseGraphemeSupplier==
-a RexxUnicodeReverseGraphemeSupplier 
+a RexxUnicodeReverseGraphemeSupplier
  1  : '👨\u200D👩\u200D👧'
  2  : ' '
  3  : 'l'
@@ -6813,7 +6813,7 @@ Examples
 -- the default index type is the codepoint index
 -- the default item type is the codepoint as a whole number
 ooRexx> .RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1  :  110
  2  :  111
  3  :  235
@@ -6846,7 +6846,7 @@ a RexxUnicodeCodepointSupplier
 -- the default index type is the grapheme index
 -- the default item type is the grapheme as a string
 ooRexx> .RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'n'
  2 : 'o'
  3 : 'ë'
@@ -6867,7 +6867,7 @@ a RexxUnicodeGraphemeSupplier
 -- It's possible to get other types of index and item
 -- Here, we request the byte index and the codepoint byte sequence as hex digits
 ooRexx> .RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", "b", "x")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1  : '\x6E'
  2  : '\x6F'
  3  : '\x{C3AB}'
@@ -6898,7 +6898,7 @@ a RexxUnicodeCodepointSupplier
 
 -- Grapheme supplier providing the byte index and returning the grapheme byte sequence as hex digits
 ooRexx> .RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", "b", "x")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1  : '\x6E'
  2  : '\x6F'
  3  : '\x{C3AB}'
@@ -6917,7 +6917,7 @@ a RexxUnicodeGraphemeSupplier
 
 -- Codepoint supplier providing the default index and returning the codepoint escaped string
 ooRexx> .RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", , "\")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1  : 'n'
  2  : 'o'
  3  : 'ë'
@@ -6948,7 +6948,7 @@ a RexxUnicodeCodepointSupplier
 
 -- Grapheme supplier providing the default index and returning the grapheme escaped string
 ooRexx> .RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", , "\")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'n'
  2 : 'o'
  3 : 'ë'
@@ -6968,7 +6968,7 @@ a RexxUnicodeGraphemeSupplier
 
 -- Codepoint supplier providing the default index and returning the codepoint in U+ notation
 ooRexx> .RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", , "u")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1  : 'U+006E'
  2  : 'U+006F'
  3  : 'U+00EB'
@@ -6999,7 +6999,7 @@ a RexxUnicodeCodepointSupplier
 
 -- Grapheme supplier providing the default index and returning the grapheme codepoints in U+ notation
 ooRexx> .RexxUnicodeGraphemeSupplier~new("noël👩‍👨‍👩‍👧🎅", , "u")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : 'U+006E'
  2 : 'U+006F'
  3 : 'U+00EB'
@@ -7018,7 +7018,7 @@ a RexxUnicodeGraphemeSupplier
 
 -- Codepoint supplier providing the default index and returning the codepoint as a RexxUnicodeCharacter
 ooRexx> .RexxUnicodeCodepointSupplier~new("noël👩‍👨‍👩‍👧🎅", , .RexxUnicodeCharacter)==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1  : ("n" \x6E U+006E Ll Lowercase_Letter "LATIN SMALL LETTER N")
  2  : ("o" \x6F U+006F Ll Lowercase_Letter "LATIN SMALL LETTER O")
  3  : ("ë" \x{C3AB} U+00EB Ll Lowercase_Letter "LATIN SMALL LETTER E WITH DIAERESIS")
@@ -7055,7 +7055,7 @@ a RexxUnicodeCodepointSupplier
 
 -- Codepoint supplier providing the codepoint index and returning the codepoint as a whole number
 ooRexx> .RexxUnicodeCodepointSupplier~new("F4 91 92 93 FF 41 80 BF 42"x)==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1 :  65533
  2 :  65533
  3 :  65533
@@ -7081,7 +7081,7 @@ a RexxUnicodeCodepointSupplier
 -- Grapheme supplier providing the grapheme index and returning the grapheme escaped string
 -- (don't display directly the graphemes because the output would be invalid UTF-8)
 ooRexx> .RexxUnicodeGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, , "\")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : '\xF4'
  2 : '\x91'
  3 : '\x92'
@@ -7107,7 +7107,7 @@ a RexxUnicodeGraphemeSupplier
 -- Codepoint supplier providing the byte index and returning the codepoint escaped string
 -- A negative byte index indicates an invalid byte sequence
 ooRexx> .RexxUnicodeCodepointSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "\")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
 -1 : '\xF4'
 -2 : '\x91'
 -3 : '\x92'
@@ -7133,7 +7133,7 @@ a RexxUnicodeCodepointSupplier
 -- Grapheme supplier providing the byte index and returning the grapheme escaped string
 -- A negative byte index indicates an invalid byte sequence
 ooRexx> .RexxUnicodeGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "\")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
 -1 : '\xF4'
 -2 : '\x91'
 -3 : '\x92'
@@ -7158,7 +7158,7 @@ a RexxUnicodeGraphemeSupplier
 
 -- Codepoint supplier providing the byte index and returning the error message
 ooRexx> .RexxUnicodeCodepointSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "e")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
 -1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
 -2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
 -3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
@@ -7183,7 +7183,7 @@ a RexxUnicodeCodepointSupplier
 
 -- Grapheme supplier providing the byte index and returning the error message
 ooRexx> .RexxUnicodeGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF 42"x, "b", "e")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
 -1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
 -2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
 -3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
@@ -7208,7 +7208,7 @@ a RexxUnicodeGraphemeSupplier
 
 -- Test case: the last codepoint byte sequence is invalid
 ooRexx> .RexxUnicodeCodepointSupplier~new("F4 91 92 93 FF 41 80 BF"x, "b", "e")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
 -1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
 -2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
 -3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
@@ -7231,7 +7231,7 @@ a RexxUnicodeCodepointSupplier
 
 -- Test case: the last grapheme byte sequence is invalid
 ooRexx> .RexxUnicodeGraphemeSupplier~new("F4 91 92 93 FF 41 80 BF"x, "b", "e")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
 -1 : 'start byte position 1 : Invalid continuation byte 145 (''91''x) at byte position 2 (code point > U+10FFFF)'
 -2 : 'start byte position 2 : Invalid start byte 145 (''91''x) (non-shortest form)'
 -3 : 'start byte position 3 : Invalid start byte 146 (''92''x) (non-shortest form)'
@@ -7259,7 +7259,7 @@ a RexxUnicodeGraphemeSupplier
 
 -- Codepoint supplier providing the codepoint index and returning the codepoint as a whole number
 ooRexx> .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x)==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1 :  65533
  2 :  65533
  3 :  65533
@@ -7277,7 +7277,7 @@ a RexxUnicodeCodepointSupplier
 -- Grapheme supplier providing the grapheme index and returning the grapheme escaped string
 -- (don't display directly the graphemes because the output would be invalid UTF-8)
 ooRexx> .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, , "\")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
  1 : '\x{E180}'
  2 : '\xE2'
  3 : '\x{F09192}'
@@ -7295,7 +7295,7 @@ a RexxUnicodeGraphemeSupplier
 -- Codepoint supplier providing the byte index and returning the codepoint escaped string
 -- A negative byte index indicates an invalid byte sequence
 ooRexx> .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
 -1 : '\x{E180}'
 -3 : '\xE2'
 -4 : '\x{F09192}'
@@ -7313,7 +7313,7 @@ a RexxUnicodeCodepointSupplier
 -- Grapheme supplier providing the byte index and returning the grapheme escaped string
 -- A negative byte index indicates an invalid byte sequence
 ooRexx> .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "\")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
 -1 : '\x{E180}'
 -3 : '\xE2'
 -4 : '\x{F09192}'
@@ -7330,7 +7330,7 @@ a RexxUnicodeGraphemeSupplier
 
 -- Codepoint supplier providing the byte index and returning the error message
 ooRexx> .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
 -1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
 -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
 -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
@@ -7347,7 +7347,7 @@ a RexxUnicodeCodepointSupplier
 
 -- Grapheme supplier providing the byte index and returning the error message
 ooRexx> .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF 41"x, "b", "e")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
 -1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
 -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
 -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
@@ -7364,7 +7364,7 @@ a RexxUnicodeGraphemeSupplier
 
 -- Test case: the last codepoint byte sequence is invalid
 ooRexx> .RexxUnicodeCodepointSupplier~new("E1 80 E2 F0 91 92 F1 BF"x, "b", "e")==
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
 -1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
 -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
 -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
@@ -7379,7 +7379,7 @@ a RexxUnicodeCodepointSupplier
 
 -- Test case: the last grapheme byte sequence is invalid
 ooRexx> .RexxUnicodeGraphemeSupplier~new("E1 80 E2 F0 91 92 F1 BF"x, "b", "e")==
-a RexxUnicodeGraphemeSupplier 
+a RexxUnicodeGraphemeSupplier
 -1 : 'start byte position 1 : Invalid continuation byte 226 (''E2''x) at byte position 3'
 -3 : 'start byte position 3 : Invalid continuation byte 240 (''F0''x) at byte position 4'
 -4 : 'start byte position 4 : Invalid continuation byte 241 (''F1''x) at byte position 7'
@@ -7689,7 +7689,7 @@ ooRexx> .RexxUnicode~character("U+0bed")=               -- ("௭" 0xE0AFAD U+0BE
 
 
 ooRexx> .RexxUnicodeCodepointSupplier~new("100€")==     -- a RexxUnicodeCodepointSupplier
-a RexxUnicodeCodepointSupplier 
+a RexxUnicodeCodepointSupplier
  1 :  49
  2 :  48
  3 :  48

@@ -26,7 +26,8 @@ scriptsFiles2= StringIndexer_test1 \
                StringIndexer_test5 \
                StringIndexer_test6 \
                StringIndexer_test7 \
-               StringIndexer_test8
+               StringIndexer_test8 \
+               StringIndexer_test9
 
 # ooRexx scripts, results impacted by ICU4C version
 scriptsFiles3= charWidth_stringWidth_test \

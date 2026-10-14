@@ -4742,13 +4742,44 @@ Beware of the size of the returned array! The internal storage is optimized for
 memory usage, but ooRexx arrays are not. Moreover, a new array is created each time
 this method is used.
 
-**Example**
+**Examples**
 
 ```rexx
 indexer = .RexxUnicodeStringIndexer~new("a👨‍👩‍👧b", 0, 5, 0, 0, 5)
 indexer~startCodepointIndexes=  -- [ 1, 2, 6, 9, 13]
 -- No overlap between the end and start storage: 13, 9, 6 are already stored in the start storage
 indexer~endCodepointIndexes=    -- [ 20, 16], not [ 20, 16, 13, 9, 6]
+
+```
+
+```
+.RexxUnicode~stringInfo("e◌́x")=    -- '(not-ASCII, 3 graphemes, 4 codepoints, 7 bytes, 0 error)'
+.RexxUnicode~c2x("e◌́x")=           -- '65 E2978C CC81 78'
+
+-- Non-incremental:
+-- The limits are strict.
+-- The codepoint storage can end in the middle of a grapheme.
+indexer = .RexxUnicodeStringIndexer~new("e◌́x", 0, 0, 0, 0, 3)
+indexer~limits=                     -- [ 0, 0, 0, 0, 3, 0]
+indexer~endCodepointIndexes=        -- [ 7, 5, 2]
+
+-- Incremental:
+-- The limits are adjustable.
+-- If the end grapheme storage is enabled:
+--   a reverse grapheme supplier is used for the backward scan during the initialization.
+--   the codepoint storage ends on a grapheme boundary.
+indexer = .RexxUnicodeStringIndexer~newIncremental("e◌́x", 0, 0, 0, 1, 3)
+indexer~limits=                     -- [ 0, 0, 0, 2, 4, 0]
+indexer~endCodepointIndexes=        -- [ 7, 5, 2, 1]
+
+-- Incremental:
+-- The limits are adjustable.
+-- If the end grapheme storage is not enabled:
+--   a reverse codepoint supplier is used for the backward scan during the initialization.
+--   the codepoint storage can end in the middle of a grapheme.
+indexer = .RexxUnicodeStringIndexer~newIncremental("e◌́x", 0, 0, 0, 0, 3)
+indexer~limits=                     -- [ 0, 0, 0, 0, 3, 0]
+indexer~endCodepointIndexes=        -- [ 7, 5, 2]
 
 ```
 
@@ -5131,6 +5162,28 @@ and [`RexxUnicodeStringIndexer~newIncremental`](#RexxUnicodeStringIndexer_newInc
 Beware of the size of the returned array! The internal storage is optimized for
 memory usage, but ooRexx arrays are not. Moreover, a new array is created each time
 this method is used.
+
+**Examples**
+
+```
+.RexxUnicode~stringInfo("e◌́x")=    -- '(not-ASCII, 3 graphemes, 4 codepoints, 7 bytes, 0 error)'
+.RexxUnicode~c2x("e◌́x")=           -- '65 E2978C CC81 78'
+
+-- Non-incremental:
+-- The limits are strict.
+-- The codepoint storage can end in the middle of a grapheme.
+indexer = .RexxUnicodeStringIndexer~new("e◌́x", 0, 3)
+indexer~limits=                     -- [ 0, 3, 999999999999999999, 0, 0, 0]
+indexer~startCodepointIndexes=      -- [ 1, 2, 5]
+
+-- Incremental:
+-- The limits are adjustable.
+-- The codepoint storage ends on a grapheme boundary.
+indexer = .RexxUnicodeStringIndexer~newIncremental("e◌́x", 0, 3)
+indexer~limits=                     -- [ 0, 4, 1, 0, 0, 0]
+indexer~startCodepointIndexes=      -- [ 1, 2, 5, 7]
+
+```
 
 
 <a id="RexxUnicodeStringIndexer_startCodepointStorageCount"></a>

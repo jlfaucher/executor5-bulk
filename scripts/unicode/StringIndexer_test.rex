@@ -41,8 +41,8 @@ say
 counters. = 0
 .local~counters = counters.
 
-if arg(1) < 1 | arg(1) > 8 then do
-    say "Invalid argument, expected 1..8, got" quoted(arg(1))
+if arg(1) < 1 | arg(1) > 9 then do
+    say "Invalid argument, expected 1..9, got" quoted(arg(1))
     return
 end
 
@@ -57,6 +57,7 @@ if arg(1) == 5 then call regressionTests '"🎅"'     -- 4 bytes
 if arg(1) == 6 then call regressionTests '"F4"x "👨‍👩‍👧" "91"x'     -- starts and ends on error
 if arg(1) == 7 then call regressionTests '"⦅⦅" || "F4 91"x "🎅" "F4"x "👨‍👩‍👧" "F4 91"x || "⦆⦆"'      -- Odd number of graphemes, codepoints, errors and bytes
 if arg(1) == 8 then call regressionTests '"⦅⦅" || "F4 91"x "🎅" "F4 91"x "👨‍👩‍👧" "F4 91"x || "⦆⦆"'   -- Even number of graphemes, codepoints, errors and bytes
+if arg(1) == 9 then call regressionTests '"e◌́x"'
 
 -- return
 say

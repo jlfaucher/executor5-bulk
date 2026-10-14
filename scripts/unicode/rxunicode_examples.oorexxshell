@@ -1858,6 +1858,35 @@ indexer~startCodepointIndexes=  -- [ 1, 2, 6, 9, 13]
 indexer~endCodepointIndexes=    -- [ 20, 16], not [ 20, 16, 13, 9, 6]
 
 
+.RexxUnicode~stringInfo("e◌́x")=    -- '(not-ASCII, 3 graphemes, 4 codepoints, 7 bytes, 0 error)'
+.RexxUnicode~c2x("e◌́x")=           -- '65 E2978C CC81 78'
+
+-- Non-incremental:
+-- The limits are strict.
+-- The codepoint storage can end in the middle of a grapheme.
+indexer = .RexxUnicodeStringIndexer~new("e◌́x", 0, 0, 0, 0, 3)
+indexer~limits=                     -- [ 0, 0, 0, 0, 3, 0]
+indexer~endCodepointIndexes=        -- [ 7, 5, 2]
+
+-- Incremental:
+-- The limits are adjustable.
+-- If the end grapheme storage is enabled:
+--   a reverse grapheme supplier is used for the backward scan during the initialization.
+--   the codepoint storage ends on a grapheme boundary.
+indexer = .RexxUnicodeStringIndexer~newIncremental("e◌́x", 0, 0, 0, 1, 3)
+indexer~limits=                     -- [ 0, 0, 0, 2, 4, 0]
+indexer~endCodepointIndexes=        -- [ 7, 5, 2, 1]
+
+-- Incremental:
+-- The limits are adjustable.
+-- If the end grapheme storage is not enabled:
+--   a reverse codepoint supplier is used for the backward scan during the initialization.
+--   the codepoint storage can end in the middle of a grapheme.
+indexer = .RexxUnicodeStringIndexer~newIncremental("e◌́x", 0, 0, 0, 0, 3)
+indexer~limits=                     -- [ 0, 0, 0, 0, 3, 0]
+indexer~endCodepointIndexes=        -- [ 7, 5, 2]
+
+
 --------------------------------------------------------------------------------
 -- aRexxUnicodeStringIndexer~endErrorMessages
 --------------------------------------------------------------------------------
@@ -1989,6 +2018,28 @@ do i = 1 to indexer~string~length; say i~left(2)":" indexer~graphemeIndexG(i); e
     19: -2
     20: 3
 */
+
+
+--------------------------------------------------------------------------------
+-- aRexxUnicodeStringIndexer~startCodepointIndexes
+--------------------------------------------------------------------------------
+
+.RexxUnicode~stringInfo("e◌́x")=    -- '(not-ASCII, 3 graphemes, 4 codepoints, 7 bytes, 0 error)'
+.RexxUnicode~c2x("e◌́x")=           -- '65 E2978C CC81 78'
+
+-- Non-incremental:
+-- The limits are strict.
+-- The codepoint storage can end in the middle of a grapheme.
+indexer = .RexxUnicodeStringIndexer~new("e◌́x", 0, 3)
+indexer~limits=                     -- [ 0, 3, 999999999999999999, 0, 0, 0]
+indexer~startCodepointIndexes=      -- [ 1, 2, 5]
+
+-- Incremental:
+-- The limits are adjustable.
+-- The codepoint storage ends on a grapheme boundary.
+indexer = .RexxUnicodeStringIndexer~newIncremental("e◌́x", 0, 3)
+indexer~limits=                     -- [ 0, 4, 1, 0, 0, 0]
+indexer~startCodepointIndexes=      -- [ 1, 2, 5, 7]
 
 
 --------------------------------------------------------------------------------
