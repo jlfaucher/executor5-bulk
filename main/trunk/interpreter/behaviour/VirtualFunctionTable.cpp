@@ -86,6 +86,7 @@
 #include "EventSemaphore.hpp"
 #include "MutexSemaphore.hpp"
 #include "support/Unicode/UnicodeServices.hpp"
+#include "support/Unicode/string-indexer/RexxUnicodeStringIndexer.hpp"
 #include "RexxBehaviour.hpp"
 #include "MethodDictionary.hpp"
 #include "LibraryPackage.hpp"
@@ -401,6 +402,12 @@ void MemoryObject::buildVirtualFunctionTable()
    
    objectPtr = ::new (objectLoc) RexxClass(RESTOREIMAGE);
    virtualFunctionTable[T_RexxUnicodeServicesClass] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) RexxUnicodeStringIndexer(RESTOREIMAGE);
+   virtualFunctionTable[T_RexxUnicodeStringIndexerNative] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) RexxClass(RESTOREIMAGE);
+   virtualFunctionTable[T_RexxUnicodeStringIndexerNativeClass] = getVftPointer(objectLoc);
    
    objectPtr = ::new (objectLoc) RexxNilObject(RESTOREIMAGE);
    virtualFunctionTable[T_NilObject] = getVftPointer(objectLoc);

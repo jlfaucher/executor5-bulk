@@ -123,6 +123,8 @@ RexxBehaviour RexxBehaviour::primitiveBehaviours[T_Last_Primitive_Class + 1] =
     RexxBehaviour(T_MutexSemaphoreClass, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_RexxUnicodeServices, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_RexxUnicodeServicesClass, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_RexxUnicodeStringIndexerNative, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_RexxUnicodeStringIndexerNativeClass, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_NilObject, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_Behaviour, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_MethodDictionary, (PCPPM *)RexxObject::operatorMethods),

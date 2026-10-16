@@ -93,6 +93,7 @@
 #include "EventSemaphore.hpp"
 #include "MutexSemaphore.hpp"
 #include "support/Unicode/UnicodeServices.hpp"
+#include "support/Unicode/string-indexer/RexxUnicodeStringIndexer.hpp"
 
 
 /**
@@ -323,6 +324,7 @@ void MemoryObject::createImage(const char *imageTarget)
     EventSemaphoreClass::createInstance();
     MutexSemaphoreClass::createInstance();
     RexxUnicodeServicesClass::createInstance();
+    RexxUnicodeStringIndexer::createInstance();
 
     // build the common retrievers table.  This is needed before we can parse an
     // Rexx code.
@@ -1789,6 +1791,25 @@ StartClassDefinition(RexxUnicodeServices)
     CompleteClassDefinition(RexxUnicodeServices);
 
 EndClassDefinition(RexxUnicodeServices);
+
+
+   /****************************************************************************/
+    /*           REXXUNICODESTRINGINDEXER                                      */
+    /***************************************************************************/
+
+StartClassDefinition(RexxUnicodeStringIndexerNative)
+
+        AddClassMethod("New", RexxUnicodeStringIndexer::newRexx, A_COUNT);
+
+    CompleteClassMethodDefinitions();
+
+        // AddMethod("Copy", RexxUnicodeStringIndexer::copyRexx, 0);
+
+    CompleteMethodDefinitions();
+
+    CompleteClassDefinition(RexxUnicodeStringIndexerNative);
+
+EndClassDefinition(RexxUnicodeStringIndexerNative);
 
 
     /***************************************************************************/

@@ -113,6 +113,8 @@
 #define TheMutexSemaphoreClassBehaviour    (&RexxBehaviour::primitiveBehaviours[T_MutexSemaphoreClass])
 #define TheRexxUnicodeServicesBehaviour      (&RexxBehaviour::primitiveBehaviours[T_RexxUnicodeServices])
 #define TheRexxUnicodeServicesClassBehaviour    (&RexxBehaviour::primitiveBehaviours[T_RexxUnicodeServicesClass])
+#define TheRexxUnicodeStringIndexerNativeBehaviour      (&RexxBehaviour::primitiveBehaviours[T_RexxUnicodeStringIndexerNative])
+#define TheRexxUnicodeStringIndexerNativeClassBehaviour    (&RexxBehaviour::primitiveBehaviours[T_RexxUnicodeStringIndexerNativeClass])
 #define TheNilObjectBehaviour      (&RexxBehaviour::primitiveBehaviours[T_NilObject])
 #define TheBehaviourBehaviour      (&RexxBehaviour::primitiveBehaviours[T_Behaviour])
 #define TheMethodDictionaryBehaviour      (&RexxBehaviour::primitiveBehaviours[T_MethodDictionary])

@@ -1565,6 +1565,53 @@ static inline void utf8StringCodepointIterator(
 }
 
 
+/**
+ * Backward counterpart of utf8StringCodepointIterator.
+ *
+ * @param str_start     (in)    Lower bound of the whole buffer.
+ * @param str_end       (in)    The boundary from which to iterate backward
+ *                              (one past the last byte of the last item to visit).
+ *                              Must be a genuine codepoint boundary.
+ * @param buffer_end    (in)    One past the last byte of the whole buffer.
+ *
+ * `codepointAction` and `stopIteration` have the same signatures as in
+ * utf8StringCodepointIterator. Items are visited from right to left.
+ */
+template
+<
+    typename CodepointAction = NoCodepointAction,
+    typename StopIteration = DontStop
+>
+static inline void utf8StringCodepointIterator_backward(
+    const utf8proc_uint8_t *str_start,
+    const utf8proc_uint8_t *str_end,
+    const utf8proc_uint8_t *buffer_end,
+    CodepointAction codepointAction = CodepointAction(),
+    StopIteration stopIteration = DontStop()
+)
+{
+    const utf8proc_uint8_t *pos = str_end;
+    for (;;)
+    {
+        utf8proc_int32_t codepoint;
+        utf8proc_ssize_t sizeB = utf8proc_iterate_extended_backward(str_start, pos, buffer_end, &codepoint);
+        if (sizeB == 0) break;
+        if (sizeB < 0)
+        {
+            sizeB = -sizeB;
+            pos -= sizeB;
+            codepointAction(true, pos, sizeB, 0xFFFD); // replacement character
+        }
+        else
+        {
+            pos -= sizeB;
+            codepointAction(false, pos, sizeB, codepoint);
+        }
+        if (stopIteration()) break;
+    }
+}
+
+
 struct NoGraphemeAction
 {
     inline void operator()
@@ -1701,6 +1748,107 @@ static inline const void utf8StringGraphemeIterator(
 
     // Flush the last pending grapheme, if any.
     if (str != gStart) graphemeAction(false, gStart, str - gStart);
+}
+
+
+/**
+ * Backward counterpart of utf8StringGraphemeIterator.
+ *
+ * Graphemes are visited from right to left, and must be the same graphemes as
+ * the ones found by the forward iterator (an invalid byte sequence is always an
+ * isolated grapheme).
+ *
+ * @param str_start     (in)    Lower bound of the whole buffer.
+ * @param str_end       (in)    The boundary from which to iterate backward.
+ *                              Must be a genuine GRAPHEME boundary (for example
+ *                              the end of the buffer, or the start of a grapheme
+ *                              found by a previous scan).
+ * @param buffer_end    (in)    One past the last byte of the whole buffer.
+ *
+ * `graphemeAction`, `codepointAction`, `stopIteration`: same signatures as in
+ * utf8StringGraphemeIterator.
+ *
+ * Order of the notifications: a codepoint is notified as soon as it is decoded,
+ * i.e. BEFORE the grapheme that follows it (in string order) is notified as
+ * closed. So the codepoint that closes a grapheme is notified, then the grapheme
+ * is notified, then stopIteration is called. When the iteration is restarted
+ * from that grapheme boundary, this codepoint is notified a second time.
+ * `stopIteration` is called after every notified grapheme, never after a
+ * codepoint alone. When it returns true the pending (not closed) grapheme is
+ * NOT notified.
+ */
+template
+<
+    typename GraphemeAction = NoGraphemeAction,
+    typename CodepointAction = NoCodepointAction,
+    typename StopIteration = DontStop
+>
+static inline void utf8StringGraphemeIterator_backward(
+    const utf8proc_uint8_t *str_start,
+    const utf8proc_uint8_t *str_end,
+    const utf8proc_uint8_t *buffer_end,
+    GraphemeAction graphemeAction = GraphemeAction(),
+    CodepointAction codepointAction = CodepointAction(),
+    StopIteration stopIteration = DontStop()
+)
+{
+    // The pending grapheme is [pos, gEnd). pos is also the left edge of previousCodepoint.
+    const utf8proc_uint8_t *pos = str_end;
+    const utf8proc_uint8_t *gEnd = str_end;
+    utf8proc_int32_t previousCodepoint = -1; // -1: no codepoint in the pending grapheme (start, or after an error)
+    bool stopped = false;
+
+    for (;;)
+    {
+        utf8proc_int32_t codepoint;
+        utf8proc_ssize_t sizeB = utf8proc_iterate_extended_backward(str_start, pos, buffer_end, &codepoint);
+        if (sizeB == 0) break;
+
+        if (sizeB < 0)
+        {
+            sizeB = -sizeB;
+            const utf8proc_uint8_t *errorStart = pos - sizeB;
+            codepointAction(true, errorStart, sizeB, 0xFFFD); // replacement character
+
+            // The error closes the pending grapheme (which is to its right)...
+            if (pos != gEnd) graphemeAction(false, pos, gEnd - pos);
+            // ...and is always an isolated grapheme.
+            graphemeAction(true, errorStart, sizeB);
+
+            pos = gEnd = errorStart;
+            previousCodepoint = -1;
+            if (stopIteration()) { stopped = true; break; }
+        }
+        else
+        {
+            const utf8proc_uint8_t *codepointStart = pos - sizeB;
+            codepointAction(false, codepointStart, sizeB, codepoint);
+
+            bool breakBetween = false;
+            if (previousCodepoint >= 0)
+            {
+                breakBetween = utf8proc_grapheme_break_backward(str_start, buffer_end, codepointStart, codepoint, previousCodepoint);
+            }
+
+            if (breakBetween)
+            {
+                // The pending grapheme [pos, gEnd) starts at previousCodepoint: it is complete.
+                graphemeAction(false, pos, gEnd - pos);
+                gEnd = pos;
+                pos = codepointStart;
+                previousCodepoint = codepoint;
+                if (stopIteration()) { stopped = true; break; }
+            }
+            else
+            {
+                pos = codepointStart;
+                previousCodepoint = codepoint;
+            }
+        }
+    }
+
+    // Flush the last pending grapheme, if any.
+    if (!stopped && pos != gEnd) graphemeAction(false, pos, gEnd - pos);
 }
 
 
@@ -3727,3 +3875,14 @@ RexxInteger *RexxUnicodeServicesClass::utf8StringWidth(RexxString *string, RexxI
 
     return new_integer(widthSum);
 }
+
+
+/******************************************************************************/
+/*                                                                            */
+/* String indexer                                                     */
+/*                                                                            */
+/******************************************************************************/
+
+// Must be included in this file because it depends on static methods accessible
+// from this file only.
+#include "string-indexer/UnicodeStringIndexer.cpp"

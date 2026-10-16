@@ -4197,7 +4197,7 @@ This extra codepoint (and possibly extra error) is expected and safely handled w
 -- Example 1
 -- If the identifier is a valid UTF-8 string and is made of just one codepoint then return this codepoint.
 indexer = .RexxUnicodeStringIndexer~new(identifier, /*startGraphemeStorageLimit:*/ 0, /*startCodepointStorageLimit:*/ 1, /*startErrorStorageLimit:*/ 0)
-if indexer~errorCount == 0, indexer~codepointCount == 1 then return indexer~codepointAtIndexC(1)    -- 8364
+if indexer~errorCount == 0, indexer~codepointCount == 1 then return indexer~codepointAtIndexC(1)
 
 ```
 

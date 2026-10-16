@@ -667,6 +667,7 @@ void DelegateCode::run(Activity *activity, MethodClass *method, RexxObject *rece
 #include "BagClass.hpp"
 #include "RexxInfoClass.hpp"
 #include "support/Unicode/UnicodeServices.hpp"
+#include "support/Unicode/string-indexer/RexxUnicodeStringIndexer.hpp"
 
 // start of the exported methods table.  Any method used in Setup.cpp must also
 // be included in this table here so that methods can recover the pointer
@@ -1379,6 +1380,8 @@ PCPPM CPPCode::exportedMethods[] =
     CPPM(RexxUnicodeServicesClass::U2C),
     CPPM(RexxUnicodeServicesClass::U2D),
     CPPM(RexxUnicodeServicesClass::sizeofUnicodeWidthTables),
+
+    CPPM(RexxUnicodeStringIndexer::newRexx),
 
     // This NULL terminator is important to mark the end of the table.
     NULL
